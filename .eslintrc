@@ -1,0 +1,111 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 2020
+  },
+  "plugins": [
+    "import-helpers",
+    "react-hooks",
+    "react-perf"
+  ],
+  "extends": [
+    "airbnb"
+  ],
+  "globals": {
+    "window": false,
+    "document": false,
+    "__DEV__": false
+  },
+  "rules": {
+    "radix": "off",
+    "indent": [
+      "error",
+      2,
+      {
+        "SwitchCase": 1
+      }
+    ],
+    "no-console": [
+      "warn",
+      {
+        "allow": [
+          "warn"
+        ]
+      }
+    ],
+    "no-underscore-dangle": [
+      "error",
+      {
+        "allow": [
+          "__DEV__"
+        ]
+      }
+    ],
+    "no-multiple-empty-lines": [
+      2,
+      {
+        "max": 1
+      }
+    ],
+    "arrow-parens": [
+      "warn",
+      "as-needed"
+    ],
+    "max-len": [
+      "warn",
+      120
+    ],
+    "arrow-body-style": "off",
+    "import/order": "off",
+    "import-helpers/order-imports": [
+      "warn",
+      {
+        "newlinesBetween": "always",
+        "groups": [
+          [
+            "/^react$/",
+            "/^react-dom$/"
+          ],
+          "module",
+          "/^~/",
+          [
+            "parent",
+            "sibling",
+            "index"
+          ]
+        ],
+        "alphabetize": {
+          "order": "asc",
+          "ignoreCase": true
+        }
+      }
+    ],
+    "react/jsx-filename-extension": [
+      "error",
+      {
+        "extensions": [
+          ".js",
+          ".jsx"
+        ]
+      }
+    ],
+    "react/jsx-indent": [
+      "error",
+      2
+    ],
+    "react/jsx-indent-props": [
+      "error",
+      2
+    ],
+    "react/prop-types": "off",
+    "react/function-component-definition": "off",
+    "react/require-default-props": "warn",
+    "react/destructuring-assignment": "off",
+    "react/jsx-one-expression-per-line": "off",
+    "jsx-a11y/control-has-associated-label": "off",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "react-perf/jsx-no-new-object-as-prop": "error",
+    "react-perf/jsx-no-new-array-as-prop": "error",
+    "react/jsx-props-no-spreading": "off"
+  }
+}
