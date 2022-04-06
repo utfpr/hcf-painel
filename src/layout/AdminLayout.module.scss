@@ -1,0 +1,27 @@
+@import "../theme/colors.scss";
+
+.rootLayout {
+  min-height: 100vh;
+}
+
+.contentLayout {
+  margin-left: 200px;
+  transition: all 0.2s;
+}
+
+.header {
+  padding-left: 16px;
+  background: $color-primary-light;
+
+  position: fixed;
+  z-index: 1000;
+  width: 100%;
+}
+
+.content {
+  margin: 16px;
+  margin-top: 80px;
+  padding: 24px;
+  min-height: 280px;
+  background-color: white;
+}
