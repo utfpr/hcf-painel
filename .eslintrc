@@ -3,6 +3,7 @@
     "ecmaVersion": 2020
   },
   "plugins": [
+    "import",
     "import-helpers",
     "react-hooks",
     "react-perf"

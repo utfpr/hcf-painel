@@ -1,0 +1,15 @@
+*.md
+.env*
+*.ya?ml
+
+# eslint
+.eslint*
+
+# yarn
+!.yarnrc.yml
+
+.git/
+.vscode/
+.husky/
+
+node_modules/
