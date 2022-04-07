@@ -1,8 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect } from 'react';
 
-import { Button, Form, Space } from 'antd';
-import { useForm } from 'react-hook-form';
+import { Button, Space } from 'antd';
 import * as yup from 'yup';
 
 import Input from '../../components/Input';
@@ -22,7 +21,7 @@ function CursoCreateUpdatePage({ form, onSubmit }) {
   } = form;
 
   const onSubmitForm = data => {
-    console.log('data ', data);
+    console.warn('data ', data);
   };
 
   useEffect(() => {
