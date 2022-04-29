@@ -1,5 +1,15 @@
 @import "../theme/colors.scss";
 
+.logo {
+  background-image: url("../assets/leaftOrange.png");
+  height: 45px;
+  width: 45px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  margin-left: 24px;
+  margin-right: 48px;
+}
+
 .rootLayout {
   min-height: 100vh;
 }
@@ -11,17 +21,23 @@
 
 .header {
   padding-left: 16px;
-  background: $color-primary-light;
-
+  background: $color-primary-dark;
   position: fixed;
   z-index: 1000;
   width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .content {
   margin: 16px;
-  margin-top: 80px;
+  margin-top: 60px;
   padding: 24px;
   min-height: 280px;
+}
+
+.body {
   background-color: white;
+  padding: 16px;
 }

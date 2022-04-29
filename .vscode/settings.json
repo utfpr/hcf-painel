@@ -1,0 +1,15 @@
+{
+    "eslint.enable": true,
+    "editor.rulers": [120],
+    "editor.tabSize": 4,
+    "editor.useTabStops": true,
+    "editor.insertSpaces": true,
+    "editor.trimAutoWhitespace": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
+    "files.eol": "\n",
+    "files.trimFinalNewlines": true,
+    "files.insertFinalNewline": true,
+  }
+  
