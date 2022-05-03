@@ -1,49 +1,40 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react-perf/jsx-no-new-object-as-prop */
 import React, {
-  Suspense, useCallback, useMemo, useState,
+    Suspense,
 } from 'react';
 
-import {
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
-} from '@ant-design/icons';
-import { Layout } from 'antd';
-import { Outlet } from 'react-router-dom';
+import { Layout, Breadcrumb } from 'antd';
+import { Link, Outlet } from 'react-router-dom';
 
+import Menu from '../components/Menu';
 import styles from './AdminLayout.module.scss';
-import AdminSideMenu from './AdminSideMenu';
 
 const { Header, Content } = Layout;
 
 const AdminLayout = () => {
-  const [collapsed, setCollapsed] = useState(false);
-
-  const toggle = useCallback(() => {
-    setCollapsed(!collapsed);
-  }, [collapsed]);
-
-  const contentLayoutStyle = useMemo(() => {
-    return collapsed ? { marginLeft: '80px' } : null;
-  }, [collapsed]);
-
-  return (
-    <Layout className={styles.rootLayout}>
-      <AdminSideMenu collapsed={collapsed} />
-      <Layout className={styles.contentLayout} style={contentLayoutStyle}>
-        <Header className={styles.header}>
-          {collapsed ? (
-            <MenuUnfoldOutlined onClick={toggle} />
-          ) : (
-            <MenuFoldOutlined onClick={toggle} />
-          )}
-        </Header>
-        <Content className={styles.content}>
-          <Suspense fallback={<div>Carregando...</div>}>
-            <Outlet />
-          </Suspense>
-        </Content>
-      </Layout>
-    </Layout>
-  );
+    return (
+        <Layout className={styles.rootLayout}>
+            <Header className={styles.header}>
+                <Link to="/admin">
+                    <div className={styles.logo} />
+                </Link>
+                <Menu />
+            </Header>
+            <Content className={styles.content}>
+                <Breadcrumb style={{ margin: '16px 0' }}>
+                    <Breadcrumb.Item>Home</Breadcrumb.Item>
+                    <Breadcrumb.Item>List</Breadcrumb.Item>
+                    <Breadcrumb.Item>App</Breadcrumb.Item>
+                </Breadcrumb>
+                <Suspense fallback={<div>Carregando...</div>}>
+                    <div className={styles.body}>
+                        <Outlet />
+                    </div>
+                </Suspense>
+            </Content>
+        </Layout>
+    );
 };
 
 export default AdminLayout;

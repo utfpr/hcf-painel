@@ -9,15 +9,15 @@ import AntDesignLocale from './resources/locale';
 import RouteManager from './routes';
 
 function App() {
-  return (
-    <AntDesignProvider locale={AntDesignLocale}>
-      <BrowserRouter>
-        <ReduxProvider store={store}>
-          <RouteManager />
-        </ReduxProvider>
-      </BrowserRouter>
-    </AntDesignProvider>
-  );
+    return (
+        <AntDesignProvider locale={AntDesignLocale}>
+            <BrowserRouter>
+                <ReduxProvider store={store}>
+                    <RouteManager />
+                </ReduxProvider>
+            </BrowserRouter>
+        </AntDesignProvider>
+    );
 }
 
 export default App;

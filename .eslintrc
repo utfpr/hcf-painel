@@ -20,7 +20,7 @@
     "radix": "off",
     "indent": [
       "error",
-      2,
+      4,
       {
         "SwitchCase": 1
       }
@@ -91,11 +91,11 @@
     ],
     "react/jsx-indent": [
       "error",
-      2
+      4
     ],
     "react/jsx-indent-props": [
       "error",
-      2
+      4
     ],
     "react/prop-types": "off",
     "react/function-component-definition": "off",
