@@ -1,4 +1,3 @@
-/* eslint-disable react-perf/jsx-no-new-object-as-prop */
 import React from 'react';
 
 import { Menu as MenuAntd } from 'antd';
@@ -10,7 +9,6 @@ import styles from './Menu.module.scss';
 const MenuItem = ({ route }) => {
     const { menu, path } = route;
     const navigate = useNavigate();
-    console.log(path);
     const onClick = () => {
         navigate(path.replace('/', ''));
     };
@@ -34,7 +32,6 @@ const Menu = () => {
     return (
         <MenuAntd theme="dark" mode="horizontal" className={styles.menu}>
             {routes.map((route, index) => {
-                console.log({ route });
                 const { menu, path } = route;
                 if (menu) {
                     const key = index + 1;
