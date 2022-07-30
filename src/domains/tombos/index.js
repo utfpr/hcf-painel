@@ -52,7 +52,6 @@ const TombosPage = ({ form, handleSubmit }) => {
                 ...data.records,
             ]);
         }
-        console.log('use', data);
     });
 
     useDidMount(() => {

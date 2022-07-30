@@ -42,7 +42,6 @@ const MapasPage = () => {
                 ...data.records,
             ]);
         }
-        console.log('use', data);
     });
 
     useDidMount(() => {
