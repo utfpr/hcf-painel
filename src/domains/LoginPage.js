@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
@@ -6,7 +7,7 @@ import * as yup from 'yup';
 
 import logo from '../assets/leaf.png';
 import Input from '../components/Input';
-import { wrapForm, useWhenFormSubmit } from '../helpers/form-helper';
+import wrapForm from '../helpers/form-helper';
 import styles from './LoginPage.module.scss';
 
 const validationSchema = yup.object({
@@ -19,10 +20,10 @@ const validationSchema = yup.object({
 }).required();
 
 const LoginPage = () => {
-    useWhenFormSubmit((values, event) => {
-        console.warn({ values });
-        event.preventDefault();
-    });
+    // useWhenFormSubmit((values, event) => {
+    //     console.warn({ values });
+    //     event.preventDefault();
+    // });
 
     return (
         <div className={styles.container}>
@@ -66,4 +67,4 @@ const LoginPage = () => {
     );
 };
 
-export default wrapForm(LoginPage, { validationSchema });
+export default LoginPage;

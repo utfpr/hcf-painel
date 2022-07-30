@@ -4,7 +4,7 @@ import React, {
     Suspense,
 } from 'react';
 
-import { Layout, Breadcrumb } from 'antd';
+import { Layout } from 'antd';
 import { Link, Outlet } from 'react-router-dom';
 
 import Menu from '../components/Menu';
@@ -22,11 +22,6 @@ const AdminLayout = () => {
                 <Menu />
             </Header>
             <Content className={styles.content}>
-                <Breadcrumb style={{ margin: '16px 0' }}>
-                    <Breadcrumb.Item>Home</Breadcrumb.Item>
-                    <Breadcrumb.Item>List</Breadcrumb.Item>
-                    <Breadcrumb.Item>App</Breadcrumb.Item>
-                </Breadcrumb>
                 <Suspense fallback={<div>Carregando...</div>}>
                     <div className={styles.body}>
                         <Outlet />

@@ -1,6 +1,18 @@
-.content {
+.tombos {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   // justify-content: space-around;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 48px;
+}
+
+.filters {
+    margin-bottom: 24px;
 }

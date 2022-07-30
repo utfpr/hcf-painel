@@ -3,9 +3,18 @@
 }
 
 .card {
-  min-width: 240px;
-  max-width: 600px;
+  width: 240px;
   margin: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  :global {
+    .ant-card-meta-title {
+        word-wrap: break-word;
+        white-space: normal;
+    }
+  }
 }
 
 .image {

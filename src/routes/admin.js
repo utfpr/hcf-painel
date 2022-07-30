@@ -1,6 +1,5 @@
 import { lazy } from 'react';
 
-import { AiFillFileText } from 'react-icons/ai';
 import { IoMdMap } from 'react-icons/io';
 
 const TombosListPage = lazy(() => import('../domains/tombos'));
@@ -10,6 +9,10 @@ const routes = [
     {
         path: '/',
         component: TombosListPage,
+        menu: {
+            text: 'Tombos',
+            icon: IoMdMap,
+        },
     },
     {
         path: '/mapas',
@@ -17,20 +20,6 @@ const routes = [
         menu: {
             text: 'Mapas',
             icon: IoMdMap,
-        },
-    // permissions: [
-    //   {
-    //     can: 'create',
-    //     an: 'Curso',
-    //   },
-    // ],
-    },
-    {
-        path: '/fichas',
-        component: MapasPage,
-        menu: {
-            text: 'Ficha Tombo',
-            icon: AiFillFileText,
         },
     // permissions: [
     //   {
