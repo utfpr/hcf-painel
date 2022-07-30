@@ -2029,6 +2029,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-leaflet/core@npm:^1.0.2, @react-leaflet/core@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@react-leaflet/core@npm:1.1.1"
+  peerDependencies:
+    leaflet: ^1.7.1
+    react: ^17.0.1
+    react-dom: ^17.0.1
+  checksum: 2fc4a80e5524f9437ac6cef0f95e63388f2df6ecc5107fef85fd097eb2455436e796d41a4c43cdcbb983a4132403646823ba1dc0d953e866eb80808cbfaf0232
+  languageName: node
+  linkType: hard
+
 "@react-leaflet/core@npm:^2.0.0":
   version: 2.0.0
   resolution: "@react-leaflet/core@npm:2.0.0"
@@ -6548,6 +6559,7 @@ __metadata:
     "@babel/core": 7.16.0
     "@hookform/resolvers": 2.8.8
     "@pmmmwh/react-refresh-webpack-plugin": 0.5.3
+    "@react-leaflet/core": ^2.0.0
     "@svgr/webpack": 5.5.0
     "@testing-library/jest-dom": 5.16.2
     "@testing-library/react": 12.1.2
@@ -6582,6 +6594,7 @@ __metadata:
     leaflet: 1.8.0
     less: 4.1.2
     less-loader: 10.2.0
+    lodash: ^4.17.21
     mini-css-extract-plugin: 2.4.5
     postcss: 8.4.4
     postcss-flexbugs-fixes: 5.0.2
@@ -6595,8 +6608,9 @@ __metadata:
     react-dev-utils: 12.0.0
     react-dom: 18.1.0
     react-hook-form: 7.27.0
-    react-icons: 4.3.1
+    react-icons: ^4.4.0
     react-leaflet: 4.0.0
+    react-leaflet-markercluster: ^3.0.0-rc1
     react-redux: 7.2.6
     react-refresh: 0.11.0
     react-router-dom: 6.2.1
@@ -8178,7 +8192,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"leaflet@npm:1.8.0":
+"leaflet.markercluster@npm:^1.4.1":
+  version: 1.5.3
+  resolution: "leaflet.markercluster@npm:1.5.3"
+  peerDependencies:
+    leaflet: ^1.3.1
+  checksum: abf0d0befbc78b7f178a330791554f0e4fd7170dbe2e6d59f387b627d914f4633b0541a9028fe5d11cf842c09c8dbb56ae6bd9d1d08c5ce35e32541c8f1eacd1
+  languageName: node
+  linkType: hard
+
+"leaflet@npm:1.8.0, leaflet@npm:^1.6.0":
   version: 1.8.0
   resolution: "leaflet@npm:1.8.0"
   checksum: 4a27895d4253844f2f13f94cbc52a2030b10833cdf553085d931b834745236a8d2a38844a01eb968cc109eb43268bfadb97aad85b51deffb17b6ccd106542e00
@@ -11089,12 +11112,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-icons@npm:4.3.1":
-  version: 4.3.1
-  resolution: "react-icons@npm:4.3.1"
+"react-icons@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "react-icons@npm:4.4.0"
   peerDependencies:
     react: "*"
-  checksum: 2cc608acdd3e906aa3aaee290b8398220639677c949382d86e554020e5dab6a9f1ed7484418aa5272cb5c5c018e1fc9a323d433d901697a76530029f9ecb1263
+  checksum: dd93a1dcc8ac8a3cf46a2b33e80b586fa967331fa5fcb90d061abf276155a8363a331643e203d67cb9bab4261d00a757da854bcce1fce2c6e4258bf3e33f711b
   languageName: node
   linkType: hard
 
@@ -11112,6 +11135,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-leaflet-markercluster@npm:^3.0.0-rc1":
+  version: 3.0.0-rc1
+  resolution: "react-leaflet-markercluster@npm:3.0.0-rc1"
+  dependencies:
+    "@react-leaflet/core": ^1.0.2
+    leaflet: ^1.6.0
+    leaflet.markercluster: ^1.4.1
+    react-leaflet: ^3.0.0
+  peerDependencies:
+    leaflet: ^1.6.0
+    leaflet.markercluster: ^1.4.1
+    react-leaflet: ^3.0.0
+  checksum: 9eb0a9259efdcbe03fcdbd9e0db330c1e6c2901d58f2f75be73a795bfa9fd211fd5dc1e88b81cb9fe778db3d9e160ba9f93297f93e0182205847a00e71c3cbaf
+  languageName: node
+  linkType: hard
+
 "react-leaflet@npm:4.0.0":
   version: 4.0.0
   resolution: "react-leaflet@npm:4.0.0"
@@ -11122,6 +11161,19 @@ __metadata:
     react: ^18.0.0
     react-dom: ^18.0.0
   checksum: 0da0445c1a5f7c47483b1e629c83f477181e987235022235d97808f3b16eebee5d479963e20c64033f17a4f4cbd7bcf310dd5db5af2b8576be1a09b44f8a3ffd
+  languageName: node
+  linkType: hard
+
+"react-leaflet@npm:^3.0.0":
+  version: 3.2.5
+  resolution: "react-leaflet@npm:3.2.5"
+  dependencies:
+    "@react-leaflet/core": ^1.1.1
+  peerDependencies:
+    leaflet: ^1.7.1
+    react: ^17.0.1
+    react-dom: ^17.0.1
+  checksum: 503b7cee8acc12e0e2c5e7675432e7ef5742463e3e5420282ce60a9efd306430caefae3cb282c976e3df7665f19aef5b49cdce44a034979b4ea3ee968c2621d2
   languageName: node
   linkType: hard
 
