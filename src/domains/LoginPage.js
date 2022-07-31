@@ -7,7 +7,7 @@ import * as yup from 'yup';
 
 import logo from '../assets/leaf.png';
 import Input from '../components/Input';
-import wrapForm from '../helpers/form-helper';
+import { wrapForm } from '../helpers/form-helper';
 import styles from './LoginPage.module.scss';
 
 const validationSchema = yup.object({
@@ -19,7 +19,7 @@ const validationSchema = yup.object({
         .required('Senha é obrigatório'),
 }).required();
 
-const LoginPage = () => {
+const LoginPage = ({ form, handleSubmit }) => {
     // useWhenFormSubmit((values, event) => {
     //     console.warn({ values });
     //     event.preventDefault();
@@ -67,4 +67,4 @@ const LoginPage = () => {
     );
 };
 
-export default LoginPage;
+export default wrapForm(LoginPage);

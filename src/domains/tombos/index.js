@@ -89,6 +89,11 @@ const TombosPage = ({ form, handleSubmit }) => {
         return null;
     };
 
+    const onFilter = useCallback(() => {
+        setCurrentPage(1);
+        requestTombos(1);
+    }, [requestTombos]);
+
     const renderFilters = () => {
         return (
             <Collapse
@@ -131,7 +136,7 @@ const TombosPage = ({ form, handleSubmit }) => {
                     <Row justify="end">
                         <Button icon={<DeleteOutlined />}>Limpar</Button>
                         <Button
-                            onClick={handleSubmit(requestTombos)}
+                            onClick={handleSubmit(onFilter)}
                             type="primary"
                             icon={<SearchOutlined />}
                         >Buscar
