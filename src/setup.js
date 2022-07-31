@@ -6,4 +6,4 @@ require('react-leaflet-markercluster/dist/styles.min.css');
 // import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css';
 // import 'leaflet-defaulticon-compatibility';
 
-axios.defaults.baseURL = process.env.REACT_APP_URL_API;
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
