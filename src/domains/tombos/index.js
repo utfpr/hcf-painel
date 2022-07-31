@@ -136,7 +136,7 @@ const TombosPage = ({ form, handleSubmit }) => {
                     <Row justify="end">
                         <Button icon={<DeleteOutlined />}>Limpar</Button>
                         <Button
-                            onClick={handleSubmit(onFilter)}
+                            onClick={handleSubmit(onFilter())}
                             type="primary"
                             icon={<SearchOutlined />}
                         >Buscar
