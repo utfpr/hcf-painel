@@ -1,11 +1,13 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-perf/jsx-no-new-object-as-prop */
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import {
     EditOutlined, EyeOutlined, DeleteOutlined, HomeFilled, TagFilled,
 } from '@ant-design/icons';
-import { Card, Image, Space } from 'antd';
+import {
+    Button, Card, Image, Space,
+} from 'antd';
 import { FaUserAlt, FaCalendarDay } from 'react-icons/fa';
 
 import noImage from '../assets/noImage.png';
@@ -15,13 +17,7 @@ import styles from './CardTombo.module.scss';
 
 const { Meta } = Card;
 
-const actions = [
-    <EyeOutlined key="visualizar" />,
-    // <EditOutlined key="edit" />,
-    // <DeleteOutlined key="setting" />,
-];
-
-const CardTombo = ({ tombo }) => {
+const CardTombo = ({ tombo, onClickViewTombo }) => {
     const {
         nomes_populares: nomePopular, nome_cientifico: nomeCientifico,
         coletores, foto_principal: fotoPrincipal,
@@ -29,6 +25,18 @@ const CardTombo = ({ tombo }) => {
         data_coleta_dia: dataColetaDia, data_coleta_mes: dataColetaMes,
         hcf,
     } = tombo;
+
+    const onClickEyeButton = useCallback(() => {
+        onClickViewTombo(hcf);
+    }, [hcf, onClickViewTombo]);
+
+    const actions = useMemo(() => {
+        return [
+            <Button type="link" icon={<EyeOutlined key="visualizar" />} onClick={onClickEyeButton} />,
+            <EditOutlined key="edit" />,
+            <DeleteOutlined key="setting" />,
+        ];
+    }, [onClickEyeButton]);
 
     const collectionDate = useMemo(() => {
         return getCollectionDate(dataColetaDia, dataColetaMes, dataColetaAno);

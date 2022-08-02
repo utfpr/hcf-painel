@@ -2,6 +2,8 @@ import { lazy } from 'react';
 
 import { IoMdMap } from 'react-icons/io';
 
+import DetailsTomboPage from '../domains/tombos/DetailsTomboPage';
+
 const TombosListPage = lazy(() => import('../domains/tombos'));
 const MapasPage = lazy(() => import('../domains/mapas'));
 
@@ -15,18 +17,16 @@ const routes = [
         },
     },
     {
+        path: '/tombos/:tomboId',
+        component: DetailsTomboPage,
+    },
+    {
         path: '/mapas',
         component: MapasPage,
         menu: {
             text: 'Mapas',
             icon: IoMdMap,
         },
-    // permissions: [
-    //   {
-    //     can: 'create',
-    //     an: 'Curso',
-    //   },
-    // ],
     },
 ];
 

@@ -8,6 +8,7 @@ import {
     Button,
     Col, Collapse, Row, Spin,
 } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 import CardTombo from '../../components/CardTombo';
 import Input from '../../components/Input';
@@ -32,21 +33,18 @@ const TombosPage = ({ form, handleSubmit }) => {
     });
     const scrollInfo = useScroll();
     const [currentPage, setCurrentPage] = useState(1);
-    const { watch } = form;
+    const { watch, reset } = form;
+    const navigate = useNavigate();
 
-    const [loading, requestTombos] = useAsync(async page => {
-        const hcf = watch('hcf');
-        const nomesPopulares = watch('nomes_populares');
-        const nomeCientifico = watch('nome_cientifico');
-        const localColeta = watch('local_coleta');
-        const filters = {
-            hcf, nomesPopulares, nomeCientifico, localColeta,
-        };
-
+    const [loading, requestTombos] = useAsync(async (page, filters) => {
         const data = await getTombos(page, 20, filters);
         if (data) {
             setMetadata(data.metadata);
             setCurrentPage(data.metadata.page);
+            if (data.metadata.page === 1) {
+                setTombos(data.records);
+                return;
+            }
             setTombos([
                 ...tombos,
                 ...data.records,
@@ -89,10 +87,27 @@ const TombosPage = ({ form, handleSubmit }) => {
         return null;
     };
 
-    const onFilter = useCallback(() => {
+    const onClickFilter = useCallback(() => {
+        const hcf = watch('hcf');
+        const nomesPopulares = watch('nomes_populares');
+        const nomeCientifico = watch('nome_cientifico');
+        const localColeta = watch('local_coleta');
+        const filters = {
+            hcf, nomesPopulares, nomeCientifico, localColeta,
+        };
         setCurrentPage(1);
-        requestTombos(1);
-    }, [requestTombos]);
+        requestTombos(1, filters);
+    }, [requestTombos, watch]);
+
+    const onClickClean = useCallback(() => {
+        reset();
+        setCurrentPage(1);
+        requestTombos(1, null);
+    }, [requestTombos, reset]);
+
+    const onClickViewTombo = useCallback(tomboId => {
+        navigate(`tombos/${tomboId}`);
+    }, [navigate]);
 
     const renderFilters = () => {
         return (
@@ -134,12 +149,18 @@ const TombosPage = ({ form, handleSubmit }) => {
                         </Col>
                     </Row>
                     <Row justify="end">
-                        <Button icon={<DeleteOutlined />}>Limpar</Button>
                         <Button
-                            onClick={handleSubmit(onFilter())}
+                            onClick={onClickClean}
+                            icon={<DeleteOutlined />}
+                        >
+                            Limpar
+                        </Button>
+                        <Button
+                            onClick={handleSubmit(onClickFilter)}
                             type="primary"
                             icon={<SearchOutlined />}
-                        >Buscar
+                        >
+                            Buscar
                         </Button>
                     </Row>
                 </Panel>
@@ -155,7 +176,7 @@ const TombosPage = ({ form, handleSubmit }) => {
             <div className={styles.tombos}>
                 {tombos?.map(tombo => {
                     return (
-                        <CardTombo tombo={tombo} size="large" />
+                        <CardTombo tombo={tombo} onClickViewTombo={onClickViewTombo} size="large" />
                     );
                 })}
                 {renderLoading()}
