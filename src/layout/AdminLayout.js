@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react-perf/jsx-no-new-object-as-prop */
 import React, {
     Suspense,
 } from 'react';

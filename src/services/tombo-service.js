@@ -56,6 +56,16 @@ const getDetailsTombo = async tomboId => {
     }
 };
 
+const getHeatmapCoordinatesTombos = async () => {
+    try {
+        const response = await axios.get('/tombos/heatmap-coordinates');
+        return response.data;
+    } catch (ex) {
+        console.warn(ex);
+        return null;
+    }
+};
+
 const getCollectionDate = (dia, mes, ano) => {
     if (dia && mes && ano) return `${dia}/${mes}/${ano}`;
     if (mes && ano) return `${mes}/${ano}`;
@@ -99,4 +109,5 @@ export {
     getDetailsTombo,
     getCollectionDate,
     decimalToDMS,
+    getHeatmapCoordinatesTombos,
 };

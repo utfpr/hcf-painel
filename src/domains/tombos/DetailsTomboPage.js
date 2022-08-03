@@ -136,7 +136,7 @@ const DetailsTomboPage = () => {
             <Row gutter={8} className={styles.item}>
                 <ItemTomboDetail title="Número do tombo:" value={hcf} />
                 <ItemTomboDetail title="Nome popular:" value={nomesPopulares} />
-                <ItemTomboDetail title="Herbário:" value={herbario.nome} />
+                <ItemTomboDetail title="Herbário:" value={herbario?.nome} />
             </Row>
             <Row gutter={8} className={styles.item}>
                 <ItemTomboDetail title="Número da coleta:" value={numeroColeta} />
@@ -145,7 +145,7 @@ const DetailsTomboPage = () => {
             </Row>
             <Row gutter={8} className={styles.item}>
                 <ItemTomboDetail title="Nome científico:" value={nomeCientifico} />
-                <ItemTomboDetail title="Tipo:" value={tipo.nome} />
+                <ItemTomboDetail title="Tipo:" value={tipo?.nome} />
             </Row>
             <Divider dashed />
             <Row gutter={8} className={styles.item}>
@@ -160,7 +160,7 @@ const DetailsTomboPage = () => {
                 <ItemTomboDetail title="Vegetação:" value={vegetacao?.nome} />
             </Row>
             <Row gutter={8} className={styles.item}>
-                <ItemTomboDetail title="Fase sucessional:" value={faseSucessional} />
+                <ItemTomboDetail title="Fase sucessional:" value={faseSucessional?.nome} />
                 <ItemTomboDetail title="Descrição:" value={descricao} />
             </Row>
             <Divider dashed />

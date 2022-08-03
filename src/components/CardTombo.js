@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react-perf/jsx-no-new-object-as-prop */
 import React, { useCallback, useMemo } from 'react';
 
 import {
@@ -10,7 +8,6 @@ import {
 } from 'antd';
 import { FaUserAlt, FaCalendarDay } from 'react-icons/fa';
 
-import noImage from '../assets/noImage.png';
 import { getCollectionDate } from '../services/tombo-service';
 import strings from '../values/strings';
 import styles from './CardTombo.module.scss';
@@ -32,9 +29,21 @@ const CardTombo = ({ tombo, onClickViewTombo }) => {
 
     const actions = useMemo(() => {
         return [
-            <Button type="link" icon={<EyeOutlined key="visualizar" />} onClick={onClickEyeButton} />,
-            <EditOutlined key="edit" />,
-            <DeleteOutlined key="setting" />,
+            <Button
+                type="link"
+                icon={<EyeOutlined key="visualizar" />}
+                onClick={onClickEyeButton}
+            />,
+            <Button
+                type="link"
+                icon={<EditOutlined key="edit" className={styles.editIcon} />}
+                onClick={onClickEyeButton}
+            />,
+            <Button
+                type="link"
+                icon={<DeleteOutlined key="setting" className={styles.removeIcon} />}
+                onClick={onClickEyeButton}
+            />,
         ];
     }, [onClickEyeButton]);
 
@@ -53,11 +62,6 @@ const CardTombo = ({ tombo, onClickViewTombo }) => {
         <Card
             className={styles.card}
             cover={(
-                // <img
-                //     alt="example"
-                //     src={image}
-                //     className={styles.image}
-                // />
                 <Image
                     // width={240}
                     height={200}
@@ -71,7 +75,7 @@ const CardTombo = ({ tombo, onClickViewTombo }) => {
             <Meta
                 title={nomeCientifico}
                 description={nomePopular}
-                style={{ wordWrap: 'break-word' }}
+                className={styles.meta}
             />
             <div className={styles.content}>
                 <Space>

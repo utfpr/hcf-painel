@@ -21,11 +21,6 @@ import styles from './TombosPage.module.scss';
 
 const { Panel } = Collapse;
 
-// length: 100
-// limit: 100
-// page: 1
-// total: 23580
-
 const TombosPage = ({ form, handleSubmit }) => {
     const [tombos, setTombos] = useState([]);
     const [metadata, setMetadata] = useState({
@@ -106,7 +101,7 @@ const TombosPage = ({ form, handleSubmit }) => {
     }, [requestTombos, reset]);
 
     const onClickViewTombo = useCallback(tomboId => {
-        navigate(`tombos/${tomboId}`);
+        navigate(`${tomboId}`);
     }, [navigate]);
 
     const renderFilters = () => {

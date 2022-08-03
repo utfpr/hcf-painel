@@ -1,16 +1,13 @@
-/* eslint-disable global-require */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-perf/jsx-no-new-object-as-prop */
 /* eslint-disable react-perf/jsx-no-new-array-as-prop */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { Space } from 'antd';
-import L, { Icon } from 'leaflet';
-import { MdLocationPin } from 'react-icons/md';
+import L from 'leaflet';
 import {
     MapContainer, TileLayer, Marker, Popup,
 } from 'react-leaflet';
-import MarkerClusterGroup from 'react-leaflet-markercluster';
 
 import pin from '../../assets/pin.svg';
 import useAsync from '../../hooks/use-async';
@@ -47,6 +44,7 @@ const MapasPage = () => {
     useDidMount(() => {
         requestTombos(currentPage);
     });
+
     return (
         <MapContainer
             center={position}

@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import React, { memo, useCallback } from 'react';
 
 import { Form, Input as InputAntd } from 'antd';
