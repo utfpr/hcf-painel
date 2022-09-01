@@ -6,6 +6,8 @@ import 'antd/dist/antd.less';
 
 import './setup';
 import './index.scss';
+// import "~react-image-gallery/styles/scss/image-gallery.scss";
+import 'react-image-gallery/styles/css/image-gallery.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 

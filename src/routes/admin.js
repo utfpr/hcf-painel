@@ -3,6 +3,7 @@ import { lazy } from 'react';
 import { IoMdMap } from 'react-icons/io';
 
 import DashboardPage from '../domains/DashboardPage';
+import CreateUpdateTombo from '../domains/tombos/CreateUpdateTombo';
 import DetailsTomboPage from '../domains/tombos/DetailsTomboPage';
 
 const TombosListPage = lazy(() => import('../domains/tombos'));
@@ -12,6 +13,10 @@ const routes = [
     {
         path: '/',
         component: DashboardPage,
+    },
+    {
+        path: '/tombos/novo',
+        component: CreateUpdateTombo,
     },
     {
         path: '/tombos/:tomboId',

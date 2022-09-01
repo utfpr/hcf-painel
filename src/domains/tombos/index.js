@@ -163,15 +163,32 @@ const TombosPage = ({ form, handleSubmit }) => {
         );
     };
 
+    const onClickNewTombo = useCallback(() => {
+        navigate('novo');
+    }, [navigate]);
+
     return (
         <div className={styles.content}>
+            <div className={styles.newTombo}>
+                <Button
+                    size="large"
+                    type="primary"
+                    onClick={onClickNewTombo}
+                >
+                    Novo tombo
+                </Button>
+            </div>
             <div className={styles.filters}>
                 {renderFilters()}
             </div>
             <div className={styles.tombos}>
                 {tombos?.map(tombo => {
                     return (
-                        <CardTombo tombo={tombo} onClickViewTombo={onClickViewTombo} size="large" />
+                        <CardTombo
+                            tombo={tombo}
+                            onClickViewTombo={onClickViewTombo}
+                            size="large"
+                        />
                     );
                 })}
                 {renderLoading()}

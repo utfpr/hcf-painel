@@ -3,8 +3,8 @@
 }
 
 .card {
-  width: 240px;
-  margin: 16px;
+  width: 30%;
+  margin: 8px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -31,4 +31,22 @@
 
 .meta {
     word-wrap: break-word;
+}
+
+@media only screen and (max-width: 576px) { //xs
+    .card {
+        width: 100%;
+    }
+    .image {
+        height: 300px;
+    }
+}
+
+@media only screen and (min-width: 577px) and (max-width: 876px) { //sm
+    .card {
+        width: 45%;
+    }
+    .image {
+        height: 300px;
+    }
 }
