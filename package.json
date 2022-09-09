@@ -63,6 +63,7 @@
     "jest-watch-typeahead": "1.0.0",
     "leaflet": "1.8.0",
     "lodash": "4.17.21",
+    "lodash.debounce": "4.0.8",
     "mini-css-extract-plugin": "2.4.5",
     "postcss": "8.4.4",
     "postcss-flexbugs-fixes": "5.0.2",
