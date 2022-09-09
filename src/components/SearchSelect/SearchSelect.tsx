@@ -4,24 +4,29 @@ import { Select } from 'antd';
 import debounce from 'lodash.debounce';
 
 import useAsync from '../../hooks/use-async';
+import { TOption, TRequestFn } from './types';
 
 const searchSelectStyle = {
     width: '100%',
 };
 
-const SelectSelect = ({
+export type TSearchSelectProps = {
+    request: TRequestFn;
+};
+
+const SearchSelect = ({
     request,
     ...props
-}) => {
-    const [options, setOptions] = useState([]);
+}: TSearchSelectProps) => {
+    const [options, setOptions] = useState<TOption[]>([]);
 
-    const [isRequestingOptions, requestOptions] = useAsync(async params => {
+    const [isRequestingOptions, requestOptions] = useAsync(async (params: Parameters<TRequestFn>[0]) => {
         const response = await request(params);
         setOptions(response);
     });
 
     const onSearch = useMemo(() => {
-        const onSearchCallback = text => {
+        const onSearchCallback = (text: string) => {
             requestOptions({ limit: 10, page: 1, text });
         };
         return debounce(onSearchCallback, 500);
@@ -42,4 +47,4 @@ const SelectSelect = ({
     );
 };
 
-export default React.memo(SelectSelect);
+export default React.memo(SearchSelect);

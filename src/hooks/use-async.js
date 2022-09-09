@@ -1,5 +1,10 @@
 import { useCallback, useState } from 'react';
 
+/**
+ *
+ * @param {Function} callback
+ * @returns {[boolean, Function]}
+ */
 const useAsync = callback => {
     const [loading, setLoading] = useState(false);
 

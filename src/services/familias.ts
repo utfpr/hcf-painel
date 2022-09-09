@@ -1,13 +1,16 @@
 import axios from 'axios';
 
-const getFamilias = async (page = 1, limit = 20, filters = undefined) => {
+import TFamilia from '../sheets/familia.type';
+import TResponseList from '../sheets/response.type';
+
+const getFamilias = async (page = 1, limit = 20, filters: Record<string, unknown> | undefined = undefined) => {
     const filtersCondition = [];
     if (filters?.nome) {
         filtersCondition.push(['familias.nome', 'contains', filters.nome]);
     }
 
     try {
-        const response = await axios.get('/familias', {
+        const response = await axios.get<TResponseList<TFamilia>>('/familias', {
             params: {
                 page,
                 limit,
@@ -17,7 +20,7 @@ const getFamilias = async (page = 1, limit = 20, filters = undefined) => {
         return response.data;
     } catch (error) {
         console.warn(error);
-        return [];
+        throw error;
     }
 };
 
