@@ -1,6 +1,28 @@
 {
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaVersion": 2020
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 2020,
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [
+          ".json",
+          ".mjs",
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx",
+          ".d.ts"
+        ]
+      },
+      "typescript": {}
+    }
   },
   "plugins": [
     "import",
@@ -9,7 +31,8 @@
     "react-perf"
   ],
   "extends": [
-    "airbnb"
+    "airbnb",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking"
   ],
   "globals": {
     "window": false,
@@ -55,8 +78,23 @@
       "warn",
       120
     ],
+    "newline-per-chained-call": [
+      "error",
+      {
+        "ignoreChainWithDepth": 2
+      }
+    ],
     "arrow-body-style": "off",
     "import/order": "off",
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
     "import-helpers/order-imports": [
       "warn",
       {
@@ -85,7 +123,8 @@
       {
         "extensions": [
           ".js",
-          ".jsx"
+          ".jsx",
+          ".tsx"
         ]
       }
     ],
@@ -108,5 +147,106 @@
     "react-perf/jsx-no-new-object-as-prop": "error",
     "react-perf/jsx-no-new-array-as-prop": "error",
     "react/jsx-props-no-spreading": "off"
-  }
+  },
+  "overrides": [
+    {
+      "files": [
+        "*.d.ts"
+      ],
+      "rules": {
+        "no-unused-vars": "off",
+        "@typescript-eslint/naming-convention": "off"
+      }
+    },
+    {
+      "files": [
+        "*.js",
+        "*.jsx"
+      ],
+      "rules": {
+        "@typescript-eslint/no-unsafe-assignment": "off",
+        "@typescript-eslint/no-unsafe-member-access": "off",
+        "@typescript-eslint/no-unsafe-return": "off",
+        "@typescript-eslint/restrict-template-expressions": "off",
+        "@typescript-eslint/no-unsafe-call": "off",
+        "@typescript-eslint/no-unsafe-argument": "off",
+        "@typescript-eslint/no-misused-promises": "off"
+      }
+    },
+    {
+      "files": [
+        "*.test.tsx",
+        "./src/setupTests.ts"
+      ],
+      "rules": {
+        "import/no-extraneous-dependencies": "off"
+      }
+    },
+    {
+      "files": [
+        "*.ts",
+        "*.tsx"
+      ],
+      "rules": {
+        "no-shadow": "off",
+        "no-restricted-exports": "off",
+        "react/require-default-props": "off",
+        "@typescript-eslint/no-shadow": "error",
+        "@typescript-eslint/naming-convention": [
+          "error",
+          {
+            "selector": "variable",
+            "modifiers": [
+              "const"
+            ],
+            "format": [
+              "strictCamelCase",
+              "StrictPascalCase",
+              "UPPER_CASE"
+            ]
+          },
+          {
+            "selector": [
+              "class",
+              "enum",
+              "enumMember"
+            ],
+            "format": [
+              "StrictPascalCase"
+            ]
+          },
+          {
+            "selector": "interface",
+            "format": [
+              "StrictPascalCase"
+            ],
+            "prefix": [
+              "I"
+            ]
+          },
+          {
+            "selector": "typeAlias",
+            "format": [
+              "StrictPascalCase"
+            ],
+            "prefix": [
+              "T"
+            ]
+          }
+        ],
+        "@typescript-eslint/no-misused-promises": [
+          "error",
+          {
+            "checksVoidReturn": false
+          }
+        ],
+        "@typescript-eslint/type-annotation-spacing": [
+          "error",
+          {
+            "after": true
+          }
+        ]
+      }
+    }
+  ]
 }

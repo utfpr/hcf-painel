@@ -7,9 +7,6 @@ import {
 import PropTypes from 'prop-types';
 import { useFormContext } from 'react-hook-form';
 
-import useClassNames from '../../hooks/use-classnames';
-import styles from './Input.module.scss';
-
 const RadioGroup = Radio.Group;
 const Input = memo(({
     type, name, label, pattern, children,
@@ -18,7 +15,6 @@ const Input = memo(({
 }) => {
     const { register, setValue, formState } = useFormContext();
     const { errors } = formState;
-    // const inputStyle = useClassNames([styles.content, className]);
 
     const onChange = useCallback(event => {
         setValue(name, event.target.value);
@@ -67,7 +63,7 @@ const Input = memo(({
         );
     };
 
-    const renderInputs = () => {
+    const renderInputComponent = () => {
         if (type === 'password') {
             return renderPassword();
         }
@@ -96,7 +92,7 @@ const Input = memo(({
             validateStatus={validateStatus}
             help={helpText}
         >
-            {renderInputs()}
+            {renderInputComponent()}
         </Form.Item>
     );
 });
