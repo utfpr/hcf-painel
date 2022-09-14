@@ -151,6 +151,15 @@
   "overrides": [
     {
       "files": [
+        "*.d.ts"
+      ],
+      "rules": {
+        "no-unused-vars": "off",
+        "@typescript-eslint/naming-convention": "off"
+      }
+    },
+    {
+      "files": [
         "*.js",
         "*.jsx"
       ],
@@ -181,6 +190,7 @@
       "rules": {
         "no-shadow": "off",
         "no-restricted-exports": "off",
+        "react/require-default-props": "off",
         "@typescript-eslint/no-shadow": "error",
         "@typescript-eslint/naming-convention": [
           "error",

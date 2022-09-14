@@ -1,23 +1,23 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
-import { Select } from 'antd';
+import { Form, Select, SelectProps } from 'antd';
 import debounce from 'lodash.debounce';
+import { useFormContext } from 'react-hook-form';
 
 import useAsync from '../../hooks/use-async';
+import styles from './SearchSelect.module.scss';
 import { TOption, TRequestFn } from './types';
 
-const searchSelectStyle = {
-    width: '100%',
-};
-
-export type TSearchSelectProps = {
+export type TSearchSelectProps<ValueType> = SelectProps<ValueType, TOption> & {
     request: TRequestFn;
+    onChange?: (value?: TOption | TOption[]) => void;
 };
 
-const SearchSelect = ({
+const SearchSelect = React.memo(<ValueType, >({
     request,
+    onChange,
     ...props
-}: TSearchSelectProps) => {
+}: TSearchSelectProps<ValueType>) => {
     const [options, setOptions] = useState<TOption[]>([]);
 
     const [isRequestingOptions, requestOptions] = useAsync(async (params: Parameters<TRequestFn>[0]) => {
@@ -25,12 +25,16 @@ const SearchSelect = ({
         setOptions(response);
     });
 
-    const onSearch = useMemo(() => {
+    const handleSearch = useMemo<(text: string) => void>(() => {
         const onSearchCallback = (text: string) => {
             requestOptions({ limit: 10, page: 1, text });
         };
         return debounce(onSearchCallback, 500);
     }, [requestOptions]);
+
+    const handleChange = useCallback<(_: unknown, option: TOption | TOption[]) => void>((_, option) => {
+        onChange?.(option);
+    }, [onChange]);
 
     return (
         <Select
@@ -41,10 +45,55 @@ const SearchSelect = ({
             filterOption={false}
             options={options}
             loading={isRequestingOptions}
-            onSearch={onSearch}
-            style={searchSelectStyle}
+            onSearch={handleSearch}
+            onChange={handleChange}
+            className={styles.select}
         />
     );
+});
+
+export type TSearchSelectFieldProps<ValueType> = TSearchSelectProps<ValueType> & {
+    name: string;
+    label: string;
 };
 
-export default React.memo(SearchSelect);
+export const SearchSelectField = React.memo(<ValueType, >({
+    name,
+    label,
+    ...props
+}: TSearchSelectFieldProps<ValueType>) => {
+    const { register, setValue, formState } = useFormContext<{ [property: string]: unknown }>();
+    const { errors } = formState;
+
+    const { onBlur: handleBlur } = register(name, {
+
+    });
+
+    const handleChange = useCallback<(value: TOption) => void>(value => {
+        setValue(name, value);
+    }, [name, setValue]);
+
+    const fieldError = errors && errors[name];
+    const validateStatus = fieldError ? 'error' : '';
+    const helpText = fieldError // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+        // @ts-ignore
+        ? fieldError.message as string
+        : undefined;
+
+    return (
+        <Form.Item
+            label={label}
+            validateStatus={validateStatus}
+            help={helpText}
+        >
+            <SearchSelect
+                {...props}
+                // @ts-ignore
+                onChange={handleChange}
+                onFocus={handleBlur}
+            />
+        </Form.Item>
+    );
+});
+
+export default SearchSelect;
