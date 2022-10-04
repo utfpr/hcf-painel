@@ -1,8 +1,8 @@
-import familiaService from '../../../services/subfamilias';
+import subfamiliaService from '../../../services/subfamilias';
 import { TRequestFn } from '../types';
 
 const searchFamilias: TRequestFn = async params => {
-    const response = await familiaService
+    const response = await subfamiliaService
         .getSubfamilias(params.page, params.limit, { nome: params.text, familiaId: params.familiaId });
     return response.records.map(record => {
         return {

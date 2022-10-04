@@ -4,6 +4,7 @@ import { Col, Input, Row } from 'antd';
 import { useFormContext } from 'react-hook-form';
 
 import requestFamilias from '../../../components/SearchSelect/requests/familias';
+import requestGeneros from '../../../components/SearchSelect/requests/generos';
 import requestSubfamilias from '../../../components/SearchSelect/requests/subfamilias';
 import { SearchSelectField } from '../../../components/SearchSelect/SearchSelect';
 
@@ -11,7 +12,7 @@ const Taxonomy = () => {
     const { watch } = useFormContext();
     const familiaSelected = watch('familia');
 
-    const subfamiliaRequestParams = useMemo(() => ({
+    const familiaRequestParams = useMemo(() => ({
         familiaId: familiaSelected?.value,
     }), [familiaSelected]);
 
@@ -30,16 +31,17 @@ const Taxonomy = () => {
                         label="Subfamília"
                         name="subfamilia"
                         request={requestSubfamilias}
-                        requestParams={subfamiliaRequestParams}
-                        disabled={!watch('familia')}
+                        requestParams={familiaRequestParams}
+                        disabled={!familiaSelected}
                     />
                 </Col>
                 <Col xs={24} sm={12} md={8}>
                     <SearchSelectField
                         label="Gênero"
                         name="genero"
-                        request={requestFamilias}
-                        disabled={!watch('familia')}
+                        request={requestGeneros}
+                        requestParams={familiaRequestParams}
+                        disabled={!familiaSelected}
                     />
                     {/* <Input
                         name="genero"
