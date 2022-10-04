@@ -10,18 +10,20 @@ import { TOption, TRequestFn } from './types';
 
 export type TSearchSelectProps<ValueType> = SelectProps<ValueType, TOption> & {
     request: TRequestFn;
+    requestParams?: Record<string, unknown>;
     onChange?: (value?: TOption | TOption[]) => void;
 };
 
 const SearchSelect = React.memo(<ValueType, >({
     request,
+    requestParams,
     onChange,
     ...props
 }: TSearchSelectProps<ValueType>) => {
     const [options, setOptions] = useState<TOption[]>([]);
 
     const [isRequestingOptions, requestOptions] = useAsync(async (params: Parameters<TRequestFn>[0]) => {
-        const response = await request(params);
+        const response = await request({ ...params, ...requestParams });
         setOptions(response);
     });
 
