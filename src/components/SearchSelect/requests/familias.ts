@@ -1,7 +1,7 @@
 import familiaService from '../../../services/familias';
 import { TRequestFn } from '../types';
 
-const searchFamilias: TRequestFn = async params => {
+const requestFamilias: TRequestFn = async params => {
     const response = await familiaService
         .getFamilias(params.page, params.limit, { nome: params.text });
     return response.records.map(record => {
@@ -13,4 +13,4 @@ const searchFamilias: TRequestFn = async params => {
     });
 };
 
-export default searchFamilias;
+export default requestFamilias;
