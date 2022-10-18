@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import { Space } from 'antd';
 import L from 'leaflet';
 import {
-    MapContainer, TileLayer, Marker, Popup,
+  MapContainer, TileLayer, Marker, Popup,
 } from 'react-leaflet';
 
 import pin from '../../assets/pin.svg';
@@ -17,66 +17,66 @@ import { getTombos } from '../../services/tombo-service';
 const position = [-24.0438, -52.3811];
 
 const iconPin = new L.Icon({
-    iconUrl: pin,
-    iconRetinaUrl: pin,
-    iconSize: new L.Point(20, 40),
+  iconUrl: pin,
+  iconRetinaUrl: pin,
+  iconSize: new L.Point(20, 40),
 });
 
 const MapasPage = () => {
-    const [tombos, setTombos] = useState([]);
-    const [metadata, setMetadata] = useState({
-        page: 1,
-    });
-    const [currentPage, setCurrentPage] = useState(1);
+  const [tombos, setTombos] = useState([]);
+  const [metadata, setMetadata] = useState({
+    page: 1,
+  });
+  const [currentPage, setCurrentPage] = useState(1);
 
-    const [loading, requestTombos] = useAsync(async page => {
-        const data = await getTombos(page, 300);
-        if (data) {
-            setMetadata(data.metadata);
-            setCurrentPage(data.metadata.page);
-            setTombos([
-                ...tombos,
-                ...data.records,
-            ]);
+  const [loading, requestTombos] = useAsync(async page => {
+    const data = await getTombos(page, 300);
+    if (data) {
+      setMetadata(data.metadata);
+      setCurrentPage(data.metadata.page);
+      setTombos([
+        ...tombos,
+        ...data.records,
+      ]);
+    }
+  });
+
+  useDidMount(() => {
+    requestTombos(currentPage);
+  });
+
+  return (
+    <MapContainer
+      center={position}
+      zoom={5}
+      scrollWheelZoom={false}
+      style={{ height: '80vh' }}
+    >
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      {/* <MarkerClusterGroup> */}
+      {tombos.map(tombo => {
+        if (tombo.latitude && tombo.longitude) {
+          return (
+            <Marker
+              icon={iconPin}
+              position={[tombo.latitude, tombo.longitude]}
+            >
+              <Popup>
+                <Space>
+                  {`HCF-${tombo.hcf}`}
+                </Space>
+              </Popup>
+            </Marker>
+          );
         }
-    });
-
-    useDidMount(() => {
-        requestTombos(currentPage);
-    });
-
-    return (
-        <MapContainer
-            center={position}
-            zoom={5}
-            scrollWheelZoom={false}
-            style={{ height: '80vh' }}
-        >
-            <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            {/* <MarkerClusterGroup> */}
-            {tombos.map(tombo => {
-                if (tombo.latitude && tombo.longitude) {
-                    return (
-                        <Marker
-                            icon={iconPin}
-                            position={[tombo.latitude, tombo.longitude]}
-                        >
-                            <Popup>
-                                <Space>
-                                    {`HCF-${tombo.hcf}`}
-                                </Space>
-                            </Popup>
-                        </Marker>
-                    );
-                }
-                return null;
-            })}
-            {/* </MarkerClusterGroup> */}
-        </MapContainer>
-    );
+        return null;
+      })}
+      {/* </MarkerClusterGroup> */}
+    </MapContainer>
+  );
 };
 
 export default MapasPage;

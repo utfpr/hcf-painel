@@ -15,43 +15,43 @@ export type TSearchSelectProps<ValueType> = SelectProps<ValueType, TOption> & {
 };
 
 const SearchSelect = React.memo(<ValueType, >({
-    request,
-    requestParams,
-    onChange,
-    ...props
+  request,
+  requestParams,
+  onChange,
+  ...props
 }: TSearchSelectProps<ValueType>) => {
-    const [options, setOptions] = useState<TOption[]>([]);
+  const [options, setOptions] = useState<TOption[]>([]);
 
-    const [isRequestingOptions, requestOptions] = useAsync(async (params: Parameters<TRequestFn>[0]) => {
-        const response = await request({ ...params, ...requestParams });
-        setOptions(response);
-    });
+  const [isRequestingOptions, requestOptions] = useAsync(async (params: Parameters<TRequestFn>[0]) => {
+    const response = await request({ ...params, ...requestParams });
+    setOptions(response);
+  });
 
-    const handleSearch = useMemo<(text: string) => void>(() => {
-        const onSearchCallback = (text: string) => {
-            requestOptions({ limit: 10, page: 1, text });
-        };
-        return debounce(onSearchCallback, 500);
-    }, [requestOptions]);
+  const handleSearch = useMemo<(text: string) => void>(() => {
+    const onSearchCallback = (text: string) => {
+      requestOptions({ limit: 10, page: 1, text });
+    };
+    return debounce(onSearchCallback, 500);
+  }, [requestOptions]);
 
-    const handleChange = useCallback<(_: unknown, option: TOption | TOption[]) => void>((_, option) => {
-        onChange?.(option);
-    }, [onChange]);
+  const handleChange = useCallback<(_: unknown, option: TOption | TOption[]) => void>((_, option) => {
+    onChange?.(option);
+  }, [onChange]);
 
-    return (
-        <Select
-            {...props}
-            showSearch
-            showArrow
-            allowClear
-            filterOption={false}
-            options={options}
-            loading={isRequestingOptions}
-            onSearch={handleSearch}
-            onChange={handleChange}
-            className={styles.select}
-        />
-    );
+  return (
+    <Select
+      {...props}
+      showSearch
+      showArrow
+      allowClear
+      filterOption={false}
+      options={options}
+      loading={isRequestingOptions}
+      onSearch={handleSearch}
+      onChange={handleChange}
+      className={styles.select}
+    />
+  );
 });
 
 export type TSearchSelectFieldProps<ValueType> = TSearchSelectProps<ValueType> & {
@@ -60,42 +60,42 @@ export type TSearchSelectFieldProps<ValueType> = TSearchSelectProps<ValueType> &
 };
 
 export const SearchSelectField = React.memo(<ValueType, >({
-    name,
-    label,
-    ...props
+  name,
+  label,
+  ...props
 }: TSearchSelectFieldProps<ValueType>) => {
-    const { register, setValue, formState } = useFormContext<{ [property: string]: unknown }>();
-    const { errors } = formState;
+  const { register, setValue, formState } = useFormContext<{ [property: string]: unknown }>();
+  const { errors } = formState;
 
-    const { onBlur: handleBlur } = register(name, {
+  const { onBlur: handleBlur } = register(name, {
 
-    });
+  });
 
-    const handleChange = useCallback<(value: TOption) => void>(value => {
-        setValue(name, value);
-    }, [name, setValue]);
+  const handleChange = useCallback<(value: TOption) => void>(value => {
+    setValue(name, value);
+  }, [name, setValue]);
 
-    const fieldError = errors && errors[name];
-    const validateStatus = fieldError ? 'error' : '';
-    const helpText = fieldError // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+  const fieldError = errors && errors[name];
+  const validateStatus = fieldError ? 'error' : '';
+  const helpText = fieldError // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+  // @ts-ignore
+    ? fieldError.message as string
+    : undefined;
+
+  return (
+    <Form.Item
+      label={label}
+      validateStatus={validateStatus}
+      help={helpText}
+    >
+      <SearchSelect
+        {...props}
         // @ts-ignore
-        ? fieldError.message as string
-        : undefined;
-
-    return (
-        <Form.Item
-            label={label}
-            validateStatus={validateStatus}
-            help={helpText}
-        >
-            <SearchSelect
-                {...props}
-                // @ts-ignore
-                onChange={handleChange}
-                onFocus={handleBlur}
-            />
-        </Form.Item>
-    );
+        onChange={handleChange}
+        onFocus={handleBlur}
+      />
+    </Form.Item>
+  );
 });
 
 export default SearchSelect;

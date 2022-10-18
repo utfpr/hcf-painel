@@ -7,30 +7,30 @@ import PanelLayout from '../layout/AdminLayout';
 import routes from './admin';
 
 const RouteManager = () => {
-    const renderRouteItem = route => {
-        if (route.group) {
-            return route.routes.map(renderRouteItem);
-        }
+  const renderRouteItem = route => {
+    if (route.group) {
+      return route.routes.map(renderRouteItem);
+    }
 
-        const { path } = route;
-        return (
-            <Route
-                key={path}
-                path={path.replace('/', '')}
-                element={<route.component />}
-            />
-        );
-    };
-
+    const { path } = route;
     return (
-        <Routes>
-            <Route path="/admin" element={<PanelLayout />}>
-                {routes.map(renderRouteItem)}
-            </Route>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/" element={<LoginPage />} />
-        </Routes>
+      <Route
+        key={path}
+        path={path.replace('/', '')}
+        element={<route.component />}
+      />
     );
+  };
+
+  return (
+    <Routes>
+      <Route path="/admin" element={<PanelLayout />}>
+        {routes.map(renderRouteItem)}
+      </Route>
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/" element={<LoginPage />} />
+    </Routes>
+  );
 };
 
 export default RouteManager;

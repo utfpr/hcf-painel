@@ -10,36 +10,36 @@ const TombosListPage = lazy(() => import('../domains/tombos'));
 const MapasPage = lazy(() => import('../domains/mapas'));
 
 const routes = [
-    {
-        path: '/',
-        component: DashboardPage,
+  {
+    path: '/',
+    component: DashboardPage,
+  },
+  {
+    path: '/tombos/novo',
+    component: CreateUpdateTombo,
+  },
+  {
+    path: '/tombos/:tomboId',
+    component: DetailsTomboPage,
+  },
+  {
+    path: '/tombos',
+    component: TombosListPage,
+    menu: {
+      key: 'tombo',
+      text: 'Tombos',
+      icon: IoMdMap,
     },
-    {
-        path: '/tombos/novo',
-        component: CreateUpdateTombo,
+  },
+  {
+    path: '/mapas',
+    component: MapasPage,
+    menu: {
+      key: 'map',
+      text: 'Mapas',
+      icon: IoMdMap,
     },
-    {
-        path: '/tombos/:tomboId',
-        component: DetailsTomboPage,
-    },
-    {
-        path: '/tombos',
-        component: TombosListPage,
-        menu: {
-            key: 'tombo',
-            text: 'Tombos',
-            icon: IoMdMap,
-        },
-    },
-    {
-        path: '/mapas',
-        component: MapasPage,
-        menu: {
-            key: 'map',
-            text: 'Mapas',
-            icon: IoMdMap,
-        },
-    },
+  },
 ];
 
 export default routes;

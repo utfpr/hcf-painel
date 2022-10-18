@@ -1,7 +1,7 @@
 import * as users from './users';
 
 const thunks = {
-    users,
+  users,
 };
 
 export default thunks;
