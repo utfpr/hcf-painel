@@ -9,10 +9,12 @@ import styles from './Menu.module.scss';
 const MenuItem = ({ route, id, onSelect }) => {
   const { menu, path } = route;
   const navigate = useNavigate();
-  const onClick = () => {
+
+  const onClick = useCallback(() => {
     navigate(path.replace('/', ''));
     onSelect(id);
-  };
+  }, [id, navigate, onSelect, path]);
+
   return (
     <MenuAntd.Item
       key={`menuantditem-${id}`}
