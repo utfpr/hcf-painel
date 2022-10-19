@@ -52,6 +52,7 @@ const Menu = () => {
           const isSelected = selectedItem === menu.key;
           return (
             <MenuItem
+              key={menu.key}
               route={route}
               id={menu.key}
               onSelect={onSelectItem}
