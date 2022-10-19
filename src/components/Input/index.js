@@ -46,7 +46,6 @@ const Input = memo(({
         {...others}
         {...inputProps}
         onChange={onChange}
-        // className={inputStyle}
       />
     );
   };
@@ -100,6 +99,8 @@ const Input = memo(({
 Input.propTypes = {
   type: PropTypes.oneOf([
     'text',
+    'number',
+    'radioGroup',
     'password',
   ]),
   name: PropTypes.string.isRequired,
