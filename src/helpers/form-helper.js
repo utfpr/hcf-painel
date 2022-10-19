@@ -59,13 +59,11 @@ export const wrapForm = (Component, options = {}) => {
     }, [handleSubmit]);
 
     return (
-      <Form layout="vertical">
+      <Form layout="vertical" onSubmit={onFormSubmit}>
         <FormProvider {...form}>
-          <form onSubmit={onFormSubmit}>
-            <FormSubmitContext.Provider value={handleSubmitWrapper}>
-              <Component form={form} handleSubmit={handleSubmitWrapper} />
-            </FormSubmitContext.Provider>
-          </form>
+          <FormSubmitContext.Provider value={handleSubmitWrapper}>
+            <Component form={form} handleSubmit={handleSubmitWrapper} />
+          </FormSubmitContext.Provider>
         </FormProvider>
       </Form>
     );
