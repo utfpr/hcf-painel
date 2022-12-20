@@ -3,7 +3,6 @@ import React, {
 } from 'react';
 
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Form } from 'antd';
 import { FormProvider, useForm } from 'react-hook-form';
 
 const FormSubmitContext = React.createContext({});
@@ -59,13 +58,13 @@ export const wrapForm = (Component, options = {}) => {
     }, [handleSubmit]);
 
     return (
-      <Form layout="vertical" onSubmit={onFormSubmit}>
+      <form layout="vertical" onSubmit={onFormSubmit}>
         <FormProvider {...form}>
           <FormSubmitContext.Provider value={handleSubmitWrapper}>
             <Component form={form} handleSubmit={handleSubmitWrapper} />
           </FormSubmitContext.Provider>
         </FormProvider>
-      </Form>
+      </form>
     );
   });
 

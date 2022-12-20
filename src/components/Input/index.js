@@ -8,6 +8,10 @@ import PropTypes from 'prop-types';
 import { useFormContext } from 'react-hook-form';
 
 const RadioGroup = Radio.Group;
+
+/**
+ * @type {import('react').NamedExoticComponent<Record<string, any>>}
+ */
 const Input = memo(({
   type, name, label, pattern, children,
   validate, required, min, max, minLength,
@@ -97,6 +101,7 @@ const Input = memo(({
 });
 
 Input.propTypes = {
+  required: PropTypes.bool,
   type: PropTypes.oneOf([
     'text',
     'number',
@@ -108,6 +113,7 @@ Input.propTypes = {
 };
 
 Input.defaultProps = {
+  required: false,
   type: 'text',
   label: null,
 };
