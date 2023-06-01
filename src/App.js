@@ -1,3 +1,4 @@
+/* eslint-disable react-perf/jsx-no-new-object-as-prop */
 import React from 'react';
 
 import { ConfigProvider as AntDesignProvider } from 'antd';
@@ -10,7 +11,18 @@ import RouteManager from './routes';
 
 function App() {
   return (
-    <AntDesignProvider locale={AntDesignLocale}>
+    <AntDesignProvider
+      locale={AntDesignLocale}
+      theme={{
+        colorBgElevated: '#008b57',
+        colorFill: '#008b57',
+
+        token: {
+          colorPrimary: '#33bc84',
+
+        },
+      }}
+    >
       <BrowserRouter>
         <ReduxProvider store={store}>
           <RouteManager />

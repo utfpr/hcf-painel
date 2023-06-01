@@ -1,4 +1,5 @@
-import ptBR from 'antd/lib/locale-provider/pt_BR';
+// import ptBR from 'antd/lib/locale-provider/pt_BR';
+import ptBR from 'antd/lib/locale/pt_BR';
 
 const AntDesignLocale = {
   ...ptBR,

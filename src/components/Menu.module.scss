@@ -1,10 +1,10 @@
+@import "../theme/colors.scss";
+
 .menu {
   flex: 1;
+  background: $color-primary-dark;
+}
 
-  :global {
-    .ant-menu-item {
-      display: flex;
-      align-items: center;
-    }
-  }
+.menuInfo {
+  color: white;
 }

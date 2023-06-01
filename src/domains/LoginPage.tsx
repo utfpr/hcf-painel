@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import { SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -68,7 +68,7 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = ({ handleSubmit }) =
             name="email"
             className={styles.icon}
             placeholder="E-mail"
-            prefix={<UserOutlined />}
+            prefix={<UserOutlined className="site-form-item-icon" rev={undefined} />}
           />
           <Input
             required
@@ -77,7 +77,7 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = ({ handleSubmit }) =
             className={styles.icon}
             type="password"
             placeholder="Senha"
-            prefix={<LockOutlined />}
+            prefix={<LockOutlined className="site-form-item-icon" rev={undefined} />}
           />
           <div className={styles.forgotPassword}>
             <a href="/">Esqueci a senha</a>
