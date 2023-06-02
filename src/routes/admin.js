@@ -1,26 +1,26 @@
-import { lazy } from 'react';
+import { lazy } from 'react'
 
-import { IoMdMap } from 'react-icons/io';
+import { IoMdMap } from 'react-icons/io'
 
-import DashboardPage from '../domains/DashboardPage';
-import CreateUpdateTombo from '../domains/tombos/CreateUpdateTombo';
-import DetailsTomboPage from '../domains/tombos/DetailsTomboPage';
+import DashboardPage from '../domains/DashboardPage'
+import CreateUpdateTombo from '../domains/tombos/CreateUpdateTombo'
+import DetailsTomboPage from '../domains/tombos/DetailsTomboPage'
 
-const TombosListPage = lazy(() => import('../domains/tombos'));
-const MapasPage = lazy(() => import('../domains/mapas'));
+const TombosListPage = lazy(() => import('../domains/tombos'))
+const MapasPage = lazy(() => import('../domains/mapas'))
 
 const routes = [
   {
     path: '/',
-    component: DashboardPage,
+    component: DashboardPage
   },
   {
     path: '/tombos/novo',
-    component: CreateUpdateTombo,
+    component: CreateUpdateTombo
   },
   {
     path: '/tombos/:tomboId',
-    component: DetailsTomboPage,
+    component: DetailsTomboPage
   },
   {
     path: '/tombos',
@@ -28,8 +28,8 @@ const routes = [
     menu: {
       key: 'tombo',
       text: 'Tombos',
-      icon: IoMdMap,
-    },
+      icon: IoMdMap
+    }
   },
   {
     path: '/mapas',
@@ -37,9 +37,9 @@ const routes = [
     menu: {
       key: 'map',
       text: 'Mapas',
-      icon: IoMdMap,
-    },
-  },
-];
+      icon: IoMdMap
+    }
+  }
+]
 
-export default routes;
+export default routes

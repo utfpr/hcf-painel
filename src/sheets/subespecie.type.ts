@@ -1,6 +1,6 @@
-type TSubespecie = {
-    id: number;
-    nome: string;
-};
+type Subespecie = {
+  id: number
+  nome: string
+}
 
-export default TSubespecie;
+export default Subespecie

@@ -1,6 +1,6 @@
-type TResponseList<T> = {
-    metadata: unknown;
-    records: T[];
-};
+type ResponseList<T> = {
+  metadata: unknown
+  records: T[]
+}
 
-export default TResponseList;
+export default ResponseList

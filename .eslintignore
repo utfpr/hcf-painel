@@ -1,7 +1,11 @@
-build/
-scripts/
-config/
-public/
+dist/
 node_modules/
+reports/
 
-src/react-app-env.d.ts
+# tools
+.yarn/
+.vscode/
+.husky/
+.config/
+
+public/

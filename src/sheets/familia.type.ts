@@ -1,6 +1,6 @@
-type TFamilia = {
-    id: number;
-    nome: string;
-};
+type Familia = {
+  id: number
+  nome: string
+}
 
-export default TFamilia;
+export default Familia

@@ -1,15 +1,15 @@
-import createStore from 'zustand';
+import createStore from 'zustand'
 
-import IUsuario from '../sheets/usuarios.interface';
+import Usuario from '../sheets/usuarios.interface'
 
-interface IUseAuthState {
-  isAutenticado: boolean;
-  token?: string;
-  usuario?: IUsuario;
-  login: (token: string, usuario: IUsuario) => void;
+interface UseAuthState {
+  isAutenticado: boolean
+  token?: string
+  usuario?: Usuario
+  login: (token: string, usuario: Usuario) => void
 }
 
-const useAuth = createStore<IUseAuthState>(setState => {
+const useAuth = createStore<UseAuthState>(setState => {
   return {
     isAutenticado: false,
     token: undefined,
@@ -18,10 +18,10 @@ const useAuth = createStore<IUseAuthState>(setState => {
       setState({
         isAutenticado: true,
         token,
-        usuario,
-      });
-    },
-  };
-});
+        usuario
+      })
+    }
+  }
+})
 
-export default useAuth;
+export default useAuth

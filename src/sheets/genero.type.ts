@@ -1,6 +1,6 @@
-type TGenero = {
-    id: number;
-    nome: string;
-};
+type Genero = {
+  id: number
+  nome: string
+}
 
-export default TGenero;
+export default Genero

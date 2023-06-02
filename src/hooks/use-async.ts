@@ -1,21 +1,22 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react'
 
-type TAsyncFn = (...args: any[]) => Promise<unknown>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AsyncFn = (...args: any[]) => Promise<unknown>
 
-function useAsync<T extends TAsyncFn>(callback: T): [boolean, T] {
-  const [loading, setLoading] = useState(false);
+function useAsync<T extends AsyncFn>(callback: T): [boolean, T] {
+  const [loading, setLoading] = useState(false)
 
   const func = useCallback(async (...args: Parameters<T>) => {
     try {
-      setLoading(true);
-      const result = await callback(...args);
-      return result;
+      setLoading(true)
+      const result = await callback(...args)
+      return result
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [])
 
-  return [loading, func as unknown as T];
+  return [loading, func as unknown as T]
 }
 
-export default useAsync;
+export default useAsync

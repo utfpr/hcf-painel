@@ -1,6 +1,6 @@
-type TEspecie = {
-    id: number;
-    nome: string;
-};
+type Especie = {
+  id: number
+  nome: string
+}
 
-export default TEspecie;
+export default Especie

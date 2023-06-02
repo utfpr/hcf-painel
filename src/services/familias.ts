@@ -1,57 +1,57 @@
-import axios from 'axios';
+import axios from 'axios'
 
-import TFamilia from '../sheets/familia.type';
-import TResponseList from '../sheets/response.type';
-import TSubfamilia from '../sheets/subfamilia.type';
+import Familia from '../sheets/familia.type'
+import ResponseList from '../sheets/response.type'
+import Subfamilia from '../sheets/subfamilia.type'
 
 const getFamilias = async (page = 1, limit = 20, filters: Record<string, unknown> | undefined = undefined) => {
-  const filtersCondition = [];
+  const filtersCondition = []
   if (filters?.nome) {
-    filtersCondition.push(['familias.nome', 'contains', filters.nome]);
+    filtersCondition.push(['familias.nome', 'contains', filters.nome])
   }
 
   try {
-    const response = await axios.get<TResponseList<TFamilia>>('/familias', {
+    const response = await axios.get<ResponseList<Familia>>('/familias', {
       params: {
         page,
         limit,
-        filters: filtersCondition,
-      },
-    });
-    return response.data;
+        filters: filtersCondition
+      }
+    })
+    return response.data
   } catch (error) {
-    console.warn(error);
-    throw error;
+    console.warn(error)
+    throw error
   }
-};
+}
 
 const getSubfamilias = async (page = 1, limit = 20, filters: Record<string, unknown> | undefined = undefined) => {
-  const filtersCondition = [];
+  const filtersCondition = []
   if (filters?.familiaId) {
-    filtersCondition.push(['sub_familias.familia_id', 'eq', filters.familiaId]);
+    filtersCondition.push(['sub_familias.familia_id', 'eq', filters.familiaId])
   }
   if (filters?.nome) {
-    filtersCondition.push(['sub_familias.nome', 'contains', filters.nome]);
+    filtersCondition.push(['sub_familias.nome', 'contains', filters.nome])
   }
 
   try {
-    const response = await axios.get<TResponseList<TSubfamilia>>('/subfamilias', {
+    const response = await axios.get<ResponseList<Subfamilia>>('/subfamilias', {
       params: {
         page,
         limit,
-        filters: filtersCondition,
-      },
-    });
-    return response.data;
+        filters: filtersCondition
+      }
+    })
+    return response.data
   } catch (error) {
-    console.warn(error);
-    throw error;
+    console.warn(error)
+    throw error
   }
-};
+}
 
 const familiaService = {
   getFamilias,
-  getSubfamilias,
-};
+  getSubfamilias
+}
 
-export default familiaService;
+export default familiaService
