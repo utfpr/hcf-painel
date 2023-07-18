@@ -1,3 +1,3 @@
-type TFilter = [string, string, unknown] | { orWhere: TFilter };
+type Filter = [string, string, unknown] | { orWhere: Filter }
 
-export default TFilter;
+export default Filter

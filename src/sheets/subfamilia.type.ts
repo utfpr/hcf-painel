@@ -1,6 +1,6 @@
-type TSubfamilia = {
-    id: number;
-    nome: string;
-};
+type Subfamilia = {
+  id: number
+  nome: string
+}
 
-export default TSubfamilia;
+export default Subfamilia

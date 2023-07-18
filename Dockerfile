@@ -1,21 +1,12 @@
-FROM node:12.13 AS build
+FROM node:18.16-alpine AS build
 
 WORKDIR /tmp/app
 
-ARG CI
-ENV CI=$CI
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
 
-ARG GENERATE_SOURCEMAP
-ENV GENERATE_SOURCEMAP=$GENERATE_SOURCEMAP
-
-ARG REACT_APP_API_URL
-ENV REACT_APP_API_URL=$REACT_APP_API_URL
-
-ARG REACT_APP_URL_IMAGE
-ENV REACT_APP_URL_IMAGE=$REACT_APP_URL_IMAGE
-
-ARG REACT_APP_RECAPTCHA_KEY
-ENV REACT_APP_RECAPTCHA_KEY=$REACT_APP_RECAPTCHA_KEY
+ARG VITE_URL_IMAGE
+ENV VITE_URL_IMAGE=$VITE_URL_IMAGE
 
 COPY .yarn ./.yarn
 COPY package.json yarn.lock .yarnrc.yml ./
@@ -33,9 +24,9 @@ FROM alpine:3.10 AS runtime
 
 VOLUME /var/www
 
-COPY --from=build /tmp/app/build /var/app/build
+COPY --from=build /tmp/app/dist /var/app/dist
 
 CMD rm -rf /var/www/* \
-  && cp -R /var/app/build/* /var/www/ \
+  && cp -R /var/app/dist/* /var/www/ \
   && echo "The files were successfully copied" \
   && sleep 9999d

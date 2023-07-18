@@ -1,5 +1,5 @@
-interface IHerbario {
+interface Herbario {
 
 }
 
-export default IHerbario;
+export default Herbario

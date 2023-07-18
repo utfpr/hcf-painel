@@ -1,21 +1,21 @@
-import especieService from '../../../services/especies';
-import { TRequestFn } from '../types';
+import especieService from '../../../services/especies'
+import { RequestFn } from '../types'
 
-const requestEspecies: TRequestFn = async params => {
+const requestEspecies: RequestFn = async params => {
   const filters = {
     nome: params.text,
     familiaId: params.familiaId,
-    generoId: params.generoId,
-  };
+    generoId: params.generoId
+  }
   const response = await especieService
-    .getEspecies(params.page, params.limit, filters);
+    .getEspecies(params.page, params.limit, filters)
   return response.records.map(record => {
     return {
       key: record.id,
       label: record.nome,
-      value: record.id,
-    };
-  });
-};
+      value: record.id
+    }
+  })
+}
 
-export default requestEspecies;
+export default requestEspecies

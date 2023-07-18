@@ -1,18 +1,19 @@
-import React from 'react';
+import React from 'react'
 
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button } from 'antd';
-import { SubmitHandler } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { Button } from 'antd'
+import { SubmitHandler } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
 
-import logo from '../assets/leaf.png';
-import Input from '../components/Input';
-import { wrapForm } from '../helpers/form-helper';
-import useAsync from '../hooks/use-async';
-import useDidMount from '../hooks/use-did-mount';
-import usuariosService from '../services/usuarios';
-import useAuth from '../stores/usuarios';
-import styles from './LoginPage.module.scss';
+import { LockOutlined, UserOutlined } from '@ant-design/icons'
+
+import logo from '../assets/leaf.png'
+import Input from '../components/Input'
+import { wrapForm } from '../helpers/form-helper'
+import useAsync from '../hooks/use-async'
+import useDidMount from '../hooks/use-did-mount'
+import usuariosService from '../services/usuarios'
+import useAuth from '../stores/usuarios'
+import styles from './LoginPage.module.scss'
 
 // const validationSchema = yup.object({
 //   email: yup.string()
@@ -23,34 +24,34 @@ import styles from './LoginPage.module.scss';
 //     .required('Senha é obrigatório'),
 // }).required();
 
-interface IFormValues {
-  email: string;
-  senha: string;
+interface FormValues {
+  email: string
+  senha: string
 }
 
-interface ILoginPageProps {
+interface LoginPageProps {
   // form: UseFormReturn<IFormValues>;
-  handleSubmit: (onValid: SubmitHandler<IFormValues>, event?: React.BaseSyntheticEvent) => void;
+  handleSubmit: (onValid: SubmitHandler<FormValues>, event?: React.BaseSyntheticEvent) => void
 }
 
-const LoginPage: React.FunctionComponent<ILoginPageProps> = ({ handleSubmit }) => {
-  const navigate = useNavigate();
-  const { isAutenticado, login } = useAuth();
+const LoginPage: React.FunctionComponent<LoginPageProps> = ({ handleSubmit }) => {
+  const navigate = useNavigate()
+  const { isAutenticado, login } = useAuth()
 
-  const [loading, requestLogin] = useAsync(usuariosService.login);
+  const [loading, requestLogin] = useAsync(usuariosService.login)
 
   handleSubmit(async (values, event) => {
-    event?.preventDefault();
-    const response = await requestLogin(values.email, values.senha);
-    login(response.token, response.usuario);
-    navigate('/admin');
-  });
+    event?.preventDefault()
+    const response = await requestLogin(values.email, values.senha)
+    login(response.token, response.usuario)
+    navigate('/admin/tombos')
+  })
 
   useDidMount(() => {
     if (isAutenticado) {
-      navigate('/admin');
+      navigate('/admin/tombos')
     }
-  });
+  })
 
   return (
     <div className={styles.container}>
@@ -59,7 +60,9 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = ({ handleSubmit }) =
           <div className={styles.contentLogo}>
             <img src={logo} alt="logo" className={styles.imageLogo} />
             <div className={styles.textHcf}>
-              <strong>HCF</strong> - Herbário da universidade tecnológica federal do Paraná, Campo Mourão
+              <strong>HCF</strong>
+              {' '}
+              - Herbário da universidade tecnológica federal do Paraná, Campo Mourão
             </div>
           </div>
           <Input
@@ -68,7 +71,7 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = ({ handleSubmit }) =
             name="email"
             className={styles.icon}
             placeholder="E-mail"
-            prefix={<UserOutlined className="site-form-item-icon" rev={undefined} />}
+            prefix={<UserOutlined className="site-form-item-icon" />}
           />
           <Input
             required
@@ -77,7 +80,7 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = ({ handleSubmit }) =
             className={styles.icon}
             type="password"
             placeholder="Senha"
-            prefix={<LockOutlined className="site-form-item-icon" rev={undefined} />}
+            prefix={<LockOutlined className="site-form-item-icon" />}
           />
           <div className={styles.forgotPassword}>
             <a href="/">Esqueci a senha</a>
@@ -96,7 +99,7 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = ({ handleSubmit }) =
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default wrapForm(LoginPage);
+export default wrapForm(LoginPage)

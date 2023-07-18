@@ -1,0 +1,157 @@
+parser: "@typescript-eslint/parser"
+parserOptions:
+  ecmaFeatures:
+    jsx: true
+  ecmaVersion: latest
+  sourceType: module
+  project: "./tsconfig.json"
+settings:
+  import/resolver:
+    node:
+      extensions: [".json", ".mjs", ".js", ".jsx", ".ts", ".tsx", ".d.ts"]
+    typescript: {}
+env:
+  browser: true
+  es2021: true
+  jest: true
+plugins:
+  - import-helpers
+  - react-hooks
+  - react-perf
+extends:
+  - airbnb
+  - plugin:@typescript-eslint/recommended-type-checked
+rules:
+  no-console:
+    - error
+    - allow:
+      - warn
+  max-len:
+    - error
+    - 120
+  indent:
+    - error
+    - 2
+  linebreak-style:
+    - error
+    - unix
+  quotes:
+    - error
+    - single
+    - avoidEscape: true
+  comma-dangle:
+    - error
+    - never
+  semi: off
+  arrow-parens:
+    - warn
+    - as-needed
+  newline-per-chained-call:
+    - error
+    - ignoreChainWithDepth: 2
+  no-shadow: off
+  radix: off
+  arrow-body-style: off
+  no-use-before-define: off
+  import/extensions:
+    - error
+    - ignorePackages
+    - js: never
+      ts: never
+      jsx: never
+      tsx: never
+  import-helpers/order-imports:
+    - warn
+    - newlinesBetween: always
+      groups:
+        - - "/^react$/"
+          - "/^react-dom$/"
+        - module
+        - "/^@/"
+        - - parent
+          - sibling
+          - index
+      alphabetize:
+        order: asc
+        ignoreCase: true
+  react/jsx-filename-extension:
+    - error
+    - extensions: [".jsx", ".tsx"]
+  react/prop-types: off
+  react/require-default-props: off
+  react/jsx-props-no-spreading: off
+  react/default-props-match-prop-types: off
+  react/function-component-definition: off
+  "@typescript-eslint/no-misused-promises":
+    - error
+    - checksVoidReturn: false
+  "@typescript-eslint/indent":
+    - error
+    - 2
+  "@typescript-eslint/semi":
+    - error
+    - never
+  "@typescript-eslint/member-delimiter-style":
+    - error
+    - multiline:
+        delimiter: none
+      singleline:
+        delimiter: semi
+        requireLast: false
+  "@typescript-eslint/naming-convention":
+    - error
+    - selector: variable
+      modifiers:
+        - const
+      format:
+        - strictCamelCase
+        - StrictPascalCase
+        - UPPER_CASE
+    - selector:
+        - class
+        - enum
+        - enumMember
+      format:
+        - StrictPascalCase
+    - selector: interface
+      format:
+        - StrictPascalCase
+    - selector: typeAlias
+      format:
+        - StrictPascalCase
+  "@typescript-eslint/ban-types":
+    - error
+  "@typescript-eslint/type-annotation-spacing":
+    - error
+    - after: true
+  "@typescript-eslint/unbound-method": off
+overrides:
+  - files:
+    - "*.js"
+    - "*.jsx"
+    rules:
+      "@typescript-eslint/restrict-template-expressions": off
+      "@typescript-eslint/no-misused-promises": "off"
+      "@typescript-eslint/no-unsafe-member-access": off
+      "@typescript-eslint/no-unsafe-argument": off
+      "@typescript-eslint/no-unsafe-assignment": off
+      "@typescript-eslint/no-unsafe-return": off
+      "@typescript-eslint/no-unsafe-call": off
+  - files:
+    - "*.tsx"
+    rules:
+      "@typescript-eslint/explicit-function-return-type": off
+  - files:
+    - "*.test.tsx"
+    - "*.spec.tsx"
+    - "*.test.ts"
+    - "*.spec.ts"
+    rules:
+      import/no-extraneous-dependencies: off
+      react/react-in-jsx-scope: off
+      "@typescript-eslint/no-magic-numbers": off
+      "@typescript-eslint/no-unsafe-assignment": off
+  - files:
+    - "*.d.ts"
+    rules:
+      no-unused-vars: off

@@ -1,35 +1,45 @@
 {
-    "compilerOptions": {
-      "target": "es5",
-      "lib": [
-        "dom",
-        "dom.iterable",
-        "esnext"
-      ],
-      "allowJs": true,
-      "checkJs": false,
-      "skipLibCheck": true,
-      "esModuleInterop": true,
-      "allowSyntheticDefaultImports": true,
-      "strict": true,
-      "forceConsistentCasingInFileNames": true,
-      "noFallthroughCasesInSwitch": true,
-      "module": "esnext",
-      "moduleResolution": "node",
-      "resolveJsonModule": true,
-      "isolatedModules": true,
-      "noEmit": true,
-      "jsx": "preserve",
-      "baseUrl": "./"
-    },
-    "include": [
-      "src"
+  "compilerOptions": {
+    "target": "es2020",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
     ],
-    "exclude": [
-      "./build",
-      "./node_modules",
-      "./examples"
-    ]
-  }
-  
-  
+    "jsx": "react",
+    "noEmit": true,
+    "allowJs": true,
+    "checkJs": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "#/*": [
+        "./test/*"
+      ]
+    },
+  },
+  "include": [
+    "src/",
+    "test/",
+    ".config/",
+    "vite.config.ts",
+    "jest.config.js"
+  ],
+  "exclude": [
+    "build/",
+    "node_modules/",
+    "examples/"
+  ]
+}
