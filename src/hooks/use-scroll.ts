@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react'
 
-import _ from 'lodash'
+import throttle from 'lodash.throttle'
 
 import {
   getScrollTop,
@@ -8,8 +8,8 @@ import {
   getScrollPercentage
 } from '../helpers/scroll-helper'
 
-function useScroll(throttle = 100) {
-  const scrollThrottle = useRef(throttle)
+function useScroll(millis = 100) {
+  const scrollThrottle = useRef(millis)
   const [scroll, setScroll] = useState({
     hasScrolled: false,
     top: 0,
@@ -18,8 +18,8 @@ function useScroll(throttle = 100) {
   })
 
   useEffect(() => {
-    scrollThrottle.current = throttle
-  }, [throttle])
+    scrollThrottle.current = millis
+  }, [millis])
 
   useEffect(() => {
     const updateScroll = () => {
@@ -30,7 +30,7 @@ function useScroll(throttle = 100) {
         percentage: getScrollPercentage()
       })
     }
-    const scrollListener = _.throttle(updateScroll, scrollThrottle.current)
+    const scrollListener = throttle(updateScroll, scrollThrottle.current)
 
     window.addEventListener('scroll', scrollListener)
     return () => {
