@@ -76,7 +76,7 @@ export default class LoginLayout extends Component {
 
     render() {
         return (
-            <Row type="flex" justify="center" align="end">
+            <Row type="flex" justify="center" align="middle">
                 <Col span={16} className="style-form">
                     <Row
                         type="flex"
@@ -86,7 +86,7 @@ export default class LoginLayout extends Component {
                     >
                         <Col span={6}>
                             <img
-                                src={require("./../assets/img/logo-hcf-grande.png")}
+                                src={require("../assets/img/logo-hcf.png")}
                                 alt="logo-hcf-grande"
                                 height="105"
                                 width="78"

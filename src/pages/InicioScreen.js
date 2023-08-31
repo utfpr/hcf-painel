@@ -60,28 +60,14 @@ export default class InicioScreen extends Component {
                     </Menu>
                 </Header>
                 <Content>
-                    <Row className="container-main">
-                        <div className="view-cloud">
-                            <div className="x1">
-                                <div className="cloud" />
-                            </div>
-
-                            <div className="x2">
-                                <div className="cloud" />
-                            </div>
-
-                            <div className="x3">
-                                <div className="cloud" />
+                    <div className="container">
+                        <div className="divOpaca">
+                            <div className="contentForm">
+                                {this.renderViewLogin()}
                             </div>
                         </div>
-
-                        <Col xs={0} sm={4} md={10} lg={14} xl={14} className="container-hcf" />
-                        <Col xs={24} sm={20} md={14} lg={10} xl={10} className="container-login">
-                            {this.renderViewLogin()}
-                        </Col>
-                    </Row>
+                    </div>
                 </Content>
-                <Footer className="forest-footer" />
             </Layout>
         );
     }
