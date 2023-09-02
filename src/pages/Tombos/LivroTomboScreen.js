@@ -7,7 +7,7 @@ import {
     Divider,
     Tag,
 } from 'antd';
-import ButtonExportComponent from '../components/ButtonExportComponent';
+import ButtonExportComponent from '../../components/ButtonExportComponent';
 
 const FormItem = Form.Item;
 

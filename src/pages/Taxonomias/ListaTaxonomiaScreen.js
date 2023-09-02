@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import {
-    Divider, Icon, Modal, Card, Row, Col, Form,
+    Divider, Modal, Card, Row, Col, Form,
     Input, Button, notification,
 } from 'antd';
 import axios from 'axios';
 import SimpleTableComponent from '../components/SimpleTableComponent';
 import HeaderListComponent from '../components/HeaderListComponent';
 import { Link } from 'react-router-dom';
+
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
@@ -109,11 +111,11 @@ class ListaTaxonomiaScreen extends Component {
             <span>
                 <Divider type="vertical" />
                 <Link to={`/taxonomias/${id}`}>
-                    <Icon type="edit" style={{ color: "#FFCC00" }} />
+                    <EditOutlined style={{ color: "#FFCC00" }} />
                 </Link>
                 <Divider type="vertical" />
                 <a href="#" onClick={() => this.mostraMensagemDelete(id)}>
-                    <Icon type="delete" style={{ color: "#e30613" }} />
+                    <DeleteOutlined style={{ color: "#e30613" }} />
                 </a>
             </span>
         )
@@ -294,7 +296,7 @@ class ListaTaxonomiaScreen extends Component {
                                             className="login-form-button"
                                         >
                                             Limpar
-									</Button>
+                                        </Button>
                                     </FormItem>
                                 </Col>
                                 <Col span={4}>
@@ -305,7 +307,7 @@ class ListaTaxonomiaScreen extends Component {
                                             className="login-form-button"
                                         >
                                             Pesquisar
-									</Button>
+                                        </Button>
                                     </FormItem>
                                 </Col>
                             </Row>

@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import {
-    Row, Col, Divider, Icon,
+    Row, Col, Divider,
     Form, Input, Button,
 } from 'antd';
 
-import SimpleTableComponent from '../components/SimpleTableComponent';
+import SimpleTableComponent from '../../components/SimpleTableComponent';
+import { PrinterOutlined } from '@ant-design/icons'
 
-import { baseUrl } from '../config/api';
+import { baseUrl } from '../../config/api';
 
 const FormItem = Form.Item;
 
@@ -43,7 +44,7 @@ class FichaTomboScreen extends Component {
 
     geraColunaAcao = tombo => (
         <a target="_blank" rel="noreferrer" href={`${baseUrl}/api/fichas/tombos/${tombo.hcf}`} title="Imprimir ficha">
-            <Icon type="printer" style={{ color: '#277a01' }} />
+            <PrinterOutlined style={{ color: '#277a01' }} />
         </a>
     );
 

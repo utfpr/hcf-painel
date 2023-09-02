@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    Divider, Icon, Modal, Spin, Card, Row, Col, Form,
+    Divider, Spin, Modal, Card, Row, Col, Form,
     Select, Input, Button, notification,
 } from 'antd';
 import axios from 'axios';
@@ -8,15 +8,17 @@ import SimpleTableComponent from '../components/SimpleTableComponent';
 import ModalCadastroComponent from '../components/ModalCadastroComponent';
 import { isCuradorOuOperador } from '../helpers/usuarios';
 
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
 const Option = Select.Option;
 
 const columns = [
     {
-        title: "Especie",
+        title: "Genero",
         type: "text",
-        key: "especie"
+        key: "Genero"
     },
     {
         title: "Ação",
@@ -24,15 +26,14 @@ const columns = [
     }
 ];
 
-class ListaTaxonomiaEspecie extends Component {
+class ListaTaxonomiaGenero extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
             generos: [],
             metadados: {},
-            especies: [],
-            autores: [],
+            familias: [],
             pagina: 1,
             visibleModal: false,
             loadingModal: false,
@@ -46,16 +47,14 @@ class ListaTaxonomiaEspecie extends Component {
         this.setState({
             loading: true
         })
-        axios.delete(`/api/especies/${id}`)
+        axios.delete(`/api/generos/${id}`)
             .then(response => {
                 this.setState({
                     loading: false
                 })
                 if (response.status === 204) {
-                    this.requisitaListaEspecie(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir', 'A Especie foi excluída com sucesso.')
-                } else {
-                    this.notificacao('success', 'Excluir', 'Erro ao excluir a especie com sucesso.')
+                    this.requisitaListaGenero(this.state.valores, this.state.pagina)
+                    this.notificacao('success', 'Excluir', 'O Genero foi excluída com sucesso.')
                 }
             })
             .catch(err => {
@@ -65,9 +64,7 @@ class ListaTaxonomiaEspecie extends Component {
                 const { response } = err;
                 if (response && response.data) {
                     const { error } = response.data;
-                    throw new Error(error.message);
-                } else {
-                    throw err;
+                    console.error(error.message)
                 }
             })
     }
@@ -82,8 +79,8 @@ class ListaTaxonomiaEspecie extends Component {
     mostraMensagemDelete(id) {
         const self = this;
         confirm({
-            title: 'Você tem certeza que deseja excluir esta especie?',
-            content: 'Ao clicar em SIM, a especie será excluída.',
+            title: 'Você tem certeza que deseja excluir este genero?',
+            content: 'Ao clicar em SIM, o genero será excluída.',
             okText: 'SIM',
             okType: 'danger',
             cancelText: 'NÃO',
@@ -96,9 +93,8 @@ class ListaTaxonomiaEspecie extends Component {
     }
 
     componentDidMount() {
-        this.requisitaListaEspecie({}, this.state.pagina);
-        this.requisitaGeneros();
-        this.requisitaAutores();
+        this.requisitaListaGenero({}, this.state.pagina);
+        this.requisitaFamilias();
     }
 
     gerarAcao(item) {
@@ -108,14 +104,11 @@ class ListaTaxonomiaEspecie extends Component {
                     <Divider type="vertical" />
                     <a href="#" onClick={() => {
                         this.props.form.setFields({
-                            nomeEspecie: {
+                            nomeGenero: {
                                 value: item.nome,
                             },
-                            nomeGenero: {
-                                value: item.genero_id
-                            },
-                            nomeAutor: {
-                                value: item.autor_id
+                            nomeFamilia: {
+                                value: item.familia_id
                             }
                         });
                         this.setState({
@@ -124,16 +117,18 @@ class ListaTaxonomiaEspecie extends Component {
                             titulo: 'Atualizar'
                         });
                     }}>
-                        <Icon type="edit" style={{ color: "#FFCC00" }} />
+                        <EditOutlined style={{ color: "#FFCC00" }} />
                     </a>
                     <Divider type="vertical" />
                     <a href="#" onClick={() => this.mostraMensagemDelete(item.id)}>
-                        <Icon type="delete" style={{ color: "#e30613" }} />
+                        <DeleteOutlined style={{ color: "#e30613" }} />
                     </a>
                 </span>
             )
         }
+
         return undefined;
+
     }
 
     openNotificationWithIcon = (type, message, description) => {
@@ -143,208 +138,11 @@ class ListaTaxonomiaEspecie extends Component {
         });
     };
 
-    formataDadosEspecie = especies => especies.map(item => ({
+    formataDadosGenero = generos => generos.map(item => ({
         key: item.id,
-        especie: item.nome,
+        Genero: item.nome,
         acao: this.gerarAcao(item),
     }));
-
-    requisitaListaEspecie = (valores, pg) => {
-        let params = {
-            pagina: pg
-        }
-
-        if (valores !== undefined) {
-            const { especie } = valores;
-
-            if (especie) {
-                params.especie = especie;
-            }
-        }
-        axios.get('/api/especies', { params })
-            .then(response => {
-                this.setState({
-                    loading: false
-                })
-                if (response.status === 200) {
-                    const { data } = response;
-                    this.setState({
-                        especies: this.formataDadosEspecie(data.resultado),
-                        metadados: data.metadados
-                    });
-                } else if (response.status === 400) {
-                    this.notificacao('warning', 'Buscar', 'Erro ao buscar as especies.')
-                } else {
-                    this.notificacao('error', 'Error', 'Erro do servidor ao buscar as especies.')
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                })
-                const { response } = err;
-                if (response && response.data) {
-                    const { error } = response.data;
-                    throw new Error(error.message);
-                } else {
-                    throw err;
-                }
-            })
-            .catch(this.catchRequestError);
-    }
-
-    handleSubmit = (err, valores) => {
-        if (!err) {
-            this.setState({
-                valores: valores,
-                loading: true
-            })
-            this.requisitaListaEspecie(valores, this.state.pagina);
-        }
-    }
-
-    onSubmit = event => {
-        event.preventDefault();
-        this.props.form.validateFields(this.handleSubmit);
-    };
-
-    requisitaAutores = () => {
-        axios.get('/api/autores/', {
-            params: {
-                limite: 9999999,
-            }
-        })
-            .then(response => {
-                if (response.status === 200) {
-                    this.setState({
-                        autores: response.data.resultado
-                    });
-                } else {
-                    this.openNotificationWithIcon("error", "Falha", "Houve um problema ao buscar os autores, tente novamente.")
-                }
-            })
-            .catch(err => {
-                const { response } = err;
-                if (response && response.data) {
-                    const { error } = response.data;
-                    throw new Error(error.message);
-                } else {
-                    throw err;
-                }
-            })
-            .catch(this.catchRequestError);
-    }
-
-    cadastraNovaEspecie() {
-        this.setState({
-            loading: true
-        })
-        axios.post('/api/especies/', {
-            nome: this.props.form.getFieldsValue().nomeEspecie,
-            genero_id: this.props.form.getFieldsValue().nomeGenero,
-            autor_id: this.props.form.getFieldsValue().nomeAutor,
-        })
-            .then(response => {
-                this.setState({
-                    loading: false
-                })
-                if (response.status === 204) {
-                    this.requisitaListaEspecie();
-                    this.openNotificationWithIcon("success", "Sucesso", "O cadastro foi realizado com sucesso.")
-                } else if (response.status === 400) {
-                    this.openNotificationWithIcon("warning", "Falha", response.data.error.message);
-                } else {
-                    this.openNotificationWithIcon("error", "Falha", "Houve um problema ao cadastrar a nova especie, tente novamente.")
-                }
-                this.props.form.setFields({
-                    nomeEspecie: {
-                        value: '',
-                    },
-                });
-            })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                })
-                const { response } = err;
-                if (response && response.data) {
-                    const { error } = response.data;
-                    throw new Error(error.message);
-                } else {
-                    throw err;
-                }
-            })
-            .catch(this.catchRequestError);
-    }
-
-    atualizaEspecie() {
-        this.setState({
-            loading: true
-        })
-        axios.put(`/api/especies/${this.state.id}`, {
-            nome: this.props.form.getFieldsValue().nomeEspecie,
-            genero_id: this.props.form.getFieldsValue().nomeGenero,
-            autor_id: this.props.form.getFieldsValue().nomeAutor,
-        })
-            .then(response => {
-                this.setState({
-                    loading: false
-                })
-                if (response.status === 204) {
-                    this.requisitaListaEspecie();
-                    this.openNotificationWithIcon("success", "Sucesso", "A atualização foi realizada com sucesso.")
-                } else if (response.status === 400) {
-                    this.openNotificationWithIcon("warning", "Falha", response.data.error.message);
-                } else {
-                    this.openNotificationWithIcon("error", "Falha", "Houve um problema ao atualizar a especie, tente novamente.")
-                }
-                this.props.form.setFields({
-                    nomeEspecie: {
-                        value: '',
-                    },
-                });
-            })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                })
-                const { response } = err;
-                if (response && response.data) {
-                    const { error } = response.data;
-                    throw new Error(error.message);
-                } else {
-                    throw err;
-                }
-            })
-            .catch(this.catchRequestError);
-    }
-
-    requisitaGeneros = () => {
-        axios.get('/api/generos/', {
-            params: {
-                limite: 9999999,
-            }
-        })
-            .then(response => {
-                if (response.status === 200) {
-                    this.setState({
-                        generos: response.data.resultado
-                    });
-                } else {
-                    this.openNotificationWithIcon("error", "Falha", "Houve um problema ao buscar os generos, tente novamente.")
-                }
-            })
-            .catch(err => {
-                const { response } = err;
-                if (response && response.data) {
-                    const { error } = response.data;
-                    throw new Error(error.message);
-                } else {
-                    throw err;
-                }
-            })
-            .catch(this.catchRequestError);
-    }
 
     renderAdd = () => {
         if (isCuradorOuOperador()) {
@@ -362,26 +160,186 @@ class ListaTaxonomiaEspecie extends Component {
                     style={{ backgroundColor: "#5CB85C", borderColor: "#5CB85C" }}
                 >
                     Adicionar
-                                </Button>
+                </Button>
             )
         }
         return undefined;
     }
 
+    requisitaListaGenero = (valores, pg) => {
+        let params = {
+            pagina: pg
+        }
+
+        if (valores !== undefined) {
+            const { genero } = valores;
+
+            if (genero) {
+                params.genero = genero;
+            }
+        }
+        axios.get('/api/generos', { params })
+            .then(response => {
+                this.setState({
+                    loading: false
+                })
+                if (response.status === 200) {
+                    const { data } = response;
+                    this.setState({
+                        generos: this.formataDadosGenero(data.resultado),
+                        metadados: data.metadados
+                    });
+                } else if (response.status === 400) {
+                    this.notificacao('warning', 'Buscar Genero', 'Erro ao buscar os generos.')
+                } else {
+                    this.notificacao('error', 'Error', 'Erro de servidor ao buscar os generos.')
+                }
+            })
+            .catch(err => {
+                this.setState({
+                    loading: false
+                })
+                const { response } = err;
+                if (response && response.data) {
+                    const { error } = response.data;
+                    console.error(error.message)
+                }
+            })
+            .catch(this.catchRequestError);
+    }
+
+    handleSubmit = (err, valores) => {
+        if (!err) {
+            this.setState({
+                valores: valores,
+                loading: true
+            })
+            this.requisitaListaGenero(valores, this.state.pagina);
+        }
+    }
+
+    onSubmit = event => {
+        event.preventDefault();
+        this.props.form.validateFields(this.handleSubmit);
+    };
+
+    cadastraNovaGenero() {
+        this.setState({
+            loading: true
+        })
+        axios.post('/api/generos/', {
+            nome: this.props.form.getFieldsValue().nomeGenero,
+            familia_id: this.props.form.getFieldsValue().nomeFamilia,
+        })
+            .then(response => {
+                this.setState({
+                    loading: false
+                })
+                if (response.status === 204) {
+                    this.requisitaListaGenero();
+                    this.openNotificationWithIcon("success", "Sucesso", "O cadastro foi realizado com sucesso.")
+                } else if (response.status === 400) {
+                    this.openNotificationWithIcon("warning", "Falha", response.data.error.message);
+                } else {
+                    this.openNotificationWithIcon("error", "Falha", "Houve um problema ao cadastrar o novo genero, tente novamente.")
+                }
+                this.props.form.setFields({
+                    nomeGenero: {
+                        value: '',
+                    },
+                });
+            })
+            .catch(err => {
+                this.setState({
+                    loading: false
+                })
+                const { response } = err;
+                if (response && response.data) {
+                    const { error } = response.data;
+                    console.error(error.message)
+                }
+            })
+            .catch(this.catchRequestError);
+    }
+
+    atualizaGenero() {
+        this.setState({
+            loading: true
+        })
+        axios.put(`/api/generos/${this.state.id}`, {
+            nome: this.props.form.getFieldsValue().nomeGenero,
+            familia_id: this.props.form.getFieldsValue().nomeFamilia,
+        })
+            .then(response => {
+                this.setState({
+                    loading: false
+                })
+                if (response.status === 204) {
+                    this.requisitaListaGenero();
+                    this.openNotificationWithIcon("success", "Sucesso", "A atualização foi realizada com sucesso.")
+                } else if (response.status === 400) {
+                    this.openNotificationWithIcon("warning", "Falha", response.data.error.message);
+                } else {
+                    this.openNotificationWithIcon("error", "Falha", "Houve um problema ao atualizar o genero, tente novamente.")
+                }
+                this.props.form.setFields({
+                    nomeGenero: {
+                        value: '',
+                    },
+                });
+            })
+            .catch(err => {
+                this.setState({
+                    loading: false
+                })
+                const { response } = err;
+                if (response && response.data) {
+                    const { error } = response.data;
+                    console.error(error.message)
+                }
+            })
+            .catch(this.catchRequestError);
+    }
+
+    requisitaFamilias = () => {
+        axios.get('/api/familias/', {
+            params: {
+                limite: 9999999,
+            }
+        })
+            .then(response => {
+                if (response.status === 200) {
+                    this.setState({
+                        familias: response.data.resultado
+                    });
+                } else {
+                    this.openNotificationWithIcon("error", "Falha", "Houve um problema ao buscar familias, tente novamente.")
+                }
+            })
+            .catch(err => {
+                const { response } = err;
+                if (response && response.data) {
+                    const { error } = response.data;
+                    console.error(error.message)
+                }
+            })
+            .catch(this.catchRequestError);
+    }
+
     renderPainelBusca(getFieldDecorator) {
         return (
-            <Card title="Buscar Espécie">
+            <Card title="Buscar Genero">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col span={24}>
-                            <span>Nome da especie:</span>
+                            <span>Nome do genero:</span>
                         </Col>
                     </Row>
                     <Row gutter={8}>
                         <Col span={24}>
                             <FormItem>
-                                {getFieldDecorator('especie')(
-                                    <Input placeholder={"A. comosus"} type="text" />
+                                {getFieldDecorator('genero')(
+                                    <Input placeholder={"Passion Flower"} type="text" />
                                 )}
                             </FormItem>
                         </Col>
@@ -401,12 +359,12 @@ class ListaTaxonomiaEspecie extends Component {
                                                     metadados: {},
                                                     usuarios: []
                                                 })
-                                                this.requisitaListaEspecie({}, 1);
+                                                this.requisitaListaGenero({}, 1);
                                             }}
                                             className="login-form-button"
                                         >
                                             Limpar
-									</Button>
+                                        </Button>
                                     </FormItem>
                                 </Col>
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
@@ -417,7 +375,7 @@ class ListaTaxonomiaEspecie extends Component {
                                             className="login-form-button"
                                         >
                                             Pesquisar
-									</Button>
+                                        </Button>
                                     </FormItem>
                                 </Col>
                             </Row>
@@ -428,11 +386,7 @@ class ListaTaxonomiaEspecie extends Component {
         )
     }
 
-    optionGenero = () => this.state.generos.map(item => (
-        <Option value={item.id}>{item.nome}</Option>
-    ));
-
-    optionAutores = () => this.state.autores.map(item => (
+    optionFamilia = () => this.state.familias.map(item => (
         <Option value={item.id}>{item.nome}</Option>
     ));
 
@@ -451,16 +405,16 @@ class ListaTaxonomiaEspecie extends Component {
                         }
                         onOk={() => {
                             if (this.state.id === -1) {
-                                if (this.props.form.getFieldsValue().nomeGenero && this.props.form.getFieldsValue().nomeEspecie && this.props.form.getFieldsValue().nomeEspecie.trim() !== '') {
-                                    this.cadastraNovaEspecie();
+                                if (this.props.form.getFieldsValue().nomeFamilia && this.props.form.getFieldsValue().nomeGenero && this.props.form.getFieldsValue().nomeGenero.trim() !== '') {
+                                    this.cadastraNovaGenero();
                                 } else {
-                                    this.openNotificationWithIcon("warning", "Falha", "Informe o nome da nova especie e do genero.");
+                                    this.openNotificationWithIcon("warning", "Falha", "Informe o nome do genero e da familia.");
                                 }
                             } else {
-                                if (this.props.form.getFieldsValue().nomeGenero && this.props.form.getFieldsValue().nomeEspecie && this.props.form.getFieldsValue().nomeEspecie.trim() !== '') {
-                                    this.atualizaEspecie();
+                                if (this.props.form.getFieldsValue().nomeFamilia && this.props.form.getFieldsValue().nomeGenero && this.props.form.getFieldsValue().nomeGenero.trim() !== '') {
+                                    this.atualizaGenero();
                                 } else {
-                                    this.openNotificationWithIcon("warning", "Falha", "Informe o nome da nova especie e do genero.");
+                                    this.openNotificationWithIcon("warning", "Falha", "Informe o nome do genero e da familia.");
                                 }
                             }
                             this.setState({
@@ -471,6 +425,29 @@ class ListaTaxonomiaEspecie extends Component {
                         <div>
                             <Row gutter={8}>
                                 <Col span={24}>
+                                    <span>Nome da familia:</span>
+                                </Col>
+                            </Row>
+                            <Row gutter={8}>
+                                <Col span={24}>
+                                    <FormItem>
+                                        {getFieldDecorator('nomeFamilia')(
+                                            <Select
+                                                showSearch
+                                                style={{ width: '100%' }}
+                                                placeholder="Selecione uma familia"
+                                                optionFilterProp="children"
+
+                                            >
+
+                                                {this.optionFamilia()}
+                                            </Select>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                            </Row>
+                            <Row gutter={8}>
+                                <Col span={24}>
                                     <span>Nome do genero:</span>
                                 </Col>
                             </Row>
@@ -478,53 +455,7 @@ class ListaTaxonomiaEspecie extends Component {
                                 <Col span={24}>
                                     <FormItem>
                                         {getFieldDecorator('nomeGenero')(
-                                            <Select
-                                                showSearch
-                                                style={{ width: '100%' }}
-                                                placeholder="Selecione um genero"
-                                                optionFilterProp="children"
-
-                                            >
-
-                                                {this.optionGenero()}
-                                            </Select>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                            </Row>
-                            <Row gutter={8}>
-                                <Col span={24}>
-                                    <span>Nome da especie:</span>
-                                </Col>
-                            </Row>
-                            <Row gutter={8}>
-                                <Col span={24}>
-                                    <FormItem>
-                                        {getFieldDecorator('nomeEspecie')(
                                             <Input placeholder={""} type="text" />
-                                        )}
-                                    </FormItem>
-                                </Col>
-                            </Row>
-                            <Row gutter={8}>
-                                <Col span={24}>
-                                    <span>Nome do autor:</span>
-                                </Col>
-                            </Row>
-                            <Row gutter={8}>
-                                <Col span={24}>
-                                    <FormItem>
-                                        {getFieldDecorator('nomeAutor')(
-                                            <Select
-                                                showSearch
-                                                style={{ width: '100%' }}
-                                                placeholder="Selecione um autor"
-                                                optionFilterProp="children"
-
-                                            >
-
-                                                {this.optionAutores()}
-                                            </Select>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -536,20 +467,19 @@ class ListaTaxonomiaEspecie extends Component {
 
                 <Row gutter={24} style={{ marginBottom: "20px" }}>
                     <Col xs={24} sm={14} md={18} lg={20} xl={21}>
-                        <h2 style={{ fontWeight: 200 }}>Especies</h2>
+                        <h2 style={{ fontWeight: 200 }}>Generos</h2>
                     </Col>
                     <Col xs={24} sm={10} md={6} lg={4} xl={3}>
                         {this.renderAdd()}
                     </Col>
                 </Row>
 
-
                 <Divider dashed />
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
                 <SimpleTableComponent
                     columns={columns}
-                    data={this.state.especies}
+                    data={this.state.generos}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
                     changePage={(pg) => {
@@ -557,7 +487,7 @@ class ListaTaxonomiaEspecie extends Component {
                             pagina: pg,
                             loading: true
                         })
-                        this.requisitaListaEspecie(this.state.valores, pg);
+                        this.requisitaListaGenero(this.state.valores, pg);
                     }}
                 />
                 <Divider dashed />
@@ -578,4 +508,4 @@ class ListaTaxonomiaEspecie extends Component {
         );
     }
 }
-export default Form.create()(ListaTaxonomiaEspecie);
+export default Form.create()(ListaTaxonomiaGenero);

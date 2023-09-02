@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
-import { Divider, Icon, Modal, Card, Row, Col, Form, Select, Input, Button, notification } from 'antd';
+import { Divider, Modal, Card, Row, Col, Form, Select, Input, Button, notification } from 'antd';
 import axios from 'axios';
-import SimpleTableComponent from '../components/SimpleTableComponent';
-import { formatarDataBDtoDataHora } from '../helpers/conversoes/ConversoesData';
+import SimpleTableComponent from '../../components/SimpleTableComponent';
+import HeaderListComponent from '../../components/HeaderListComponent';
+import { formatarDataBDtoDataHora } from '../../helpers/conversoes/ConversoesData';
+import { telefoneToFrontEnd } from '../../helpers/conversoes/ConversoesTelefone';
 import { Link } from 'react-router-dom';
+
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
@@ -11,29 +15,29 @@ const Option = Select.Option;
 
 const columns = [
 	{
-		title: "Nº Tombo",
+		title: "Nome",
 		type: "text",
-		key: "hcf"
+		key: "nome"
 	},
 	{
-		title: "Nome usuário",
+		title: "Tipo",
 		type: "text",
-		key: "usuario"
+		key: "tipo"
+	},
+	{
+		title: "Email",
+		type: "text",
+		key: "email"
+	},
+	{
+		title: "Telefone",
+		type: "text",
+		key: "telefone"
 	},
 	{
 		title: "Data Criação",
 		type: "text",
 		key: "dataCriacao"
-	},
-	{
-		title: "Status",
-		type: "text",
-		key: "status"
-	},
-	{
-		title: "Observação",
-		type: "text",
-		key: "observacao"
 	},
 	{
 		title: "Ação",
@@ -42,12 +46,12 @@ const columns = [
 
 ];
 
-class ListaPendenciasScreen extends Component {
+class ListaUsuariosScreen extends Component {
 
 	constructor(props) {
 		super(props);
 		this.state = {
-			pendencias: [],
+			usuarios: [],
 			metadados: {},
 			loading: true,
 			pagina: 1
@@ -55,11 +59,11 @@ class ListaPendenciasScreen extends Component {
 	}
 
 	requisitaExclusao(id) {
-		axios.delete(`/api/pendencias/${id}`)
+		axios.delete(`/api/usuarios/${id}`)
 			.then(response => {
 				if (response.status === 204) {
-					this.requisitaListaPendencias(this.state.valores, this.state.pagina)
-					this.notificacao('success', 'Excluir', 'A pendência foi excluída com sucesso.')
+					this.requisitaListaUsuarios(this.state.valores, this.state.pagina)
+					this.notificacao('success', 'Excluir usuário', 'O usuário foi excluído com sucesso.')
 				}
 			})
 			.catch(err => {
@@ -81,8 +85,8 @@ class ListaPendenciasScreen extends Component {
 	mostraMensagemDelete(id) {
 		const self = this;
 		confirm({
-			title: 'Você tem certeza que deseja excluir esta pendência?',
-			content: 'Ao clicar em SIM, a pendência será excluída.',
+			title: 'Você tem certeza que deseja excluir este usuário?',
+			content: 'Ao clicar em SIM, o usuário será excluído.',
 			okText: 'SIM',
 			okType: 'danger',
 			cancelText: 'NÃO',
@@ -95,49 +99,58 @@ class ListaPendenciasScreen extends Component {
 	}
 
 	componentDidMount() {
-		this.requisitaListaPendencias({}, this.state.pagina);
+		this.requisitaListaUsuarios({}, this.state.pagina);
 	}
 
 	gerarAcao(id) {
 		return (
 			<span>
-				<Link to={`/pendencias/${id}`}>
-					<Icon type="search" />
+				<Link to={`/usuarios/${id}`}>
+					<EditOutlined style={{ color: "#FFCC00" }} />
 				</Link>
 				<Divider type="vertical" />
 				<a href="#" onClick={() => this.mostraMensagemDelete(id)}>
-					<Icon type="delete" style={{ color: "#e30613" }} />
+					<DeleteOutlined style={{ color: "#e30613" }} />
 				</a>
 			</span>
 		)
 	}
 
-	formataDadosPendencia = pendencias => pendencias.map(item => ({
+	formataDadosUsuario = usuarios => usuarios.map(item => ({
 		key: item.id,
-		hcf: item.numero_tombo,
-		usuario: item.nome_usuario,
-		status: item.status,
-		dataCriacao: formatarDataBDtoDataHora(item.data_criacao),
-		observacao: item.observacao || '',
+		nome: item.nome,
+		email: item.email,
+		ra: item.ra,
+		herbario_id: item.herbario_id,
+		tipo: item.tipos_usuario.tipo.toLowerCase(),
+		tipo_id: item.tipos_usuario.id,
+		telefone: telefoneToFrontEnd(item.telefone),
+		dataCriacao: formatarDataBDtoDataHora(item.tipos_usuario.created_at),
 		acao: this.gerarAcao(item.id),
 	}));
 
-	requisitaListaPendencias = (valores, pg) => {
+	requisitaListaUsuarios = (valores, pg) => {
 		let params = {
 			pagina: pg
 		}
 
 		if (valores !== undefined) {
-			const { nome, status } = valores;
+			const { nome, email, tipo, telefone } = valores;
 
 			if (nome) {
-				params.nome_usuario = nome;
+				params.nome = nome;
 			}
-			if (status) {
-				params.status = status.toUpperCase();
+			if (email) {
+				params.email = email;
+			}
+			if (tipo) {
+				params.tipo = tipo;
+			}
+			if (telefone) {
+				params.telefone = telefone;
 			}
 		}
-		axios.get('/api/pendencias', { params })
+		axios.get('/api/usuarios', { params })
 			.then(response => {
 				this.setState({
 					loading: false
@@ -145,7 +158,7 @@ class ListaPendenciasScreen extends Component {
 				if (response.status === 200) {
 					const { data } = response;
 					this.setState({
-						pendencias: this.formataDadosPendencia(data.resultado),
+						usuarios: this.formataDadosUsuario(data.usuarios),
 						metadados: data.metadados
 					});
 				}
@@ -169,7 +182,7 @@ class ListaPendenciasScreen extends Component {
 				valores: valores,
 				loading: true
 			})
-			this.requisitaListaPendencias(valores, this.state.pagina);
+			this.requisitaListaUsuarios(valores, this.state.pagina);
 		}
 	}
 
@@ -180,12 +193,12 @@ class ListaPendenciasScreen extends Component {
 
 	renderPainelBusca(getFieldDecorator) {
 		return (
-			<Card title="Buscar pendências">
+			<Card title="Buscar usuário">
 				<Form onSubmit={this.onSubmit}>
 					<Row gutter={8}>
-						<Col xs={24} sm={24} md={12} lg={12} xl={12}>
+						<Col xs={24} sm={12} md={8} lg={8} xl={8}>
 							<Col span={24}>
-								<span>Nome de usuário:</span>
+								<span>Nome:</span>
 							</Col>
 							<Col span={24}>
 								<FormItem>
@@ -195,18 +208,44 @@ class ListaPendenciasScreen extends Component {
 								</FormItem>
 							</Col>
 						</Col>
-						<Col xs={24} sm={24} md={12} lg={12} xl={12}>
+						<Col xs={24} sm={12} md={8} lg={8} xl={8}>
 							<Col span={24}>
-								<span>Status:</span>
+								<span>Email:</span>
 							</Col>
 							<Col span={24}>
 								<FormItem>
-									{getFieldDecorator('status')(
+									{getFieldDecorator('email')(
+										<Input placeholder={"marcelo@gmail.com"} type="email" />
+									)}
+								</FormItem>
+							</Col>
+						</Col>
+						<Col xs={24} sm={12} md={8} lg={8} xl={8}>
+							<Col span={24}>
+								<span>Tipo:</span>
+							</Col>
+							<Col span={24}>
+								<FormItem>
+									{getFieldDecorator('tipo')(
 										<Select initialValue="2">
-											<Option value="ESPERANDO">Esperando</Option>
-											<Option value="APROVADO">Aprovado</Option>
-											<Option value="REPROVADO">Reprovado</Option>
+											<Option value="1">Curador</Option>
+											<Option value="2">Operador</Option>
+											<Option value="3">Identificador</Option>
 										</Select>
+									)}
+								</FormItem>
+							</Col>
+						</Col>
+					</Row>
+					<Row gutter={8}>
+						<Col xs={24} sm={12} md={8} lg={8} xl={8}>
+							<Col span={24}>
+								<span>Telefone:</span>
+							</Col>
+							<Col span={24}>
+								<FormItem>
+									{getFieldDecorator('telefone')(
+										<Input placeholder={"+5544999682514"} type="phone" />
 									)}
 								</FormItem>
 							</Col>
@@ -215,7 +254,7 @@ class ListaPendenciasScreen extends Component {
 					<Row>
 						<Col span={24}>
 							<Row type="flex" justify="end" gutter={4}>
-								<Col xs={24} sm={12} md={6} lg={4} xl={4}>
+								<Col xs={24} sm={8} md={6} lg={4} xl={4}>
 									<FormItem>
 										<Button
 											onClick={() => {
@@ -224,17 +263,17 @@ class ListaPendenciasScreen extends Component {
 													pagina: 1,
 													valores: {},
 													metadados: {},
-													pendencias: []
+													usuarios: []
 												})
-												this.requisitaListaPendencias({}, 1);
+												this.requisitaListaUsuarios({}, 1);
 											}}
 											className="login-form-button"
 										>
 											Limpar
-									</Button>
+										</Button>
 									</FormItem>
 								</Col>
-								<Col xs={24} sm={12} md={6} lg={4} xl={4}>
+								<Col xs={24} sm={8} md={6} lg={4} xl={4}>
 									<FormItem>
 										<Button
 											type="primary"
@@ -242,7 +281,7 @@ class ListaPendenciasScreen extends Component {
 											className="login-form-button"
 										>
 											Pesquisar
-									</Button>
+										</Button>
 									</FormItem>
 								</Col>
 							</Row>
@@ -257,17 +296,13 @@ class ListaPendenciasScreen extends Component {
 		const { getFieldDecorator } = this.props.form;
 		return (
 			<div>
-				<Row gutter={24} style={{ marginBottom: "20px" }}>
-					<Col span={20}>
-						<h2 style={{ fontWeight: 200 }}>Listagem de Pendências</h2>
-					</Col>
-				</Row>
+				<HeaderListComponent title={"Listagem de Usuários"} link={"/usuarios/novo"} />
 				<Divider dashed />
 				{this.renderPainelBusca(getFieldDecorator)}
 				<Divider dashed />
 				<SimpleTableComponent
 					columns={columns}
-					data={this.state.pendencias}
+					data={this.state.usuarios}
 					metadados={this.state.metadados}
 					loading={this.state.loading}
 					changePage={(pg) => {
@@ -275,7 +310,7 @@ class ListaPendenciasScreen extends Component {
 							pagina: pg,
 							loading: true
 						})
-						this.requisitaListaPendencias(this.state.valores, pg);
+						this.requisitaListaUsuarios(this.state.valores, pg);
 					}}
 				/>
 				<Divider dashed />
@@ -284,4 +319,4 @@ class ListaPendenciasScreen extends Component {
 	}
 }
 
-export default Form.create()(ListaPendenciasScreen);
+export default Form.create()(ListaUsuariosScreen);

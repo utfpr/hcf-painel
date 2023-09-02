@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    Divider, Icon, Modal, Card, Spin, Row, Col, Form,
+    Divider, Modal, Spin, Card, Row, Col, Form,
     Select, Input, Button, notification,
 } from 'antd';
 import axios from 'axios';
@@ -8,15 +8,17 @@ import SimpleTableComponent from '../components/SimpleTableComponent';
 import ModalCadastroComponent from '../components/ModalCadastroComponent';
 import { isCuradorOuOperador } from '../helpers/usuarios';
 
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
 const Option = Select.Option;
 
 const columns = [
     {
-        title: "Subfamilia",
+        title: "Especie",
         type: "text",
-        key: "subfamilia"
+        key: "especie"
     },
     {
         title: "Ação",
@@ -24,14 +26,15 @@ const columns = [
     }
 ];
 
-class ListaTaxonomiaSubfamilia extends Component {
+class ListaTaxonomiaEspecie extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            subfamilias: [],
+            generos: [],
             metadados: {},
-            familias: [],
+            especies: [],
+            autores: [],
             pagina: 1,
             visibleModal: false,
             loadingModal: false,
@@ -45,14 +48,16 @@ class ListaTaxonomiaSubfamilia extends Component {
         this.setState({
             loading: true
         })
-        axios.delete(`/api/subfamilias/${id}`)
+        axios.delete(`/api/especies/${id}`)
             .then(response => {
                 this.setState({
                     loading: false
                 })
                 if (response.status === 204) {
-                    this.requisitaListaSubfamilia(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir', 'A Subfamilia foi excluída com sucesso.')
+                    this.requisitaListaEspecie(this.state.valores, this.state.pagina)
+                    this.notificacao('success', 'Excluir', 'A Especie foi excluída com sucesso.')
+                } else {
+                    this.notificacao('success', 'Excluir', 'Erro ao excluir a especie com sucesso.')
                 }
             })
             .catch(err => {
@@ -62,11 +67,12 @@ class ListaTaxonomiaSubfamilia extends Component {
                 const { response } = err;
                 if (response && response.data) {
                     const { error } = response.data;
-                    console.error(error.message)
+                    throw new Error(error.message);
+                } else {
+                    throw err;
                 }
             })
     }
-
 
     notificacao = (type, titulo, descricao) => {
         notification[type]({
@@ -78,8 +84,8 @@ class ListaTaxonomiaSubfamilia extends Component {
     mostraMensagemDelete(id) {
         const self = this;
         confirm({
-            title: 'Você tem certeza que deseja excluir esta subfamilia?',
-            content: 'Ao clicar em SIM, a subfamilia será excluída.',
+            title: 'Você tem certeza que deseja excluir esta especie?',
+            content: 'Ao clicar em SIM, a especie será excluída.',
             okText: 'SIM',
             okType: 'danger',
             cancelText: 'NÃO',
@@ -92,8 +98,9 @@ class ListaTaxonomiaSubfamilia extends Component {
     }
 
     componentDidMount() {
-        this.requisitaListaSubfamilia({}, this.state.pagina);
-        this.requisitaFamilias();
+        this.requisitaListaEspecie({}, this.state.pagina);
+        this.requisitaGeneros();
+        this.requisitaAutores();
     }
 
     gerarAcao(item) {
@@ -103,11 +110,14 @@ class ListaTaxonomiaSubfamilia extends Component {
                     <Divider type="vertical" />
                     <a href="#" onClick={() => {
                         this.props.form.setFields({
-                            nomeSubfamilia: {
+                            nomeEspecie: {
                                 value: item.nome,
                             },
-                            nomeFamilia: {
-                                value: item.familia_id
+                            nomeGenero: {
+                                value: item.genero_id
+                            },
+                            nomeAutor: {
+                                value: item.autor_id
                             }
                         });
                         this.setState({
@@ -116,11 +126,11 @@ class ListaTaxonomiaSubfamilia extends Component {
                             titulo: 'Atualizar'
                         });
                     }}>
-                        <Icon type="edit" style={{ color: "#FFCC00" }} />
+                        <EditOutlined style={{ color: "#FFCC00" }} />
                     </a>
                     <Divider type="vertical" />
                     <a href="#" onClick={() => this.mostraMensagemDelete(item.id)}>
-                        <Icon type="delete" style={{ color: "#e30613" }} />
+                        <DeleteOutlined style={{ color: "#e30613" }} />
                     </a>
                 </span>
             )
@@ -135,25 +145,25 @@ class ListaTaxonomiaSubfamilia extends Component {
         });
     };
 
-    formataDadosSubfamilia = subfamilias => subfamilias.map(item => ({
+    formataDadosEspecie = especies => especies.map(item => ({
         key: item.id,
-        subfamilia: item.nome,
+        especie: item.nome,
         acao: this.gerarAcao(item),
     }));
 
-    requisitaListaSubfamilia = (valores, pg) => {
+    requisitaListaEspecie = (valores, pg) => {
         let params = {
             pagina: pg
         }
 
         if (valores !== undefined) {
-            const { subfamilia } = valores;
+            const { especie } = valores;
 
-            if (subfamilia) {
-                params.subfamilia = subfamilia;
+            if (especie) {
+                params.especie = especie;
             }
         }
-        axios.get('/api/subfamilias', { params })
+        axios.get('/api/especies', { params })
             .then(response => {
                 this.setState({
                     loading: false
@@ -161,13 +171,13 @@ class ListaTaxonomiaSubfamilia extends Component {
                 if (response.status === 200) {
                     const { data } = response;
                     this.setState({
-                        subfamilias: this.formataDadosSubfamilia(data.resultado),
+                        especies: this.formataDadosEspecie(data.resultado),
                         metadados: data.metadados
                     });
                 } else if (response.status === 400) {
-                    this.notificacao('warning', 'Buscar', 'Erro ao buscar as subfamilias.')
+                    this.notificacao('warning', 'Buscar', 'Erro ao buscar as especies.')
                 } else {
-                    this.notificacao('error', 'Error', 'Erro do servidor ao buscar os subfamilias.')
+                    this.notificacao('error', 'Error', 'Erro do servidor ao buscar as especies.')
                 }
             })
             .catch(err => {
@@ -177,7 +187,9 @@ class ListaTaxonomiaSubfamilia extends Component {
                 const { response } = err;
                 if (response && response.data) {
                     const { error } = response.data;
-                    console.error(error.message)
+                    throw new Error(error.message);
+                } else {
+                    throw err;
                 }
             })
             .catch(this.catchRequestError);
@@ -189,7 +201,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                 valores: valores,
                 loading: true
             })
-            this.requisitaListaSubfamilia(valores, this.state.pagina);
+            this.requisitaListaEspecie(valores, this.state.pagina);
         }
     }
 
@@ -198,67 +210,56 @@ class ListaTaxonomiaSubfamilia extends Component {
         this.props.form.validateFields(this.handleSubmit);
     };
 
-    cadastraNovaSubfamilia() {
-        this.setState({
-            loading: true
-        })
-        axios.post('/api/subfamilias/', {
-            nome: this.props.form.getFieldsValue().nomeSubfamilia,
-            familia_id: this.props.form.getFieldsValue().nomeFamilia,
+    requisitaAutores = () => {
+        axios.get('/api/autores/', {
+            params: {
+                limite: 9999999,
+            }
         })
             .then(response => {
-                this.setState({
-                    loading: false
-                })
-                if (response.status === 204) {
-                    this.requisitaListaSubfamilia();
-                    this.openNotificationWithIcon("success", "Sucesso", "O cadastro foi realizado com sucesso.")
-                } else if (response.status === 400) {
-                    this.openNotificationWithIcon("warning", "Falha", response.data.error.message);
+                if (response.status === 200) {
+                    this.setState({
+                        autores: response.data.resultado
+                    });
                 } else {
-                    this.openNotificationWithIcon("error", "Falha", "Houve um problema ao cadastrar a nova subfamilia, tente novamente.")
+                    this.openNotificationWithIcon("error", "Falha", "Houve um problema ao buscar os autores, tente novamente.")
                 }
-                this.props.form.setFields({
-                    nomeSubfamilia: {
-                        value: '',
-                    },
-                });
             })
             .catch(err => {
-                this.setState({
-                    loading: false
-                })
                 const { response } = err;
                 if (response && response.data) {
                     const { error } = response.data;
-                    console.error(error.message)
+                    throw new Error(error.message);
+                } else {
+                    throw err;
                 }
             })
             .catch(this.catchRequestError);
     }
 
-    atualizaSubfamilia() {
+    cadastraNovaEspecie() {
         this.setState({
             loading: true
         })
-        axios.put(`/api/subfamilias/${this.state.id}`, {
-            nome: this.props.form.getFieldsValue().nomeSubfamilia,
-            familia_id: this.props.form.getFieldsValue().nomeFamilia,
+        axios.post('/api/especies/', {
+            nome: this.props.form.getFieldsValue().nomeEspecie,
+            genero_id: this.props.form.getFieldsValue().nomeGenero,
+            autor_id: this.props.form.getFieldsValue().nomeAutor,
         })
             .then(response => {
                 this.setState({
                     loading: false
                 })
                 if (response.status === 204) {
-                    this.requisitaListaSubfamilia();
-                    this.openNotificationWithIcon("success", "Sucesso", "A atualização foi realizada com sucesso.")
+                    this.requisitaListaEspecie();
+                    this.openNotificationWithIcon("success", "Sucesso", "O cadastro foi realizado com sucesso.")
                 } else if (response.status === 400) {
                     this.openNotificationWithIcon("warning", "Falha", response.data.error.message);
                 } else {
-                    this.openNotificationWithIcon("error", "Falha", "Houve um problema ao atualizar a subfamilia, tente novamente.")
+                    this.openNotificationWithIcon("error", "Falha", "Houve um problema ao cadastrar a nova especie, tente novamente.")
                 }
                 this.props.form.setFields({
-                    nomeSubfamilia: {
+                    nomeEspecie: {
                         value: '',
                     },
                 });
@@ -270,7 +271,78 @@ class ListaTaxonomiaSubfamilia extends Component {
                 const { response } = err;
                 if (response && response.data) {
                     const { error } = response.data;
-                    console.error(error.message)
+                    throw new Error(error.message);
+                } else {
+                    throw err;
+                }
+            })
+            .catch(this.catchRequestError);
+    }
+
+    atualizaEspecie() {
+        this.setState({
+            loading: true
+        })
+        axios.put(`/api/especies/${this.state.id}`, {
+            nome: this.props.form.getFieldsValue().nomeEspecie,
+            genero_id: this.props.form.getFieldsValue().nomeGenero,
+            autor_id: this.props.form.getFieldsValue().nomeAutor,
+        })
+            .then(response => {
+                this.setState({
+                    loading: false
+                })
+                if (response.status === 204) {
+                    this.requisitaListaEspecie();
+                    this.openNotificationWithIcon("success", "Sucesso", "A atualização foi realizada com sucesso.")
+                } else if (response.status === 400) {
+                    this.openNotificationWithIcon("warning", "Falha", response.data.error.message);
+                } else {
+                    this.openNotificationWithIcon("error", "Falha", "Houve um problema ao atualizar a especie, tente novamente.")
+                }
+                this.props.form.setFields({
+                    nomeEspecie: {
+                        value: '',
+                    },
+                });
+            })
+            .catch(err => {
+                this.setState({
+                    loading: false
+                })
+                const { response } = err;
+                if (response && response.data) {
+                    const { error } = response.data;
+                    throw new Error(error.message);
+                } else {
+                    throw err;
+                }
+            })
+            .catch(this.catchRequestError);
+    }
+
+    requisitaGeneros = () => {
+        axios.get('/api/generos/', {
+            params: {
+                limite: 9999999,
+            }
+        })
+            .then(response => {
+                if (response.status === 200) {
+                    this.setState({
+                        generos: response.data.resultado
+                    });
+                } else {
+                    this.openNotificationWithIcon("error", "Falha", "Houve um problema ao buscar os generos, tente novamente.")
+                }
+            })
+            .catch(err => {
+                const { response } = err;
+                if (response && response.data) {
+                    const { error } = response.data;
+                    throw new Error(error.message);
+                } else {
+                    throw err;
                 }
             })
             .catch(this.catchRequestError);
@@ -292,52 +364,26 @@ class ListaTaxonomiaSubfamilia extends Component {
                     style={{ backgroundColor: "#5CB85C", borderColor: "#5CB85C" }}
                 >
                     Adicionar
-                                </Button>
-
+                </Button>
             )
         }
         return undefined;
     }
 
-    requisitaFamilias = () => {
-        axios.get('/api/familias/', {
-            params: {
-                limite: 9999999,
-            }
-        })
-            .then(response => {
-                if (response.status === 200) {
-                    this.setState({
-                        familias: response.data.resultado
-                    });
-                } else {
-                    this.openNotificationWithIcon("error", "Falha", "Houve um problema ao buscar familias, tente novamente.")
-                }
-            })
-            .catch(err => {
-                const { response } = err;
-                if (response && response.data) {
-                    const { error } = response.data;
-                    console.error(error.message)
-                }
-            })
-            .catch(this.catchRequestError);
-    }
-
     renderPainelBusca(getFieldDecorator) {
         return (
-            <Card title="Buscar Subfamilia">
+            <Card title="Buscar Espécie">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col span={24}>
-                            <span>Nome da subfamilia:</span>
+                            <span>Nome da especie:</span>
                         </Col>
                     </Row>
                     <Row gutter={8}>
                         <Col span={24}>
                             <FormItem>
-                                {getFieldDecorator('subfamilia')(
-                                    <Input placeholder={"Bromeliaceae"} type="text" />
+                                {getFieldDecorator('especie')(
+                                    <Input placeholder={"A. comosus"} type="text" />
                                 )}
                             </FormItem>
                         </Col>
@@ -357,12 +403,12 @@ class ListaTaxonomiaSubfamilia extends Component {
                                                     metadados: {},
                                                     usuarios: []
                                                 })
-                                                this.requisitaListaSubfamilia({}, 1);
+                                                this.requisitaListaEspecie({}, 1);
                                             }}
                                             className="login-form-button"
                                         >
                                             Limpar
-									</Button>
+                                        </Button>
                                     </FormItem>
                                 </Col>
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
@@ -373,7 +419,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                                             className="login-form-button"
                                         >
                                             Pesquisar
-									</Button>
+                                        </Button>
                                     </FormItem>
                                 </Col>
                             </Row>
@@ -384,7 +430,11 @@ class ListaTaxonomiaSubfamilia extends Component {
         )
     }
 
-    optionFamilia = () => this.state.familias.map(item => (
+    optionGenero = () => this.state.generos.map(item => (
+        <Option value={item.id}>{item.nome}</Option>
+    ));
+
+    optionAutores = () => this.state.autores.map(item => (
         <Option value={item.id}>{item.nome}</Option>
     ));
 
@@ -403,16 +453,16 @@ class ListaTaxonomiaSubfamilia extends Component {
                         }
                         onOk={() => {
                             if (this.state.id === -1) {
-                                if (this.props.form.getFieldsValue().nomeFamilia && this.props.form.getFieldsValue().nomeSubfamilia && this.props.form.getFieldsValue().nomeSubfamilia.trim() !== '') {
-                                    this.cadastraNovaSubfamilia();
+                                if (this.props.form.getFieldsValue().nomeGenero && this.props.form.getFieldsValue().nomeEspecie && this.props.form.getFieldsValue().nomeEspecie.trim() !== '') {
+                                    this.cadastraNovaEspecie();
                                 } else {
-                                    this.openNotificationWithIcon("warning", "Falha", "Informe o nome da nova subfamilia e da familia.");
+                                    this.openNotificationWithIcon("warning", "Falha", "Informe o nome da nova especie e do genero.");
                                 }
                             } else {
-                                if (this.props.form.getFieldsValue().nomeFamilia && this.props.form.getFieldsValue().nomeSubfamilia && this.props.form.getFieldsValue().nomeSubfamilia.trim() !== '') {
-                                    this.atualizaSubfamilia();
+                                if (this.props.form.getFieldsValue().nomeGenero && this.props.form.getFieldsValue().nomeEspecie && this.props.form.getFieldsValue().nomeEspecie.trim() !== '') {
+                                    this.atualizaEspecie();
                                 } else {
-                                    this.openNotificationWithIcon("warning", "Falha", "Informe o nome da nova subfamilia e da familia.");
+                                    this.openNotificationWithIcon("warning", "Falha", "Informe o nome da nova especie e do genero.");
                                 }
                             }
                             this.setState({
@@ -423,22 +473,22 @@ class ListaTaxonomiaSubfamilia extends Component {
                         <div>
                             <Row gutter={8}>
                                 <Col span={24}>
-                                    <span>Nome da familia:</span>
+                                    <span>Nome do genero:</span>
                                 </Col>
                             </Row>
                             <Row gutter={8}>
                                 <Col span={24}>
                                     <FormItem>
-                                        {getFieldDecorator('nomeFamilia')(
+                                        {getFieldDecorator('nomeGenero')(
                                             <Select
                                                 showSearch
                                                 style={{ width: '100%' }}
-                                                placeholder="Selecione uma familia"
+                                                placeholder="Selecione um genero"
                                                 optionFilterProp="children"
 
                                             >
 
-                                                {this.optionFamilia()}
+                                                {this.optionGenero()}
                                             </Select>
                                         )}
                                     </FormItem>
@@ -446,14 +496,37 @@ class ListaTaxonomiaSubfamilia extends Component {
                             </Row>
                             <Row gutter={8}>
                                 <Col span={24}>
-                                    <span>Nome da subfamilia:</span>
+                                    <span>Nome da especie:</span>
                                 </Col>
                             </Row>
                             <Row gutter={8}>
                                 <Col span={24}>
                                     <FormItem>
-                                        {getFieldDecorator('nomeSubfamilia')(
+                                        {getFieldDecorator('nomeEspecie')(
                                             <Input placeholder={""} type="text" />
+                                        )}
+                                    </FormItem>
+                                </Col>
+                            </Row>
+                            <Row gutter={8}>
+                                <Col span={24}>
+                                    <span>Nome do autor:</span>
+                                </Col>
+                            </Row>
+                            <Row gutter={8}>
+                                <Col span={24}>
+                                    <FormItem>
+                                        {getFieldDecorator('nomeAutor')(
+                                            <Select
+                                                showSearch
+                                                style={{ width: '100%' }}
+                                                placeholder="Selecione um autor"
+                                                optionFilterProp="children"
+
+                                            >
+
+                                                {this.optionAutores()}
+                                            </Select>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -465,19 +538,20 @@ class ListaTaxonomiaSubfamilia extends Component {
 
                 <Row gutter={24} style={{ marginBottom: "20px" }}>
                     <Col xs={24} sm={14} md={18} lg={20} xl={21}>
-                        <h2 style={{ fontWeight: 200 }}>Subfamilias</h2>
+                        <h2 style={{ fontWeight: 200 }}>Especies</h2>
                     </Col>
                     <Col xs={24} sm={10} md={6} lg={4} xl={3}>
                         {this.renderAdd()}
                     </Col>
                 </Row>
 
+
                 <Divider dashed />
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
                 <SimpleTableComponent
                     columns={columns}
-                    data={this.state.subfamilias}
+                    data={this.state.especies}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
                     changePage={(pg) => {
@@ -485,7 +559,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                             pagina: pg,
                             loading: true
                         })
-                        this.requisitaListaSubfamilia(this.state.valores, pg);
+                        this.requisitaListaEspecie(this.state.valores, pg);
                     }}
                 />
                 <Divider dashed />
@@ -506,4 +580,4 @@ class ListaTaxonomiaSubfamilia extends Component {
         );
     }
 }
-export default Form.create()(ListaTaxonomiaSubfamilia);
+export default Form.create()(ListaTaxonomiaEspecie);

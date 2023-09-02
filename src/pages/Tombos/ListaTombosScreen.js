@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    Divider, Icon, Modal, Card, Row,
+    Divider, Modal, Card, Row,
     Col, Form, Select, Input, Button,
     notification, InputNumber, Collapse,
     Tag, Checkbox, Spin, DatePicker,
@@ -9,10 +9,11 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import debounce from 'lodash/debounce';
-import SimpleTableComponent from '../components/SimpleTableComponent';
-import HeaderListComponent from '../components/HeaderListComponent';
-import { isCuradorOuOperador, isIdentificador } from './../helpers/usuarios';
-import { baseUrl } from '../config/api';
+import SimpleTableComponent from '../../components/SimpleTableComponent';
+import HeaderListComponent from '../../components/HeaderListComponent';
+import { isCuradorOuOperador, isIdentificador } from '../../helpers/usuarios';
+import { baseUrl } from '../../config/api';
+import ActionListComponent from '../../components/ActionListComponent';
 
 
 const confirm = Modal.confirm;
@@ -127,51 +128,15 @@ class ListaTombosScreen extends Component {
         this.requisitaListaTombos({}, this.state.pagina);
     }
 
-    renderExcluir(id) {
-        return (
-            <div>
-                <Divider type="vertical" />
-                <a href="#" onClick={() => this.mostraMensagemDelete(id)}>
-                    <Icon type="delete" style={{ color: "#e30613" }} />
-                </a>
-            </div>
-        )
-    }
-
-    renderEditar(id) {
-        return (
-            <div>
-                <Divider type="vertical" />
-                <Link to={`/tombos/${id}`}>
-                    <Icon type="edit" style={{ color: "#FFCC00" }} />
-                </Link>
-            </div>
-        )
-    }
-
-    renderDetalhes(id) {
-        return (
-            <Link to={`/tombos/detalhes/${id}`}>
-                <Icon type="search" />
-            </Link>
-        )
-    }
-
     gerarAcao(id) {
-        if (isCuradorOuOperador()) {
-            return [
-                this.renderDetalhes(id),
-                this.renderEditar(id),
-                this.renderExcluir(id)
-            ];
-        } if (isIdentificador()) {
-            return [
-                this.renderDetalhes(id),
-                this.renderEditar(id),
-            ]
-        } else {
-            return this.renderDetalhes(id)
-        }
+        return (
+            <ActionListComponent
+                hcf={id}
+                onClickDelete={() => this.mostraMensagemDelete(id)}
+                pathOnSearch={`/tombos/detalhes/${id}`}
+                pathOnEdit={`/tombos/${id}`}
+            />
+        )
     }
 
     retornaColetores = coletores => coletores.map(item => (
@@ -394,7 +359,7 @@ class ListaTombosScreen extends Component {
                                     className="login-form-button"
                                 >
                                     Limpar
-									</Button>
+                                </Button>
                             </FormItem>
                         </Col>
                         <Col xs={24} sm={8} md={6} lg={4} xl={4}>
@@ -405,7 +370,7 @@ class ListaTombosScreen extends Component {
                                     className="login-form-button"
                                 >
                                     Pesquisar
-									</Button>
+                                </Button>
                             </FormItem>
                         </Col>
                     </Row>

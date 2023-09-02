@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    Divider, Icon, Modal, Spin, Card, Row, Col, Form,
+    Divider, Modal, Card, Spin, Row, Col, Form,
     Select, Input, Button, notification,
 } from 'antd';
 import axios from 'axios';
@@ -8,15 +8,17 @@ import SimpleTableComponent from '../components/SimpleTableComponent';
 import ModalCadastroComponent from '../components/ModalCadastroComponent';
 import { isCuradorOuOperador } from '../helpers/usuarios';
 
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
 const Option = Select.Option;
 
 const columns = [
     {
-        title: "Subespecie",
+        title: "Variedade",
         type: "text",
-        key: "subespecie"
+        key: "variedade"
     },
     {
         title: "Ação",
@@ -24,14 +26,14 @@ const columns = [
     }
 ];
 
-class ListaTaxonomiaSubespecie extends Component {
+class ListaTaxonomiaVariedade extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
             especies: [],
             metadados: {},
-            subespecies: [],
+            variedades: [],
             autores: [],
             pagina: 1,
             visibleModal: false,
@@ -46,14 +48,14 @@ class ListaTaxonomiaSubespecie extends Component {
         this.setState({
             loading: true
         })
-        axios.delete(`/api/subespecies/${id}`)
+        axios.delete(`/api/variedades/${id}`)
             .then(response => {
                 this.setState({
                     loading: false
                 })
                 if (response.status === 204) {
-                    this.requisitaListaSubespecie(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir', 'A Subespecie foi excluída com sucesso.')
+                    this.requisitaListaVariedade(this.state.valores, this.state.pagina)
+                    this.notificacao('success', 'Excluir', 'A Variedade foi excluída com sucesso.')
                 }
             })
             .catch(err => {
@@ -80,8 +82,8 @@ class ListaTaxonomiaSubespecie extends Component {
     mostraMensagemDelete(id) {
         const self = this;
         confirm({
-            title: 'Você tem certeza que deseja excluir esta subespecie?',
-            content: 'Ao clicar em SIM, a subespecie será excluída.',
+            title: 'Você tem certeza que deseja excluir esta variedade?',
+            content: 'Ao clicar em SIM, a variedade será excluída.',
             okText: 'SIM',
             okType: 'danger',
             cancelText: 'NÃO',
@@ -94,7 +96,7 @@ class ListaTaxonomiaSubespecie extends Component {
     }
 
     componentDidMount() {
-        this.requisitaListaSubespecie({}, this.state.pagina);
+        this.requisitaListaVariedade({}, this.state.pagina);
         this.requisitaEspecies();
         this.requisitaAutores();
     }
@@ -106,7 +108,7 @@ class ListaTaxonomiaSubespecie extends Component {
                     <Divider type="vertical" />
                     <a href="#" onClick={() => {
                         this.props.form.setFields({
-                            nomeSubespecie: {
+                            nomeVariedade: {
                                 value: item.nome,
                             },
                             nomeEspecie: {
@@ -122,35 +124,13 @@ class ListaTaxonomiaSubespecie extends Component {
                             titulo: 'Atualizar'
                         });
                     }}>
-                        <Icon type="edit" style={{ color: "#FFCC00" }} />
+                        <EditOutlined style={{ color: "#FFCC00" }} />
                     </a>
                     <Divider type="vertical" />
                     <a href="#" onClick={() => this.mostraMensagemDelete(item.id)}>
-                        <Icon type="delete" style={{ color: "#e30613" }} />
+                        <DeleteOutlined style={{ color: "#e30613" }} />
                     </a>
                 </span>
-            )
-        }
-        return undefined;
-    }
-
-    renderAdd = () => {
-        if (isCuradorOuOperador()) {
-            return (
-                <Button
-                    type="primary"
-                    icon="plus"
-                    onClick={() => {
-                        this.setState({
-                            visibleModal: true,
-                            titulo: 'Cadastrar',
-                            id: -1,
-                        })
-                    }}
-                    style={{ backgroundColor: "#5CB85C", borderColor: "#5CB85C" }}
-                >
-                    Adicionar
-                                </Button>
             )
         }
         return undefined;
@@ -163,25 +143,25 @@ class ListaTaxonomiaSubespecie extends Component {
         });
     };
 
-    formataDadosSubespecie = subespecies => subespecies.map(item => ({
+    formataDadosVariedade = variedades => variedades.map(item => ({
         key: item.id,
-        subespecie: item.nome,
+        variedade: item.nome,
         acao: this.gerarAcao(item),
     }));
 
-    requisitaListaSubespecie = (valores, pg) => {
+    requisitaListaVariedade = (valores, pg) => {
         let params = {
             pagina: pg
         }
 
         if (valores !== undefined) {
-            const { subespecie } = valores;
+            const { variedade } = valores;
 
-            if (subespecie) {
-                params.subespecie = subespecie;
+            if (variedade) {
+                params.variedade = variedade;
             }
         }
-        axios.get('/api/subespecies', { params })
+        axios.get('/api/variedades', { params })
             .then(response => {
                 this.setState({
                     loading: false
@@ -189,13 +169,13 @@ class ListaTaxonomiaSubespecie extends Component {
                 if (response.status === 200) {
                     const { data } = response;
                     this.setState({
-                        subespecies: this.formataDadosSubespecie(data.resultado),
+                        variedades: this.formataDadosVariedade(data.resultado),
                         metadados: data.metadados
                     });
                 } else if (response.status === 400) {
-                    this.notificacao('warning', 'Buscar', 'Erro ao buscar as subespecies.')
+                    this.notificacao('warning', 'Buscar', 'Erro ao buscar as variedades.')
                 } else {
-                    this.notificacao('error', 'Error', 'Erro do servidor ao buscar as subespecies.')
+                    this.notificacao('error', 'Error', 'Erro do servidor ao buscar as variedades.')
                 }
             })
             .catch(err => {
@@ -219,7 +199,7 @@ class ListaTaxonomiaSubespecie extends Component {
                 valores: valores,
                 loading: true
             })
-            this.requisitaListaSubespecie(valores, this.state.pagina);
+            this.requisitaListaVariedade(valores, this.state.pagina);
         }
     }
 
@@ -255,12 +235,34 @@ class ListaTaxonomiaSubespecie extends Component {
             .catch(this.catchRequestError);
     }
 
-    cadastraNovaSubespecie() {
+    renderAdd = () => {
+        if (isCuradorOuOperador()) {
+            return (
+                <Button
+                    type="primary"
+                    icon="plus"
+                    onClick={() => {
+                        this.setState({
+                            visibleModal: true,
+                            titulo: 'Cadastrar',
+                            id: -1,
+                        })
+                    }}
+                    style={{ backgroundColor: "#5CB85C", borderColor: "#5CB85C" }}
+                >
+                    Adicionar
+                </Button>
+            )
+        }
+        return undefined;
+    }
+
+    cadastraNovaVariedade() {
         this.setState({
             loading: true
         })
-        axios.post('/api/subespecies/', {
-            nome: this.props.form.getFieldsValue().nomeSubespecie,
+        axios.post('/api/variedades/', {
+            nome: this.props.form.getFieldsValue().nomeVariedade,
             especie_id: this.props.form.getFieldsValue().nomeEspecie,
             autor_id: this.props.form.getFieldsValue().nomeAutor,
         })
@@ -269,15 +271,15 @@ class ListaTaxonomiaSubespecie extends Component {
                     loading: false
                 })
                 if (response.status === 204) {
-                    this.requisitaListaSubespecie();
+                    this.requisitaListaVariedade();
                     this.openNotificationWithIcon("success", "Sucesso", "O cadastro foi realizado com sucesso.")
                 } else if (response.status === 400) {
                     this.openNotificationWithIcon("warning", "Falha", response.data.error.message);
                 } else {
-                    this.openNotificationWithIcon("error", "Falha", "Houve um problema ao cadastrar a nova subespecie, tente novamente.")
+                    this.openNotificationWithIcon("error", "Falha", "Houve um problema ao cadastrar a nova variedade, tente novamente.")
                 }
                 this.props.form.setFields({
-                    nomeSubespecie: {
+                    nomeVariedade: {
                         value: '',
                     },
                 });
@@ -297,12 +299,12 @@ class ListaTaxonomiaSubespecie extends Component {
             .catch(this.catchRequestError);
     }
 
-    atualizaSubespecie() {
+    atualizaVariedade() {
         this.setState({
             loading: true
         })
-        axios.put(`/api/subespecies/${this.state.id}`, {
-            nome: this.props.form.getFieldsValue().nomeSubespecie,
+        axios.put(`/api/variedades/${this.state.id}`, {
+            nome: this.props.form.getFieldsValue().nomeVariedade,
             especie_id: this.props.form.getFieldsValue().nomeEspecie,
             autor_id: this.props.form.getFieldsValue().nomeAutor,
         })
@@ -311,15 +313,15 @@ class ListaTaxonomiaSubespecie extends Component {
                     loading: false
                 })
                 if (response.status === 204) {
-                    this.requisitaListaSubespecie();
+                    this.requisitaListaVariedade();
                     this.openNotificationWithIcon("success", "Sucesso", "A atualização foi realizada com sucesso.")
                 } else if (response.status === 400) {
                     this.openNotificationWithIcon("warning", "Falha", response.data.error.message);
                 } else {
-                    this.openNotificationWithIcon("error", "Falha", "Houve um problema ao atualizar a subespecie, tente novamente.")
+                    this.openNotificationWithIcon("error", "Falha", "Houve um problema ao atualizar a variedade, tente novamente.")
                 }
                 this.props.form.setFields({
-                    nomeSubespecie: {
+                    nomeVariedade: {
                         value: '',
                     },
                 });
@@ -368,17 +370,17 @@ class ListaTaxonomiaSubespecie extends Component {
 
     renderPainelBusca(getFieldDecorator) {
         return (
-            <Card title="Buscar Subespécie">
+            <Card title="Buscar Variedade">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col span={24}>
-                            <span>Nome da subespecie:</span>
+                            <span>Nome da variedade:</span>
                         </Col>
                     </Row>
                     <Row gutter={8}>
                         <Col span={24}>
                             <FormItem>
-                                {getFieldDecorator('subespecie')(
+                                {getFieldDecorator('variedade')(
                                     <Input placeholder={"A. comosus"} type="text" />
                                 )}
                             </FormItem>
@@ -398,12 +400,12 @@ class ListaTaxonomiaSubespecie extends Component {
                                                     valores: {},
                                                     metadados: {}
                                                 })
-                                                this.requisitaListaSubespecie({}, 1);
+                                                this.requisitaListaVariedade({}, 1);
                                             }}
                                             className="login-form-button"
                                         >
                                             Limpar
-									</Button>
+                                        </Button>
                                     </FormItem>
                                 </Col>
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
@@ -414,7 +416,7 @@ class ListaTaxonomiaSubespecie extends Component {
                                             className="login-form-button"
                                         >
                                             Pesquisar
-									</Button>
+                                        </Button>
                                     </FormItem>
                                 </Col>
                             </Row>
@@ -448,16 +450,16 @@ class ListaTaxonomiaSubespecie extends Component {
                         }
                         onOk={() => {
                             if (this.state.id === -1) {
-                                if (this.props.form.getFieldsValue().nomeEspecie && this.props.form.getFieldsValue().nomeSubespecie && this.props.form.getFieldsValue().nomeSubespecie.trim() !== '') {
-                                    this.cadastraNovaSubespecie();
+                                if (this.props.form.getFieldsValue().nomeEspecie && this.props.form.getFieldsValue().nomeVariedade && this.props.form.getFieldsValue().nomeVariedade.trim() !== '') {
+                                    this.cadastraNovaVariedade();
                                 } else {
-                                    this.openNotificationWithIcon("warning", "Falha", "Informe o nome da nova subespecie e da especie.");
+                                    this.openNotificationWithIcon("warning", "Falha", "Informe o nome da nova variedade e da especie.");
                                 }
                             } else {
-                                if (this.props.form.getFieldsValue().nomeEspecie && this.props.form.getFieldsValue().nomeSubespecie && this.props.form.getFieldsValue().nomeSubespecie.trim() !== '') {
-                                    this.atualizaSubespecie();
+                                if (this.props.form.getFieldsValue().nomeEspecie && this.props.form.getFieldsValue().nomeVariedade && this.props.form.getFieldsValue().nomeVariedade.trim() !== '') {
+                                    this.atualizaVariedade();
                                 } else {
-                                    this.openNotificationWithIcon("warning", "Falha", "Informe o nome da nova subespecie e da especie.");
+                                    this.openNotificationWithIcon("warning", "Falha", "Informe o nome da nova variedade e da especie.");
                                 }
                             }
                             this.setState({
@@ -491,13 +493,13 @@ class ListaTaxonomiaSubespecie extends Component {
                             </Row>
                             <Row gutter={8}>
                                 <Col span={24}>
-                                    <span>Nome da subespecie:</span>
+                                    <span>Nome da variedade:</span>
                                 </Col>
                             </Row>
                             <Row gutter={8}>
                                 <Col span={24}>
                                     <FormItem>
-                                        {getFieldDecorator('nomeSubespecie')(
+                                        {getFieldDecorator('nomeVariedade')(
                                             <Input placeholder={""} type="text" />
                                         )}
                                     </FormItem>
@@ -533,7 +535,7 @@ class ListaTaxonomiaSubespecie extends Component {
 
                 <Row gutter={24} style={{ marginBottom: "20px" }}>
                     <Col xs={24} sm={14} md={18} lg={20} xl={21}>
-                        <h2 style={{ fontWeight: 200 }}>Subespecies</h2>
+                        <h2 style={{ fontWeight: 200 }}>Variedades</h2>
                     </Col>
                     <Col xs={24} sm={10} md={6} lg={4} xl={3}>
                         {this.renderAdd()}
@@ -545,7 +547,7 @@ class ListaTaxonomiaSubespecie extends Component {
                 <Divider dashed />
                 <SimpleTableComponent
                     columns={columns}
-                    data={this.state.subespecies}
+                    data={this.state.variedades}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
                     changePage={(pg) => {
@@ -553,7 +555,7 @@ class ListaTaxonomiaSubespecie extends Component {
                             pagina: pg,
                             loading: true
                         })
-                        this.requisitaListaSubespecie(this.state.valores, pg);
+                        this.requisitaListaVariedade(this.state.valores, pg);
                     }}
                 />
                 <Divider dashed />
@@ -574,4 +576,4 @@ class ListaTaxonomiaSubespecie extends Component {
         );
     }
 }
-export default Form.create()(ListaTaxonomiaSubespecie);
+export default Form.create()(ListaTaxonomiaVariedade);

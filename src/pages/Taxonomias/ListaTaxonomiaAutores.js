@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
-import { Divider, Icon, Modal, Spin, Card, Row, Col, Form, Select, Input, Button, notification } from 'antd';
+import { Divider, Modal, Spin, Card, Row, Col, Form, Select, Input, Button, notification } from 'antd';
 import axios from 'axios';
-import SimpleTableComponent from '../components/SimpleTableComponent';
-import ModalCadastroComponent from '../components/ModalCadastroComponent';
+import SimpleTableComponent from '../../components/SimpleTableComponent';
+import ModalCadastroComponent from '../../components/ModalCadastroComponent';
 import {
     isCuradorOuOperador,
-} from '../helpers/usuarios';
+} from '../../helpers/usuarios';
 
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
 const Option = Select.Option;
+
+import { DeleteOutlined } from '@ant-design/icons';
 
 const columns = [
     {
@@ -112,11 +114,11 @@ class ListaTaxonomiaAutores extends Component {
                             titulo: 'Atualizar'
                         });
                     }}>
-                        <Icon type="edit" style={{ color: "#FFCC00" }} />
+                        <EditOutlined style={{ color: "#FFCC00" }} />
                     </a>
                     <Divider type="vertical" />
                     <a onClick={() => this.mostraMensagemDelete(item.id)}>
-                        <Icon type="delete" style={{ color: "#e30613" }} />
+                        <DeleteOutlined style={{ color: "#e30613" }} />
                     </a>
                 </span>
             )
@@ -249,7 +251,7 @@ class ListaTaxonomiaAutores extends Component {
                     style={{ backgroundColor: "#5CB85C", borderColor: "#5CB85C" }}
                 >
                     Adicionar
-                                </Button>
+                </Button>
             )
         }
         return undefined;
@@ -334,7 +336,7 @@ class ListaTaxonomiaAutores extends Component {
                                             className="login-form-button"
                                         >
                                             Limpar
-									</Button>
+                                        </Button>
                                     </FormItem>
                                 </Col>
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
@@ -345,7 +347,7 @@ class ListaTaxonomiaAutores extends Component {
                                             className="login-form-button"
                                         >
                                             Pesquisar
-									</Button>
+                                        </Button>
                                     </FormItem>
                                 </Col>
                             </Row>

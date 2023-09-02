@@ -6,11 +6,11 @@ import {
     notification,
     Spin
 } from 'antd';
-import GalleryComponent from '../components/GalleryComponent';
-import MapWithControlledZoom from '../components/MapWithControlledZoom';
-import { formatarDataBDtoDataHora } from '../helpers/conversoes/ConversoesData';
+import GalleryComponent from '../../components/GalleryComponent';
+import MapWithControlledZoom from '../../components/MapWithControlledZoom';
+import { formatarDataBDtoDataHora } from '../../helpers/conversoes/ConversoesData';
 import axios from 'axios';
-import fotosTomboMap from '../helpers/fotos-tombo-map';
+import fotosTomboMap from '../../helpers/fotos-tombo-map';
 
 export default class DetalhesTomboScreen extends Component {
 
@@ -250,9 +250,9 @@ export default class DetalhesTomboScreen extends Component {
     renderLocal() {
         const tombo = this.state.tombo;
         if (tombo) {
-            
-        console.log("kokoko")
-        console.log(tombo.localizacao.longitude_graus)
+
+            console.log("kokoko")
+            console.log(tombo.localizacao.longitude_graus)
             return (
                 <div>
                     <Row gutter={8} style={{ marginBottom: '20px' }}>

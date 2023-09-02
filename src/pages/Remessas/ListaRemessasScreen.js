@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import {
-	Divider, Icon, Modal, Card, Row, Col,
+	Divider, Modal, Card, Row, Col,
 	Spin, Form, Select, Button, InputNumber
 } from 'antd';
 import axios from 'axios';
-import HeaderListComponent from '../components/HeaderListComponent';
-import { formatarDataBDtoDataHora } from '../helpers/conversoes/ConversoesData';
+import HeaderListComponent from '../../components/HeaderListComponent';
+import { formatarDataBDtoDataHora } from '../../helpers/conversoes/ConversoesData';
 import { Link } from 'react-router-dom';
-import ExpansiveTableComponent from '../components/ExpansiveTableComponent';
+import ExpansiveTableComponent from '../../components/ExpansiveTableComponent';
+
+import { SearchOutlined } from '@ant-design/icons';
 
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
@@ -199,11 +201,11 @@ class ListaRemessasScreen extends Component {
 		return (
 			<span>
 				<Link to={`/remessas/${id}`}>
-					<Icon type="edit" style={{ color: "#FFCC00" }} />
+					<SearchOutlined style={{ color: "#FFCC00" }} />
 				</Link>
 				<Divider type="vertical" />
 				<a href="#" onClick={() => this.mostraMensagemDelete(id)}>
-					<Icon type="delete" style={{ color: "#e30613" }} />
+					<DeleteOutlined style={{ color: "#e30613" }} />
 				</a>
 			</span>
 		)
@@ -360,7 +362,7 @@ class ListaRemessasScreen extends Component {
 											className="login-form-button"
 										>
 											Limpar
-									</Button>
+										</Button>
 									</FormItem>
 								</Col>
 								<Col xs={24} sm={8} md={6} lg={4} xl={4}>
@@ -371,7 +373,7 @@ class ListaRemessasScreen extends Component {
 											className="login-form-button"
 										>
 											Pesquisar
-									</Button>
+										</Button>
 									</FormItem>
 								</Col>
 							</Row>

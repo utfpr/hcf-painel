@@ -2,18 +2,20 @@ import React, { Component } from 'react';
 import {
     Form, Row, Col, Divider, Select, InputNumber,
     Tag, Input, Button, notification, Spin, Modal,
-    Radio, Icon, Table,
+    Radio, Table,
 } from 'antd';
 import axios from 'axios';
-import UploadPicturesComponent from '../components/UploadPicturesComponent';
-import ModalCadastroComponent from '../components/ModalCadastroComponent';
-import ButtonComponent from '../components/ButtonComponent';
-import CoordenadaInputText from '../components/CoordenadaInputText';
-import tomboParaRequisicao from '../helpers/conversoes/TomboParaRequisicao';
-import { isIdentificador } from '../helpers/usuarios';
-import { fotosBaseUrl } from '../config/api';
+import UploadPicturesComponent from '../../components/UploadPicturesComponent';
+import ModalCadastroComponent from '../../components/ModalCadastroComponent';
+import ButtonComponent from '../../components/ButtonComponent';
+import CoordenadaInputText from '../../components/CoordenadaInputText';
+import tomboParaRequisicao from '../../helpers/conversoes/TomboParaRequisicao';
+import { isIdentificador } from '../../helpers/usuarios';
+import { fotosBaseUrl } from '../../config/api';
 import debounce from 'lodash/debounce';
-import SimpleTableComponent from '../components/SimpleTableComponent';
+import SimpleTableComponent from '../../components/SimpleTableComponent';
+
+import { DeleteOutlined } from '@ant-design/icons';
 
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
@@ -22,6 +24,7 @@ const { TextArea } = Input;
 const RadioGroup = Radio.Group;
 
 class NovoTomboScreen extends Component {
+
 
     tabelaFotosColunas = [
         {
@@ -36,7 +39,7 @@ class NovoTomboScreen extends Component {
             dataIndex: 'acao',
             render: (text, record, index) => (
                 <a href="#" onClick={(e) => { e.preventDefault(); this.excluirFotoTombo(record, index); }}>
-                    <Icon type="delete" style={{ color: "#e30613" }} />
+                    <DeleteOutlined style={{ color: "#e30613" }} />
                 </a>
             ),
         },
@@ -125,7 +128,7 @@ class NovoTomboScreen extends Component {
         this.setState({
             loading: true
         });
-        
+
     }
 
     requisitaDadosEdicao = (id) => {
@@ -156,7 +159,7 @@ class NovoTomboScreen extends Component {
             })
             .catch(this.catchRequestError);
     }
-    
+
     insereDadosFormulario(dados) {
         let insereState = {
             estados: dados.estados,
@@ -244,7 +247,7 @@ class NovoTomboScreen extends Component {
             },
             autorEspecie: {
                 value: dados.complemento,
-            }  
+            }
         });
     }
 
@@ -359,34 +362,34 @@ class NovoTomboScreen extends Component {
                 json.variedade_id = variedade;
             }
             axios.put(`/api/tombos/${this.props.match.params.tombo_id}`, json)
-            .then(response => {
-                this.setState({
-                    loading: false
-                });
-                if (response.status === 200) {
-                    this.openNotificationWithIcon("success", "Sucesso", "O cadastro foi realizado com sucesso.")
-                    this.props.history.goBack()
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                });
-                const { response } = err;
+                .then(response => {
+                    this.setState({
+                        loading: false
+                    });
+                    if (response.status === 200) {
+                        this.openNotificationWithIcon("success", "Sucesso", "O cadastro foi realizado com sucesso.")
+                        this.props.history.goBack()
+                    }
+                })
+                .catch(err => {
+                    this.setState({
+                        loading: false
+                    });
+                    const { response } = err;
 
-                if (response.status === 400) {
-                    this.openNotificationWithIcon("warning", "Falha", response.data.error.message);
-                } else {
-                    this.openNotificationWithIcon("error", "Falha", "Houve um problema ao alterar o tombo tente novamente.")
-                }
-                if (response && response.data) {
-                    const { error } = response.data;
-                    console.log(error.message);
-                } else {
-                    throw err;
-                }
-            })
-            .catch(this.catchRequestError);
+                    if (response.status === 400) {
+                        this.openNotificationWithIcon("warning", "Falha", response.data.error.message);
+                    } else {
+                        this.openNotificationWithIcon("error", "Falha", "Houve um problema ao alterar o tombo tente novamente.")
+                    }
+                    if (response && response.data) {
+                        const { error } = response.data;
+                        console.log(error.message);
+                    } else {
+                        throw err;
+                    }
+                })
+                .catch(this.catchRequestError);
         }
     }
 
@@ -419,7 +422,7 @@ class NovoTomboScreen extends Component {
         if (longitude !== undefined) json.localidade = { ...json.localidade, longitude: longitude };
         if (altitude !== undefined) json.localidade = { ...json.localidade, altitude: altitude };
         json.localidade = { ...json.localidade, cidade_id: cidade };
-        if (complemento !== undefined && complemento !== ""){
+        if (complemento !== undefined && complemento !== "") {
             json.localidade = { ...json.localidade, complemento };
         }
         if (solo !== undefined && solo !== "") json.paisagem = { ...json.paisagem, solo_id: solo };
@@ -462,7 +465,7 @@ class NovoTomboScreen extends Component {
         if (autorEspecie !== undefined && autorEspecie !== "") json.autores = { especie: autorEspecie };
         if (autoresSubespecie !== undefined && autoresSubespecie !== "") json.autores = { ...json.autores, subespecie: autoresSubespecie };
         if (autorVariedade !== undefined && autorVariedade !== "") json.autores = { ...json.autores, variedade: autorVariedade };
-        
+
         console.log('TOMBO ENVIADO:')
         console.log(json)
 
@@ -1121,7 +1124,7 @@ class NovoTomboScreen extends Component {
                     search: {
                         especie: ''
                     },
-                   // loading: false,
+                    // loading: false,
                 })
                 const { response } = err;
                 if (response && response.data) {
@@ -1227,7 +1230,7 @@ class NovoTomboScreen extends Component {
                     search: {
                         subespecie: ''
                     },
-                   // loading: false
+                    // loading: false
                 })
                 const { response } = err;
                 if (response && response.data) {
@@ -1320,7 +1323,7 @@ class NovoTomboScreen extends Component {
                     search: {
                         variedade: ''
                     },
-                  //  loading: false
+                    //  loading: false
                 })
                 if (response.status === 200) {
                     this.setState({
@@ -1333,7 +1336,7 @@ class NovoTomboScreen extends Component {
                     search: {
                         variedade: ''
                     },
-                  //  loading: false
+                    //  loading: false
                 })
                 const { response } = err;
                 if (response && response.data) {
@@ -1765,7 +1768,7 @@ class NovoTomboScreen extends Component {
     requisitaColetores = (nome) => {
         this.setState({
             coletores: [],
-            fetchingColetores: true 
+            fetchingColetores: true
         })
         axios.get(`/api/coletores-predicao?nome=${nome}`)
             .then(response => {
@@ -1796,7 +1799,7 @@ class NovoTomboScreen extends Component {
     requisitaIdentificadores = (nome) => {
         this.setState({
             identificadores: [],
-            fetchingIdentificadores: true 
+            fetchingIdentificadores: true
         })
         axios.get(`/api/identificadores-predicao?nome=${nome}`)
             .then(response => {
@@ -1962,8 +1965,8 @@ class NovoTomboScreen extends Component {
                         <Col xs={22} sm={22} md={12} lg={12} xl={12}>
                             <FormItem>
                                 {getFieldDecorator('tipo', {
-                                   initialValue: String(this.state.tipoInicial),
-                                })(                                    
+                                    initialValue: String(this.state.tipoInicial),
+                                })(
                                     <Select
                                         showSearch
                                         placeholder="Selecione o tipo"
@@ -2103,7 +2106,7 @@ class NovoTomboScreen extends Component {
                                         showSearch
                                         placeholder="Selecione uma cidade"
                                         optionFilterProp="children"
-                                        
+
                                     >
                                         {this.optionCidade()}
                                     </Select>
@@ -2585,13 +2588,13 @@ class NovoTomboScreen extends Component {
                                         optionFilterProp="children"
                                         // onChange={this.handleChangeIdentificadores}
                                         placeholder="Selecione o idenficador"
-                                        onSearch = {value => {
+                                        onSearch={value => {
                                             this.requisitaIdentificadores(value)
                                         }}
                                         filterOption={false}
-                                        // filterOption={(input, option) =>
-                                        //     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                        // }
+                                    // filterOption={(input, option) =>
+                                    //     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                    // }
                                     >
                                         {this.optionIdentificador()}
                                     </Select>
@@ -2691,7 +2694,7 @@ class NovoTomboScreen extends Component {
                                         // onChange={this.handleChangeColetores}
                                         placeholder="Selecione os coletores"
                                         filterOption={false}
-                                        onSearch = {value => {
+                                        onSearch={value => {
                                             this.requisitaColetores(value)
                                         }}
                                     >
@@ -2887,71 +2890,71 @@ class NovoTomboScreen extends Component {
         return (
             <div>
                 <Form onSubmit={this.handleSubmitForm}>
-                <ModalCadastroComponent title={'Edição'} visibleModal={this.state.visibleModal} loadingModal={this.state.loadingModal}
-                    onCancel={
-                        () => {
-                            this.setState({
-                                visibleModal: false,
-                                formColetor: 0,
-                                formComAutor: false,
-                            })
-                        }
-                    }
-                    onOk={() => {
-                        if (this.validacaoModal()) {
-                            switch (this.state.formulario.tipo) {
-                                case 1:
-                                    this.cadastraNovaFamilia();
-                                    break;
-                                case 2:
-                                    this.cadastraNovaSubfamilia();
-                                    break;
-                                case 3:
-                                    this.cadastraNovoGenero();
-                                    break;
-                                case 4:
-                                    this.cadastraNovaEspecie();
-                                    break;
-                                case 5:
-                                    this.cadastraNovaSubespecie();
-                                    break;
-                                case 6:
-                                    this.cadastraNovaVariedade();
-                                    break;
-                                case 7:
-                                    this.cadastraNovoAutor();
-                                    break;
-                                default:
-                                    break;
+                    <ModalCadastroComponent title={'Edição'} visibleModal={this.state.visibleModal} loadingModal={this.state.loadingModal}
+                        onCancel={
+                            () => {
+                                this.setState({
+                                    visibleModal: false,
+                                    formColetor: 0,
+                                    formComAutor: false,
+                                })
                             }
                         }
+                        onOk={() => {
+                            if (this.validacaoModal()) {
+                                switch (this.state.formulario.tipo) {
+                                    case 1:
+                                        this.cadastraNovaFamilia();
+                                        break;
+                                    case 2:
+                                        this.cadastraNovaSubfamilia();
+                                        break;
+                                    case 3:
+                                        this.cadastraNovoGenero();
+                                        break;
+                                    case 4:
+                                        this.cadastraNovaEspecie();
+                                        break;
+                                    case 5:
+                                        this.cadastraNovaSubespecie();
+                                        break;
+                                    case 6:
+                                        this.cadastraNovaVariedade();
+                                        break;
+                                    case 7:
+                                        this.cadastraNovoAutor();
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
 
-                        this.setState({
-                            visibleModal: false,
-                            formComAutor: false,
-                            formColetor: 0
-                        })
-                    }}>
+                            this.setState({
+                                visibleModal: false,
+                                formComAutor: false,
+                                formColetor: 0
+                            })
+                        }}>
 
-                    {this.renderFormulario(getFieldDecorator)}
+                        {this.renderFormulario(getFieldDecorator)}
 
-                </ModalCadastroComponent>
-            </Form>
-            <Form onSubmit={this.handleSubmitIdentificador}>
-                <Row>
-                    <Col span={12}>
-                        <h2 style={{ fontWeight: 200 }}>Tombo</h2>
-                    </Col>
-                </Row>
-                <Divider dashed />
-                {this.renderFamiliaTombo(getFieldDecorator)}
-                <Divider dashed />
-                <Row type="flex" justify="end">
-                    <Col xs={24} sm={8} md={3} lg={3} xl={3}>
-                        <ButtonComponent titleButton="Salvar" />
-                    </Col>
-                </Row>
-            </Form>
+                    </ModalCadastroComponent>
+                </Form>
+                <Form onSubmit={this.handleSubmitIdentificador}>
+                    <Row>
+                        <Col span={12}>
+                            <h2 style={{ fontWeight: 200 }}>Tombo</h2>
+                        </Col>
+                    </Row>
+                    <Divider dashed />
+                    {this.renderFamiliaTombo(getFieldDecorator)}
+                    <Divider dashed />
+                    <Row type="flex" justify="end">
+                        <Col xs={24} sm={8} md={3} lg={3} xl={3}>
+                            <ButtonComponent titleButton="Salvar" />
+                        </Col>
+                    </Row>
+                </Form>
             </div>
         )
     }
@@ -3131,23 +3134,23 @@ class NovoTomboScreen extends Component {
                             </Col>
                         </Col>
                     </Row>
-                    
+
                     <Divider dashed />
                     <Row gutter={8}>
-                    <Table
-                        columns={this.tabelaFotosColunas}
-                        dataSource={this.state.fotos}
-                        loading={this.state.loading}
-                        rowKey="id"
-                    />
-                    
-                    </Row>             
+                        <Table
+                            columns={this.tabelaFotosColunas}
+                            dataSource={this.state.fotos}
+                            loading={this.state.loading}
+                            rowKey="id"
+                        />
+
+                    </Row>
                     <Row type="flex" justify="end">
                         <Col xs={24} sm={8} md={3} lg={3} xl={3}>
                             <ButtonComponent titleButton={"Salvar"} />
                         </Col>
                     </Row>
-                </Form> 
+                </Form>
             </div>
         );
     }
@@ -3166,30 +3169,30 @@ class NovoTomboScreen extends Component {
     // }))
 
     mostraMensagemDelete(id) {
-		const self = this;
-		confirm({
-			title: 'Você tem certeza que deseja excluir esta foto?',
-			content: 'Ao clicar em SIM, a foto será excluída.',
-			okText: 'SIM',
-			okType: 'danger',
-			cancelText: 'NÃO',
-			onOk() {
-				
-			},
-			onCancel() {
-			},
-		});
-	}
+        const self = this;
+        confirm({
+            title: 'Você tem certeza que deseja excluir esta foto?',
+            content: 'Ao clicar em SIM, a foto será excluída.',
+            okText: 'SIM',
+            okType: 'danger',
+            cancelText: 'NÃO',
+            onOk() {
+
+            },
+            onCancel() {
+            },
+        });
+    }
 
     gerarAcaoFoto = id => {
         return (
             <span>
                 <a href="#" onClick={() => this.mostraMensagemDelete(id)}>
-                    <Icon type="delete" style={{ color: "#e30613" }} />
+                    <DeleteOutlined style={{ color: "#e30613" }} />
                 </a>
             </span>
         )
-	}
+    }
 
     renderPorTipo() {
         if (isIdentificador()) {

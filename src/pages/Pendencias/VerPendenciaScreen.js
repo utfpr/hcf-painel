@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Divider, Col, Row, Input, Form, Button, Spin, notification } from 'antd';
-import SimpleTableComponent from '../components/SimpleTableComponent';
-import HeaderListComponent from '../components/HeaderListComponent';
-import GalleryComponent from '../components/GalleryComponent';
+import SimpleTableComponent from '../../components/SimpleTableComponent';
+import HeaderListComponent from '../../components/HeaderListComponent';
+import GalleryComponent from '../../components/GalleryComponent';
 import axios from 'axios';
-import fotosTomboMap from '../helpers/fotos-tombo-map';
+import fotosTomboMap from '../../helpers/fotos-tombo-map';
 
 const { TextArea } = Input;
 const FormItem = Form.Item;
@@ -30,8 +30,8 @@ const columns = [
 class VerPendenciaScreen extends Component {
 
     constructor(props) {
-		super(props);
-		this.state = {
+        super(props);
+        this.state = {
             loading: false,
             data: [],
             aprovar: false,
@@ -40,8 +40,8 @@ class VerPendenciaScreen extends Component {
                 antigas: []
             },
             status: ''
-		};
-	}
+        };
+    }
 
     componentDidMount() {
         if (this.props.match.params.pendencia_id !== undefined) {
@@ -86,11 +86,11 @@ class VerPendenciaScreen extends Component {
     }
 
     notificacao = (type, message, description) => {
-		notification[type]({
-			message: message,
-			description: description,
-		});
-	};
+        notification[type]({
+            message: message,
+            description: description,
+        });
+    };
 
     handleSubmit = () => {
         const observacao = this.props.form.getFieldsValue().observacao;
@@ -105,7 +105,7 @@ class VerPendenciaScreen extends Component {
                 if (response.status == 204) {
                     this.notificacao('success', 'Atualização', 'A pendência foi atualizada com sucesso.')
                     this.props.history.goBack();
-                }else {
+                } else {
                     this.notificacao('warning', 'Atualização', 'Houve um problema em atualizar a pendência.')
                 }
             })
@@ -130,7 +130,7 @@ class VerPendenciaScreen extends Component {
 
     renderFotos() {
         if (this.state.fotos.novas.length > 0 && this.state.fotos.antigas.length > 0) {
-            const fotosNovas =  this.state.fotos.novas.map(fotosTomboMap);
+            const fotosNovas = this.state.fotos.novas.map(fotosTomboMap);
             const fotosAntigas = this.state.fotos.novas.map(fotosTomboMap);
 
             return (
@@ -142,7 +142,7 @@ class VerPendenciaScreen extends Component {
                                 <span>Fotos antigas:</span>
                             </Col>
                             <Col span={24}>
-                                <GalleryComponent fotos={fotosAntigas}/>
+                                <GalleryComponent fotos={fotosAntigas} />
                             </Col>
                         </Col>
                         <Col xs={24} sm={12} md={12} lg={12} xl={12}>
@@ -199,28 +199,28 @@ class VerPendenciaScreen extends Component {
                         <Col xs={24} sm={12} md={8} lg={6} xl={4}>
                             <FormItem>
                                 <Button type="primary" icon="check"
-                                htmlType="submit"
-                                style={{
-                                    backgroundColor: "#5cb85c",
-                                    borderColor: "#4cae4c"
-                                }}
-                                onClick={() => this.setState({
-                                    aprovar: 'APROVADO'
-                                })}
+                                    htmlType="submit"
+                                    style={{
+                                        backgroundColor: "#5cb85c",
+                                        borderColor: "#4cae4c"
+                                    }}
+                                    onClick={() => this.setState({
+                                        aprovar: 'APROVADO'
+                                    })}
                                 >Aprovar</Button>
                             </FormItem>
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={6} xl={4}>
                             <FormItem>
                                 <Button type="primary" icon="close"
-                                htmlType="submit"
-                                style={{
-                                    backgroundColor: "#d9534f",
-                                    borderColor: "#d43f3a"
-                                }}
-                                onClick={() => this.setState({
-                                    aprovar: 'REPROVADO'
-                                })}
+                                    htmlType="submit"
+                                    style={{
+                                        backgroundColor: "#d9534f",
+                                        borderColor: "#d43f3a"
+                                    }}
+                                    onClick={() => this.setState({
+                                        aprovar: 'REPROVADO'
+                                    })}
                                 >Reprovar</Button>
                             </FormItem>
                         </Col>
@@ -248,17 +248,17 @@ class VerPendenciaScreen extends Component {
     }
 
     render() {
-		if (this.state.loading) {
-			return (
-				<Spin tip="Carregando...">
-					{this.renderFormulario()}
-				</Spin>
-			)
-		}
-		return (
-			this.renderFormulario()
-		);
-	}
+        if (this.state.loading) {
+            return (
+                <Spin tip="Carregando...">
+                    {this.renderFormulario()}
+                </Spin>
+            )
+        }
+        return (
+            this.renderFormulario()
+        );
+    }
 }
 
 export default Form.create()(VerPendenciaScreen);

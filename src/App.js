@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 
-import 'antd/dist/antd.css';
+// import 'antd/dist/antd.css';
 import './assets/css/App.css';
 import './assets/css/FormEnterSystem.css';
 import './assets/css/Main.css';

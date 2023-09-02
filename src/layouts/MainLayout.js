@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout, Menu, Icon, Col, Spin, Button, Row } from 'antd';
+import { Layout, Menu, Col, Spin, Button, Row } from 'antd';
 import { Link } from 'react-router-dom';
 import {
 	isCurador,
@@ -10,6 +10,12 @@ import {
 import axios from 'axios';
 import { setTokenUsuario, setUsuario } from '../helpers/usuarios';
 import { baseUrl } from '../config/api';
+
+import {
+	DesktopOutlined, DatabaseOutlined, BarsOutlined, TeamOutlined,
+	FlagOutlined, MenuFoldOutlined, MenuUnfoldOutlined,
+	LogoutOutlined, SearchOutlined
+} from '@ant-design/icons'
 
 const { Header, Content, Sider } = Layout;
 const { SubMenu } = Menu;
@@ -61,6 +67,18 @@ export default class MainLayout extends Component {
 			});
 	}
 
+	renderMenuIcon = () => {
+		if (this.state.collapsed) {
+			return (
+				<MenuUnfoldOutlined onClick={this.toggle} />
+			)
+		} else {
+			return (
+				<MenuFoldOutlined onClick={this.toggle} />
+			)
+		}
+	}
+
 	renderFormulario() {
 		return (
 			<Layout style={{ minHeight: '100vh' }}>
@@ -78,7 +96,7 @@ export default class MainLayout extends Component {
 					<Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
 						<Menu.Item key="1">
 							<Link to="/tombos">
-								<Icon type="desktop" />
+								<DesktopOutlined />
 								<span>Tombos</span>
 							</Link>
 						</Menu.Item>
@@ -86,7 +104,7 @@ export default class MainLayout extends Component {
 							key="subTaxo"
 							title={
 								<span>
-									<Icon type="desktop" />
+									<DesktopOutlined />
 									<span>Taxonomias</span>
 								</span>
 							}
@@ -116,7 +134,7 @@ export default class MainLayout extends Component {
 						{isCuradorOuOperador() ? (
 							<Menu.Item key="8">
 								<Link to="/remessas">
-									<Icon type="database" />
+									<DatabaseOutlined />
 									<span>Remessas</span>
 								</Link>
 							</Menu.Item>
@@ -124,7 +142,7 @@ export default class MainLayout extends Component {
 						{isCurador() ? (
 							<Menu.Item key="7">
 								<Link to="/pendencias">
-									<Icon type="bars" />
+									<BarsOutlined />
 									<span>Pendências</span>
 								</Link>
 							</Menu.Item>
@@ -132,14 +150,14 @@ export default class MainLayout extends Component {
 						{isCurador() ? (
 							<Menu.Item key="9">
 								<Link to="/usuarios">
-									<Icon type="team" />
+									<TeamOutlined />
 									<span>Usuários</span>
 								</Link>
 							</Menu.Item>
 						) : null}
 						<Menu.Item key="10">
 							<Link to="/herbarios">
-								<Icon type="flag" />
+								<FlagOutlined />
 								<span>Herbários</span>
 							</Link>
 						</Menu.Item>
@@ -147,7 +165,7 @@ export default class MainLayout extends Component {
 							key="sub2"
 							title={
 								<span>
-									<Icon type="file-text" />
+									<FileSearchOutlined />
 									<span>Fichas</span>
 								</span>
 							}
@@ -194,7 +212,7 @@ export default class MainLayout extends Component {
 						{isCuradorOuOperador() ? (
 							<Menu.Item key="16">
 								<a href={`${baseUrl}/api/darwincore`} target="_blank">
-									<Icon type="desktop" />
+									<DesktopOutlined />
 									<span>Darwin Core</span>
 								</a>
 							</Menu.Item>
@@ -204,7 +222,7 @@ export default class MainLayout extends Component {
 							 * Adicionando ao menu lateral o botão de serviços,
 							 * Reflora e speciesLink.
 							 */
-							<SubMenu key="servicos" title={<span> <Icon type="search" /> <span>Serviços</span> </span>} >
+							<SubMenu key="servicos" title={<span> <SearchOutlined /> <span>Serviços</span> </span>} >
 								<Menu.Item key="20">
 									<Link to="/reflora">Reflora</Link>
 								</Menu.Item>
@@ -224,7 +242,7 @@ export default class MainLayout extends Component {
 									localStorage.setItem('usuario', "");
 									console.log("ZERO TOKEN")
 								}}>
-									<Icon type="logout" />
+									<LogoutOutlined />
 									<span>Sair</span>
 								</Link>
 							</Menu.Item>
@@ -235,11 +253,7 @@ export default class MainLayout extends Component {
 					<Header style={{ background: "#fff" }}>
 						<Row type="flex" justify="space-between">
 							<div style={{ cursor: "pointer" }}>
-								<Icon
-									className="trigger"
-									type={this.state.collapsed ? "menu-unfold" : "menu-fold"}
-									onClick={this.toggle}
-								/>
+								{this.renderMenuIcon()}
 							</div>
 							{!isCuradorOuOperadorOuIdentificador() ? (
 								<Link to={"/inicio"}>

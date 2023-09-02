@@ -7,21 +7,22 @@ import {
 	InputNumber,
 	notification,
 	Spin,
-	Icon,
+
 	Modal,
 	Row,
 	Col,
 	DatePicker,
 	Divider,
 } from 'antd';
-import ButtonComponent from '../components/ButtonComponent';
-import ModalCadastroComponent from '../components/ModalCadastroComponent';
-import SimpleTableComponent from '../components/SimpleTableComponent';
+import ButtonComponent from '../../components/ButtonComponent';
+import ModalCadastroComponent from '../../components/ModalCadastroComponent';
+import SimpleTableComponent from '../../components/SimpleTableComponent';
 import axios from 'axios';
 import 'moment/locale/pt-br';
 import moment from 'moment';
 
-import { formatarDataENtoBR, formatarDataBDtoDataHora } from '../helpers/conversoes/ConversoesData';
+import { formatarDataENtoBR, formatarDataBDtoDataHora } from '../../helpers/conversoes/ConversoesData';
+import { DeleteOutlined } from '@ant-design/icons';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -259,12 +260,12 @@ class NovaRemessaScreen extends Component {
 			},
 			tombos: this.state.data
 		})
-			.then(response => {				
+			.then(response => {
 				this.setState({
 					loading: false
 				});
-				if (response.status == 204) {					
-					this.props.form.resetFields();					
+				if (response.status == 204) {
+					this.props.form.resetFields();
 					this.notificacao('success', 'Edição', 'A remessa foi alterada com sucesso.')
 					this.props.history.goBack();
 				} else {
@@ -301,7 +302,7 @@ class NovaRemessaScreen extends Component {
 		return (
 			<span>
 				<a href="#" onClick={() => this.mostraMensagemDelete(item.hcf)}>
-					<Icon type="delete" style={{ color: "#e30613" }} />
+					<DeleteOutlined style={{ color: "#e30613" }} />
 				</a>
 			</span>
 		)
@@ -316,9 +317,9 @@ class NovaRemessaScreen extends Component {
 			okType: 'danger',
 			cancelText: 'NÃO',
 			onOk() {
-				for(let i = 0; i < self.state.data.length; i++) {
+				for (let i = 0; i < self.state.data.length; i++) {
 					if (self.state.data[i].hcf == id) {
-						let vetor = self.state.data;						
+						let vetor = self.state.data;
 						vetor.splice(i, 1);
 						self.setState({
 							data: vetor
@@ -365,18 +366,18 @@ class NovaRemessaScreen extends Component {
 								visibleModal: false,
 								data: vetor
 							})
-							
-						this.props.form.setFields({
-							hcf: {
-                                value: ''
-							},
-							tipo: {
-                                value: ''
-							},
-							dataVencimento: {
-                                value: ''
-                            },
-						});
+
+							this.props.form.setFields({
+								hcf: {
+									value: ''
+								},
+								tipo: {
+									value: ''
+								},
+								dataVencimento: {
+									value: ''
+								},
+							});
 						}}>
 
 						<div>
