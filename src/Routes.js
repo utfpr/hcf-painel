@@ -1,11 +1,8 @@
-import React, { Component } from 'react';
+/*import React, { Component } from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 
 // import 'antd/dist/antd.css';
-import './assets/css/App.css';
-import './assets/css/FormEnterSystem.css';
-import './assets/css/Main.css';
-import './assets/css/Search.css';
+
 
 import MainLayout from './layouts/MainLayout';
 import InicioScreen from './pages/InicioScreen';
@@ -36,11 +33,7 @@ import ListaTaxonomiaSubfamilia from './pages/ListaTaxonomiaSubfamilia';
 import ListaTaxonomiaVariedade from './pages/ListaTaxonomiaVariedade';
 import ListaTaxonomiaAutores from './pages/ListaTaxonomiaAutores';
 
-import '../node_modules/react-image-gallery/styles/scss/image-gallery.scss';
-import '../node_modules/react-image-gallery/styles/css/image-gallery.css';
-import '../node_modules/react-image-gallery/styles/css/image-gallery.css';
-import '../node_modules/react-image-gallery/styles/scss/image-gallery-no-icon.scss';
-import '../node_modules/react-image-gallery/styles/css/image-gallery-no-icon.css';
+
 
 import axios from 'axios';
 import {
@@ -71,7 +64,7 @@ const PrivateRoute = ({ component: Component, authed, ...rest }) => {
     )
 }
 
-export default class App extends Component {
+export default class Routes extends Component {
 
     constructor() {
         super();
@@ -88,27 +81,27 @@ export default class App extends Component {
     _renderContent = () => (
         <MainLayout>
             <Switch>
-                <Route path="/tombos/detalhes/:tombo_id" component={DetalhesTomboScreen} />
-                <PrivateRoute authed={isCuradorOuOperador()} path="/tombos/novo" component={NovoTomboScreen} />
-                <PrivateRoute authed={isCuradorOuOperadorOuIdentificador()} path="/tombos/:tombo_id" component={NovoTomboScreen} />
-                <Route exact path="/tombos" component={ListaTombosScreen} />
-                <Route path="/taxonomias" component={ListaTaxonomiaScreen} />
-                <PrivateRoute authed={isCuradorOuOperador()} path="/pendencias/:pendencia_id" component={PendenciaPagina} />
-                <PrivateRoute authed={isCuradorOuOperador()} path="/pendencias" component={ListaPendenciasScreen} />
-                <PrivateRoute authed={isCuradorOuOperador()} path="/remessas/novo" component={NovaRemessaScreen} />
-                <PrivateRoute authed={isCuradorOuOperador()} path="/remessas/:remessa_id" component={NovaRemessaScreen} />
-                <PrivateRoute authed={isCuradorOuOperador()} path="/remessas" component={ListaRemessasScreen} />
-                <PrivateRoute authed={isCurador()} path="/usuarios/novo" component={NovoUsuarioScreen} />
-                <PrivateRoute authed={isCurador()} path="/usuarios/:usuario_id" component={NovoUsuarioScreen} />
-                <PrivateRoute authed={isCurador()} path="/usuarios" component={ListaUsuariosScreen} />
-                <PrivateRoute authed={isCurador()} path="/herbarios/novo" component={NovoHerbarioScreen} />
-                <PrivateRoute authed={isCurador()} path="/herbarios/:herbario_id" component={NovoHerbarioScreen} />
-                <Route path="/herbarios" component={ListaHerbariosScreen} />
-                <Route path="/fichas/tombos" component={FichaTomboScreen} />
-                <PrivateRoute authed={isCurador()} path="/reflora" component={ServicosRefloraScreen} />
-                <PrivateRoute authed={isCurador()} path="/specieslink" component={ServicosSpeciesLinkScreen} />
+           //     <Route path="/tombos/detalhes/:tombo_id" component={DetalhesTomboScreen} />
+            //    <PrivateRoute authed={isCuradorOuOperador()} path="/tombos/novo" component={NovoTomboScreen} />
+            //    <PrivateRoute authed={isCuradorOuOperadorOuIdentificador()} path="/tombos/:tombo_id" component={NovoTomboScreen} />
+           //     <Route exact path="/tombos" component={ListaTombosScreen} />
+            //    <Route path="/taxonomias" component={ListaTaxonomiaScreen} />
+            //    <PrivateRoute authed={isCuradorOuOperador()} path="/pendencias/:pendencia_id" component={PendenciaPagina} />
+            //    <PrivateRoute authed={isCuradorOuOperador()} path="/pendencias" component={ListaPendenciasScreen} />
+            //    <PrivateRoute authed={isCuradorOuOperador()} path="/remessas/novo" component={NovaRemessaScreen} />
+            //    <PrivateRoute authed={isCuradorOuOperador()} path="/remessas/:remessa_id" component={NovaRemessaScreen} />
+             //   <PrivateRoute authed={isCuradorOuOperador()} path="/remessas" component={ListaRemessasScreen} />
+             //   <PrivateRoute authed={isCurador()} path="/usuarios/novo" component={NovoUsuarioScreen} />
+            //    <PrivateRoute authed={isCurador()} path="/usuarios/:usuario_id" component={NovoUsuarioScreen} />
+              //  <PrivateRoute authed={isCurador()} path="/usuarios" component={ListaUsuariosScreen} />
+              //  <PrivateRoute authed={isCurador()} path="/herbarios/novo" component={NovoHerbarioScreen} />
+             //   <PrivateRoute authed={isCurador()} path="/herbarios/:herbario_id" component={NovoHerbarioScreen} />
+            //    <Route path="/herbarios" component={ListaHerbariosScreen} />
+            //    <Route path="/fichas/tombos" component={FichaTomboScreen} />
+             //   <PrivateRoute authed={isCurador()} path="/reflora" component={ServicosRefloraScreen} />
+             //   <PrivateRoute authed={isCurador()} path="/specieslink" component={ServicosSpeciesLinkScreen} />
 
-                <Route path="/livro-tombo" component={LivroTomboScreen} />
+            //    <Route path="/livro-tombo" component={LivroTomboScreen} />
 
                 <Route path="/especies" component={ListaTaxonomiaEspecie} />
                 <Route path="/familias" component={ListaTaxonomiaFamilia} />
@@ -133,3 +126,4 @@ export default class App extends Component {
         );
     }
 }
+*/

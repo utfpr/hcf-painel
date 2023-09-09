@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Row, Col, Alert } from 'antd';
+import { Row, Col, Alert, Image } from 'antd';
 import axios from 'axios';
-import LoginForm from '../layouts/LoginForm';
+import LoginForm from './LoginForm';
 import { setTokenUsuario, setUsuario } from '../helpers/usuarios';
+import imgLogo from "../assets/img/logo-hcf-grande.png"
 
 export default class LoginLayout extends Component {
 
@@ -85,13 +86,15 @@ export default class LoginLayout extends Component {
                         style={{ marginBottom: "10px" }}
                     >
                         <Col span={6}>
-                            <img
-                                src={require("../assets/img/logo-hcf.png")}
+                            <Image
+                                width={150}
                                 alt="logo-hcf-grande"
-                                height="105"
-                                width="78"
+                                src={imgLogo}
                             />
                         </Col>
+                    </Row>
+                    <Row>
+                        <span><strong>HCF</strong> - Herbário da universidade tecnológica federal do Paraná, Campo Mourão</span>
                     </Row>
                     <Row type="flex" justify="center">
                         <Col span={24}>

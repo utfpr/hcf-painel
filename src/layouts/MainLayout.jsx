@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, Suspense } from 'react';
 import { Layout, Menu, Col, Spin, Button, Row } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 import {
 	isCurador,
 	isCuradorOuOperador,
@@ -14,7 +14,7 @@ import { baseUrl } from '../config/api';
 import {
 	DesktopOutlined, DatabaseOutlined, BarsOutlined, TeamOutlined,
 	FlagOutlined, MenuFoldOutlined, MenuUnfoldOutlined,
-	LogoutOutlined, SearchOutlined
+	LogoutOutlined, SearchOutlined, FileSearchOutlined
 } from '@ant-design/icons'
 
 const { Header, Content, Sider } = Layout;
@@ -86,7 +86,7 @@ export default class MainLayout extends Component {
 					<Col align="center" style={{ marginTop: 20, marginBottom: 20 }}>
 						<Link to="/">
 							<img
-								src={require("./../assets/img/logo-hcf-branco.png")}
+								src={"./../assets/img/logo-hcf-branco.png"}
 								alt="logo-hcf"
 								height="87"
 								width="61"
@@ -270,7 +270,11 @@ export default class MainLayout extends Component {
 							minHeight: 280
 						}}
 					>
-						{this.props.children}
+						<Suspense fallback={<div>Carregando...</div>}>
+							<div >
+								<Outlet />
+							</div>
+						</Suspense>
 					</Content>
 				</Layout>
 			</Layout>

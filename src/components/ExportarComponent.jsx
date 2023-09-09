@@ -7,7 +7,7 @@ import {
     Tag,
     Checkbox
 } from 'antd';
-import ButtonExportComponent from '../components/ButtonExportComponent';
+import ButtonExportComponent from './ButtonExportComponent';
 
 
 const Panel = Collapse.Panel;
