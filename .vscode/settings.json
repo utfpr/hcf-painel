@@ -1,5 +1,5 @@
 {
-    "editor.tabSize": 2,
+    "editor.tabSize": 4,
     "editor.useTabStops": true,
     "editor.insertSpaces": true,
     "editor.formatOnSave": false,
@@ -14,6 +14,5 @@
     ],
     "files.trimFinalNewlines": true,
     "files.insertFinalNewline": true,
-    "files.encoding": "utf8",
     "files.eol": "\n"
 }

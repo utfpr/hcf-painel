@@ -1,9 +1,5 @@
-const {
-    REACT_APP_API_URL = 'http://localhost:3003',
-} = process.env;
+export const baseUrl = import.meta.env.VITE_API_URL
 
-export const baseUrl = REACT_APP_API_URL;
+export const fotosBaseUrl = `${baseUrl}/fotos`
 
-export const fotosBaseUrl = `${baseUrl}/fotos`;
-
-export default {};
+export default {}
