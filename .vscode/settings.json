@@ -1,0 +1,19 @@
+{
+    "editor.tabSize": 2,
+    "editor.useTabStops": true,
+    "editor.insertSpaces": true,
+    "editor.formatOnSave": false,
+    "editor.trimAutoWhitespace": true,
+    "editor.detectIndentation": false,
+    "editor.semanticHighlighting.enabled": false,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "editor.rulers": [
+        120
+    ],
+    "files.trimFinalNewlines": true,
+    "files.insertFinalNewline": true,
+    "files.encoding": "utf8",
+    "files.eol": "\n"
+}
