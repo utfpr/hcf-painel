@@ -4,9 +4,9 @@ import {
     Select, Input, Button, notification,
 } from 'antd';
 import axios from 'axios';
-import SimpleTableComponent from '../components/SimpleTableComponent';
-import ModalCadastroComponent from '../components/ModalCadastroComponent';
-import { isCuradorOuOperador } from '../helpers/usuarios';
+import SimpleTableComponent from '../../components/SimpleTableComponent';
+import ModalCadastroComponent from '../../components/ModalCadastroComponent';
+import { isCuradorOuOperador } from '../../helpers/usuarios';
 
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 

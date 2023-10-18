@@ -4,8 +4,8 @@ import {
     Input, Button, notification,
 } from 'antd';
 import axios from 'axios';
-import SimpleTableComponent from '../components/SimpleTableComponent';
-import HeaderListComponent from '../components/HeaderListComponent';
+import SimpleTableComponent from '../../components/SimpleTableComponent';
+import HeaderListComponent from '../../components/HeaderListComponent';
 import { Link } from 'react-router-dom';
 
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
