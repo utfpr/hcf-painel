@@ -1,10 +1,13 @@
 import { Component } from 'react'
 
 import {
-    Divider, Icon, Modal, Card, Row, Col, Form, Select, Input, Button, notification
+    Divider, Modal, Card, Row, Col, Select, Input, Button, notification
 } from 'antd'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
+
+import { Form } from '@ant-design/compatible'
+import { DeleteOutlined, SearchOutlined } from '@ant-design/icons'
 
 import SimpleTableComponent from '../components/SimpleTableComponent'
 import { formatarDataBDtoDataHora } from '../helpers/conversoes/ConversoesData'
@@ -105,11 +108,11 @@ class ListaPendenciasScreen extends Component {
         return (
             <span>
                 <Link to={`/pendencias/${id}`}>
-                    <Icon type="search" />
+                    <SearchOutlined />
                 </Link>
                 <Divider type="vertical" />
                 <a href="#" onClick={() => this.mostraMensagemDelete(id)}>
-                    <Icon type="delete" style={{ color: '#e30613' }} />
+                    <DeleteOutlined style={{ color: '#e30613' }} />
                 </a>
             </span>
         )
@@ -140,7 +143,7 @@ class ListaPendenciasScreen extends Component {
                 params.status = status.toUpperCase()
             }
         }
-        axios.get('/api/pendencias', { params })
+        axios.get('/pendencias', { params })
             .then(response => {
                 this.setState({
                     loading: false

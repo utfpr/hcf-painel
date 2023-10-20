@@ -1,9 +1,12 @@
 import { Component } from 'react'
 
 import {
-    Divider, Icon, Modal, Spin, Card, Row, Col, Form, Select, Input, Button, notification
+    Divider, Modal, Spin, Card, Row, Col, Select, Input, Button, notification
 } from 'antd'
 import axios from 'axios'
+
+import { Form } from '@ant-design/compatible'
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
@@ -116,11 +119,11 @@ class ListaTaxonomiaAutores extends Component {
                         })
                     }}
                     >
-                        <Icon type="edit" style={{ color: '#FFCC00' }} />
+                        <EditOutlined style={{ color: '#FFCC00' }} />
                     </a>
                     <Divider type="vertical" />
                     <a onClick={() => this.mostraMensagemDelete(item.id)}>
-                        <Icon type="delete" style={{ color: '#e30613' }} />
+                        <DeleteOutlined style={{ color: '#e30613' }} />
                     </a>
                 </span>
             )
@@ -153,7 +156,7 @@ class ListaTaxonomiaAutores extends Component {
                 params.autor = autor
             }
         }
-        axios.get('/api/autores', { params })
+        axios.get('/autores', { params })
             .then(response => {
                 this.setState({
                     loading: false
@@ -202,7 +205,7 @@ class ListaTaxonomiaAutores extends Component {
         this.setState({
             loading: true
         })
-        axios.post('/api/autores/', {
+        axios.post('/autores/', {
             nome: this.props.form.getFieldsValue().nomeAutor,
             iniciais: this.props.form.getFieldsValue().nomeIniciais
         })

@@ -1,10 +1,15 @@
 import { Component } from 'react'
 
 import {
-    Layout, Menu, Icon, Col, Spin, Button, Row
+    Layout, Menu, Col, Spin, Button, Row
 } from 'antd'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
+
+import {
+    BarsOutlined, DatabaseOutlined, DesktopOutlined, FileTextOutlined,
+    FlagOutlined, LogoutOutlined, MenuUnfoldOutlined, SearchOutlined
+} from '@ant-design/icons'
 
 import logoImage from '../assets/img/logo-hcf-branco.png'
 import { baseUrl } from '../config/api'
@@ -38,7 +43,7 @@ export default class MainLayout extends Component {
         this.setState({
             loading: true
         })
-        axios.get('/api/darwincore')
+        axios.get('/darwincore')
             .then(response => {
                 this.setState({
                     loading: false
@@ -83,7 +88,7 @@ export default class MainLayout extends Component {
                     <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
                         <Menu.Item key="1">
                             <Link to="/tombos">
-                                <Icon type="desktop" />
+                                <DesktopOutlined />
                                 <span>Tombos</span>
                             </Link>
                         </Menu.Item>
@@ -91,7 +96,7 @@ export default class MainLayout extends Component {
                             key="subTaxo"
                             title={(
                                 <span>
-                                    <Icon type="desktop" />
+                                    <DesktopOutlined />
                                     <span>Taxonomias</span>
                                 </span>
                             )}
@@ -121,7 +126,7 @@ export default class MainLayout extends Component {
                         {isCuradorOuOperador() ? (
                             <Menu.Item key="8">
                                 <Link to="/remessas">
-                                    <Icon type="database" />
+                                    <DatabaseOutlined />
                                     <span>Remessas</span>
                                 </Link>
                             </Menu.Item>
@@ -129,7 +134,7 @@ export default class MainLayout extends Component {
                         {isCurador() ? (
                             <Menu.Item key="7">
                                 <Link to="/pendencias">
-                                    <Icon type="bars" />
+                                    <BarsOutlined />
                                     <span>Pendências</span>
                                 </Link>
                             </Menu.Item>
@@ -137,14 +142,14 @@ export default class MainLayout extends Component {
                         {isCurador() ? (
                             <Menu.Item key="9">
                                 <Link to="/usuarios">
-                                    <Icon type="team" />
+                                    <teamOutlined />
                                     <span>Usuários</span>
                                 </Link>
                             </Menu.Item>
                         ) : null}
                         <Menu.Item key="10">
                             <Link to="/herbarios">
-                                <Icon type="flag" />
+                                <FlagOutlined />
                                 <span>Herbários</span>
                             </Link>
                         </Menu.Item>
@@ -152,7 +157,7 @@ export default class MainLayout extends Component {
                             key="sub2"
                             title={(
                                 <span>
-                                    <Icon type="file-text" />
+                                    <FileTextOutlined />
                                     <span>Fichas</span>
                                 </span>
                             )}
@@ -166,7 +171,7 @@ export default class MainLayout extends Component {
                         {isCuradorOuOperador() ? (
                             <Menu.Item key="16">
                                 <a href={`${baseUrl}/api/darwincore`} target="_blank" rel="noreferrer">
-                                    <Icon type="desktop" />
+                                    <DesktopOutlined />
                                     <span>Darwin Core</span>
                                 </a>
                             </Menu.Item>
@@ -177,7 +182,7 @@ export default class MainLayout extends Component {
                                 title={(
                                     <span>
                                         {' '}
-                                        <Icon type="search" />
+                                        <SearchOutlined />
                                         {' '}
                                         <span>Serviços</span>
                                         {' '}
@@ -206,7 +211,7 @@ export default class MainLayout extends Component {
                                         console.log('ZERO TOKEN')
                                     }}
                                 >
-                                    <Icon type="logout" />
+                                    <LogoutOutlined />
                                     <span>Sair</span>
                                 </Link>
                             </Menu.Item>
@@ -217,11 +222,7 @@ export default class MainLayout extends Component {
                     <Header style={{ background: '#fff' }}>
                         <Row type="flex" justify="space-between">
                             <div style={{ cursor: 'pointer' }}>
-                                <Icon
-                                    className="trigger"
-                                    type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
-                                    onClick={this.toggle}
-                                />
+                                <MenuUnfoldOutlined onClick={this.toggle} />
                             </div>
                             {!isCuradorOuOperadorOuIdentificador() ? (
                                 <Link to="/inicio">

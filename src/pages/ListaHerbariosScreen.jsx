@@ -1,11 +1,13 @@
 import { Component } from 'react'
 
 import {
-    Divider, Icon, Modal, Card, Row, Col, Form,
-    Input, Button, notification
+    Divider, Modal, Card, Row, Col, Input, Button, notification
 } from 'antd'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
+
+import { Form } from '@ant-design/compatible'
+import { EditOutlined } from '@ant-design/icons'
 
 import HeaderListComponent from '../components/HeaderListComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
@@ -64,11 +66,11 @@ class ListaHerbariosScreen extends Component {
             return (
                 <span>
                     <Link to={`/herbarios/${id}`}>
-                        <Icon type="edit" style={{ color: '#FFCC00' }} />
+                        <EditOutlined style={{ color: '#FFCC00' }} />
                     </Link>
                     <Divider type="vertical" />
                     <a href="#" onClick={() => this.mostraMensagemDelete(id)}>
-                        <Icon type="delete" style={{ color: '#e30613' }} />
+                        <deleteOutlined style={{ color: '#e30613' }} />
                     </a>
                 </span>
             )
@@ -174,7 +176,7 @@ class ListaHerbariosScreen extends Component {
             }
         }
 
-        axios.get('/api/herbarios', { params })
+        axios.get('/herbarios', { params })
             .then(response => {
                 this.setState({
                     loading: false

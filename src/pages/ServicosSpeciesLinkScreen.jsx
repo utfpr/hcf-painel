@@ -1,9 +1,12 @@
 import { Component } from 'react'
 
 import {
-    Divider, Card, Row, Col, Form, Button, Collapse, Upload, notification, Select, Icon
+    Divider, Card, Row, Col, Button, Collapse, Upload, notification, Select
 } from 'antd'
 import axios from 'axios'
+
+import { Form } from '@ant-design/compatible'
+import { UploadOutlined } from '@ant-design/icons'
 
 import HeaderServicesComponent from '../components/HeaderServicesComponent'
 
@@ -216,7 +219,7 @@ class ServicosSpeciesLinkScreen extends Component {
                     <Col span={6} style={{ textAlign: 'center' }}>
                         <Upload {...props}>
                             <Button htmlType="submit" className="login-form-button" disabled={this.state.statusExecucao}>
-                                <Icon type="upload" />
+                                <UploadOutlined />
                                 {' '}
                                 Insira o arquivo do speciesLink
                             </Button>

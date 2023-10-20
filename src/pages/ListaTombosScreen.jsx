@@ -1,8 +1,8 @@
 import { Component } from 'react'
 
 import {
-    Divider, Icon, Modal, Card, Row,
-    Col, Form, Select, Input, Button,
+    Divider, Modal, Card, Row,
+    Col, Select, Input, Button,
     notification, InputNumber, Collapse,
     Tag, Checkbox, Spin, DatePicker
 } from 'antd'
@@ -10,6 +10,9 @@ import axios from 'axios'
 import debounce from 'lodash.debounce'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
+
+import { Form } from '@ant-design/compatible'
+import { DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons'
 
 import HeaderListComponent from '../components/HeaderListComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
@@ -132,7 +135,7 @@ class ListaTombosScreen extends Component {
             <div>
                 <Divider type="vertical" />
                 <a href="#" onClick={() => this.mostraMensagemDelete(id)}>
-                    <Icon type="delete" style={{ color: '#e30613' }} />
+                    <DeleteOutlined style={{ color: '#e30613' }} />
                 </a>
             </div>
         )
@@ -143,7 +146,7 @@ class ListaTombosScreen extends Component {
             <div>
                 <Divider type="vertical" />
                 <Link to={`/tombos/${id}`}>
-                    <Icon type="edit" style={{ color: '#FFCC00' }} />
+                    <EditOutlined style={{ color: '#FFCC00' }} />
                 </Link>
             </div>
         )
@@ -152,7 +155,7 @@ class ListaTombosScreen extends Component {
     renderDetalhes(id) {
         return (
             <Link to={`/tombos/detalhes/${id}`}>
-                <Icon type="search" />
+                <SearchOutlined />
             </Link>
         )
     }
@@ -238,7 +241,7 @@ class ListaTombosScreen extends Component {
                 params.situacao = situacao
             }
         }
-        axios.get('/api/tombos', { params })
+        axios.get('/tombos', { params })
             .then(response => {
                 this.setState({
                     loading: false

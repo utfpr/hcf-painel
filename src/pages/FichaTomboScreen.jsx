@@ -1,10 +1,13 @@
 import { Component } from 'react'
 
 import {
-    Row, Col, Divider, Icon,
-    Form, Input, Button
+    Row, Col, Divider,
+    Input, Button
 } from 'antd'
 import axios from 'axios'
+
+import { Form } from '@ant-design/compatible'
+import { PrinterOutlined } from '@ant-design/icons'
 
 import SimpleTableComponent from '../components/SimpleTableComponent'
 import { baseUrl } from '../config/api'
@@ -45,7 +48,7 @@ class FichaTomboScreen extends Component {
 
     geraColunaAcao = tombo => (
         <a target="_blank" rel="noreferrer" href={`${baseUrl}/api/fichas/tombos/${tombo.hcf}`} title="Imprimir ficha">
-            <Icon type="printer" style={{ color: '#277a01' }} />
+            <PrinterOutlined style={{ color: '#277a01' }} />
         </a>
     )
 
@@ -83,7 +86,7 @@ class FichaTomboScreen extends Component {
 
         this.setState({ loading: true })
 
-        axios.get('/api/tombos', { params })
+        axios.get('/tombos', { params })
             .then(response => {
                 const { data } = response
                 const { metadados, tombos } = data

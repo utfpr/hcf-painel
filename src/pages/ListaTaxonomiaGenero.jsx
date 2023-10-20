@@ -1,10 +1,13 @@
 import { Component } from 'react'
 
 import {
-    Divider, Spin, Icon, Modal, Card, Row, Col, Form,
+    Divider, Spin, Modal, Card, Row, Col,
     Select, Input, Button, notification
 } from 'antd'
 import axios from 'axios'
+
+import { Form } from '@ant-design/compatible'
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
@@ -119,11 +122,11 @@ class ListaTaxonomiaGenero extends Component {
                             })
                         }}
                     >
-                        <Icon type="edit" style={{ color: '#FFCC00' }} />
+                        <EditOutlined style={{ color: '#FFCC00' }} />
                     </a>
                     <Divider type="vertical" />
                     <a href="#" onClick={() => this.mostraMensagemDelete(item.id)}>
-                        <Icon type="delete" style={{ color: '#e30613' }} />
+                        <DeleteOutlined style={{ color: '#e30613' }} />
                     </a>
                 </span>
             )
@@ -179,7 +182,7 @@ class ListaTaxonomiaGenero extends Component {
                 params.genero = genero
             }
         }
-        axios.get('/api/generos', { params })
+        axios.get('/generos', { params })
             .then(response => {
                 this.setState({
                     loading: false
@@ -228,7 +231,7 @@ class ListaTaxonomiaGenero extends Component {
         this.setState({
             loading: true
         })
-        axios.post('/api/generos/', {
+        axios.post('/generos/', {
             nome: this.props.form.getFieldsValue().nomeGenero,
             familia_id: this.props.form.getFieldsValue().nomeFamilia
         })
@@ -303,7 +306,7 @@ class ListaTaxonomiaGenero extends Component {
     }
 
     requisitaFamilias = () => {
-        axios.get('/api/familias/', {
+        axios.get('/familias/', {
             params: {
                 limite: 9999999
             }

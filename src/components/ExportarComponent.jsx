@@ -1,13 +1,15 @@
 import { Component } from 'react'
 
 import {
-    Form,
+
     Row,
     Col,
     Collapse,
     Tag,
     Checkbox
 } from 'antd'
+
+import { Form } from '@ant-design/compatible'
 
 import ButtonExportComponent from './ButtonExportComponent'
 

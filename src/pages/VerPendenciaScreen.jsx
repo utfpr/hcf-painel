@@ -1,9 +1,11 @@
 import { Component } from 'react'
 
 import {
-    Divider, Col, Row, Input, Form, Button, Spin, notification
+    Divider, Col, Row, Input, Button, Spin, notification
 } from 'antd'
 import axios from 'axios'
+
+import { Form } from '@ant-design/compatible'
 
 import GalleryComponent from '../components/GalleryComponent'
 import HeaderListComponent from '../components/HeaderListComponent'

@@ -1,12 +1,13 @@
 import { Component } from 'react'
 
 import {
-    Form,
-    Icon,
     Input,
     Button,
     Checkbox
 } from 'antd'
+
+import { Form } from '@ant-design/compatible'
+import { MailOutlined, LockOutlined } from '@ant-design/icons'
 
 const FormItem = Form.Item
 
@@ -28,7 +29,7 @@ class LoginForm extends Component {
                         }]
                     })(
                         <Input
-                            prefix={<Icon type="mail" style={{ color: 'rgba(0, 0, 0, .25)' }} />}
+                            prefix={<MailOutlined style={{ color: 'rgba(0, 0, 0, .25)' }} />}
                             placeholder="Email"
                         />
                     )}
@@ -43,7 +44,7 @@ class LoginForm extends Component {
                         <Input
                             type="password"
                             placeholder="Senha"
-                            prefix={<Icon type="lock" style={{ color: 'rgba(0, 0, 0, .25)' }} />}
+                            prefix={<LockOutlined style={{ color: 'rgba(0, 0, 0, .25)' }} />}
                         />
                     )}
                 </FormItem>

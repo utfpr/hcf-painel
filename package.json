@@ -16,10 +16,12 @@
         "test": "jest"
     },
     "dependencies": {
-        "antd": "3.26.20",
+        "@ant-design/compatible": "1.1.2",
+        "@ant-design/icons": "4.8.1",
+        "antd": "4.24.14",
         "axios": "1.5.1",
         "lodash.debounce": "4.0.8",
-        "moment": "2.20.1",
+        "moment": "2.29.4",
         "react": "18.2.0",
         "react-dom": "18.2.0",
         "react-google-maps": "9.4.5",

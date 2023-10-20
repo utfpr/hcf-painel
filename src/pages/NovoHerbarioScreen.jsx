@@ -1,7 +1,7 @@
 import { Component } from 'react'
 
 import {
-    Form,
+
     Row,
     Col,
     Divider,
@@ -13,6 +13,8 @@ import {
     Spin
 } from 'antd'
 import axios from 'axios'
+
+import { Form } from '@ant-design/compatible'
 
 const FormItem = Form.Item
 const { Option } = Select
@@ -42,7 +44,7 @@ class NovoHerbarioScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.get('/api/paises/')
+        axios.get('/paises/')
             .then(response => {
                 this.setState({
                     loading: false
@@ -79,7 +81,7 @@ class NovoHerbarioScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.get('/api/estados/', {
+        axios.get('/estados/', {
             params: {
                 id
             }
@@ -120,7 +122,7 @@ class NovoHerbarioScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.get('/api/cidades/', {
+        axios.get('/cidades/', {
             params: {
                 id
             }
@@ -216,7 +218,7 @@ class NovoHerbarioScreen extends Component {
         if (numero) json.endereco.numero = numero
         if (complemento) json.endereco.complemento = complemento
 
-        axios.post('/api/herbarios', json)
+        axios.post('/herbarios', json)
             .then(response => {
                 this.setState({
                     loading: false

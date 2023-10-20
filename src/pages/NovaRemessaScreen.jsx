@@ -2,14 +2,13 @@ import 'moment/locale/pt-br'
 import { Component } from 'react'
 
 import {
-    Form,
+
     Button,
     Select,
     Input,
     InputNumber,
     notification,
     Spin,
-    Icon,
     Modal,
     Row,
     Col,
@@ -18,6 +17,9 @@ import {
 } from 'antd'
 import axios from 'axios'
 import moment from 'moment'
+
+import { Form } from '@ant-design/compatible'
+import { DeleteOutlined } from '@ant-design/icons'
 
 import ButtonComponent from '../components/ButtonComponent'
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
@@ -125,7 +127,7 @@ class NovaRemessaScreen extends Component {
             loading: true
         })
 
-        axios.get('/api/herbarios/', {
+        axios.get('/herbarios/', {
             params: {
                 limite: 9999999
             }
@@ -186,7 +188,7 @@ class NovaRemessaScreen extends Component {
             doador
         } = valores
 
-        axios.post('/api/remessas/', {
+        axios.post('/remessas/', {
             remessa: {
                 observacao: observacoes,
                 data_envio: dataEnvio,
@@ -294,7 +296,7 @@ class NovaRemessaScreen extends Component {
         return (
             <span>
                 <a href="#" onClick={() => this.mostraMensagemDelete(item.hcf)}>
-                    <Icon type="delete" style={{ color: '#e30613' }} />
+                    <DeleteOutlined style={{ color: '#e30613' }} />
                 </a>
             </span>
         )

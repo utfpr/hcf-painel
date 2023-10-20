@@ -67,3 +67,12 @@
   min-width: 40%;
   max-width: 400px;
 }
+
+
+.ant-legacy-form-item-control-wrapper {
+    width: 100%;
+}
+
+.ant-select-single {
+    width: 100%;
+}

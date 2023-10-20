@@ -1,7 +1,7 @@
 import { Component } from 'react'
 
 import {
-    Form,
+
     Row,
     Col,
     Divider,
@@ -12,6 +12,8 @@ import {
     Spin
 } from 'antd'
 import axios from 'axios'
+
+import { Form } from '@ant-design/compatible'
 
 const FormItem = Form.Item
 const { Option } = Select
@@ -71,7 +73,7 @@ class NovoUsuarioScreen extends Component {
             tipo
         } = valores
 
-        axios.post('/api/usuarios', {
+        axios.post('/usuarios', {
             ra,
             nome,
             email,

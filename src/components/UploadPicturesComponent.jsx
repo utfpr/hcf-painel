@@ -1,6 +1,8 @@
 import { Component } from 'react'
 
-import { Upload, Button, Icon } from 'antd'
+import { Upload, Button } from 'antd'
+
+import { UploadOutlined } from '@ant-design/icons'
 
 export default class UploadPicturesComponent extends Component {
     render() {
@@ -10,7 +12,7 @@ export default class UploadPicturesComponent extends Component {
                 {...this.props}
             >
                 <Button style={{ width: '100%' }}>
-                    <Icon type="upload" />
+                    <UploadOutlined />
                     {' '}
                     upload
                 </Button>

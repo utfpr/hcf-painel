@@ -1,10 +1,13 @@
 import { Component } from 'react'
 
 import {
-    Divider, Icon, Modal, Card, Spin, Row, Col, Form,
+    Divider, Modal, Card, Spin, Row, Col,
     Select, Input, Button, notification
 } from 'antd'
 import axios from 'axios'
+
+import { Form } from '@ant-design/compatible'
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
@@ -126,11 +129,11 @@ class ListaTaxonomiaVariedade extends Component {
                             })
                         }}
                     >
-                        <Icon type="edit" style={{ color: '#FFCC00' }} />
+                        <EditOutlined style={{ color: '#FFCC00' }} />
                     </a>
                     <Divider type="vertical" />
                     <a href="#" onClick={() => this.mostraMensagemDelete(item.id)}>
-                        <Icon type="delete" style={{ color: '#e30613' }} />
+                        <DeleteOutlined style={{ color: '#e30613' }} />
                     </a>
                 </span>
             )
@@ -163,7 +166,7 @@ class ListaTaxonomiaVariedade extends Component {
                 params.variedade = variedade
             }
         }
-        axios.get('/api/variedades', { params })
+        axios.get('/variedades', { params })
             .then(response => {
                 this.setState({
                     loading: false
@@ -211,7 +214,7 @@ class ListaTaxonomiaVariedade extends Component {
     }
 
     requisitaAutores = () => {
-        axios.get('/api/autores/', {
+        axios.get('/autores/', {
             params: {
                 limite: 9999999
             }
@@ -263,7 +266,7 @@ class ListaTaxonomiaVariedade extends Component {
         this.setState({
             loading: true
         })
-        axios.post('/api/variedades/', {
+        axios.post('/variedades/', {
             nome: this.props.form.getFieldsValue().nomeVariedade,
             especie_id: this.props.form.getFieldsValue().nomeEspecie,
             autor_id: this.props.form.getFieldsValue().nomeAutor
@@ -344,7 +347,7 @@ class ListaTaxonomiaVariedade extends Component {
     }
 
     requisitaEspecies = () => {
-        axios.get('/api/especies/', {
+        axios.get('/especies/', {
             params: {
                 limite: 9999999
             }

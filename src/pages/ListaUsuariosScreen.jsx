@@ -1,10 +1,14 @@
 import { Component } from 'react'
 
 import {
-    Divider, Icon, Modal, Card, Row, Col, Form, Select, Input, Button, notification
+    Divider, Modal, Card, Row, Col,
+    Select, Input, Button, notification
 } from 'antd'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
+
+import { Form } from '@ant-design/compatible'
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 
 import HeaderListComponent from '../components/HeaderListComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
@@ -107,11 +111,11 @@ class ListaUsuariosScreen extends Component {
         return (
             <span>
                 <Link to={`/usuarios/${id}`}>
-                    <Icon type="edit" style={{ color: '#FFCC00' }} />
+                    <EditOutlined style={{ color: '#FFCC00' }} />
                 </Link>
                 <Divider type="vertical" />
                 <a href="#" onClick={() => this.mostraMensagemDelete(id)}>
-                    <Icon type="delete" style={{ color: '#e30613' }} />
+                    <DeleteOutlined style={{ color: '#e30613' }} />
                 </a>
             </span>
         )
@@ -153,7 +157,7 @@ class ListaUsuariosScreen extends Component {
                 params.telefone = telefone
             }
         }
-        axios.get('/api/usuarios', { params })
+        axios.get('/usuarios', { params })
             .then(response => {
                 this.setState({
                     loading: false

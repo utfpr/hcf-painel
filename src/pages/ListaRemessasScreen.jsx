@@ -1,11 +1,14 @@
 import { Component } from 'react'
 
 import {
-    Divider, Icon, Modal, Card, Row, Col,
-    Spin, Form, Select, Button, InputNumber
+    Divider, Modal, Card, Row, Col,
+    Spin, Select, Button, InputNumber
 } from 'antd'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
+
+import { Form } from '@ant-design/compatible'
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 
 import ExpansiveTableComponent from '../components/ExpansiveTableComponent'
 import HeaderListComponent from '../components/HeaderListComponent'
@@ -96,7 +99,7 @@ class ListaRemessasScreen extends Component {
             limite: 9999999
         }
 
-        axios.get('/api/herbarios', { params })
+        axios.get('/herbarios', { params })
             .then(response => {
                 this.setState({
                     loading: false
@@ -170,7 +173,7 @@ class ListaRemessasScreen extends Component {
     }
 
     requisitaDevolucao(idRemessa, idTombo) {
-        axios.get('/api/remessas-devolver', {
+        axios.get('/remessas-devolver', {
             params: {
                 tombo_id: idTombo,
                 remessa_id: idRemessa
@@ -196,11 +199,11 @@ class ListaRemessasScreen extends Component {
         return (
             <span>
                 <Link to={`/remessas/${id}`}>
-                    <Icon type="edit" style={{ color: '#FFCC00' }} />
+                    <EditOutlined style={{ color: '#FFCC00' }} />
                 </Link>
                 <Divider type="vertical" />
                 <a href="#" onClick={() => this.mostraMensagemDelete(id)}>
-                    <Icon type="delete" style={{ color: '#e30613' }} />
+                    <DeleteOutlined style={{ color: '#e30613' }} />
                 </a>
             </span>
         )
@@ -257,7 +260,7 @@ class ListaRemessasScreen extends Component {
             }
         }
 
-        axios.get('/api/remessas', { params })
+        axios.get('/remessas', { params })
             .then(response => {
                 this.setState({
                     loading: false

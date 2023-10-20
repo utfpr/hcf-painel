@@ -1,10 +1,13 @@
 import { Component } from 'react'
 
 import {
-    Divider, Icon, Modal, Card, Spin, Row, Col, Form,
+    Divider, Modal, Card, Spin, Row, Col,
     Select, Input, Button, notification
 } from 'antd'
 import axios from 'axios'
+
+import { Form } from '@ant-design/compatible'
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
@@ -119,11 +122,11 @@ class ListaTaxonomiaSubfamilia extends Component {
                             })
                         }}
                     >
-                        <Icon type="edit" style={{ color: '#FFCC00' }} />
+                        <EditOutlined style={{ color: '#FFCC00' }} />
                     </a>
                     <Divider type="vertical" />
                     <a href="#" onClick={() => this.mostraMensagemDelete(item.id)}>
-                        <Icon type="delete" style={{ color: '#e30613' }} />
+                        <DeleteOutlined style={{ color: '#e30613' }} />
                     </a>
                 </span>
             )
@@ -156,7 +159,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                 params.subfamilia = subfamilia
             }
         }
-        axios.get('/api/subfamilias', { params })
+        axios.get('/subfamilias', { params })
             .then(response => {
                 this.setState({
                     loading: false
@@ -205,7 +208,7 @@ class ListaTaxonomiaSubfamilia extends Component {
         this.setState({
             loading: true
         })
-        axios.post('/api/subfamilias/', {
+        axios.post('/subfamilias/', {
             nome: this.props.form.getFieldsValue().nomeSubfamilia,
             familia_id: this.props.form.getFieldsValue().nomeFamilia
         })
@@ -303,7 +306,7 @@ class ListaTaxonomiaSubfamilia extends Component {
     }
 
     requisitaFamilias = () => {
-        axios.get('/api/familias/', {
+        axios.get('/familias/', {
             params: {
                 limite: 9999999
             }

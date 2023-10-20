@@ -1,10 +1,13 @@
 import { Component } from 'react'
 
 import {
-    Divider, Icon, Modal, Spin, Card, Row, Col, Form,
+    Divider, Modal, Spin, Card, Row, Col,
     Select, Input, Button, notification
 } from 'antd'
 import axios from 'axios'
+
+import { Form } from '@ant-design/compatible'
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
@@ -128,11 +131,11 @@ class ListaTaxonomiaEspecie extends Component {
                             })
                         }}
                     >
-                        <Icon type="edit" style={{ color: '#FFCC00' }} />
+                        <EditOutlined style={{ color: '#FFCC00' }} />
                     </a>
                     <Divider type="vertical" />
                     <a href="#" onClick={() => this.mostraMensagemDelete(item.id)}>
-                        <Icon type="delete" style={{ color: '#e30613' }} />
+                        <DeleteOutlined style={{ color: '#e30613' }} />
                     </a>
                 </span>
             )
@@ -165,7 +168,7 @@ class ListaTaxonomiaEspecie extends Component {
                 params.especie = especie
             }
         }
-        axios.get('/api/especies', { params })
+        axios.get('/especies', { params })
             .then(response => {
                 this.setState({
                     loading: false
@@ -213,7 +216,7 @@ class ListaTaxonomiaEspecie extends Component {
     }
 
     requisitaAutores = () => {
-        axios.get('/api/autores/', {
+        axios.get('/autores/', {
             params: {
                 limite: 9999999
             }
@@ -243,7 +246,7 @@ class ListaTaxonomiaEspecie extends Component {
         this.setState({
             loading: true
         })
-        axios.post('/api/especies/', {
+        axios.post('/especies/', {
             nome: this.props.form.getFieldsValue().nomeEspecie,
             genero_id: this.props.form.getFieldsValue().nomeGenero,
             autor_id: this.props.form.getFieldsValue().nomeAutor
@@ -324,7 +327,7 @@ class ListaTaxonomiaEspecie extends Component {
     }
 
     requisitaGeneros = () => {
-        axios.get('/api/generos/', {
+        axios.get('/generos/', {
             params: {
                 limite: 9999999
             }

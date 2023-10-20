@@ -1,10 +1,13 @@
 import { Component } from 'react'
 
 import {
-    Divider, Icon, Modal, Spin, Card, Row, Col, Form,
+    Divider, Modal, Spin, Card, Row, Col,
     Input, Button, notification
 } from 'antd'
 import axios from 'axios'
+
+import { Form } from '@ant-design/compatible'
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
@@ -111,11 +114,11 @@ class ListaTaxonomiaFamilia extends Component {
                         })
                     }}
                     >
-                        <Icon type="edit" style={{ color: '#FFCC00' }} />
+                        <EditOutlined style={{ color: '#FFCC00' }} />
                     </a>
                     <Divider type="vertical" />
                     <a onClick={() => this.mostraMensagemDelete(item.id)}>
-                        <Icon type="delete" style={{ color: '#e30613' }} />
+                        <DeleteOutlined style={{ color: '#e30613' }} />
                     </a>
                 </span>
             )
@@ -148,7 +151,7 @@ class ListaTaxonomiaFamilia extends Component {
                 params.familia = familia
             }
         }
-        axios.get('/api/familias', { params })
+        axios.get('/familias', { params })
             .then(response => {
                 this.setState({
                     loading: false
@@ -197,7 +200,7 @@ class ListaTaxonomiaFamilia extends Component {
         this.setState({
             loading: true
         })
-        axios.post('/api/familias/', {
+        axios.post('/familias/', {
             nome: this.props.form.getFieldsValue().nomeFamilia
         })
             .then(response => {
