@@ -1,0 +1,45 @@
+{
+    "compilerOptions": {
+        "target": "es2020",
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "esnext"
+        ],
+        "jsx": "react-jsx",
+        "noEmit": true,
+        "allowJs": true,
+        "checkJs": false,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "noFallthroughCasesInSwitch": true,
+        "module": "esnext",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "baseUrl": "./",
+        "paths": {
+            "@/*": [
+                "./src/*"
+            ],
+            "#/*": [
+                "./test/*"
+            ]
+        },
+    },
+    "include": [
+        "src/",
+        "test/",
+        ".config/",
+        "vite.config.ts",
+        "jest.config.js"
+    ],
+    "exclude": [
+        "build/",
+        "node_modules/",
+        "examples/"
+    ]
+}

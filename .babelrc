@@ -1,0 +1,27 @@
+{
+    "comments": false,
+    "presets": [
+        [
+            "@babel/env",
+            {
+                "targets": {
+                    "node": "18.16"
+                }
+            }
+        ],
+        "@babel/react",
+        "@babel/typescript"
+    ],
+    "plugins": [
+        [
+            "module-resolver",
+            {
+                "cwd": "babelrc",
+                "alias": {
+                    "@": "./src",
+                    "#": "./test"
+                }
+            }
+        ]
+    ]
+}
