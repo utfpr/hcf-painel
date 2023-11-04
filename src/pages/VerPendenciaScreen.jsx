@@ -58,7 +58,7 @@ class VerPendenciaScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.get(`/api/pendencias/${this.props.match.params.pendencia_id}`)
+        axios.get(`/pendencias/${this.props.match.params.pendencia_id}`)
             .then(response => {
                 if (response.status === 200) {
                     this.setState({
@@ -102,7 +102,7 @@ class VerPendenciaScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.post(`/api/pendencias/${this.props.match.params.pendencia_id}`, { observacao, status: this.state.aprovar })
+        axios.post(`/pendencias/${this.props.match.params.pendencia_id}`, { observacao, status: this.state.aprovar })
             .then(response => {
                 this.setState({
                     loading: false

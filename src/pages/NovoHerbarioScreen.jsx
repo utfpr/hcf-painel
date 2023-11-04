@@ -44,7 +44,7 @@ class NovoHerbarioScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.get('/paises/')
+        axios.get('/paises')
             .then(response => {
                 this.setState({
                     loading: false
@@ -81,7 +81,7 @@ class NovoHerbarioScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.get('/estados/', {
+        axios.get('/estados', {
             params: {
                 id
             }
@@ -122,7 +122,7 @@ class NovoHerbarioScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.get('/cidades/', {
+        axios.get('/cidades', {
             params: {
                 id
             }
@@ -253,7 +253,7 @@ class NovoHerbarioScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.get(`/api/herbarios/${this.props.match.params.herbario_id}`)
+        axios.get(`/herbarios/${this.props.match.params.herbario_id}`)
             .then(response => {
                 const {
                     nome, email, sigla, endereco
@@ -335,7 +335,7 @@ class NovoHerbarioScreen extends Component {
         if (numero) json.endereco.numero = numero
         if (complemento) json.endereco.complemento = complemento
 
-        axios.put(`/api/herbarios/${this.props.match.params.herbario_id}`, json)
+        axios.put(`/herbarios/${this.props.match.params.herbario_id}`, json)
             .then(response => {
                 this.setState({
                     loading: false

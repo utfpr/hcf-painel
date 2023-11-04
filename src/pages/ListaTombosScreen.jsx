@@ -76,7 +76,7 @@ class ListaTombosScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.delete(`/api/tombos/${id}`)
+        axios.delete(`/tombos/${id}`)
             .then(response => {
                 this.setState({
                     loading: false
@@ -493,7 +493,7 @@ class ListaTombosScreen extends Component {
             })
             .reduce((filtros, [chave, valor]) => ({ ...filtros, [chave]: valor }), {})
 
-        const url = `${baseUrl}/api/tombos/exportar?campos=${JSON.stringify(campos)}&filtros=${JSON.stringify(filtros)}`
+        const url = `${baseUrl}/tombos/exportar?campos=${JSON.stringify(campos)}&filtros=${JSON.stringify(filtros)}`
         window.open(url, '_blank')
     }
 
@@ -508,7 +508,7 @@ class ListaTombosScreen extends Component {
         this.lastFetchId += 1
         const fetchId = this.lastFetchId
         this.setState({ data: [], fetching: true })
-        axios.get(`/api/tombos/filtrar_numero/${value}`)
+        axios.get(`/tombos/filtrar_numero/${value}`)
             .then(response => {
                 if (response.status === 200) {
                     if (fetchId !== this.lastFetchId) { // for fetch callback order

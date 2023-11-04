@@ -65,7 +65,7 @@ class ListaTaxonomiaScreen extends Component {
     }
 
     requisitaExclusao(id) {
-        axios.delete(`/api/taxonomias/${id}`)
+        axios.delete(`/taxonomias/${id}`)
             .then(response => {
                 if (response.status === 204) {
                     this.requisitaListaTaxonomias(this.state.valores, this.state.pagina)

@@ -50,7 +50,7 @@ class ListaTaxonomiaEspecie extends Component {
         this.setState({
             loading: true
         })
-        axios.delete(`/api/especies/${id}`)
+        axios.delete(`/especies/${id}`)
             .then(response => {
                 this.setState({
                     loading: false
@@ -216,7 +216,7 @@ class ListaTaxonomiaEspecie extends Component {
     }
 
     requisitaAutores = () => {
-        axios.get('/autores/', {
+        axios.get('/autores', {
             params: {
                 limite: 9999999
             }
@@ -246,7 +246,7 @@ class ListaTaxonomiaEspecie extends Component {
         this.setState({
             loading: true
         })
-        axios.post('/especies/', {
+        axios.post('/especies', {
             nome: this.props.form.getFieldsValue().nomeEspecie,
             genero_id: this.props.form.getFieldsValue().nomeGenero,
             autor_id: this.props.form.getFieldsValue().nomeAutor
@@ -288,7 +288,7 @@ class ListaTaxonomiaEspecie extends Component {
         this.setState({
             loading: true
         })
-        axios.put(`/api/especies/${this.state.id}`, {
+        axios.put(`/especies/${this.state.id}`, {
             nome: this.props.form.getFieldsValue().nomeEspecie,
             genero_id: this.props.form.getFieldsValue().nomeGenero,
             autor_id: this.props.form.getFieldsValue().nomeAutor
@@ -327,7 +327,7 @@ class ListaTaxonomiaEspecie extends Component {
     }
 
     requisitaGeneros = () => {
-        axios.get('/generos/', {
+        axios.get('/generos', {
             params: {
                 limite: 9999999
             }
