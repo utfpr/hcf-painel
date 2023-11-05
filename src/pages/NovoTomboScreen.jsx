@@ -8,7 +8,7 @@ import {
 import axios from 'axios'
 
 import { Form } from '@ant-design/compatible'
-import { DeleteOutlined } from '@ant-design/icons'
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 
 import ButtonComponent from '../components/ButtonComponent'
 import CoordenadaInputText from '../components/CoordenadaInputText'
@@ -1858,6 +1858,7 @@ class NovoTomboScreen extends Component {
                         </Col>
                     </Col>
                 </Row>
+                <br />
                 <Row gutter={8}>
                     <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                         <Col span={24}>
@@ -1945,6 +1946,7 @@ class NovoTomboScreen extends Component {
                         </Col>
                     </Col>
                 </Row>
+                <br />
                 <Row gutter={8}>
                     <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                         <Col span={24}>
@@ -1968,7 +1970,7 @@ class NovoTomboScreen extends Component {
                         <Col span={2}>
                             <Button
                                 shape="dashed"
-                                icon="plus"
+                                icon={<PlusOutlined />}
                                 style={{
                                     marginTop: '5px'
                                 }}
@@ -2034,6 +2036,7 @@ class NovoTomboScreen extends Component {
                         </Col>
                     </Col>
                 </Row>
+                <br />
                 <Row gutter={8}>
                     <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                         <Col span={24}>
@@ -2106,6 +2109,7 @@ class NovoTomboScreen extends Component {
                         </Col>
                     </Col>
                 </Row>
+                <br />
                 <Row gutter={8}>
                     <Col xs={24} sm={24} md={16} lg={8} xl={8}>
                         <Col span={24}>
@@ -2177,7 +2181,7 @@ class NovoTomboScreen extends Component {
                         <Col span={2}>
                             <Button
                                 shape="dashed"
-                                icon="plus"
+                                icon={<PlusOutlined />}
                                 style={{
                                     marginTop: '5px'
                                 }}
@@ -2215,7 +2219,7 @@ class NovoTomboScreen extends Component {
                         <Col span={2}>
                             <Button
                                 shape="dashed"
-                                icon="plus"
+                                icon={<PlusOutlined />}
                                 style={{
                                     marginTop: '5px'
                                 }}
@@ -2232,7 +2236,7 @@ class NovoTomboScreen extends Component {
                         </Col>
                     </Col>
                 </Row>
-
+                <br />
                 <Row gutter={8}>
                     <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                         <Col span={24}>
@@ -2275,7 +2279,7 @@ class NovoTomboScreen extends Component {
                         <Col span={2}>
                             <Button
                                 shape="dashed"
-                                icon="plus"
+                                icon={<PlusOutlined />}
                                 style={{
                                     marginTop: '5px'
                                 }}
@@ -2332,7 +2336,7 @@ class NovoTomboScreen extends Component {
                         <Col span={2}>
                             <Button
                                 shape="dashed"
-                                icon="plus"
+                                icon={<PlusOutlined />}
                                 style={{
                                     marginTop: '5px'
                                 }}
@@ -2350,7 +2354,7 @@ class NovoTomboScreen extends Component {
                         </Col>
                     </Col>
                 </Row>
-
+                <br />
                 <Row gutter={8}>
                     <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                         <Col span={24}>
@@ -2374,7 +2378,7 @@ class NovoTomboScreen extends Component {
                         <Col span={2}>
                             <Button
                                 shape="dashed"
-                                icon="plus"
+                                icon={<PlusOutlined />}
                                 style={{
                                     marginTop: '5px'
                                 }}
@@ -2413,7 +2417,7 @@ class NovoTomboScreen extends Component {
                         <Col span={2}>
                             <Button
                                 shape="dashed"
-                                icon="plus"
+                                icon={<PlusOutlined />}
                                 style={{
                                     marginTop: '5px'
                                 }}
@@ -2462,7 +2466,7 @@ class NovoTomboScreen extends Component {
                         <Col span={2}>
                             <Button
                                 shape="dashed"
-                                icon="plus"
+                                icon={<PlusOutlined />}
                                 style={{
                                     marginTop: '5px'
                                 }}
@@ -2500,7 +2504,7 @@ class NovoTomboScreen extends Component {
                         <Col span={2}>
                             <Button
                                 shape="dashed"
-                                icon="plus"
+                                icon={<PlusOutlined />}
                                 style={{
                                     marginTop: '5px'
                                 }}
@@ -2517,7 +2521,7 @@ class NovoTomboScreen extends Component {
                         </Col>
                     </Col>
                 </Row>
-
+                <br />
                 <Row gutter={8}>
                     <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                         <Col span={24}>
@@ -2541,7 +2545,7 @@ class NovoTomboScreen extends Component {
                         <Col span={2}>
                             <Button
                                 shape="dashed"
-                                icon="plus"
+                                icon={<PlusOutlined />}
                                 style={{
                                     marginTop: '5px'
                                 }}
@@ -2578,6 +2582,7 @@ class NovoTomboScreen extends Component {
                         </Col>
                     </Col>
                 </Row>
+                <br />
                 <Row gutter={8}>
                     <Col xs={24} sm={24} md={16} lg={8} xl={8}>
                         <Col span={24}>
@@ -2728,7 +2733,7 @@ class NovoTomboScreen extends Component {
                         <Col span={2}>
                             <Button
                                 shape="dashed"
-                                icon="plus"
+                                icon={<PlusOutlined />}
                                 style={{
                                     marginTop: '5px'
                                 }}

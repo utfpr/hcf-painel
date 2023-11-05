@@ -20,7 +20,10 @@ class LoginForm extends Component {
     render() {
         const { getFieldDecorator } = this.props.form
         return (
-            <Form onSubmit={this.onSubmit}>
+            <Form
+                onSubmit={this.onSubmit}
+                layout="vertical"
+            >
                 <FormItem style={{ marginTop: '15px' }}>
                     {getFieldDecorator('email', {
                         rules: [{
@@ -31,9 +34,11 @@ class LoginForm extends Component {
                         <Input
                             prefix={<MailOutlined style={{ color: 'rgba(0, 0, 0, .25)' }} />}
                             placeholder="Email"
+                            size="large"
                         />
                     )}
                 </FormItem>
+                <br />
                 <FormItem>
                     {getFieldDecorator('senha', {
                         rules: [{
@@ -42,21 +47,26 @@ class LoginForm extends Component {
                         }]
                     })(
                         <Input
+                            size="large"
                             type="password"
                             placeholder="Senha"
                             prefix={<LockOutlined style={{ color: 'rgba(0, 0, 0, .25)' }} />}
                         />
                     )}
                 </FormItem>
+                <br />
                 <FormItem>
                     {getFieldDecorator('lembrar')(
                         <Checkbox>Lembrar me</Checkbox>
                     )}
                     <a href="/recuperar-senha" className="login-form-forgot">Esqueci a senha</a>
+                    <br />
+                    <br />
                     <Button
                         type="primary"
                         htmlType="submit"
                         className="login-form-button"
+                        size="large"
                     >
                         Entrar
                     </Button>

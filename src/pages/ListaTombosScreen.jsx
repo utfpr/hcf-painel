@@ -12,7 +12,9 @@ import moment from 'moment'
 import { Link } from 'react-router-dom'
 
 import { Form } from '@ant-design/compatible'
-import { DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons'
+import {
+    DeleteOutlined, EditOutlined, ExportOutlined, SearchOutlined
+} from '@ant-design/icons'
 
 import HeaderListComponent from '../components/HeaderListComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
@@ -353,7 +355,7 @@ class ListaTombosScreen extends Component {
                             </Col>
                         </Col>
                     </Row>
-
+                    <br />
                     <Row gutter={8}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
@@ -380,7 +382,7 @@ class ListaTombosScreen extends Component {
                             </Col>
                         </Col>
                     </Row>
-
+                    <br />
                     <Row type="flex" justify="end" gutter={4}>
                         <Col xs={24} sm={8} md={6} lg={4} xl={4}>
                             <FormItem>
@@ -721,6 +723,7 @@ class ListaTombosScreen extends Component {
                                 </Col>
                             </Col>
                         </Row>
+                        <br />
                         <Row gutter={8} type="flex" justify="center">
                             <span>OU</span>
                         </Row>
@@ -749,9 +752,11 @@ class ListaTombosScreen extends Component {
                                 </Col>
                             </Col>
                         </Row>
+                        <br />
                         <Row gutter={8} type="flex" justify="center">
                             <span>OU</span>
                         </Row>
+                        <br />
                         <Row gutter={8}>
                             <Col xs={24} sm={12} md={12} lg={12} xl={12}>
                                 <Col span={24}>
@@ -790,7 +795,7 @@ class ListaTombosScreen extends Component {
                         <Row gutter={8} type="flex" justify="end">
                             <Button
                                 type="primary"
-                                icon="export"
+                                icon={<ExportOutlined />}
                                 htmlType="submit"
                                 style={{ backgroundColor: '#FF7F00', borderColor: '#FF7F00' }}
                             >

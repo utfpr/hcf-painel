@@ -3,6 +3,8 @@ import { Component } from 'react'
 import { Row, Col, Button } from 'antd'
 import { Link } from 'react-router-dom'
 
+import { PlusOutlined } from '@ant-design/icons'
+
 import {
     isCuradorOuOperador
 } from '../helpers/usuarios'
@@ -14,7 +16,7 @@ export default class HeaderListComponent extends Component {
                 <Link to={this.props.link || '/'}>
                     <Button
                         type="primary"
-                        icon="plus"
+                        icon={<PlusOutlined />}
                         style={{
                             backgroundColor: '#5CB85C',
                             borderColor: '#5CB85C',
