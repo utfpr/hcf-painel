@@ -19,7 +19,7 @@ import axios from 'axios'
 import moment from 'moment'
 
 import { Form } from '@ant-design/compatible'
-import { DeleteOutlined } from '@ant-design/icons'
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 
 import ButtonComponent from '../components/ButtonComponent'
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
@@ -519,7 +519,7 @@ class NovaRemessaScreen extends Component {
                         <Col xs={24} sm={12} md={8} lg={4} xl={4}>
                             <Button
                                 type="dashed"
-                                icon="plus"
+                                icon={<PlusOutlined />}
                                 onClick={() => {
                                     this.setState({
                                         visibleModal: true

@@ -6,6 +6,7 @@ import {
 import axios from 'axios'
 
 import { Form } from '@ant-design/compatible'
+import { CloseOutlined } from '@ant-design/icons'
 
 import GalleryComponent from '../components/GalleryComponent'
 import HeaderListComponent from '../components/HeaderListComponent'
@@ -222,7 +223,7 @@ class VerPendenciaScreen extends Component {
                             <FormItem>
                                 <Button
                                     type="primary"
-                                    icon="close"
+                                    icon={<CloseOutlined />}
                                     htmlType="submit"
                                     style={{
                                         backgroundColor: '#d9534f',

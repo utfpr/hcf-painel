@@ -8,7 +8,7 @@ import axios from 'axios'
 import { Link } from 'react-router-dom'
 
 import { Form } from '@ant-design/compatible'
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import { CheckOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons'
 
 import ExpansiveTableComponent from '../components/ExpansiveTableComponent'
 import HeaderListComponent from '../components/HeaderListComponent'
@@ -212,7 +212,7 @@ class ListaRemessasScreen extends Component {
     gerarAcaoRetirada = (idRemessa, idTombo) => (
         <Button
             type="dashed"
-            icon="check"
+            icon={<CheckOutlined />}
             onClick={() => this.mostraMensagemDevolucao(idRemessa, idTombo)}
         >
             Devolver

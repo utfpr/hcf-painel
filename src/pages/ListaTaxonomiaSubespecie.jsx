@@ -7,7 +7,7 @@ import {
 import axios from 'axios'
 
 import { Form } from '@ant-design/compatible'
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
@@ -146,7 +146,7 @@ class ListaTaxonomiaSubespecie extends Component {
             return (
                 <Button
                     type="primary"
-                    icon="plus"
+                    icon={<PlusOutlined />}
                     onClick={() => {
                         this.setState({
                             visibleModal: true,
