@@ -40,7 +40,7 @@ export default class DetalhesTomboScreen extends Component {
     }
 
     requisitaTombo = () => {
-        axios.get(`/api/tombos/${this.props.match.params.tombo_id}`)
+        axios.get(`/tombos/${this.props.match.params.tombo_id}`)
             .then(response => {
                 if (response.status === 200) {
                     this.setState({

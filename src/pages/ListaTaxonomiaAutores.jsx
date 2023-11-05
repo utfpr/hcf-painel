@@ -49,7 +49,7 @@ class ListaTaxonomiaAutores extends Component {
         this.setState({
             loading: true
         })
-        axios.delete(`/api/autores/${id}`)
+        axios.delete(`/autores/${id}`)
             .then(response => {
                 this.setState({
                     loading: false
@@ -205,7 +205,7 @@ class ListaTaxonomiaAutores extends Component {
         this.setState({
             loading: true
         })
-        axios.post('/autores/', {
+        axios.post('/autores', {
             nome: this.props.form.getFieldsValue().nomeAutor,
             iniciais: this.props.form.getFieldsValue().nomeIniciais
         })
@@ -266,7 +266,7 @@ class ListaTaxonomiaAutores extends Component {
         this.setState({
             loading: true
         })
-        axios.put(`/api/autores/${this.state.id}`, {
+        axios.put(`/autores/${this.state.id}`, {
             nome: this.props.form.getFieldsValue().nomeAutor,
             iniciais: this.props.form.getFieldsValue().nomeIniciais
         })

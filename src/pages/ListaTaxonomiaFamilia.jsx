@@ -47,7 +47,7 @@ class ListaTaxonomiaFamilia extends Component {
         this.setState({
             loading: true
         })
-        axios.delete(`/api/familias/${id}`)
+        axios.delete(`/familias/${id}`)
             .then(response => {
                 this.setState({
                     loading: false
@@ -200,7 +200,7 @@ class ListaTaxonomiaFamilia extends Component {
         this.setState({
             loading: true
         })
-        axios.post('/familias/', {
+        axios.post('/familias', {
             nome: this.props.form.getFieldsValue().nomeFamilia
         })
             .then(response => {
@@ -238,7 +238,7 @@ class ListaTaxonomiaFamilia extends Component {
         this.setState({
             loading: true
         })
-        axios.put(`/api/familias/${this.state.id}`, {
+        axios.put(`/familias/${this.state.id}`, {
             nome: this.props.form.getFieldsValue().nomeFamilia
         })
             .then(response => {

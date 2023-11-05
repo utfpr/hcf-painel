@@ -131,7 +131,7 @@ class NovoTomboScreen extends Component {
     }
 
     requisitaDadosEdicao = id => {
-        axios.get(`/api/tombos/${id}`)
+        axios.get(`/tombos/${id}`)
             .then(response => {
                 if (response.status === 200) {
                     const { data } = response
@@ -360,7 +360,7 @@ class NovoTomboScreen extends Component {
             if (variedade) {
                 json.variedade_id = variedade
             }
-            axios.put(`/api/tombos/${this.props.match.params.tombo_id}`, json)
+            axios.put(`/tombos/${this.props.match.params.tombo_id}`, json)
                 .then(response => {
                     this.setState({
                         loading: false
@@ -613,7 +613,7 @@ class NovoTomboScreen extends Component {
     ))
 
     requisitaEstados = id => {
-        axios.get('/estados/', {
+        axios.get('/estados', {
             params: {
                 id
             }
@@ -640,7 +640,7 @@ class NovoTomboScreen extends Component {
     }
 
     requisitaCidades = id => {
-        axios.get('/cidades/', {
+        axios.get('/cidades', {
             params: {
                 id
             }
@@ -678,7 +678,7 @@ class NovoTomboScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.post('/tipos/', {
+        axios.post('/tipos', {
             nome: this.props.form.getFieldsValue().campo
         })
             .then(response => {
@@ -719,7 +719,7 @@ class NovoTomboScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.get('/tipos/')
+        axios.get('/tipos')
             .then(response => {
                 this.setState({
                     loading: false
@@ -756,7 +756,7 @@ class NovoTomboScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.post('/familias/', {
+        axios.post('/familias', {
             nome: this.props.form.getFieldsValue().campo
         })
             .then(response => {
@@ -797,7 +797,7 @@ class NovoTomboScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.get('/familias/', {
+        axios.get('/familias', {
             params: {
                 limite: 9999999999
             }
@@ -841,7 +841,7 @@ class NovoTomboScreen extends Component {
             this.setState({
                 loading: true
             })
-            axios.post('/subfamilias/', {
+            axios.post('/subfamilias', {
                 nome: this.props.form.getFieldsValue().campo,
                 familia_id: this.props.form.getFieldsValue().familia
             })
@@ -889,7 +889,7 @@ class NovoTomboScreen extends Component {
         // this.setState({
         //     loading: true,
         // });
-        axios.get('/subfamilias/', {
+        axios.get('/subfamilias', {
             params: {
                 familia_id: id,
                 limite: 999999999
@@ -942,7 +942,7 @@ class NovoTomboScreen extends Component {
             this.setState({
                 loading: true
             })
-            axios.post('/generos/', {
+            axios.post('/generos', {
                 nome: this.props.form.getFieldsValue().campo,
                 familia_id: this.props.form.getFieldsValue().familia
             })
@@ -990,7 +990,7 @@ class NovoTomboScreen extends Component {
         // this.setState({
         //     loading: true,
         // });
-        axios.get('/generos/', {
+        axios.get('/generos', {
             params: {
                 familia_id: id,
                 limite: 9999999999
@@ -1042,7 +1042,7 @@ class NovoTomboScreen extends Component {
             this.setState({
                 loading: true
             })
-            axios.post('/especies/', {
+            axios.post('/especies', {
                 nome: this.props.form.getFieldsValue().campo,
                 familia_id: this.props.form.getFieldsValue().familia,
                 genero_id: this.props.form.getFieldsValue().genero,
@@ -1092,7 +1092,7 @@ class NovoTomboScreen extends Component {
         // this.setState({
         //     loading: true,
         // });
-        axios.get('/especies/', {
+        axios.get('/especies', {
             params: {
                 genero_id: id,
                 limite: 9999999999
@@ -1149,7 +1149,7 @@ class NovoTomboScreen extends Component {
             this.setState({
                 loading: true
             })
-            axios.post('/subespecies/', {
+            axios.post('/subespecies', {
                 nome: this.props.form.getFieldsValue().campo,
                 familia_id: this.props.form.getFieldsValue().familia,
                 genero_id: this.props.form.getFieldsValue().genero,
@@ -1200,7 +1200,7 @@ class NovoTomboScreen extends Component {
         // this.setState({
         //     loading: true,
         // });
-        axios.get('/subespecies/', {
+        axios.get('/subespecies', {
             params: {
                 especie_id: id,
                 limite: 999999999
@@ -1255,7 +1255,7 @@ class NovoTomboScreen extends Component {
             this.setState({
                 loading: true
             })
-            axios.post('/variedades/', {
+            axios.post('/variedades', {
                 nome: this.props.form.getFieldsValue().campo,
                 familia_id: this.props.form.getFieldsValue().familia,
                 genero_id: this.props.form.getFieldsValue().genero,
@@ -1306,7 +1306,7 @@ class NovoTomboScreen extends Component {
         // this.setState({
         //     loading: true,
         // });
-        axios.get('/variedades/', {
+        axios.get('/variedades', {
             params: {
                 especie_id: id,
                 limite: 999999999
@@ -1349,7 +1349,7 @@ class NovoTomboScreen extends Component {
     }
 
     cadastraNovoAutor() {
-        axios.post('/autores/', {
+        axios.post('/autores', {
             nome: this.props.form.getFieldsValue().campo,
             iniciais: ''
         })
@@ -1389,7 +1389,7 @@ class NovoTomboScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.get('/autores/')
+        axios.get('/autores')
             .then(response => {
                 this.setState({
                     loading: false
@@ -1432,7 +1432,7 @@ class NovoTomboScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.post('/solos/', {
+        axios.post('/solos', {
             nome: this.props.form.getFieldsValue().campo
         })
             .then(response => {
@@ -1476,7 +1476,7 @@ class NovoTomboScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.get('/solos/')
+        axios.get('/solos')
             .then(response => {
                 this.setState({
                     loading: false
@@ -1519,7 +1519,7 @@ class NovoTomboScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.post('/relevos/', {
+        axios.post('/relevos', {
             nome: this.props.form.getFieldsValue().campo
         })
             .then(response => {
@@ -1569,7 +1569,7 @@ class NovoTomboScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.get('/relevos/')
+        axios.get('/relevos')
             .then(response => {
                 this.setState({
                     loading: false
@@ -1612,7 +1612,7 @@ class NovoTomboScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.post('/vegetacoes/', {
+        axios.post('/vegetacoes', {
             nome: this.props.form.getFieldsValue().campo
         })
             .then(response => {
@@ -1658,7 +1658,7 @@ class NovoTomboScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.get('/vegetacoes/')
+        axios.get('/vegetacoes')
             .then(response => {
                 this.setState({
                     loading: false
@@ -1704,7 +1704,7 @@ class NovoTomboScreen extends Component {
             formColetor: false,
             loading: true
         })
-        axios.post('/coletores/', {
+        axios.post('/coletores', {
             nome: this.props.form.getFieldsValue().nomeColetor,
             email: this.props.form.getFieldsValue().emailColetor,
             numero: this.props.form.getFieldsValue().numeroColetor
@@ -1759,7 +1759,7 @@ class NovoTomboScreen extends Component {
             coletores: [],
             fetchingColetores: true
         })
-        axios.get(`/api/coletores-predicao?nome=${nome}`)
+        axios.get(`/coletores-predicao?nome=${nome}`)
             .then(response => {
                 if (response.status === 200) {
                     this.setState({
@@ -1790,7 +1790,7 @@ class NovoTomboScreen extends Component {
             identificadores: [],
             fetchingIdentificadores: true
         })
-        axios.get(`/api/identificadores-predicao?nome=${nome}`)
+        axios.get(`/identificadores-predicao?nome=${nome}`)
             .then(response => {
                 if (response.status === 200) {
                     this.setState({

@@ -64,7 +64,7 @@ class ListaUsuariosScreen extends Component {
     }
 
     requisitaExclusao(id) {
-        axios.delete(`/api/usuarios/${id}`)
+        axios.delete(`/usuarios/${id}`)
             .then(response => {
                 if (response.status === 204) {
                     this.requisitaListaUsuarios(this.state.valores, this.state.pagina)

@@ -110,7 +110,7 @@ class NovoUsuarioScreen extends Component {
     }
 
     requisitaUsuario = () => {
-        axios.get(`/api/usuarios/${this.props.match.params.usuario_id}`)
+        axios.get(`/usuarios/${this.props.match.params.usuario_id}`)
             .then(response => {
                 if (response.data && response.status === 200) {
                     this.props.form.setFields({
@@ -175,7 +175,7 @@ class NovoUsuarioScreen extends Component {
         if (valores.password != null && valores.password.trim() != '') {
             body.senha = password
         }
-        axios.put(`/api/usuarios/${this.props.match.params.usuario_id}`, body)
+        axios.put(`/usuarios/${this.props.match.params.usuario_id}`, body)
             .then(response => {
                 if (response.status !== 201 && response.status !== 204) {
                     this.openNotificationWithIcon('error', 'Edição', 'Houve um problema ao realizar a edição, verifique os dados e tente novamente.')

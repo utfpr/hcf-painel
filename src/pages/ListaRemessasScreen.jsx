@@ -156,7 +156,7 @@ class ListaRemessasScreen extends Component {
     }
 
     requisitaExclusao(id) {
-        axios.delete(`/api/remessas/${id}`)
+        axios.delete(`/remessas/${id}`)
             .then(response => {
                 if (response.status === 204) {
                     this.requisitaListaRemessas(this.state.valores, this.state.pagina)

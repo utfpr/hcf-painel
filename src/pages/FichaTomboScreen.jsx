@@ -47,7 +47,7 @@ class FichaTomboScreen extends Component {
     }
 
     geraColunaAcao = tombo => (
-        <a target="_blank" rel="noreferrer" href={`${baseUrl}/api/fichas/tombos/${tombo.hcf}`} title="Imprimir ficha">
+        <a target="_blank" rel="noreferrer" href={`${baseUrl}/fichas/tombos/${tombo.hcf}`} title="Imprimir ficha">
             <PrinterOutlined style={{ color: '#277a01' }} />
         </a>
     )
