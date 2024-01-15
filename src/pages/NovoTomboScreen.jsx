@@ -477,7 +477,7 @@ class NovoTomboScreen extends Component {
                         form.append('tombo_hcf', hcf)
                         form.append('em_vivo', emVivo)
 
-                        return axios.post('/uploads', {
+                        return axios.post('/uploads', form, {
                             headers: {
                                 'Content-Type': 'multipart/form-data'
                             }
