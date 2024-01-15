@@ -7,7 +7,7 @@ import {
 import axios from 'axios'
 
 import { Form } from '@ant-design/compatible'
-import { PrinterOutlined } from '@ant-design/icons'
+import { PrinterOutlined, SearchOutlined } from '@ant-design/icons'
 
 import SimpleTableComponent from '../components/SimpleTableComponent'
 import { baseUrl } from '../config/api'
@@ -139,7 +139,7 @@ class FichaTomboScreen extends Component {
                 </Row>
                 <Row gutter="8">
                     <Col span="24">
-                        <Button type="primary" htmlType="submit" icon="search">
+                        <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
                             Pesquisar
                         </Button>
                     </Col>
