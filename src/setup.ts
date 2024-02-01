@@ -7,7 +7,7 @@ axios.interceptors.request.use(
         const token = localStorage.getItem('token')
 
         if (token) {
-            request.headers.token = `Bearer ${token}`
+            request.headers.token = token
         }
         return request
     },
