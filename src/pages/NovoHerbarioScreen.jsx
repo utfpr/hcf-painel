@@ -409,14 +409,14 @@ class NovoHerbarioScreen extends Component {
                     </Col>
                     <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                         <Col span={24}>
-                            <span>Email:</span>
+                            <span>E-mail:</span>
                         </Col>
                         <Col span={24}>
                             <FormItem>
                                 {getFieldDecorator('email', {
                                     rules: [{
                                         required: true,
-                                        message: 'Insira o email do herbário'
+                                        message: 'Insira o e-mail do herbário'
                                     }]
                                 })(
                                     <Input placeholder="hcfcampomourao@gmail.com" type="text" />

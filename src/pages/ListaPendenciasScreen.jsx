@@ -23,7 +23,7 @@ const columns = [
         key: 'hcf'
     },
     {
-        title: 'Nome usuário',
+        title: 'Nome Usuário',
         type: 'text',
         key: 'usuario'
     },
@@ -186,7 +186,7 @@ class ListaPendenciasScreen extends Component {
 
     renderPainelBusca(getFieldDecorator) {
         return (
-            <Card title="Buscar pendências">
+            <Card title="Buscar Pendências">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col xs={24} sm={24} md={12} lg={12} xl={12}>

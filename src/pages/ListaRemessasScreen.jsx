@@ -272,9 +272,9 @@ class ListaRemessasScreen extends Component {
                         metadados: data.metadados
                     })
                 } else if (response.status === 400) {
-                    this.notificacao('warning', 'Buscar Genero', response.data.error.message)
+                    this.notificacao('warning', 'Buscar Gênero', response.data.error.message)
                 } else {
-                    this.notificacao('error', 'Error', 'Erro de servidor ao buscar os generos.')
+                    this.notificacao('error', 'Error', 'Erro de servidor ao buscar os gêneros.')
                 }
             })
             .catch(err => {

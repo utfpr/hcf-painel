@@ -164,7 +164,7 @@ export default class DetalhesTomboScreen extends Component {
                     <Row gutter={8} style={{ marginBottom: '20px' }}>
                         <Col xs={24} sm={16} md={16} lg={16} xl={16}>
                             <Col span={24}>
-                                <h4> Nome cientifico:</h4>
+                                <h4> Nome científico:</h4>
                             </Col>
                             <Col span={24}>
                                 <span>

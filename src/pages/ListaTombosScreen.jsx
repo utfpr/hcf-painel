@@ -38,7 +38,7 @@ const columns = [
         key: 'nomePopular'
     },
     {
-        title: 'Nome Cientifico',
+        title: 'Nome Científico',
         type: 'text',
         key: 'nomeCientifico'
     },

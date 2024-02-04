@@ -33,7 +33,7 @@ class LoginForm extends Component {
                     })(
                         <Input
                             prefix={<MailOutlined style={{ color: 'rgba(0, 0, 0, .25)' }} />}
-                            placeholder="Email"
+                            placeholder="E-mail"
                             size="large"
                         />
                     )}

@@ -24,7 +24,7 @@ const columns = [
         key: 'data_coleta'
     },
     {
-        title: 'Nome científico',
+        title: 'Nome Científico',
         key: 'nome_cientifico'
     },
     {

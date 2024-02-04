@@ -98,7 +98,7 @@ class NovoUsuarioScreen extends Component {
                 this.setState({
                     loading: false
                 })
-                this.openNotificationWithIcon('error', 'Cadastro', 'Houve um problema ao realizar o cadastro, o email deve ser único por usuário, verifique os dados e tente novamente.')
+                this.openNotificationWithIcon('error', 'Cadastro', 'Houve um problema ao realizar o cadastro, o e-mail deve ser único por usuário, verifique os dados e tente novamente.')
 
                 const { response } = err
                 if (response && response.data) {
@@ -232,14 +232,14 @@ class NovoUsuarioScreen extends Component {
                     </Col>
                     <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                         <Col span={24}>
-                            <span>Email:</span>
+                            <span>E-mail:</span>
                         </Col>
                         <Col span={24}>
                             <FormItem>
                                 {getFieldDecorator('email', {
                                     rules: [{
                                         required: true,
-                                        message: 'Insira o email do usuário'
+                                        message: 'Insira o e-mail do usuário'
                                     }]
                                 })(
                                     <Input placeholder="marcelo@gmail.com" type="email" />

@@ -31,7 +31,7 @@ const columns = [
         key: 'tipo'
     },
     {
-        title: 'Email',
+        title: 'E-mail',
         type: 'text',
         key: 'email'
     },
@@ -217,7 +217,7 @@ class ListaUsuariosScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Email:</span>
+                                <span>E-mail:</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>

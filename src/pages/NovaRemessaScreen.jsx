@@ -221,7 +221,7 @@ class NovaRemessaScreen extends Component {
                     if (response.status === 400) {
                         this.notificacao('warning', 'Falha', error.message)
                     } else {
-                        this.notificacao('error', 'Falha', 'Houve um problema ao cadastrar a novo genero, tente novamente.')
+                        this.notificacao('error', 'Falha', 'Houve um problema ao cadastrar a novo gênero, tente novamente.')
                     }
                     console.error(error.message)
                 }

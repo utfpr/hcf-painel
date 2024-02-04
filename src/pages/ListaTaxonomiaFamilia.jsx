@@ -18,7 +18,7 @@ const FormItem = Form.Item
 
 const columns = [
     {
-        title: 'Familia',
+        title: 'Família',
         type: 'text',
         key: 'familia'
     },
@@ -54,7 +54,7 @@ class ListaTaxonomiaFamilia extends Component {
                 })
                 if (response.status === 204) {
                     this.requisitaListaFamilia(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir familia', 'A familia foi excluída com sucesso.')
+                    this.notificacao('success', 'Excluir família', 'A família foi excluída com sucesso.')
                 }
             })
             .catch(err => {
@@ -79,8 +79,8 @@ class ListaTaxonomiaFamilia extends Component {
     mostraMensagemDelete(id) {
         const self = this
         confirm({
-            title: 'Você tem certeza que deseja excluir esta familia?',
-            content: 'Ao clicar em SIM, a familia será excluída.',
+            title: 'Você tem certeza que deseja excluir esta família?',
+            content: 'Ao clicar em SIM, a família será excluída.',
             okText: 'SIM',
             okType: 'danger',
             cancelText: 'NÃO',
@@ -163,9 +163,9 @@ class ListaTaxonomiaFamilia extends Component {
                         metadados: data.metadados
                     })
                 } else if (response.status === 400) {
-                    this.notificacao('warning', 'Buscar familia', 'Erro ao buscar as familias.')
+                    this.notificacao('warning', 'Buscar família', 'Erro ao buscar as famílias.')
                 } else {
-                    this.notificacao('error', 'Error', 'Erro de servidor ao buscar as familias.')
+                    this.notificacao('error', 'Error', 'Erro de servidor ao buscar as famílias.')
                 }
             })
             .catch(err => {
@@ -213,7 +213,7 @@ class ListaTaxonomiaFamilia extends Component {
                 } else if (response.status === 400) {
                     this.openNotificationWithIcon('warning', 'Falha', response.data.error)
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar a nova familia, tente novamente.')
+                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar a nova família, tente novamente.')
                 }
                 this.props.form.setFields({
                     nomeFamilia: {
@@ -251,7 +251,7 @@ class ListaTaxonomiaFamilia extends Component {
                 } else if (response.status === 400) {
                     this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao atualizar a familia, tente novamente.')
+                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao atualizar a família, tente novamente.')
                 }
                 this.props.form.setFields({
                     nomeFamilia: {
@@ -275,11 +275,11 @@ class ListaTaxonomiaFamilia extends Component {
     renderPainelBusca() {
         const { getFieldDecorator } = this.props.form
         return (
-            <Card title="Buscar Familia">
+            <Card title="Buscar Família">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col span={24}>
-                            <span>Nome da familia:</span>
+                            <span>Nome da família:</span>
                         </Col>
                     </Row>
                     <Row gutter={8}>
@@ -376,12 +376,12 @@ class ListaTaxonomiaFamilia extends Component {
                                 if (this.props.form.getFieldsValue().nomeFamilia && this.props.form.getFieldsValue().nomeFamilia.trim() !== '') {
                                     this.cadastraNovaFamilia()
                                 } else {
-                                    this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da familia.')
+                                    this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da família.')
                                 }
                             } else if (this.props.form.getFieldsValue().nomeFamilia && this.props.form.getFieldsValue().nomeFamilia.trim() !== '') {
                                 this.atualizaFamilia()
                             } else {
-                                this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da familia.')
+                                this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da família.')
                             }
                             this.setState({
                                 visibleModal: false
@@ -392,7 +392,7 @@ class ListaTaxonomiaFamilia extends Component {
                         <div>
                             <Row gutter={8}>
                                 <Col span={24}>
-                                    <span>Informe o nome da familia:</span>
+                                    <span>Informe o nome da família:</span>
                                 </Col>
                             </Row>
                             <Row gutter={8}>
@@ -411,7 +411,7 @@ class ListaTaxonomiaFamilia extends Component {
 
                 <Row gutter={24} style={{ marginBottom: '20px' }}>
                     <Col xs={24} sm={14} md={18} lg={20} xl={21}>
-                        <h2 style={{ fontWeight: 200 }}>Familias</h2>
+                        <h2 style={{ fontWeight: 200 }}>Famílias</h2>
                     </Col>
                     <Col xs={24} sm={10} md={6} lg={4} xl={3}>
                         {this.renderAdd()}

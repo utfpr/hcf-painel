@@ -34,7 +34,7 @@ class ListaHerbariosScreen extends Component {
             key: 'endereco'
         },
         {
-            title: 'Email',
+            title: 'E-mail',
             type: 'text',
             key: 'email'
         }
@@ -244,7 +244,7 @@ class ListaHerbariosScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Email:</span>
+                                <span>E-mail:</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
