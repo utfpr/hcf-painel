@@ -43,6 +43,7 @@
         "@types/node": "18.11.9",
         "@types/react": "18.2.28",
         "@types/react-dom": "18.2.13",
+        "@types/react-image-gallery": "^1.2.4",
         "@typescript-eslint/eslint-plugin": "6.7.5",
         "@typescript-eslint/parser": "6.7.5",
         "@vitejs/plugin-react": "4.1.0",
