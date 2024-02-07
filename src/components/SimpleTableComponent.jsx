@@ -28,7 +28,7 @@ export default class SimpleTableComponent extends Component {
     componentWillReceiveProps(props) {
         if (props.metadados) {
             this.setState({
-                pagina: {
+                paginacao: {
                     total: props.metadados.total,
                     current: props.metadados.pagina,
                     defaultPageSize: props.metadados.limite
@@ -47,7 +47,7 @@ export default class SimpleTableComponent extends Component {
             pagina: pager
         })
 
-        this.props.changePage(pagination.current)
+        this.props.changePage(pagination.current, pagination.pageSize)
     }
 
     clearFilters = () => {

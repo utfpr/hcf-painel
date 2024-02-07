@@ -241,9 +241,10 @@ class ListaRemessasScreen extends Component {
         })
     })
 
-    requisitaListaRemessas = (valores, pg) => {
+    requisitaListaRemessas = (valores, pg, pageSize) => {
         const params = {
-            pagina: pg
+            pagina: pg,
+            limite: pageSize || 20
         }
 
         if (valores !== undefined) {
@@ -414,12 +415,12 @@ class ListaRemessasScreen extends Component {
                     data={this.state.remessas}
                     subColumns={subColumns}
                     loading={this.state.loading}
-                    changePage={pg => {
+                    changePage={(pg, pageSize) => {
                         this.setState({
                             pagina: pg,
                             loading: true
                         })
-                        this.requisitaListaRemessas(this.state.valores, pg)
+                        this.requisitaListaRemessas(this.state.valores, pg, pageSize)
                     }}
                 />
                 <Divider dashed />
