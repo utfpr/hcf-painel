@@ -332,7 +332,7 @@ class ListaTaxonomiaSubfamilia extends Component {
 
     renderPainelBusca(getFieldDecorator) {
         return (
-            <Card title="Buscar Subfamília">
+            <Card title="Buscar subfamília">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col span={24}>

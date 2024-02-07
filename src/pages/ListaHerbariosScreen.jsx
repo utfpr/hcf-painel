@@ -227,7 +227,7 @@ class ListaHerbariosScreen extends Component {
 
     renderPainelBusca(getFieldDecorator) {
         return (
-            <Card title="Buscar Herbário">
+            <Card title="Buscar herbário">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
@@ -314,7 +314,7 @@ class ListaHerbariosScreen extends Component {
 
         return (
             <div>
-                <HeaderListComponent title="Listagem de Herbários" link="/herbarios/novo" />
+                <HeaderListComponent title="Listagem de herbários" link="/herbarios/novo" />
                 <Divider dashed />
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />

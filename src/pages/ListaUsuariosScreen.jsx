@@ -41,7 +41,7 @@ const columns = [
         key: 'telefone'
     },
     {
-        title: 'Data Criação',
+        title: 'Data criação',
         type: 'text',
         key: 'dataCriacao'
     },
@@ -303,7 +303,7 @@ class ListaUsuariosScreen extends Component {
         const { getFieldDecorator } = this.props.form
         return (
             <div>
-                <HeaderListComponent title="Listagem de Usuários" link="/usuarios/novo" />
+                <HeaderListComponent title="Listagem de usuários" link="/usuarios/novo" />
                 <Divider dashed />
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />

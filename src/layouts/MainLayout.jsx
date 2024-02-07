@@ -164,7 +164,7 @@ export default class MainLayout extends Component {
                         >
                             <Menu.Item key="15">
                                 {' '}
-                                <Link to="/fichas/tombos">Ficha Tombo</Link>
+                                <Link to="/fichas/tombos">Ficha tombo</Link>
                                 {' '}
                             </Menu.Item>
                         </SubMenu>

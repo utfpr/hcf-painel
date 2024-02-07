@@ -28,7 +28,7 @@ const columns = [
         key: 'usuario'
     },
     {
-        title: 'Data Criação',
+        title: 'Data criação',
         type: 'text',
         key: 'dataCriacao'
     },

@@ -20,11 +20,11 @@ const columns = [
         key: 'hcf'
     },
     {
-        title: 'Data Coleta',
+        title: 'Data coleta',
         key: 'data_coleta'
     },
     {
-        title: 'Nome Científico',
+        title: 'Nome científico',
         key: 'nome_cientifico'
     },
     {
@@ -109,28 +109,28 @@ class FichaTomboScreen extends Component {
             <Form onSubmit={this.handleFormSubmit}>
                 <Row>
                     <Col span="24">
-                        <h2 style={{ fontWeight: 200 }}>Ficha Tombo</h2>
+                        <h2 style={{ fontWeight: 200 }}>Ficha tombo</h2>
                     </Col>
                 </Row>
                 <Divider dashed />
 
                 <Row gutter="8">
                     <Col span="2">
-                        <FormItem label={<span>HCF</span>}>
+                        <FormItem label={<span>HCF:</span>}>
                             {getFieldDecorator('hcf')(
                                 <Input type="text" />
                             )}
                         </FormItem>
                     </Col>
                     <Col span="4">
-                        <FormItem label={<span>Data de coleta</span>}>
+                        <FormItem label={<span>Data de coleta:</span>}>
                             {getFieldDecorator('data_coleta')(
                                 <Input type="text" />
                             )}
                         </FormItem>
                     </Col>
                     <Col span="6">
-                        <FormItem label={<span>Nome científico</span>}>
+                        <FormItem label={<span>Nome científico:</span>}>
                             {getFieldDecorator('nome_cientifico')(
                                 <Input type="text" />
                             )}

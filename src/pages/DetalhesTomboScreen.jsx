@@ -100,7 +100,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <h4>Nome Popular:</h4>
+                                <h4>Nome popular:</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -138,7 +138,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <h4> Data de Coleta:</h4>
+                                <h4> Data de coleta:</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -547,7 +547,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <h4>Data Identificação:</h4>
+                                <h4>Data identificação:</h4>
                             </Col>
                             <Col span={24}>
                                 <span>

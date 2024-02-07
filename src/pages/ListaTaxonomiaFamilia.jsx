@@ -275,7 +275,7 @@ class ListaTaxonomiaFamilia extends Component {
     renderPainelBusca() {
         const { getFieldDecorator } = this.props.form
         return (
-            <Card title="Buscar Família">
+            <Card title="Buscar família">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col span={24}>

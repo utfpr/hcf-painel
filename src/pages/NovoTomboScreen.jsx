@@ -1822,7 +1822,7 @@ class NovoTomboScreen extends Component {
                 <Row gutter={8}>
                     <Col xs={24} sm={24} md={8} lg={12} xl={12}>
                         <Col span={24}>
-                            <span>Nome Popular:</span>
+                            <span>Nome popular:</span>
                         </Col>
                         <Col span={24}>
                             <FormItem>
@@ -1880,7 +1880,7 @@ class NovoTomboScreen extends Component {
                     </Col>
                     <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                         <Col span={24}>
-                            <span>Data de Coleta:</span>
+                            <span>Data de coleta:</span>
                         </Col>
                         <Col span={24}>
                             <Row type="flex" gutter={4}>
@@ -2631,7 +2631,7 @@ class NovoTomboScreen extends Component {
                     </Col>
                     <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                         <Col span={24}>
-                            <span> Data Identificação: </span>
+                            <span> Data identificação: </span>
                         </Col>
                         <Col span={24}>
                             <Row type="flex" gutter={4}>

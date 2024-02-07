@@ -25,7 +25,7 @@ const columns = [
         key: 'codigo'
     },
     {
-        title: 'Data de Envio',
+        title: 'Data de envio',
         dataIndex: 'dataEnvio',
         key: 'dataEnvio'
     },
@@ -297,7 +297,7 @@ class ListaRemessasScreen extends Component {
     renderPainelBusca() {
         const { getFieldDecorator } = this.props.form
         return (
-            <Card title="Buscar Remessas">
+            <Card title="Buscar remessas">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>

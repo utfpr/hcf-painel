@@ -375,7 +375,7 @@ class ListaTaxonomiaSubespecie extends Component {
 
     renderPainelBusca(getFieldDecorator) {
         return (
-            <Card title="Buscar Subespécie">
+            <Card title="Buscar subespécie">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col span={24}>

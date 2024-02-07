@@ -209,7 +209,7 @@ class ListaTaxonomiaScreen extends Component {
 
     renderPainelBusca(getFieldDecorator) {
         return (
-            <Card title="Buscar Tombo">
+            <Card title="Buscar tombo">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col span={8}>
