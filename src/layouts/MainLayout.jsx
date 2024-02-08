@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom'
 
 import {
     BarsOutlined, DatabaseOutlined, DesktopOutlined, FileTextOutlined,
-    FlagOutlined, LogoutOutlined, MenuUnfoldOutlined, SearchOutlined
+    FlagOutlined, LogoutOutlined, MenuUnfoldOutlined, SearchOutlined, TeamOutlined
 } from '@ant-design/icons'
 
 import logoImage from '../assets/img/logo-hcf-branco.png'
@@ -142,7 +142,7 @@ export default class MainLayout extends Component {
                         {isCurador() ? (
                             <Menu.Item key="9">
                                 <Link to="/usuarios">
-                                    <teamOutlined />
+                                    <TeamOutlined />
                                     <span>Usuários</span>
                                 </Link>
                             </Menu.Item>
