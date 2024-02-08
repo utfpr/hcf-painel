@@ -178,10 +178,6 @@ class ListaTombosScreen extends Component {
         return this.renderDetalhes(id)
     }
 
-    retornaColetores = coletores => coletores.map(item => (
-        `${item.nome}, `
-    ))
-
     retornaDataColeta(dia, mes, ano) {
         if (dia == null && mes == null && ano == null) {
             return ''
@@ -202,15 +198,13 @@ class ListaTombosScreen extends Component {
         }
     }
 
-    s
-
     formataDadosTombo = tombos => tombos.map(item => ({
         key: item.hcf,
         hcf: item.hcf,
         nomePopular: item.nomes_populares,
         nomeCientifico: item.nome_cientifico,
         data: this.retornaDataColeta(item.data_coleta_dia, item.data_coleta_mes, item.data_coleta_ano),
-        coletor: this.retornaColetores(item.coletores),
+        coletor: item.coletores.map(coletor => coletor.nome).join(', '),
         acao: this.gerarAcao(item.hcf)
     }))
 
