@@ -19,7 +19,8 @@ export default class SimpleTableComponent extends Component {
         this.state = {
             filteredInfo: null,
             sortedInfo: null,
-            paginacao
+            paginacao,
+            isLoaded: false
         }
 
         this.columns = this.buildColumns(props, this.state)
@@ -44,7 +45,7 @@ export default class SimpleTableComponent extends Component {
         this.setState({
             filteredInfo: filters,
             sortedInfo: sorter,
-            pagina: pager
+            paginacao: pager
         })
 
         this.props.changePage(pagination.current, pagination.pageSize)
@@ -75,14 +76,19 @@ export default class SimpleTableComponent extends Component {
 
     render() {
         return (
-            <Table
-                columns={this.columns}
-                dataSource={this.props.data}
-                onChange={this.handleChange}
-                pagination={this.state.paginacao}
-                loading={this.props.loading}
-                scroll={{ x: 800 }}
-            />
+            // eslint-disable-next-line react/jsx-no-useless-fragment
+            <>
+                {this.state.isLoaded && (
+                    <Table
+                        columns={this.columns}
+                        dataSource={this.props.data}
+                        onChange={this.handleChange}
+                        pagination={this.state.paginacao}
+                        loading={this.props.loading}
+                        scroll={{ x: 800 }}
+                    />
+                )}
+            </>
         )
     }
 }

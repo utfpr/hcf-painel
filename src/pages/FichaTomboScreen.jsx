@@ -37,7 +37,8 @@ class FichaTomboScreen extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            tombos: []
+            tombos: [],
+            metadados: {}
         }
     }
 
@@ -70,6 +71,23 @@ class FichaTomboScreen extends Component {
         data_coleta: this.geraColunaDataColeta(tombo.data_coleta_dia, tombo.data_coleta_mes, tombo.data_coleta_ano)
     })
 
+    obtemTombos = (params, meta = this.metadados) => {
+        axios.get('/tombos', { params: { ...params, ...meta } })
+            .then(response => {
+                const { data } = response
+                const { metadados, tombos } = data
+
+                this.setState({
+                    loading: false,
+                    metadados,
+                    tombos: tombos.map(this.formataTomboItem)
+                })
+            })
+            .catch(err => {
+                console.error(err)
+            })
+    }
+
     validaCamposFormulario = (err, values) => {
         const params = Object.entries(values)
             .filter(entrada => {
@@ -84,22 +102,9 @@ class FichaTomboScreen extends Component {
                 }
             }, {})
 
+        this.obtemTombos(params)
+
         this.setState({ loading: true })
-
-        axios.get('/tombos', { params })
-            .then(response => {
-                const { data } = response
-                const { metadados, tombos } = data
-
-                this.setState({
-                    loading: false,
-                    metadados,
-                    tombos: tombos.map(this.formataTomboItem)
-                })
-            })
-            .catch(err => {
-                console.error(err)
-            })
     }
 
     render() {
@@ -151,8 +156,8 @@ class FichaTomboScreen extends Component {
                     data={this.state.tombos}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
-                    changePage={page => {
-                        console.log(`Clicou na página ${page}`)
+                    changePage={(page, pageSize) => {
+                        this.obtemTombos(null, { pagina: page, limite: pageSize })
                     }}
                 />
             </Form>

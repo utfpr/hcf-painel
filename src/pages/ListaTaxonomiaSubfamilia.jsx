@@ -147,9 +147,10 @@ class ListaTaxonomiaSubfamilia extends Component {
         acao: this.gerarAcao(item)
     }))
 
-    requisitaListaSubfamilia = (valores, pg) => {
+    requisitaListaSubfamilia = (valores, pg, pageSize) => {
         const params = {
-            pagina: pg
+            pagina: pg,
+            limite: pageSize || 20
         }
 
         if (valores !== undefined) {
@@ -487,12 +488,12 @@ class ListaTaxonomiaSubfamilia extends Component {
                     data={this.state.subfamilias}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
-                    changePage={pg => {
+                    changePage={(pg, pageSize) => {
                         this.setState({
                             pagina: pg,
                             loading: true
                         })
-                        this.requisitaListaSubfamilia(this.state.valores, pg)
+                        this.requisitaListaSubfamilia(this.state.valores, pg, pageSize)
                     }}
                 />
                 <Divider dashed />

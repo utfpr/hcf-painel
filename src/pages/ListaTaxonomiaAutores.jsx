@@ -144,9 +144,10 @@ class ListaTaxonomiaAutores extends Component {
         acao: this.gerarAcao(item)
     }))
 
-    requisitaListaAutores = (valores, pg) => {
+    requisitaListaAutores = (valores, pg, pageSize) => {
         const params = {
-            pagina: pg
+            pagina: pg,
+            limite: pageSize || 20
         }
 
         if (valores !== undefined) {
@@ -453,12 +454,12 @@ class ListaTaxonomiaAutores extends Component {
                     data={this.state.autores}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
-                    changePage={pg => {
+                    changePage={(pg, pageSize) => {
                         this.setState({
                             pagina: pg,
                             loading: true
                         })
-                        this.requisitaListaAutores(this.state.valores, pg)
+                        this.requisitaListaAutores(this.state.valores, pg, pageSize)
                     }}
                 />
                 <Divider dashed />

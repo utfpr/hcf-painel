@@ -170,9 +170,10 @@ class ListaTaxonomiaGenero extends Component {
         return undefined
     }
 
-    requisitaListaGenero = (valores, pg) => {
+    requisitaListaGenero = (valores, pg, pageSize) => {
         const params = {
-            pagina: pg
+            pagina: pg,
+            limite: pageSize || 20
         }
 
         if (valores !== undefined) {
@@ -487,12 +488,12 @@ class ListaTaxonomiaGenero extends Component {
                     data={this.state.generos}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
-                    changePage={pg => {
+                    changePage={(pg, pageSize) => {
                         this.setState({
                             pagina: pg,
                             loading: true
                         })
-                        this.requisitaListaGenero(this.state.valores, pg)
+                        this.requisitaListaGenero(this.state.valores, pg, pageSize)
                     }}
                 />
                 <Divider dashed />

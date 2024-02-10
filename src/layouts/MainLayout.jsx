@@ -101,30 +101,30 @@ export default class MainLayout extends Component {
                                 </span>
                             )}
                         >
-                            <Menu.Item key="20">
+                            <Menu.Item key="2">
                                 <Link to="/familias">Familias</Link>
                             </Menu.Item>
-                            <Menu.Item key="21">
+                            <Menu.Item key="3">
                                 <Link to="/subfamilias">Subfamilias</Link>
                             </Menu.Item>
-                            <Menu.Item key="22">
+                            <Menu.Item key="4">
                                 <Link to="/generos">Gêneros</Link>
                             </Menu.Item>
-                            <Menu.Item key="23">
+                            <Menu.Item key="5">
                                 <Link to="/especies">Espécies</Link>
                             </Menu.Item>
-                            <Menu.Item key="24">
+                            <Menu.Item key="6">
                                 <Link to="/subespecies">Subespecies</Link>
                             </Menu.Item>
-                            <Menu.Item key="25">
+                            <Menu.Item key="7">
                                 <Link to="/variedades">Variedades</Link>
                             </Menu.Item>
-                            <Menu.Item key="26">
+                            <Menu.Item key="8">
                                 <Link to="/autores">Autores</Link>
                             </Menu.Item>
                         </SubMenu>
                         {isCuradorOuOperador() ? (
-                            <Menu.Item key="8">
+                            <Menu.Item key="9">
                                 <Link to="/remessas">
                                     <DatabaseOutlined />
                                     <span>Remessas</span>
@@ -132,7 +132,7 @@ export default class MainLayout extends Component {
                             </Menu.Item>
                         ) : null}
                         {isCurador() ? (
-                            <Menu.Item key="7">
+                            <Menu.Item key="10">
                                 <Link to="/pendencias">
                                     <BarsOutlined />
                                     <span>Pendências</span>
@@ -140,14 +140,14 @@ export default class MainLayout extends Component {
                             </Menu.Item>
                         ) : null}
                         {isCurador() ? (
-                            <Menu.Item key="9">
+                            <Menu.Item key="11">
                                 <Link to="/usuarios">
                                     <teamOutlined />
                                     <span>Usuários</span>
                                 </Link>
                             </Menu.Item>
                         ) : null}
-                        <Menu.Item key="10">
+                        <Menu.Item key="12">
                             <Link to="/herbarios">
                                 <FlagOutlined />
                                 <span>Herbários</span>
@@ -162,14 +162,14 @@ export default class MainLayout extends Component {
                                 </span>
                             )}
                         >
-                            <Menu.Item key="15">
+                            <Menu.Item key="13">
                                 {' '}
                                 <Link to="/fichas/tombos">Ficha Tombo</Link>
                                 {' '}
                             </Menu.Item>
                         </SubMenu>
                         {isCuradorOuOperador() ? (
-                            <Menu.Item key="16">
+                            <Menu.Item key="14">
                                 <a href={`${baseUrl}/darwincore`} target="_blank" rel="noreferrer">
                                     <DesktopOutlined />
                                     <span>Darwin Core</span>
@@ -189,10 +189,10 @@ export default class MainLayout extends Component {
                                     </span>
                                 )}
                             >
-                                <Menu.Item key="20">
+                                <Menu.Item key="15">
                                     <Link to="/reflora">Reflora</Link>
                                 </Menu.Item>
-                                <Menu.Item key="21">
+                                <Menu.Item key="16">
                                     <Link to="/specieslink">speciesLink</Link>
                                 </Menu.Item>
                             </SubMenu>
