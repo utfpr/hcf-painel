@@ -292,9 +292,9 @@ class ListaTaxonomiaFamilia extends Component {
                         </Col>
                     </Row>
 
-                    <Row>
+                    <Row style={{ marginTop: 32 }}>
                         <Col span={24}>
-                            <Row type="flex" justify="end" gutter={4}>
+                            <Row type="flex" justify="end" gutter={16}>
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
                                     <FormItem>
                                         <Button
@@ -346,7 +346,7 @@ class ListaTaxonomiaFamilia extends Component {
                             id: -1
                         })
                     }}
-                    style={{ backgroundColor: '#5CB85C', borderColor: '#5CB85C' }}
+                    style={{ backgroundColor: '#5CB85C', borderColor: '#5CB85C', width: '100%' }}
                 >
                     Adicionar
                 </Button>
@@ -410,10 +410,10 @@ class ListaTaxonomiaFamilia extends Component {
                 </Form>
 
                 <Row gutter={24} style={{ marginBottom: '20px' }}>
-                    <Col xs={24} sm={14} md={18} lg={20} xl={21}>
+                    <Col xs={24} sm={14} md={18} lg={20} xl={20}>
                         <h2 style={{ fontWeight: 200 }}>Familias</h2>
                     </Col>
-                    <Col xs={24} sm={10} md={6} lg={4} xl={3}>
+                    <Col xs={24} sm={10} md={6} lg={4} xl={4}>
                         {this.renderAdd()}
                     </Col>
                 </Row>

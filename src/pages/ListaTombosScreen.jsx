@@ -169,7 +169,8 @@ class ListaTombosScreen extends Component {
                 this.renderEditar(id),
                 this.renderExcluir(id)
             ]
-        } if (isIdentificador()) {
+        }
+        if (isIdentificador()) {
             return [
                 this.renderDetalhes(id),
                 this.renderEditar(id)
@@ -205,7 +206,7 @@ class ListaTombosScreen extends Component {
         nomeCientifico: item.nome_cientifico,
         data: this.retornaDataColeta(item.data_coleta_dia, item.data_coleta_mes, item.data_coleta_ano),
         coletor: item.coletores.map(coletor => coletor.nome).join(', '),
-        acao: this.gerarAcao(item.hcf)
+        acao: <div style={{ display: 'flex' }}>{this.gerarAcao(item.hcf)}</div>
     }))
 
     requisitaListaTombos = (valores, pg) => {
@@ -377,7 +378,7 @@ class ListaTombosScreen extends Component {
                         </Col>
                     </Row>
                     <br />
-                    <Row type="flex" justify="end" gutter={4}>
+                    <Row type="flex" justify="end" gutter={16}>
                         <Col xs={24} sm={8} md={6} lg={4} xl={4}>
                             <FormItem>
                                 <Button

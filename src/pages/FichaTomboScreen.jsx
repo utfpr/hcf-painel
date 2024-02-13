@@ -137,7 +137,7 @@ class FichaTomboScreen extends Component {
                         </FormItem>
                     </Col>
                 </Row>
-                <Row gutter="8">
+                <Row gutter="8" style={{ marginTop: 32 }}>
                     <Col span="24">
                         <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
                             Pesquisar

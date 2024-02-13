@@ -388,17 +388,18 @@ class ServicosRefloraScreen extends Component {
                         </span>
                     </Col>
                 </Row>
-                <Row gutter={6}>
-                    <Col span={6} style={{ top: '21px' }}>
+                <Row gutter={6} style={{ marginTop: 16 }}>
+                    <Col span={6}>
                         <span>Atualização programada</span>
                     </Col>
-                    <Col span={6} style={{ top: '12px', textAlign: 'center' }}>
+                    <Col span={6} style={{ textAlign: 'center' }}>
                         <FormItem>
                             <Switch checked={!this.state.desabilitaCamposAtualizacaoProgramada} onChange={this.trocaEstadoCamposAtualizacaoProgramada.bind(this)} disabled={this.state.executando} />
                         </FormItem>
                     </Col>
                 </Row>
-                <Row gutter={6}>
+
+                <Row gutter={6} style={{ marginTop: 16 }}>
                     <Col span={6}>
                         <span>Periodicidade:</span>
                     </Col>
@@ -438,7 +439,7 @@ class ServicosRefloraScreen extends Component {
                         </Select>
                     </Col>
                 </Row>
-                <Row style={{ marginBottom: 20 }} gutter={6} />
+                <Row style={{ marginBottom: 48 }} gutter={6} />
                 <Row gutter={6}>
                     <Col span={24}>
                         <Collapse accordion>

@@ -256,7 +256,7 @@ class ServicosSpeciesLinkScreen extends Component {
                         </Select>
                     </Col>
                 </Row>
-                <Row style={{ marginBottom: 20 }} gutter={6} />
+                <Row style={{ marginBottom: 48 }} gutter={6} />
                 <Row gutter={6}>
                     <Col span={24}>
                         <Collapse accordion>
