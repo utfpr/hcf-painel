@@ -10,7 +10,7 @@ import {
 import axios from 'axios'
 
 import GalleryComponent from '../components/GalleryComponent'
-import MapWithControlledZoom from '../components/MapWithControlledZoom'
+import LeafletMap from '../components/LeafletMap'
 import { formatarDataBDtoDataHora } from '../helpers/conversoes/ConversoesData'
 import fotosTomboMap from '../helpers/fotos-tombo-map'
 
@@ -636,7 +636,7 @@ export default class DetalhesTomboScreen extends Component {
                 {this.renderComments()}
                 <Divider dashed />
 
-                <MapWithControlledZoom lat={tombo.localizacao.latitude} lng={tombo.localizacao.longitude} />
+                <LeafletMap lat={tombo.localizacao.latitude} lng={tombo.localizacao.longitude} />
             </div>
         )
     }
