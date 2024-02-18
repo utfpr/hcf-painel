@@ -4,6 +4,10 @@ import { useEffect } from 'react'
 import L from 'leaflet'
 
 const LeafletMap = ({ lat, lng }) => {
+    if (!lat && !lng) {
+        return null
+    }
+
     useEffect(
         () => {
             const map = L.map('map').setView([lat, lng], 13)
