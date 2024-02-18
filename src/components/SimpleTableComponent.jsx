@@ -38,6 +38,20 @@ export default class SimpleTableComponent extends Component {
         }
     }
 
+    componentDidMount() {
+        this.setState({
+            paginacao: {
+                total: this.props.metadados.total,
+                current: this.props.metadados.pagina,
+                defaultPageSize: this.props.metadados.limite
+            }
+        })
+
+        setTimeout(() => {
+            this.setState({ isLoaded: true })
+        }, 100)
+    }
+
     handleChange = (pagination, filters, sorter) => {
         const pager = { ...this.state.pagination }
         pager.current = pagination.current
