@@ -569,8 +569,8 @@ export default class DetalhesTomboScreen extends Component {
             return (
                 <div>
                     <Row gutter={24} style={{ marginBottom: '20px' }}>
-                        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-                            <Col span={24}>
+                        <Col xs={24} sm={12} md={8} lg={24} xl={8}>
+                            <Col style={{ padding: 0 }}>
                                 <h4>Coleções Anexas:</h4>
                             </Col>
                             <Col span={24}>
@@ -582,7 +582,7 @@ export default class DetalhesTomboScreen extends Component {
                             </Col>
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-                            <Col span={24}>
+                            <Col style={{ padding: 0 }}>
                                 <h4>Observações da coleção anexa:</h4>
                             </Col>
                             <Col span={24}>
