@@ -56,7 +56,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                 })
                 if (response.status === 204) {
                     this.requisitaListaSubfamilia(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir', 'A Subfamília foi excluída com sucesso.')
+                    this.notificacao('success', 'Excluir', 'A subfamília foi excluída com sucesso.')
                 }
             })
             .catch(err => {

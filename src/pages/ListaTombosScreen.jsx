@@ -43,7 +43,7 @@ const columns = [
         key: 'nomeCientifico'
     },
     {
-        title: 'Data coleta',
+        title: 'Data de coleta',
         type: 'text',
         key: 'data'
     },

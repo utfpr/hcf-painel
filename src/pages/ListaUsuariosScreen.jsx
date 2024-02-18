@@ -41,7 +41,7 @@ const columns = [
         key: 'telefone'
     },
     {
-        title: 'Data criação',
+        title: 'Data de criação',
         type: 'text',
         key: 'dataCriacao'
     },

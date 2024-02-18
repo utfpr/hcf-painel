@@ -23,12 +23,12 @@ const columns = [
         key: 'hcf'
     },
     {
-        title: 'Nome Usuário',
+        title: 'Nome usuário',
         type: 'text',
         key: 'usuario'
     },
     {
-        title: 'Data criação',
+        title: 'Data de criação',
         type: 'text',
         key: 'dataCriacao'
     },
@@ -186,7 +186,7 @@ class ListaPendenciasScreen extends Component {
 
     renderPainelBusca(getFieldDecorator) {
         return (
-            <Card title="Buscar Pendências">
+            <Card title="Buscar pendências">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col xs={24} sm={24} md={12} lg={12} xl={12}>
@@ -265,7 +265,7 @@ class ListaPendenciasScreen extends Component {
             <div>
                 <Row gutter={24} style={{ marginBottom: '20px' }}>
                     <Col span={20}>
-                        <h2 style={{ fontWeight: 200 }}>Listagem de Pendências</h2>
+                        <h2 style={{ fontWeight: 200 }}>Listagem de pendências</h2>
                     </Col>
                 </Row>
                 <Divider dashed />
