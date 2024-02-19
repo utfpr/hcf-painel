@@ -100,7 +100,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <h4>Nome Popular:</h4>
+                                <h4>Nome popular:</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -126,7 +126,7 @@ export default class DetalhesTomboScreen extends Component {
                     <Row gutter={8} style={{ marginBottom: '20px' }}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <h4> Número da coleta:</h4>
+                                <h4>Número da coleta:</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -138,7 +138,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <h4> Data de Coleta:</h4>
+                                <h4>Data de coleta:</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -150,7 +150,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <h4> Data de Tombo:</h4>
+                                <h4>Data de tombo:</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -164,7 +164,7 @@ export default class DetalhesTomboScreen extends Component {
                     <Row gutter={8} style={{ marginBottom: '20px' }}>
                         <Col xs={24} sm={16} md={16} lg={16} xl={16}>
                             <Col span={24}>
-                                <h4> Nome cientifico:</h4>
+                                <h4>Nome científico:</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -176,7 +176,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={8} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <h4> Tipo:</h4>
+                                <h4>Tipo:</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -212,7 +212,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <h4> Subfamília:</h4>
+                                <h4>Subfamília:</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -224,7 +224,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <h4> Gênero:</h4>
+                                <h4>Gênero:</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -238,7 +238,7 @@ export default class DetalhesTomboScreen extends Component {
                     <Row gutter={8} style={{ marginBottom: '20px' }}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <h4> Espécie:</h4>
+                                <h4>Espécie:</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -250,7 +250,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <h4> Subespécie:</h4>
+                                <h4>Subespécie:</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -262,7 +262,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <h4> Variedade:</h4>
+                                <h4>Variedade:</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -276,7 +276,7 @@ export default class DetalhesTomboScreen extends Component {
                     <Row gutter={8} style={{ marginBottom: '20px' }}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <h4> Autor Espécie:</h4>
+                                <h4>Autor espécie:</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -288,7 +288,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <h4> Autor Subespécie:</h4>
+                                <h4>Autor subespécie:</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -300,7 +300,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <h4> Autor Variedade:</h4>
+                                <h4>Autor variedade:</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -547,7 +547,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <h4>Data Identificação:</h4>
+                                <h4>Data de identificação:</h4>
                             </Col>
                             <Col span={24}>
                                 <span>

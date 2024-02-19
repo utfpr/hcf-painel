@@ -375,7 +375,7 @@ class ListaTaxonomiaVariedade extends Component {
 
     renderPainelBusca(getFieldDecorator) {
         return (
-            <Card title="Buscar Variedade">
+            <Card title="Buscar variedade">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col span={24}>
@@ -461,12 +461,12 @@ class ListaTaxonomiaVariedade extends Component {
                                 if (this.props.form.getFieldsValue().nomeEspecie && this.props.form.getFieldsValue().nomeVariedade && this.props.form.getFieldsValue().nomeVariedade.trim() !== '') {
                                     this.cadastraNovaVariedade()
                                 } else {
-                                    this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da nova variedade e da especie.')
+                                    this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da nova variedade e da espécie.')
                                 }
                             } else if (this.props.form.getFieldsValue().nomeEspecie && this.props.form.getFieldsValue().nomeVariedade && this.props.form.getFieldsValue().nomeVariedade.trim() !== '') {
                                 this.atualizaVariedade()
                             } else {
-                                this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da nova variedade e da especie.')
+                                this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da nova variedade e da espécie.')
                             }
                             this.setState({
                                 visibleModal: false
@@ -477,7 +477,7 @@ class ListaTaxonomiaVariedade extends Component {
                         <div>
                             <Row gutter={8}>
                                 <Col span={24}>
-                                    <span>Nome da especie:</span>
+                                    <span>Nome da espécie:</span>
                                 </Col>
                             </Row>
                             <Row gutter={8}>
@@ -487,7 +487,7 @@ class ListaTaxonomiaVariedade extends Component {
                                             <Select
                                                 showSearch
                                                 style={{ width: '100%' }}
-                                                placeholder="Selecione uma especie"
+                                                placeholder="Selecione uma espécie"
                                                 optionFilterProp="children"
                                             >
 

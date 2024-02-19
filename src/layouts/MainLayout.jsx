@@ -102,10 +102,10 @@ export default class MainLayout extends Component {
                             )}
                         >
                             <Menu.Item key="20">
-                                <Link to="/familias">Familias</Link>
+                                <Link to="/familias">Famílias</Link>
                             </Menu.Item>
                             <Menu.Item key="21">
-                                <Link to="/subfamilias">Subfamilias</Link>
+                                <Link to="/subfamilias">Subfamílias</Link>
                             </Menu.Item>
                             <Menu.Item key="22">
                                 <Link to="/generos">Gêneros</Link>
@@ -114,7 +114,7 @@ export default class MainLayout extends Component {
                                 <Link to="/especies">Espécies</Link>
                             </Menu.Item>
                             <Menu.Item key="24">
-                                <Link to="/subespecies">Subespecies</Link>
+                                <Link to="/subespecies">Subespécies</Link>
                             </Menu.Item>
                             <Menu.Item key="25">
                                 <Link to="/variedades">Variedades</Link>
@@ -164,7 +164,7 @@ export default class MainLayout extends Component {
                         >
                             <Menu.Item key="15">
                                 {' '}
-                                <Link to="/fichas/tombos">Ficha Tombo</Link>
+                                <Link to="/fichas/tombos">Ficha tombo</Link>
                                 {' '}
                             </Menu.Item>
                         </SubMenu>
