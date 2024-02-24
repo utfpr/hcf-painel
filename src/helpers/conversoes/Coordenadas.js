@@ -35,7 +35,7 @@ export default function converteDecimalParaGrausMinutosSegundos(gDec, x) {
     // return Math.abs(graus) + "° " + minutos + "' " + segundos + "." + milisegundos + "'' " + direcao;
     // return `${}°${minutos}'${segundos},${milisegundos}"${direcao}`;
     return {
-        graus: Math.abs(graus),
+        graus,
         minutos,
         segundos,
         direcao
