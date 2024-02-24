@@ -143,9 +143,11 @@ class NovoTomboScreen extends Component {
                     })
                     this.insereDadosFormulario(data)
 
-                    this.setState({
-                        identificadorInicial: data.identificacao?.usuario_id
-                    })
+                    if (data.identificacao && data.identificacao.usuario_id) {
+                        this.setState({
+                            identificadorInicial: data.identificacao.usuario_id
+                        })
+                    }
                 } else {
                     this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar os dados do tombo, tente novamente.')
                 }
