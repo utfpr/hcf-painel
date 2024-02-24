@@ -48,6 +48,7 @@ class NovoTomboScreen extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            showTable: false,
             fetchingColetores: false,
             fetchingIdentificadores: false,
             valoresColetores: [],
@@ -141,6 +142,10 @@ class NovoTomboScreen extends Component {
                         ...data
                     })
                     this.insereDadosFormulario(data)
+
+                    this.setState({
+                        identificadorInicial: data.identificacao?.usuario_id
+                    })
                 } else {
                     this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar os dados do tombo, tente novamente.')
                 }
@@ -259,6 +264,7 @@ class NovoTomboScreen extends Component {
                         ...dados
                     })
                     if (this.props.match.params.tombo_id) {
+                        this.setState({ showTable: true })
                         this.requisitaDadosEdicao(this.props.match.params.tombo_id)
                     } else {
                         this.setState({
@@ -271,6 +277,21 @@ class NovoTomboScreen extends Component {
                     })
                     this.openNotification('error', 'Falha', 'Houve um problema ao buscar os dados do usuário, tente novamente.')
                 }
+
+                axios.get('/identificadores-predicao?nome=')
+                    .then(response => {
+                        if (response.status === 200) {
+                            this.setState({
+                                identificadores: response.data
+                            })
+                        }
+                    })
+                    .catch(err => {
+                        this.catchRequestError(err)
+                    })
+                    .finally(() => {
+                        this.setState({ fetchingIdentificadores: false })
+                    })
             })
             .catch(err => {
                 this.setState({
@@ -1886,7 +1907,12 @@ class NovoTomboScreen extends Component {
                             <Row type="flex" gutter={4}>
                                 <Col span={8}>
                                     <FormItem>
-                                        {getFieldDecorator('dataColetaDia')(
+                                        {getFieldDecorator('dataColetaDia', {
+                                            rules: [{
+                                                required: true,
+                                                message: 'Insira o dia da coleta'
+                                            }]
+                                        })(
                                             <InputNumber
                                                 min={1}
                                                 max={31}
@@ -1898,7 +1924,13 @@ class NovoTomboScreen extends Component {
                                 </Col>
                                 <Col span={8}>
                                     <FormItem>
-                                        {getFieldDecorator('dataColetaMes')(
+                                        {getFieldDecorator('dataColetaMes', {
+                                            rules: [{
+                                                required: true,
+                                                message: 'Insira o mês da coleta'
+                                            }]
+
+                                        })(
                                             <InputNumber
                                                 min={1}
                                                 max={12}
@@ -1910,7 +1942,12 @@ class NovoTomboScreen extends Component {
                                 </Col>
                                 <Col span={8}>
                                     <FormItem>
-                                        {getFieldDecorator('dataColetaAno')(
+                                        {getFieldDecorator('dataColetaAno', {
+                                            rules: [{
+                                                required: true,
+                                                message: 'Insira o ano da coleta'
+                                            }]
+                                        })(
                                             <InputNumber
                                                 min={500}
                                                 max={5000}
@@ -2045,7 +2082,11 @@ class NovoTomboScreen extends Component {
                         <Col span={24}>
                             <FormItem>
                                 {getFieldDecorator('pais', {
-                                    initialValue: String(this.state.paisInicial)
+                                    initialValue: String(this.state.paisInicial),
+                                    rules: [{
+                                        required: true,
+                                        message: 'Escolha um país'
+                                    }]
                                 })(
                                     <Select
                                         showSearch
@@ -2068,7 +2109,11 @@ class NovoTomboScreen extends Component {
                         <Col span={24}>
                             <FormItem>
                                 {getFieldDecorator('estado', {
-                                    initialValue: String(this.state.estadoInicial)
+                                    initialValue: String(this.state.estadoInicial),
+                                    rules: [{
+                                        required: true,
+                                        message: 'Escolha um estado'
+                                    }]
                                 })(
                                     <Select
                                         showSearch
@@ -2688,9 +2733,10 @@ class NovoTomboScreen extends Component {
     }
 
     handleChangeIdentificadores = valor => {
+        console.log(valor)
         this.setState({
             fetchingIdentificadores: false,
-            // identificadorInicial: `${valor}`,
+            identificadorInicial: `${valor}`,
             identificadores: []
         })
     }
@@ -3181,15 +3227,16 @@ class NovoTomboScreen extends Component {
                     </Row>
 
                     <Divider dashed />
-                    <Row gutter={8}>
-                        <Table
-                            columns={this.tabelaFotosColunas}
-                            dataSource={this.state.fotos}
-                            loading={this.state.loading}
-                            rowKey="id"
-                        />
-
-                    </Row>
+                    {this.state.showTable && (
+                        <Row gutter={8}>
+                            <Table
+                                columns={this.tabelaFotosColunas}
+                                dataSource={this.state.fotos}
+                                loading={this.state.loading}
+                                rowKey="id"
+                            />
+                        </Row>
+                    )}
                     <Row type="flex" justify="end">
                         <Col xs={24} sm={8} md={3} lg={3} xl={3}>
                             <ButtonComponent titleButton="Salvar" />
