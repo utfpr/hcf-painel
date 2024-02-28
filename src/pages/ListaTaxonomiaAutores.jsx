@@ -306,7 +306,7 @@ class ListaTaxonomiaAutores extends Component {
 
     renderPainelBusca(getFieldDecorator) {
         return (
-            <Card title="Buscar Autor">
+            <Card title="Buscar autor">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col span={24}>

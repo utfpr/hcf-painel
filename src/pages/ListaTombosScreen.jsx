@@ -33,17 +33,17 @@ const columns = [
         key: 'hcf'
     },
     {
-        title: 'Nome Popular',
+        title: 'Nome popular',
         type: 'text',
         key: 'nomePopular'
     },
     {
-        title: 'Nome Cientifico',
+        title: 'Nome científico',
         type: 'text',
         key: 'nomeCientifico'
     },
     {
-        title: 'Data Coleta',
+        title: 'Data de coleta',
         type: 'text',
         key: 'data'
     },
@@ -298,7 +298,7 @@ class ListaTombosScreen extends Component {
 
     renderPainelBusca(getFieldDecorator) {
         return (
-            <Card title="Buscar Tombo">
+            <Card title="Buscar tombo">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
