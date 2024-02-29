@@ -46,7 +46,8 @@ const columns = [
     },
     {
         title: 'Ação',
-        key: 'acao'
+        key: 'acao',
+        width: 100
     }
 ]
 
@@ -345,9 +346,9 @@ class ListaRemessasScreen extends Component {
                             </Col>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row style={{ marginTop: 32 }}>
                         <Col span={24}>
-                            <Row type="flex" justify="end" gutter={4}>
+                            <Row type="flex" justify="end" gutter={16}>
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
                                     <FormItem>
                                         <Button

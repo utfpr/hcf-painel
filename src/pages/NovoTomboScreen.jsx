@@ -2612,7 +2612,7 @@ class NovoTomboScreen extends Component {
                         <Col span={24}>
                             <span>Fase sucessional:</span>
                         </Col>
-                        <Col span={24}>
+                        <Col span={22}>
                             <FormItem>
                                 {getFieldDecorator('fases', {
                                     initialValue: String(this.state.faseInicial)
@@ -2751,7 +2751,7 @@ class NovoTomboScreen extends Component {
                         <Col span={24}>
                             <span>Coletores:</span>
                         </Col>
-                        <Col span={22}>
+                        <Col span={18}>
                             <FormItem validateStatus={this.state.search.coletor}>
                                 {getFieldDecorator('coletores', {
                                     // initialValue:  this.state.coletoresInicial != '' ? String(this.state.coletoresInicial) : "oi",
