@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom'
 
 import {
     BarsOutlined, DatabaseOutlined, DesktopOutlined, FileTextOutlined,
-    FlagOutlined, LogoutOutlined, MenuUnfoldOutlined, SearchOutlined
+    FlagOutlined, LogoutOutlined, MenuUnfoldOutlined, SearchOutlined, TeamOutlined
 } from '@ant-design/icons'
 
 import logoImage from '../assets/img/logo-hcf-branco.png'
@@ -102,10 +102,10 @@ export default class MainLayout extends Component {
                             )}
                         >
                             <Menu.Item key="2">
-                                <Link to="/familias">Familias</Link>
+                                <Link to="/familias">Famílias</Link>
                             </Menu.Item>
                             <Menu.Item key="3">
-                                <Link to="/subfamilias">Subfamilias</Link>
+                                <Link to="/subfamilias">Subfamílias</Link>
                             </Menu.Item>
                             <Menu.Item key="4">
                                 <Link to="/generos">Gêneros</Link>
@@ -114,7 +114,7 @@ export default class MainLayout extends Component {
                                 <Link to="/especies">Espécies</Link>
                             </Menu.Item>
                             <Menu.Item key="6">
-                                <Link to="/subespecies">Subespecies</Link>
+                                <Link to="/subespecies">Subespécies</Link>
                             </Menu.Item>
                             <Menu.Item key="7">
                                 <Link to="/variedades">Variedades</Link>
@@ -142,7 +142,7 @@ export default class MainLayout extends Component {
                         {isCurador() ? (
                             <Menu.Item key="11">
                                 <Link to="/usuarios">
-                                    <teamOutlined />
+                                    <TeamOutlined />
                                     <span>Usuários</span>
                                 </Link>
                             </Menu.Item>
@@ -164,7 +164,7 @@ export default class MainLayout extends Component {
                         >
                             <Menu.Item key="13">
                                 {' '}
-                                <Link to="/fichas/tombos">Ficha Tombo</Link>
+                                <Link to="/fichas/tombos">Ficha tombo</Link>
                                 {' '}
                             </Menu.Item>
                         </SubMenu>

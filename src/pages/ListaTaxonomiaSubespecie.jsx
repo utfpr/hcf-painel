@@ -19,7 +19,7 @@ const { Option } = Select
 
 const columns = [
     {
-        title: 'Subespecie',
+        title: 'Subespécie',
         type: 'text',
         key: 'subespecie'
     },
@@ -57,7 +57,7 @@ class ListaTaxonomiaSubespecie extends Component {
                 })
                 if (response.status === 204) {
                     this.requisitaListaSubespecie(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir', 'A Subespecie foi excluída com sucesso.')
+                    this.notificacao('success', 'Excluir', 'A Subespécie foi excluída com sucesso.')
                 }
             })
             .catch(err => {
@@ -84,8 +84,8 @@ class ListaTaxonomiaSubespecie extends Component {
     mostraMensagemDelete(id) {
         const self = this
         confirm({
-            title: 'Você tem certeza que deseja excluir esta subespecie?',
-            content: 'Ao clicar em SIM, a subespecie será excluída.',
+            title: 'Você tem certeza que deseja excluir esta subespécie?',
+            content: 'Ao clicar em SIM, a subespécie será excluída.',
             okText: 'SIM',
             okType: 'danger',
             cancelText: 'NÃO',
@@ -154,7 +154,7 @@ class ListaTaxonomiaSubespecie extends Component {
                             id: -1
                         })
                     }}
-                    style={{ backgroundColor: '#5CB85C', borderColor: '#5CB85C' }}
+                    style={{ backgroundColor: '#5CB85C', borderColor: '#5CB85C', width: '100%' }}
                 >
                     Adicionar
                 </Button>
@@ -201,9 +201,9 @@ class ListaTaxonomiaSubespecie extends Component {
                         metadados: data.metadados
                     })
                 } else if (response.status === 400) {
-                    this.notificacao('warning', 'Buscar', 'Erro ao buscar as subespecies.')
+                    this.notificacao('warning', 'Buscar', 'Erro ao buscar as subespécies.')
                 } else {
-                    this.notificacao('error', 'Error', 'Erro do servidor ao buscar as subespecies.')
+                    this.notificacao('error', 'Error', 'Erro do servidor ao buscar as subespécies.')
                 }
             })
             .catch(err => {
@@ -282,7 +282,7 @@ class ListaTaxonomiaSubespecie extends Component {
                 } else if (response.status === 400) {
                     this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar a nova subespecie, tente novamente.')
+                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar a nova subespécie, tente novamente.')
                 }
                 this.props.form.setFields({
                     nomeSubespecie: {
@@ -324,7 +324,7 @@ class ListaTaxonomiaSubespecie extends Component {
                 } else if (response.status === 400) {
                     this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao atualizar a subespecie, tente novamente.')
+                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao atualizar a subespécie, tente novamente.')
                 }
                 this.props.form.setFields({
                     nomeSubespecie: {
@@ -376,11 +376,11 @@ class ListaTaxonomiaSubespecie extends Component {
 
     renderPainelBusca(getFieldDecorator) {
         return (
-            <Card title="Buscar Subespécie">
+            <Card title="Buscar subespécie">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col span={24}>
-                            <span>Nome da subespecie:</span>
+                            <span>Nome da subespécie:</span>
                         </Col>
                     </Row>
                     <Row gutter={8}>
@@ -393,9 +393,9 @@ class ListaTaxonomiaSubespecie extends Component {
                         </Col>
                     </Row>
 
-                    <Row>
+                    <Row style={{ marginTop: 32 }}>
                         <Col span={24}>
-                            <Row type="flex" justify="end" gutter={4}>
+                            <Row type="flex" justify="end" gutter={16}>
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
                                     <FormItem>
                                         <Button
@@ -462,12 +462,12 @@ class ListaTaxonomiaSubespecie extends Component {
                                 if (this.props.form.getFieldsValue().nomeEspecie && this.props.form.getFieldsValue().nomeSubespecie && this.props.form.getFieldsValue().nomeSubespecie.trim() !== '') {
                                     this.cadastraNovaSubespecie()
                                 } else {
-                                    this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da nova subespecie e da especie.')
+                                    this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da nova subespécie e da espécie.')
                                 }
                             } else if (this.props.form.getFieldsValue().nomeEspecie && this.props.form.getFieldsValue().nomeSubespecie && this.props.form.getFieldsValue().nomeSubespecie.trim() !== '') {
                                 this.atualizaSubespecie()
                             } else {
-                                this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da nova subespecie e da especie.')
+                                this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da nova subespécie e da espécie.')
                             }
                             this.setState({
                                 visibleModal: false
@@ -478,7 +478,7 @@ class ListaTaxonomiaSubespecie extends Component {
                         <div>
                             <Row gutter={8}>
                                 <Col span={24}>
-                                    <span>Nome da especie:</span>
+                                    <span>Nome da espécie:</span>
                                 </Col>
                             </Row>
                             <Row gutter={8}>
@@ -488,7 +488,7 @@ class ListaTaxonomiaSubespecie extends Component {
                                             <Select
                                                 showSearch
                                                 style={{ width: '100%' }}
-                                                placeholder="Selecione uma especie"
+                                                placeholder="Selecione uma espécie"
                                                 optionFilterProp="children"
                                             >
 
@@ -498,9 +498,9 @@ class ListaTaxonomiaSubespecie extends Component {
                                     </FormItem>
                                 </Col>
                             </Row>
-                            <Row gutter={8}>
+                            <Row gutter={8} style={{ marginTop: 16 }}>
                                 <Col span={24}>
-                                    <span>Nome da subespecie:</span>
+                                    <span>Nome da subespécie:</span>
                                 </Col>
                             </Row>
                             <Row gutter={8}>
@@ -512,7 +512,7 @@ class ListaTaxonomiaSubespecie extends Component {
                                     </FormItem>
                                 </Col>
                             </Row>
-                            <Row gutter={8}>
+                            <Row gutter={8} style={{ marginTop: 16 }}>
                                 <Col span={24}>
                                     <span>Nome do autor:</span>
                                 </Col>
@@ -540,10 +540,10 @@ class ListaTaxonomiaSubespecie extends Component {
                 </Form>
 
                 <Row gutter={24} style={{ marginBottom: '20px' }}>
-                    <Col xs={24} sm={14} md={18} lg={20} xl={21}>
-                        <h2 style={{ fontWeight: 200 }}>Subespecies</h2>
+                    <Col xs={24} sm={14} md={18} lg={20} xl={20}>
+                        <h2 style={{ fontWeight: 200 }}>Subespécies</h2>
                     </Col>
-                    <Col xs={24} sm={10} md={6} lg={4} xl={3}>
+                    <Col xs={24} sm={10} md={6} lg={4} xl={4}>
                         {this.renderAdd()}
                     </Col>
                 </Row>

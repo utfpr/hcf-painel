@@ -28,7 +28,7 @@ const columns = [
         key: 'usuario'
     },
     {
-        title: 'Data Criação',
+        title: 'Data de criação',
         type: 'text',
         key: 'dataCriacao'
     },
@@ -218,9 +218,9 @@ class ListaPendenciasScreen extends Component {
                             </Col>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row style={{ marginTop: 32 }}>
                         <Col span={24}>
-                            <Row type="flex" justify="end" gutter={4}>
+                            <Row type="flex" justify="end" gutter={16}>
                                 <Col xs={24} sm={12} md={6} lg={4} xl={4}>
                                     <FormItem>
                                         <Button
@@ -265,7 +265,7 @@ class ListaPendenciasScreen extends Component {
             <div>
                 <Row gutter={24} style={{ marginBottom: '20px' }}>
                     <Col span={20}>
-                        <h2 style={{ fontWeight: 200 }}>Listagem de Pendências</h2>
+                        <h2 style={{ fontWeight: 200 }}>Listagem de pendências</h2>
                     </Col>
                 </Row>
                 <Divider dashed />

@@ -25,7 +25,7 @@ const columns = [
         key: 'codigo'
     },
     {
-        title: 'Data de Envio',
+        title: 'Data de envio',
         dataIndex: 'dataEnvio',
         key: 'dataEnvio'
     },
@@ -46,7 +46,8 @@ const columns = [
     },
     {
         title: 'Ação',
-        key: 'acao'
+        key: 'acao',
+        width: 100
     }
 ]
 
@@ -273,9 +274,9 @@ class ListaRemessasScreen extends Component {
                         metadados: data.metadados
                     })
                 } else if (response.status === 400) {
-                    this.notificacao('warning', 'Buscar Genero', response.data.error.message)
+                    this.notificacao('warning', 'Buscar Gênero', response.data.error.message)
                 } else {
-                    this.notificacao('error', 'Error', 'Erro de servidor ao buscar os generos.')
+                    this.notificacao('error', 'Error', 'Erro de servidor ao buscar os gêneros.')
                 }
             })
             .catch(err => {
@@ -298,7 +299,7 @@ class ListaRemessasScreen extends Component {
     renderPainelBusca() {
         const { getFieldDecorator } = this.props.form
         return (
-            <Card title="Buscar Remessas">
+            <Card title="Buscar remessas">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
@@ -346,9 +347,9 @@ class ListaRemessasScreen extends Component {
                             </Col>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row style={{ marginTop: 32 }}>
                         <Col span={24}>
-                            <Row type="flex" justify="end" gutter={4}>
+                            <Row type="flex" justify="end" gutter={16}>
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
                                     <FormItem>
                                         <Button

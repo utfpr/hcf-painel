@@ -19,7 +19,7 @@ const { Option } = Select
 
 const columns = [
     {
-        title: 'Genero',
+        title: 'Gênero',
         type: 'text',
         key: 'Genero'
     },
@@ -56,7 +56,7 @@ class ListaTaxonomiaGenero extends Component {
                 })
                 if (response.status === 204) {
                     this.requisitaListaGenero(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir', 'O Genero foi excluída com sucesso.')
+                    this.notificacao('success', 'Excluir', 'O gênero foi excluída com sucesso.')
                 }
             })
             .catch(err => {
@@ -81,8 +81,8 @@ class ListaTaxonomiaGenero extends Component {
     mostraMensagemDelete(id) {
         const self = this
         confirm({
-            title: 'Você tem certeza que deseja excluir este genero?',
-            content: 'Ao clicar em SIM, o genero será excluída.',
+            title: 'Você tem certeza que deseja excluir este gênero?',
+            content: 'Ao clicar em SIM, o gênero será excluída.',
             okText: 'SIM',
             okType: 'danger',
             cancelText: 'NÃO',
@@ -161,7 +161,7 @@ class ListaTaxonomiaGenero extends Component {
                             id: -1
                         })
                     }}
-                    style={{ backgroundColor: '#5CB85C', borderColor: '#5CB85C' }}
+                    style={{ backgroundColor: '#5CB85C', borderColor: '#5CB85C', width: '100%' }}
                 >
                     Adicionar
                 </Button>
@@ -195,9 +195,9 @@ class ListaTaxonomiaGenero extends Component {
                         metadados: data.metadados
                     })
                 } else if (response.status === 400) {
-                    this.notificacao('warning', 'Buscar Genero', 'Erro ao buscar os generos.')
+                    this.notificacao('warning', 'Buscar gênero', 'Erro ao buscar os gêneros.')
                 } else {
-                    this.notificacao('error', 'Error', 'Erro de servidor ao buscar os generos.')
+                    this.notificacao('error', 'Error', 'Erro de servidor ao buscar os gêneros.')
                 }
             })
             .catch(err => {
@@ -246,7 +246,7 @@ class ListaTaxonomiaGenero extends Component {
                 } else if (response.status === 400) {
                     this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar o novo genero, tente novamente.')
+                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar o novo gênero, tente novamente.')
                 }
                 this.props.form.setFields({
                     nomeGenero: {
@@ -285,7 +285,7 @@ class ListaTaxonomiaGenero extends Component {
                 } else if (response.status === 400) {
                     this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao atualizar o genero, tente novamente.')
+                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao atualizar o gênero, tente novamente.')
                 }
                 this.props.form.setFields({
                     nomeGenero: {
@@ -318,7 +318,7 @@ class ListaTaxonomiaGenero extends Component {
                         familias: response.data.resultado
                     })
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar familias, tente novamente.')
+                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar famílias, tente novamente.')
                 }
             })
             .catch(err => {
@@ -333,11 +333,11 @@ class ListaTaxonomiaGenero extends Component {
 
     renderPainelBusca(getFieldDecorator) {
         return (
-            <Card title="Buscar Genero">
+            <Card title="Buscar gênero">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col span={24}>
-                            <span>Nome do genero:</span>
+                            <span>Nome do gênero:</span>
                         </Col>
                     </Row>
                     <Row gutter={8}>
@@ -350,9 +350,9 @@ class ListaTaxonomiaGenero extends Component {
                         </Col>
                     </Row>
 
-                    <Row>
+                    <Row style={{ marginTop: 32 }}>
                         <Col span={24}>
-                            <Row type="flex" justify="end" gutter={4}>
+                            <Row type="flex" justify="end" gutter={16}>
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
                                     <FormItem>
                                         <Button
@@ -416,12 +416,12 @@ class ListaTaxonomiaGenero extends Component {
                                 if (this.props.form.getFieldsValue().nomeFamilia && this.props.form.getFieldsValue().nomeGenero && this.props.form.getFieldsValue().nomeGenero.trim() !== '') {
                                     this.cadastraNovaGenero()
                                 } else {
-                                    this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome do genero e da familia.')
+                                    this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome do gênero e da família.')
                                 }
                             } else if (this.props.form.getFieldsValue().nomeFamilia && this.props.form.getFieldsValue().nomeGenero && this.props.form.getFieldsValue().nomeGenero.trim() !== '') {
                                 this.atualizaGenero()
                             } else {
-                                this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome do genero e da familia.')
+                                this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome do gênero e da família.')
                             }
                             this.setState({
                                 visibleModal: false
@@ -432,7 +432,7 @@ class ListaTaxonomiaGenero extends Component {
                         <div>
                             <Row gutter={8}>
                                 <Col span={24}>
-                                    <span>Nome da familia:</span>
+                                    <span>Nome da família:</span>
                                 </Col>
                             </Row>
                             <Row gutter={8}>
@@ -442,7 +442,7 @@ class ListaTaxonomiaGenero extends Component {
                                             <Select
                                                 showSearch
                                                 style={{ width: '100%' }}
-                                                placeholder="Selecione uma familia"
+                                                placeholder="Selecione uma família"
                                                 optionFilterProp="children"
                                             >
 
@@ -452,9 +452,9 @@ class ListaTaxonomiaGenero extends Component {
                                     </FormItem>
                                 </Col>
                             </Row>
-                            <Row gutter={8}>
+                            <Row gutter={8} style={{ marginTop: 16 }}>
                                 <Col span={24}>
-                                    <span>Nome do genero:</span>
+                                    <span>Nome do gênero:</span>
                                 </Col>
                             </Row>
                             <Row gutter={8}>
@@ -472,10 +472,10 @@ class ListaTaxonomiaGenero extends Component {
                 </Form>
 
                 <Row gutter={24} style={{ marginBottom: '20px' }}>
-                    <Col xs={24} sm={14} md={18} lg={20} xl={21}>
-                        <h2 style={{ fontWeight: 200 }}>Generos</h2>
+                    <Col xs={24} sm={14} md={18} lg={20} xl={20}>
+                        <h2 style={{ fontWeight: 200 }}>Gêneros</h2>
                     </Col>
-                    <Col xs={24} sm={10} md={6} lg={4} xl={3}>
+                    <Col xs={24} sm={10} md={6} lg={4} xl={4}>
                         {this.renderAdd()}
                     </Col>
                 </Row>

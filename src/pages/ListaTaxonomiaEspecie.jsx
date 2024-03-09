@@ -19,7 +19,7 @@ const { Option } = Select
 
 const columns = [
     {
-        title: 'Especie',
+        title: 'Espécie',
         type: 'text',
         key: 'especie'
     },
@@ -57,9 +57,9 @@ class ListaTaxonomiaEspecie extends Component {
                 })
                 if (response.status === 204) {
                     this.requisitaListaEspecie(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir', 'A Especie foi excluída com sucesso.')
+                    this.notificacao('success', 'Excluir', 'A espécie foi excluída com sucesso.')
                 } else {
-                    this.notificacao('success', 'Excluir', 'Erro ao excluir a especie com sucesso.')
+                    this.notificacao('success', 'Excluir', 'Erro ao excluir a espécie com sucesso.')
                 }
             })
             .catch(err => {
@@ -86,8 +86,8 @@ class ListaTaxonomiaEspecie extends Component {
     mostraMensagemDelete(id) {
         const self = this
         confirm({
-            title: 'Você tem certeza que deseja excluir esta especie?',
-            content: 'Ao clicar em SIM, a especie será excluída.',
+            title: 'Você tem certeza que deseja excluir esta espécie?',
+            content: 'Ao clicar em SIM, a espécie será excluída.',
             okText: 'SIM',
             okType: 'danger',
             cancelText: 'NÃO',
@@ -181,9 +181,9 @@ class ListaTaxonomiaEspecie extends Component {
                         metadados: data.metadados
                     })
                 } else if (response.status === 400) {
-                    this.notificacao('warning', 'Buscar', 'Erro ao buscar as especies.')
+                    this.notificacao('warning', 'Buscar', 'Erro ao buscar as espécies.')
                 } else {
-                    this.notificacao('error', 'Error', 'Erro do servidor ao buscar as especies.')
+                    this.notificacao('error', 'Error', 'Erro do servidor ao buscar as espécies.')
                 }
             })
             .catch(err => {
@@ -262,7 +262,7 @@ class ListaTaxonomiaEspecie extends Component {
                 } else if (response.status === 400) {
                     this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar a nova especie, tente novamente.')
+                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar a nova espécie, tente novamente.')
                 }
                 this.props.form.setFields({
                     nomeEspecie: {
@@ -304,7 +304,7 @@ class ListaTaxonomiaEspecie extends Component {
                 } else if (response.status === 400) {
                     this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao atualizar a especie, tente novamente.')
+                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao atualizar a espécie, tente novamente.')
                 }
                 this.props.form.setFields({
                     nomeEspecie: {
@@ -339,7 +339,7 @@ class ListaTaxonomiaEspecie extends Component {
                         generos: response.data.resultado
                     })
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar os generos, tente novamente.')
+                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar os gêneros, tente novamente.')
                 }
             })
             .catch(err => {
@@ -367,7 +367,7 @@ class ListaTaxonomiaEspecie extends Component {
                             id: -1
                         })
                     }}
-                    style={{ backgroundColor: '#5CB85C', borderColor: '#5CB85C' }}
+                    style={{ backgroundColor: '#5CB85C', borderColor: '#5CB85C', width: '100%' }}
                 >
                     Adicionar
                 </Button>
@@ -378,11 +378,11 @@ class ListaTaxonomiaEspecie extends Component {
 
     renderPainelBusca(getFieldDecorator) {
         return (
-            <Card title="Buscar Espécie">
+            <Card title="Buscar espécie">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col span={24}>
-                            <span>Nome da especie:</span>
+                            <span>Nome da espécie:</span>
                         </Col>
                     </Row>
                     <Row gutter={8}>
@@ -395,9 +395,9 @@ class ListaTaxonomiaEspecie extends Component {
                         </Col>
                     </Row>
 
-                    <Row>
+                    <Row style={{ marginTop: 32 }}>
                         <Col span={24}>
-                            <Row type="flex" justify="end" gutter={4}>
+                            <Row type="flex" justify="end" gutter={16}>
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
                                     <FormItem>
                                         <Button
@@ -465,12 +465,12 @@ class ListaTaxonomiaEspecie extends Component {
                                 if (this.props.form.getFieldsValue().nomeGenero && this.props.form.getFieldsValue().nomeEspecie && this.props.form.getFieldsValue().nomeEspecie.trim() !== '') {
                                     this.cadastraNovaEspecie()
                                 } else {
-                                    this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da nova especie e do genero.')
+                                    this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da nova espécie e do gênero.')
                                 }
                             } else if (this.props.form.getFieldsValue().nomeGenero && this.props.form.getFieldsValue().nomeEspecie && this.props.form.getFieldsValue().nomeEspecie.trim() !== '') {
                                 this.atualizaEspecie()
                             } else {
-                                this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da nova especie e do genero.')
+                                this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da nova espécie e do gênero.')
                             }
                             this.setState({
                                 visibleModal: false
@@ -481,7 +481,7 @@ class ListaTaxonomiaEspecie extends Component {
                         <div>
                             <Row gutter={8}>
                                 <Col span={24}>
-                                    <span>Nome do genero:</span>
+                                    <span>Nome do gênero:</span>
                                 </Col>
                             </Row>
                             <Row gutter={8}>
@@ -491,7 +491,7 @@ class ListaTaxonomiaEspecie extends Component {
                                             <Select
                                                 showSearch
                                                 style={{ width: '100%' }}
-                                                placeholder="Selecione um genero"
+                                                placeholder="Selecione um gênero"
                                                 optionFilterProp="children"
                                             >
 
@@ -501,9 +501,9 @@ class ListaTaxonomiaEspecie extends Component {
                                     </FormItem>
                                 </Col>
                             </Row>
-                            <Row gutter={8}>
+                            <Row gutter={8} style={{ marginTop: 16 }}>
                                 <Col span={24}>
-                                    <span>Nome da especie:</span>
+                                    <span>Nome da espécie:</span>
                                 </Col>
                             </Row>
                             <Row gutter={8}>
@@ -515,7 +515,7 @@ class ListaTaxonomiaEspecie extends Component {
                                     </FormItem>
                                 </Col>
                             </Row>
-                            <Row gutter={8}>
+                            <Row gutter={8} style={{ marginTop: 16 }}>
                                 <Col span={24}>
                                     <span>Nome do autor:</span>
                                 </Col>
@@ -543,10 +543,10 @@ class ListaTaxonomiaEspecie extends Component {
                 </Form>
 
                 <Row gutter={24} style={{ marginBottom: '20px' }}>
-                    <Col xs={24} sm={14} md={18} lg={20} xl={21}>
-                        <h2 style={{ fontWeight: 200 }}>Especies</h2>
+                    <Col xs={24} sm={14} md={18} lg={20} xl={20}>
+                        <h2 style={{ fontWeight: 200 }}>Espécies</h2>
                     </Col>
-                    <Col xs={24} sm={10} md={6} lg={4} xl={3}>
+                    <Col xs={24} sm={10} md={6} lg={4} xl={4}>
                         {this.renderAdd()}
                     </Col>
                 </Row>

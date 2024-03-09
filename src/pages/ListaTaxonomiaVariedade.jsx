@@ -254,7 +254,7 @@ class ListaTaxonomiaVariedade extends Component {
                             id: -1
                         })
                     }}
-                    style={{ backgroundColor: '#5CB85C', borderColor: '#5CB85C' }}
+                    style={{ backgroundColor: '#5CB85C', borderColor: '#5CB85C', width: '100%' }}
                 >
                     Adicionar
                 </Button>
@@ -376,7 +376,7 @@ class ListaTaxonomiaVariedade extends Component {
 
     renderPainelBusca(getFieldDecorator) {
         return (
-            <Card title="Buscar Variedade">
+            <Card title="Buscar variedade">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col span={24}>
@@ -393,9 +393,9 @@ class ListaTaxonomiaVariedade extends Component {
                         </Col>
                     </Row>
 
-                    <Row>
+                    <Row style={{ marginTop: 32 }}>
                         <Col span={24}>
-                            <Row type="flex" justify="end" gutter={4}>
+                            <Row type="flex" justify="end" gutter={16}>
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
                                     <FormItem>
                                         <Button
@@ -462,12 +462,12 @@ class ListaTaxonomiaVariedade extends Component {
                                 if (this.props.form.getFieldsValue().nomeEspecie && this.props.form.getFieldsValue().nomeVariedade && this.props.form.getFieldsValue().nomeVariedade.trim() !== '') {
                                     this.cadastraNovaVariedade()
                                 } else {
-                                    this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da nova variedade e da especie.')
+                                    this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da nova variedade e da espécie.')
                                 }
                             } else if (this.props.form.getFieldsValue().nomeEspecie && this.props.form.getFieldsValue().nomeVariedade && this.props.form.getFieldsValue().nomeVariedade.trim() !== '') {
                                 this.atualizaVariedade()
                             } else {
-                                this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da nova variedade e da especie.')
+                                this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da nova variedade e da espécie.')
                             }
                             this.setState({
                                 visibleModal: false
@@ -478,7 +478,7 @@ class ListaTaxonomiaVariedade extends Component {
                         <div>
                             <Row gutter={8}>
                                 <Col span={24}>
-                                    <span>Nome da especie:</span>
+                                    <span>Nome da espécie:</span>
                                 </Col>
                             </Row>
                             <Row gutter={8}>
@@ -488,7 +488,7 @@ class ListaTaxonomiaVariedade extends Component {
                                             <Select
                                                 showSearch
                                                 style={{ width: '100%' }}
-                                                placeholder="Selecione uma especie"
+                                                placeholder="Selecione uma espécie"
                                                 optionFilterProp="children"
                                             >
 
@@ -498,7 +498,7 @@ class ListaTaxonomiaVariedade extends Component {
                                     </FormItem>
                                 </Col>
                             </Row>
-                            <Row gutter={8}>
+                            <Row gutter={8} style={{ marginTop: 16 }}>
                                 <Col span={24}>
                                     <span>Nome da variedade:</span>
                                 </Col>
@@ -512,7 +512,7 @@ class ListaTaxonomiaVariedade extends Component {
                                     </FormItem>
                                 </Col>
                             </Row>
-                            <Row gutter={8}>
+                            <Row gutter={8} style={{ marginTop: 16 }}>
                                 <Col span={24}>
                                     <span>Nome do autor:</span>
                                 </Col>
@@ -540,10 +540,10 @@ class ListaTaxonomiaVariedade extends Component {
                 </Form>
 
                 <Row gutter={24} style={{ marginBottom: '20px' }}>
-                    <Col xs={24} sm={14} md={18} lg={20} xl={21}>
+                    <Col xs={24} sm={14} md={18} lg={20} xl={20}>
                         <h2 style={{ fontWeight: 200 }}>Variedades</h2>
                     </Col>
-                    <Col xs={24} sm={10} md={6} lg={4} xl={3}>
+                    <Col xs={24} sm={10} md={6} lg={4} xl={4}>
                         {this.renderAdd()}
                     </Col>
                 </Row>

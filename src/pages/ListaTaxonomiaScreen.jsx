@@ -18,12 +18,12 @@ const FormItem = Form.Item
 
 const columns = [
     {
-        title: 'Familia',
+        title: 'Família',
         type: 'text',
         key: 'familia'
     },
     {
-        title: 'Subfamilia',
+        title: 'Subfamília',
         type: 'text',
         key: 'subfamilia'
     },
@@ -209,14 +209,14 @@ class ListaTaxonomiaScreen extends Component {
 
     renderPainelBusca(getFieldDecorator) {
         return (
-            <Card title="Buscar Tombo">
+            <Card title="Buscar tombo">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col span={8}>
-                            <span>Familia:</span>
+                            <span>Família:</span>
                         </Col>
                         <Col span={8}>
-                            <span>Subfamilia:</span>
+                            <span>Subfamília:</span>
                         </Col>
                         <Col span={8}>
                             <span>Gênero:</span>

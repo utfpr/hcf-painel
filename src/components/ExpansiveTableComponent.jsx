@@ -40,7 +40,8 @@ export default class ExpansiveTableComponent extends Component {
                     title: item.title,
                     dataIndex: item.key,
                     key: item.key,
-                    sortOrder: sortedInfo.columnKey === item.key && sortedInfo.order
+                    sortOrder: sortedInfo.columnKey === item.key && sortedInfo.order,
+                    width: item?.width
                 }
                 if (item.type === 'text') {
                     itemColumn.sorter = (a, b) => a.name.length - b.name.length
@@ -51,7 +52,8 @@ export default class ExpansiveTableComponent extends Component {
                 itemColumn = {
                     title: item.title,
                     dataIndex: item.key,
-                    key: item.key
+                    key: item.key,
+                    width: item?.width
                 }
             }
             return itemColumn

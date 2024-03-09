@@ -75,13 +75,15 @@ export default class SimpleTableComponent extends Component {
             itemColumn = {
                 title: item.title,
                 dataIndex: item.key,
-                key: item.key
+                key: item.key,
+                width: item?.width
             }
         } else {
             itemColumn = {
                 title: item.title,
                 dataIndex: item.key,
-                key: item.key
+                key: item.key,
+                width: item?.width
             }
         }
 

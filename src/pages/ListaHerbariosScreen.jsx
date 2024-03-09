@@ -34,7 +34,7 @@ class ListaHerbariosScreen extends Component {
             key: 'endereco'
         },
         {
-            title: 'Email',
+            title: 'E-mail',
             type: 'text',
             key: 'email'
         }
@@ -228,7 +228,7 @@ class ListaHerbariosScreen extends Component {
 
     renderPainelBusca(getFieldDecorator) {
         return (
-            <Card title="Buscar Herbário">
+            <Card title="Buscar herbário">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
@@ -245,7 +245,7 @@ class ListaHerbariosScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Email:</span>
+                                <span>E-mail:</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
@@ -269,9 +269,9 @@ class ListaHerbariosScreen extends Component {
                         </Col>
                     </Row>
 
-                    <Row>
+                    <Row style={{ marginTop: 32 }}>
                         <Col span={24}>
-                            <Row type="flex" justify="end" gutter={4}>
+                            <Row type="flex" justify="end" gutter={16}>
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
                                     <FormItem>
                                         <Button
@@ -315,7 +315,7 @@ class ListaHerbariosScreen extends Component {
 
         return (
             <div>
-                <HeaderListComponent title="Listagem de Herbários" link="/herbarios/novo" />
+                <HeaderListComponent title="Listagem de herbários" link="/herbarios/novo" />
                 <Divider dashed />
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
