@@ -1,4 +1,4 @@
-export default function converteDecimalParaGrausMinutosSegundos(gDec, x) {
+export default function converteDecimalParaGrausMinutosSegundos(gDec, x, formatada) {
     let graus
     let minutos
     let aux
@@ -15,7 +15,7 @@ export default function converteDecimalParaGrausMinutosSegundos(gDec, x) {
 
     // Pega a fração dos minutos e converte em segundos
     aux = (aux - minutos) * 60
-    segundos = parseInt(aux)
+    segundos = aux
 
     // Pega a fração dos segundos e converte em milisegundos
     milisegundos = parseInt((aux - segundos) * 60)
@@ -28,16 +28,22 @@ export default function converteDecimalParaGrausMinutosSegundos(gDec, x) {
     } else {
         // Eixo Y
         // eslint-disable-next-line no-lonely-if
-        if (graus < 0) direcao = 'N'
+        if (graus >= 0) direcao = 'N'
         else direcao = 'S'
+    }
+
+    if (formatada) {
+        return `${Math.abs(graus)}°${Math.abs(minutos)}'${Math.abs(segundos).toFixed(2)
+            .replace('.', ',')}"${direcao}`
     }
     // Devolvo a string formatada, a função Math.abs é para retornar o valor absoluto // (retirar o valor negativo) já que estou usando a notação norte, sul, leste ou oeste
     // return Math.abs(graus) + "° " + minutos + "' " + segundos + "." + milisegundos + "'' " + direcao;
     // return `${}°${minutos}'${segundos},${milisegundos}"${direcao}`;
     return {
-        graus,
-        minutos,
-        segundos,
+        graus: Math.abs(graus),
+        minutos: Math.abs(minutos),
+        segundos: Math.abs(segundos).toFixed(2)
+            .replace('.', ','),
         direcao
     }
 }

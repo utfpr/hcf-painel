@@ -1,6 +1,8 @@
 import { Component } from 'react'
 
-import { Input, Row, Col } from 'antd'
+import {
+    Input, Row, Col, Select
+} from 'antd'
 import masker from 'vanilla-masker'
 
 import decimalParaGrausMinutosSegundos from '../helpers/conversoes/Coordenadas'
@@ -35,7 +37,7 @@ class CoordenadaInputText extends Component {
         const semValoresEmPropriedades = !this.graus && !this.minutos && !this.segundos
         const semValoresEmEstados = !this.state.graus && !this.state.minutos && !this.state.graus
         if (this.props.value && semValoresEmPropriedades && semValoresEmEstados) {
-            const coordenadas = decimalParaGrausMinutosSegundos(this.props.value, true)
+            const coordenadas = decimalParaGrausMinutosSegundos(this.props.value, this.props.longitude)
 
             this.graus = coordenadas.graus
             this.minutos = coordenadas.minutos
@@ -79,18 +81,21 @@ class CoordenadaInputText extends Component {
                     />
                 </Col>
                 <Col span={6}>
-                    <Input
-                        type="text"
-                        placeholder="W"
-                        value={this.temValorValido(this.state.pontoCardeal, this.pontoCardeal)}
-                        maxLength="1"
-                        onChange={event => {
-                            const { value } = event.target
-                            const pontoCardeal = value.replace(/[^WENS]+/i, '')
-                                .toUpperCase()
-
-                            this.setState({ pontoCardeal }, this.onStateChanged)
+                    <Select
+                        onChange={value => {
+                            this.setState({ pontoCardeal: value }, this.onStateChanged)
                         }}
+                        value={this.temValorValido(this.state.pontoCardeal, this.pontoCardeal)}
+                        placeholder={this.props.longitude ? 'E' : 'N'}
+                        options={this.props.longitude
+                            ? [
+                                { value: 'W', label: 'W' },
+                                { value: 'E', label: 'E' }
+                            ]
+                            : [
+                                { value: 'N', label: 'N' },
+                                { value: 'S', label: 'S' }
+                            ]}
                     />
                 </Col>
             </Row>

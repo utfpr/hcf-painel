@@ -12,6 +12,7 @@ import axios from 'axios'
 import GalleryComponent from '../components/GalleryComponent'
 import MapWithControlledZoom from '../components/MapWithControlledZoom'
 import { formatarDataBDtoDataHora } from '../helpers/conversoes/ConversoesData'
+import decimalParaGrausMinutosSegundos from '../helpers/conversoes/Coordenadas'
 import fotosTomboMap from '../helpers/fotos-tombo-map'
 
 export default class DetalhesTomboScreen extends Component {
@@ -331,7 +332,7 @@ export default class DetalhesTomboScreen extends Component {
                             <Col span={24}>
                                 <span>
                                     {' '}
-                                    {tombo.localizacao.latitude_graus}
+                                    {decimalParaGrausMinutosSegundos(tombo.localizacao.latitude, false, true)}
                                     {' '}
                                 </span>
                             </Col>
@@ -343,7 +344,7 @@ export default class DetalhesTomboScreen extends Component {
                             <Col span={24}>
                                 <span>
                                     {' '}
-                                    {tombo.localizacao.longitude_graus}
+                                    {decimalParaGrausMinutosSegundos(tombo.localizacao.longitude, true, true)}
                                     {' '}
                                 </span>
                             </Col>

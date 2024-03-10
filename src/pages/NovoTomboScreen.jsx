@@ -2017,6 +2017,7 @@ class NovoTomboScreen extends Component {
                             <FormItem>
                                 {getFieldDecorator('longitude')(
                                     <CoordenadaInputText
+                                        longitude
                                         placeholder={'48°40\'30"O'}
                                     />
                                 )}
