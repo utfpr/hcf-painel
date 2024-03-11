@@ -210,12 +210,13 @@ class ListaTombosScreen extends Component {
         acao: <div style={{ display: 'flex' }}>{this.gerarAcao(item.hcf)}</div>
     }))
 
-    requisitaListaTombos = (valores, pg) => {
+    requisitaListaTombos = (valores, pg, pageSize) => {
         this.setState({
             loading: true
         })
         const params = {
-            pagina: pg
+            pagina: pg,
+            limite: pageSize || 20
         }
 
         if (valores !== undefined) {
@@ -818,12 +819,12 @@ class ListaTombosScreen extends Component {
                     data={this.state.tombos}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
-                    changePage={pg => {
+                    changePage={(pg, pageSize) => {
                         this.setState({
                             pagina: pg,
                             loading: true
                         })
-                        this.requisitaListaTombos(this.state.valores, pg)
+                        this.requisitaListaTombos(this.state.valores, pg, pageSize)
                     }}
                 />
                 <Divider dashed />

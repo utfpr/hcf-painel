@@ -154,9 +154,10 @@ class ListaTaxonomiaVariedade extends Component {
         acao: this.gerarAcao(item)
     }))
 
-    requisitaListaVariedade = (valores, pg) => {
+    requisitaListaVariedade = (valores, pg, pageSize) => {
         const params = {
-            pagina: pg
+            pagina: pg,
+            limite: pageSize || 20
         }
 
         if (valores !== undefined) {
@@ -555,12 +556,12 @@ class ListaTaxonomiaVariedade extends Component {
                     data={this.state.variedades}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
-                    changePage={pg => {
+                    changePage={(pg, pageSize) => {
                         this.setState({
                             pagina: pg,
                             loading: true
                         })
-                        this.requisitaListaVariedade(this.state.valores, pg)
+                        this.requisitaListaVariedade(this.state.valores, pg, pageSize)
                     }}
                 />
                 <Divider dashed />

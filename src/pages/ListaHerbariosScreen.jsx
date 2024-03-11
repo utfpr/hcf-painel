@@ -157,9 +157,10 @@ class ListaHerbariosScreen extends Component {
         })
     }
 
-    requisitaListaHerbarios = (valores, pg) => {
+    requisitaListaHerbarios = (valores, pg, pageSize) => {
         const params = {
-            pagina: pg
+            pagina: pg,
+            limite: pageSize
         }
 
         if (valores !== undefined) {
@@ -323,12 +324,12 @@ class ListaHerbariosScreen extends Component {
                     data={this.state.herbarios}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
-                    changePage={pg => {
+                    changePage={(pg, pageSize) => {
                         this.setState({
                             pagina: pg,
                             loading: true
                         })
-                        this.requisitaListaHerbarios(this.state.valores, pg)
+                        this.requisitaListaHerbarios(this.state.valores, pg, pageSize)
                     }}
                 />
                 <Divider dashed />

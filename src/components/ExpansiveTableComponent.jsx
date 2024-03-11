@@ -70,7 +70,7 @@ export default class ExpansiveTableComponent extends Component {
             pagina: pager
         })
 
-        this.props.changePage(pagination.current)
+        this.props.changePage(pagination.current, pagination.pageSize)
     }
 
     renderSubdados = dados => dados.map(item => (

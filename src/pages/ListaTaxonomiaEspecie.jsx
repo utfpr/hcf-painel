@@ -156,9 +156,10 @@ class ListaTaxonomiaEspecie extends Component {
         acao: this.gerarAcao(item)
     }))
 
-    requisitaListaEspecie = (valores, pg) => {
+    requisitaListaEspecie = (valores, pg, pageSize) => {
         const params = {
-            pagina: pg
+            pagina: pg,
+            limite: pageSize || 20
         }
 
         if (valores !== undefined) {
@@ -558,12 +559,12 @@ class ListaTaxonomiaEspecie extends Component {
                     data={this.state.especies}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
-                    changePage={pg => {
+                    changePage={(pg, pageSize) => {
                         this.setState({
                             pagina: pg,
                             loading: true
                         })
-                        this.requisitaListaEspecie(this.state.valores, pg)
+                        this.requisitaListaEspecie(this.state.valores, pg, pageSize)
                     }}
                 />
                 <Divider dashed />

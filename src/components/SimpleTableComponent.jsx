@@ -19,7 +19,8 @@ export default class SimpleTableComponent extends Component {
         this.state = {
             filteredInfo: null,
             sortedInfo: null,
-            paginacao
+            paginacao,
+            isLoaded: false
         }
 
         this.columns = this.buildColumns(props, this.state)
@@ -28,13 +29,27 @@ export default class SimpleTableComponent extends Component {
     componentWillReceiveProps(props) {
         if (props.metadados) {
             this.setState({
-                pagina: {
+                paginacao: {
                     total: props.metadados.total,
                     current: props.metadados.pagina,
                     defaultPageSize: props.metadados.limite
                 }
             })
         }
+    }
+
+    componentDidMount() {
+        this.setState({
+            paginacao: {
+                total: this.props.metadados.total,
+                current: this.props.metadados.pagina,
+                defaultPageSize: this.props.metadados.limite
+            }
+        })
+
+        setTimeout(() => {
+            this.setState({ isLoaded: true })
+        }, 100)
     }
 
     handleChange = (pagination, filters, sorter) => {
@@ -44,10 +59,10 @@ export default class SimpleTableComponent extends Component {
         this.setState({
             filteredInfo: filters,
             sortedInfo: sorter,
-            pagina: pager
+            paginacao: pager
         })
 
-        this.props.changePage(pagination.current)
+        this.props.changePage(pagination.current, pagination.pageSize)
     }
 
     clearFilters = () => {
@@ -77,14 +92,19 @@ export default class SimpleTableComponent extends Component {
 
     render() {
         return (
-            <Table
-                columns={this.columns}
-                dataSource={this.props.data}
-                onChange={this.handleChange}
-                pagination={this.state.paginacao}
-                loading={this.props.loading}
-                scroll={{ x: 800 }}
-            />
+            // eslint-disable-next-line react/jsx-no-useless-fragment
+            <>
+                {this.state.isLoaded && (
+                    <Table
+                        columns={this.columns}
+                        dataSource={this.props.data}
+                        onChange={this.handleChange}
+                        pagination={this.state.paginacao}
+                        loading={this.props.loading}
+                        scroll={{ x: 800 }}
+                    />
+                )}
+            </>
         )
     }
 }

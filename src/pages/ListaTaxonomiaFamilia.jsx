@@ -139,9 +139,10 @@ class ListaTaxonomiaFamilia extends Component {
         acao: this.gerarAcao(item)
     }))
 
-    requisitaListaFamilia = (valores, pg) => {
+    requisitaListaFamilia = (valores, pg, pageSize) => {
         const params = {
-            pagina: pg
+            pagina: pg,
+            limite: pageSize || 20
         }
 
         if (valores !== undefined) {
@@ -187,7 +188,7 @@ class ListaTaxonomiaFamilia extends Component {
                 valores,
                 loading: true
             })
-            this.requisitaListaFamilia(valores, this.state.pagina)
+            this.requisitaListaFamilia(valores, this.state.pagina, this.state.pageSize)
         }
     }
 
@@ -421,17 +422,18 @@ class ListaTaxonomiaFamilia extends Component {
                 <Divider dashed />
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
+
                 <SimpleTableComponent
                     columns={columns}
                     data={this.state.familias}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
-                    changePage={pg => {
+                    changePage={(pg, pageSize) => {
                         this.setState({
                             pagina: pg,
                             loading: true
                         })
-                        this.requisitaListaFamilia(this.state.valores, pg)
+                        this.requisitaListaFamilia(this.state.valores, pg, pageSize)
                     }}
                 />
                 <Divider dashed />
