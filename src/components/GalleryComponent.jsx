@@ -4,7 +4,7 @@ import ImageGallery from 'react-image-gallery'
 
 export default class GalleryComponent extends Component {
     handleImageError = e => {
-        e.target.src = '/not_found.jpg'
+        e.target.src = '/not-found.jpg'
     }
 
     render() {
