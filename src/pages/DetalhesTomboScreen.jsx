@@ -606,8 +606,8 @@ export default class DetalhesTomboScreen extends Component {
             return null
         }
         const fotoNula = [{
-            original: 'https://t4.ftcdn.net/jpg/01/39/16/63/240_F_139166369_NdTDXc0lM57N66868lC66PpsaMkFSwaf.jpg',
-            thumbnail: 'https://t4.ftcdn.net/jpg/01/39/16/63/240_F_139166369_NdTDXc0lM57N66868lC66PpsaMkFSwaf.jpg'
+            original: '/not-found.jpg',
+            thumbnail: '/not-found.jpg'
         }]
 
         const fotos = tombo.fotos.length === 0 ? fotoNula : tombo.fotos.map(fotosTomboMap)

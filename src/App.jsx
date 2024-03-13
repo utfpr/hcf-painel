@@ -43,10 +43,7 @@ import './assets/css/App.css'
 import './assets/css/FormEnterSystem.css'
 import './assets/css/Main.css'
 import './assets/css/Search.css'
-import 'react-image-gallery/styles/scss/image-gallery.scss'
 import 'react-image-gallery/styles/css/image-gallery.css'
-import 'react-image-gallery/styles/scss/image-gallery-no-icon.scss'
-import 'react-image-gallery/styles/css/image-gallery-no-icon.css'
 
 const PrivateRoute = ({ component: Component, authed, ...rest }) => {
     return (
