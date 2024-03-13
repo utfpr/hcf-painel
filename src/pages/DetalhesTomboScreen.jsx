@@ -605,7 +605,7 @@ export default class DetalhesTomboScreen extends Component {
             return null
         }
         const fotoNula = [{
-            original: '/not_found.jpg',
+            original: '/not-found.jpg',
             thumbnail: '/not_found.jpg'
         }]
 
