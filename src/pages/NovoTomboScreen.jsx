@@ -1861,7 +1861,7 @@ class NovoTomboScreen extends Component {
                             <span>Herbário:</span>
                         </Col>
                         <Col span={24}>
-                            <FormItem validateStatus="error">
+                            <FormItem>
                                 {getFieldDecorator('entidade', {
                                     initialValue: String(this.state.herbarioInicial),
                                     rules: [{
