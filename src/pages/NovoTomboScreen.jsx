@@ -1840,7 +1840,6 @@ class NovoTomboScreen extends Component {
     }
 
     renderPrincipaisCaracteristicas(getFieldDecorator, getFieldError) {
-        console.log(getFieldError('entidade'))
         return (
             <div>
                 <Row gutter={8}>
@@ -3063,7 +3062,6 @@ class NovoTomboScreen extends Component {
     renderConteudo() {
         const { getFieldDecorator, getFieldError } = this.props.form
 
-        console.log(this.props)
         return (
             <div>
                 <Form onSubmit={this.handleSubmitForm}>
