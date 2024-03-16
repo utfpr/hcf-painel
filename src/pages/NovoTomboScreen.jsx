@@ -1839,7 +1839,8 @@ class NovoTomboScreen extends Component {
             .catch(this.catchRequestError)
     }
 
-    renderPrincipaisCaracteristicas(getFieldDecorator) {
+    renderPrincipaisCaracteristicas(getFieldDecorator, getFieldError) {
+        console.log(getFieldError('entidade'))
         return (
             <div>
                 <Row gutter={8}>
@@ -1860,7 +1861,7 @@ class NovoTomboScreen extends Component {
                             <span>Herbário:</span>
                         </Col>
                         <Col span={24}>
-                            <FormItem>
+                            <FormItem validateStatus="error">
                                 {getFieldDecorator('entidade', {
                                     initialValue: String(this.state.herbarioInicial),
                                     rules: [{
@@ -1872,8 +1873,8 @@ class NovoTomboScreen extends Component {
                                         showSearch
                                         placeholder="Selecione uma entidade"
                                         optionFilterProp="children"
+                                        status={getFieldError('entidade') ? 'error' : ''}
                                     >
-
                                         {this.optionEntidades()}
                                     </Select>
                                 )}
@@ -1920,6 +1921,7 @@ class NovoTomboScreen extends Component {
                                                 max={31}
                                                 initialValue={17}
                                                 style={{ width: '100%' }}
+                                                status={getFieldError('dataColetaDia') ? 'error' : ''}
                                             />
                                         )}
                                     </FormItem>
@@ -1931,13 +1933,13 @@ class NovoTomboScreen extends Component {
                                                 required: true,
                                                 message: 'Insira o mês da coleta'
                                             }]
-
                                         })(
                                             <InputNumber
                                                 min={1}
                                                 max={12}
                                                 initialValue={11}
                                                 style={{ width: '100%' }}
+                                                status={getFieldError('dataColetaMes') ? 'error' : ''}
                                             />
                                         )}
                                     </FormItem>
@@ -1955,6 +1957,7 @@ class NovoTomboScreen extends Component {
                                                 max={5000}
                                                 initialValue={2018}
                                                 style={{ width: '100%' }}
+                                                status={getFieldError('dataColetaAno') ? 'error' : ''}
                                             />
                                         )}
                                     </FormItem>
@@ -1975,7 +1978,11 @@ class NovoTomboScreen extends Component {
                                         message: 'Escolha uma localidade'
                                     }]
                                 })(
-                                    <RadioGroup onChange={this.onChange} value={this.state.value}>
+                                    <RadioGroup
+                                        onChange={this.onChange}
+                                        value={this.state.value}
+                                        style={{ padding: '3px', boxShadow: getFieldError('localidadeCor') ? '0 0 0 1px #f5222d' : '', borderRadius: '1px' }}
+                                    >
                                         <Radio value="VERMELHO"><Tag color="red">Paraná</Tag></Radio>
                                         <Radio value="VERDE"><Tag color="green">Brasil</Tag></Radio>
                                         <Radio value="AZUL"><Tag color="blue">Outros países</Tag></Radio>
@@ -2030,7 +2037,7 @@ class NovoTomboScreen extends Component {
         )
     }
 
-    renderLocalTombo(getFieldDecorator) {
+    renderLocalTombo(getFieldDecorator, getFieldError) {
         return (
             <div>
                 <Row gutter={8}>
@@ -2098,6 +2105,7 @@ class NovoTomboScreen extends Component {
                                         onChange={value => {
                                             this.requisitaEstados(value)
                                         }}
+                                        status={getFieldError('pais') ? 'error' : ''}
                                     >
                                         {this.optionPais()}
                                     </Select>
@@ -2125,6 +2133,7 @@ class NovoTomboScreen extends Component {
                                         onChange={value => {
                                             this.requisitaCidades(value)
                                         }}
+                                        status={getFieldError('estado') ? 'error' : ''}
                                     >
                                         {this.optionEstado()}
                                     </Select>
@@ -2149,6 +2158,7 @@ class NovoTomboScreen extends Component {
                                         showSearch
                                         placeholder="Selecione uma cidade"
                                         optionFilterProp="children"
+                                        status={getFieldError('cidade') ? 'error' : ''}
                                     >
                                         {this.optionCidade()}
                                     </Select>
@@ -2744,7 +2754,7 @@ class NovoTomboScreen extends Component {
         })
     }
 
-    renderColetores(getFieldDecorator) {
+    renderColetores(getFieldDecorator, getFieldError) {
         return (
             <div>
                 <Row gutter={8}>
@@ -2773,6 +2783,7 @@ class NovoTomboScreen extends Component {
                                         onSearch={value => {
                                             this.requisitaColetores(value)
                                         }}
+                                        status={getFieldError('coletores') ? 'error' : ''}
                                     >
                                         {this.optionColetores()}
                                     </Select>
@@ -3050,7 +3061,9 @@ class NovoTomboScreen extends Component {
     }
 
     renderConteudo() {
-        const { getFieldDecorator } = this.props.form
+        const { getFieldDecorator, getFieldError } = this.props.form
+
+        console.log(this.props)
         return (
             <div>
                 <Form onSubmit={this.handleSubmitForm}>
@@ -3130,9 +3143,9 @@ class NovoTomboScreen extends Component {
                         </Col>
                     </Row>
                     <Divider dashed />
-                    {this.renderPrincipaisCaracteristicas(getFieldDecorator)}
+                    {this.renderPrincipaisCaracteristicas(getFieldDecorator, getFieldError)}
                     <Divider dashed />
-                    {this.renderLocalTombo(getFieldDecorator)}
+                    {this.renderLocalTombo(getFieldDecorator, getFieldError)}
                     <Divider dashed />
                     {this.renderFamiliaTombo(getFieldDecorator)}
                     <Divider dashed />
@@ -3140,7 +3153,7 @@ class NovoTomboScreen extends Component {
                     <Divider dashed />
                     {this.renderIdentificador(getFieldDecorator)}
                     <Divider dashed />
-                    {this.renderColetores(getFieldDecorator)}
+                    {this.renderColetores(getFieldDecorator, getFieldError)}
                     <Divider dashed />
                     {this.renderColecoesAnexas(getFieldDecorator)}
                     <Divider dashed />
