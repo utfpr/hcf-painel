@@ -7,6 +7,7 @@ import {
 } from 'antd'
 import axios from 'axios'
 
+import converteDecimalParaGrausMinutosSegundos from '@/helpers/conversoes/Coordenadas'
 import { Form } from '@ant-design/compatible'
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 
@@ -439,8 +440,8 @@ class NovoTomboScreen extends Component {
         if (especie !== undefined && especie !== '') json.taxonomia = { ...json.taxonomia, especie_id: especie }
         if (variedade !== undefined && variedade !== '') json.taxonomia = { ...json.taxonomia, variedade_id: variedade }
         if (subespecie !== undefined && subespecie !== '') json.taxonomia = { ...json.taxonomia, sub_especie_id: subespecie }
-        if (latitude !== undefined) json.localidade = { latitude }
-        if (longitude !== undefined) json.localidade = { ...json.localidade, longitude }
+        if (latitude !== undefined) json.localidade = { latitude: converteDecimalParaGrausMinutosSegundos(latitude, false, true) }
+        if (longitude !== undefined) json.localidade = { ...json.localidade, longitude: converteDecimalParaGrausMinutosSegundos(longitude, true, true) }
         if (altitude !== undefined) json.localidade = { ...json.localidade, altitude }
         json.localidade = { ...json.localidade, cidade_id: cidade }
         if (complemento !== undefined && complemento !== '') {
