@@ -23,21 +23,6 @@ class ListaIdentificadoresScreen extends Component {
             type: 'text',
             key: 'nome'
         }
-        // {
-        //     title: 'Nome',
-        //     type: 'text',
-        //     key: 'nome'
-        // },
-        // {
-        //     title: 'Endereço',
-        //     type: 'text',
-        //     key: 'endereco'
-        // },
-        // {
-        //     title: 'E-mail',
-        //     type: 'text',
-        //     key: 'email'
-        // }
     ]
 
     constructor(props) {
@@ -68,10 +53,6 @@ class ListaIdentificadoresScreen extends Component {
                     <Link to={`/identificadores/${id}`}>
                         <EditOutlined style={{ color: '#FFCC00' }} />
                     </Link>
-                    <Divider type="vertical" />
-                    <a href="#" onClick={() => this.mostraMensagemDelete(id)}>
-                        <DeleteOutlined style={{ color: '#e30613' }} />
-                    </a>
                 </span>
             )
         }
@@ -82,31 +63,6 @@ class ListaIdentificadoresScreen extends Component {
             message: titulo,
             description: descricao
         })
-    }
-
-    requisitaExclusao(id) {
-        axios.delete(`/herbarios/${id}`)
-            .then(response => {
-                if (response.status === 204) {
-                    this.requisitaListaIdentificadores(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir herbário', 'O herbário foi excluído com sucesso.')
-                }
-            })
-            .catch(err => {
-                const { response } = err
-                if (response && response.data) {
-                    if (response.status === 400 || response.status === 422) {
-                        this.notificacao('warning', 'Falha', response.data.error.message)
-                    } else {
-                        this.notificacao('error', 'Falha', 'Houve um problema ao excluir o herbários, tente novamente.')
-                    }
-                    const { error } = response.data
-                    console.error(error.message)
-                }
-            })
-            .catch(() => {
-                this.notificacao('error', 'Falha', 'Houve um problema ao excluir o herbário, tente novamente.')
-            })
     }
 
     retornaEndereco(endereco) {

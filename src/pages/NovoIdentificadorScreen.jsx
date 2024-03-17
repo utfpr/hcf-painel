@@ -7,7 +7,6 @@ import {
     Divider,
     Input,
     Button,
-    Select,
     notification,
     Spin
 } from 'antd'
@@ -16,146 +15,11 @@ import axios from 'axios'
 import { Form } from '@ant-design/compatible'
 
 const FormItem = Form.Item
-const { Option } = Select
-const { TextArea } = Input
 
 class NovoIdentificadorScreen extends Component {
     constructor(props) {
         super(props)
-        this.state = {
-            loading: false,
-            cidades: [],
-            estados: [],
-            paises: [],
-            cidadeInicial: '',
-            estadoInicial: '',
-            paisInicial: ''
-        }
-    }
-
-    formataDadosPais = () => this.state.paises.map(item => <Option key={`${item.id}`}>{item.nome}</Option>)
-
-    formataDadosEstados = () => this.state.estados.map(item => <Option key={`${item.id}`}>{item.nome}</Option>)
-
-    formataDadosCidades = () => this.state.cidades.map(item => <Option key={item.id}>{item.nome}</Option>)
-
-    requisitaPaises = () => {
-        this.setState({
-            loading: true
-        })
-        axios.get('/paises')
-            .then(response => {
-                this.setState({
-                    loading: false
-                })
-                if (response.data && response.status === 200) {
-                    this.setState({
-                        paises: response.data
-                    })
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    if (response.status === 400 || response.status === 422) {
-                        this.notificacao('warning', 'Falha', response.data.error.message)
-                    } else {
-                        this.notificacao('error', 'Falha', 'Houve um problema ao buscar os países, tente novamente.')
-                    }
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(() => {
-                this.notificacao('error', 'Falha', 'Houve um problema ao requisitar os paises, tente novamente.')
-            })
-    }
-
-    requisitaEstados = id => {
-        this.setState({
-            loading: true
-        })
-        axios.get('/estados', {
-            params: {
-                id
-            }
-        })
-            .then(response => {
-                this.setState({
-                    loading: false
-                })
-                if (response.data && response.status === 200) {
-                    this.setState({
-                        estados: response.data
-                    })
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    if (response.status === 400 || response.status === 422) {
-                        this.notificacao('warning', 'Falha', response.data.error.message)
-                    } else {
-                        this.notificacao('error', 'Falha', 'Houve um problema ao buscar os estados, tente novamente.')
-                    }
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(() => {
-                this.notificacao('error', 'Falha', 'Houve um problema ao requisitar os estados, tente novamente.')
-            })
-    }
-
-    requisitaCidades = id => {
-        this.setState({
-            loading: true
-        })
-        axios.get('/cidades', {
-            params: {
-                id
-            }
-        })
-            .then(response => {
-                this.setState({
-                    loading: false
-                })
-                if (response.data && response.status === 200) {
-                    this.setState({
-                        cidades: response.data
-                    })
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    if (response.status === 400 || response.status === 422) {
-                        this.notificacao('warning', 'Falha', response.data.error.message)
-                    } else {
-                        this.notificacao('error', 'Falha', 'Houve um problema ao buscar as cidades, tente novamente.')
-                    }
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(() => {
-                this.notificacao('error', 'Falha', 'Houve um problema ao requisitar as cidades, tente novamente.')
-            })
+        this.state = { loading: false }
     }
 
     async componentDidMount() {
@@ -187,12 +51,14 @@ class NovoIdentificadorScreen extends Component {
     }
 
     requisitaCadastroIdentificador = async valores => {
-        this.setState({
-            loading: true
-        })
+        this.setState({ loading: true })
 
         try {
             await axios.post('/identificadores', valores)
+
+            this.notificacao('success', 'Sucesso', 'Identificador cadastrado com sucesso.')
+
+            this.props.history.goBack()
         } catch (err) {
             this.notificacao('error', 'Falha', 'Houve um problema ao cadastrar o identificador, tente novamente.')
         } finally {
@@ -206,9 +72,7 @@ class NovoIdentificadorScreen extends Component {
 
             const { data } = await axios.get(`/identificadores/${this.props.match.params.identificador_id}`)
 
-            this.props.form.setFields({
-                nome: { value: data.nome }
-            })
+            this.props.form.setFields({ nome: { value: data.nome } })
         } catch (err) {
             this.notificacao('error', 'Falha', 'Houve um problema ao buscar os dados do identificador, tente novamente.')
         } finally {
@@ -226,63 +90,10 @@ class NovoIdentificadorScreen extends Component {
         } finally {
             this.setState({ loading: false })
         }
-
-        // const {
-        //     nome,
-        //     sigla,
-        //     email,
-        //     logradouro,
-        //     numero,
-        //     cidade,
-        //     complemento
-        // } = valores
-
-        // const json = {
-        //     herbario: {},
-        //     endereco: {}
-        // }
-
-        // if (nome) json.herbario.nome = nome
-        // if (sigla) json.herbario.sigla = sigla
-        // if (email) json.herbario.email = email
-        // if (cidade) json.endereco.cidade_id = cidade
-        // if (logradouro) json.endereco.logradouro = logradouro
-        // if (numero) json.endereco.numero = numero
-        // if (complemento) json.endereco.complemento = complemento
-
-        // axios.put(`/herbarios/${this.props.match.params.herbario_id}`, json)
-        //     .then(response => {
-        //         this.setState({
-        //             loading: false
-        //         })
-        //         if (response.status === 200) {
-        //             this.props.history.goBack()
-        //         }
-        //     })
-        //     .catch(err => {
-        //         this.setState({
-        //             loading: false
-        //         })
-        //         const { response } = err
-        //         if (response && response.data) {
-        //             if (response.status === 400 || response.status === 422) {
-        //                 this.notificacao('warning', 'Falha', response.data.error.message)
-        //             } else {
-        //                 this.notificacao('error', 'Falha', 'Houve um problema ao atualizar o herbário, tente novamente.')
-        //             }
-        //             const { error } = response.data
-        //             throw new Error(error.message)
-        //         } else {
-        //             throw err
-        //         }
-        //     })
-        //     .catch(() => {
-        //         this.notificacao('error', 'Falha', 'Houve um problema ao atualizar o herbário, tente novamente.')
-        //     })
     }
 
     renderFormulario() {
-        const { getFieldDecorator } = this.props.form
+        const { getFieldDecorator, getFieldError } = this.props.form
         return (
             <Form onSubmit={this.onSubmit}>
                 <Row>
@@ -302,10 +113,14 @@ class NovoIdentificadorScreen extends Component {
                                 {getFieldDecorator('nome', {
                                     rules: [{
                                         required: true,
-                                        message: 'Insira o nome do herbário'
+                                        message: 'Insira o nome do identificador'
                                     }]
                                 })(
-                                    <Input placeholder="D. Zappi" type="text" />
+                                    <Input
+                                        placeholder="D. Zappi"
+                                        type="text"
+                                        status={getFieldError('nome') ? 'error' : ''}
+                                    />
                                 )}
                             </FormItem>
                         </Col>
