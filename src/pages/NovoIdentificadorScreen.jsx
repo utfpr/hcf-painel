@@ -85,6 +85,10 @@ class NovoIdentificadorScreen extends Component {
 
         try {
             await axios.put(`/identificadores/${this.props.match.params.identificador_id}`, valores)
+
+            this.notificacao('success', 'Sucesso', 'Identificador atualizado com sucesso.')
+
+            this.props.history.goBack()
         } catch (err) {
             this.notificacao('error', 'Falha', 'Houve um problema ao atualizar o identificador, tente novamente.')
         } finally {
