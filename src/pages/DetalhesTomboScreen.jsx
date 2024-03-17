@@ -332,7 +332,7 @@ export default class DetalhesTomboScreen extends Component {
                             <Col span={24}>
                                 <span>
                                     {' '}
-                                    {decimalParaGrausMinutosSegundos(tombo.localizacao.latitude, false, true)}
+                                    {tombo.localizacao.latitude ? decimalParaGrausMinutosSegundos(tombo.localizacao.latitude, false, true) : ''}
                                     {' '}
                                 </span>
                             </Col>
@@ -344,7 +344,7 @@ export default class DetalhesTomboScreen extends Component {
                             <Col span={24}>
                                 <span>
                                     {' '}
-                                    {decimalParaGrausMinutosSegundos(tombo.localizacao.longitude, true, true)}
+                                    { tombo.localizacao.longitude ? decimalParaGrausMinutosSegundos(tombo.localizacao.longitude, true, true) : ''}
                                     {' '}
                                 </span>
                             </Col>
