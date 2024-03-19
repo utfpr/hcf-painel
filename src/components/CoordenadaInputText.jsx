@@ -5,14 +5,22 @@ import {
 } from 'antd'
 import masker from 'vanilla-masker'
 
+import dmsToDecimal from '@/helpers/conversoes/CoordenadasParaDecimal'
+
 import decimalParaGrausMinutosSegundos from '../helpers/conversoes/Coordenadas'
 
 class CoordenadaInputText extends Component {
     constructor(props) {
         super(props)
 
+        console.log('props', props)
+
         this.state = {
-            valorSaida: ''
+            valorSaida: '',
+            graus: '',
+            minutos: '',
+            segundos: '',
+            pontoCardeal: ''
         }
     }
 
@@ -25,7 +33,8 @@ class CoordenadaInputText extends Component {
         const {
             graus, minutos, segundos, pontoCardeal
         } = this.state
-        this.props.onChange(`${graus}°${minutos}'${segundos}"${pontoCardeal}`)
+
+        this.props.onChange(dmsToDecimal(Number(graus), Number(minutos), Number(segundos.replace(',', '.')), pontoCardeal))
     }
 
     temValorValido = (valor1, valor2) => {
@@ -39,10 +48,10 @@ class CoordenadaInputText extends Component {
         if (this.props.value && semValoresEmPropriedades && semValoresEmEstados) {
             const coordenadas = decimalParaGrausMinutosSegundos(this.props.value, this.props.longitude)
 
-            this.graus = coordenadas.graus
-            this.minutos = coordenadas.minutos
-            this.segundos = coordenadas.segundos
-            this.pontoCardeal = coordenadas.direcao
+            this.state.graus = coordenadas.graus
+            this.state.minutos = coordenadas.minutos
+            this.state.segundos = coordenadas.segundos
+            this.state.pontoCardeal = coordenadas.direcao
         }
 
         return (
