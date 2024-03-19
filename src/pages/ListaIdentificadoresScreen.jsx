@@ -7,7 +7,7 @@ import axios from 'axios'
 import { Link } from 'react-router-dom'
 
 import { Form } from '@ant-design/compatible'
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import { EditOutlined } from '@ant-design/icons'
 
 import HeaderListComponent from '../components/HeaderListComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
@@ -65,29 +65,6 @@ class ListaIdentificadoresScreen extends Component {
         })
     }
 
-    retornaEndereco(endereco) {
-        let retorno = ''
-        if (endereco !== null && endereco !== '') {
-            if (endereco.logradouro != null) {
-                retorno += endereco.logradouro
-            }
-            if (endereco.numero != null) {
-                retorno += ` ${endereco.numero},`
-            }
-            if (endereco.cidade != null) {
-                retorno += ` ${endereco.cidade.nome} -`
-            }
-            if (endereco.cidade != null && endereco.cidade.estado != null) {
-                retorno += ` ${endereco.cidade.estado.nome}, `
-            }
-            if (endereco.cidade != null && endereco.cidade.estado != null) {
-                retorno += ` ${endereco.cidade.estado.paise.nome} `
-            }
-            return retorno
-        }
-        return ''
-    }
-
     formataDadosIdentificadores = herbarios => herbarios.map(item => ({
         key: item.id,
         nome: item.nome,
@@ -131,10 +108,11 @@ class ListaIdentificadoresScreen extends Component {
         }
 
         try {
-            const { data } = await axios.get('/identificadores')
+            const { data } = await axios.get('/identificadores', { params })
 
             this.setState({
-                herbarios: this.formataDadosIdentificadores(data),
+                herbarios: this.formataDadosIdentificadores(data.identificadores),
+                metadados: { pagina: data.metadados.pagina, limite: data.metadados.limite, total: 200 },
                 loading: false
             })
         } catch (err) {
@@ -178,30 +156,6 @@ class ListaIdentificadoresScreen extends Component {
                                 </FormItem>
                             </Col>
                         </Col>
-                        {/* <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-                            <Col span={24}>
-                                <span>E-mail:</span>
-                            </Col>
-                            <Col span={24}>
-                                <FormItem>
-                                    {getFieldDecorator('email')(
-                                        <Input placeholder="herbariofederal@gmail.com" type="text" />
-                                    )}
-                                </FormItem>
-                            </Col>
-                        </Col>
-                        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-                            <Col span={24}>
-                                <span>Sigla:</span>
-                            </Col>
-                            <Col span={24}>
-                                <FormItem>
-                                    {getFieldDecorator('sigla')(
-                                        <Input placeholder="HCF" type="text" />
-                                    )}
-                                </FormItem>
-                            </Col>
-                        </Col> */}
                     </Row>
 
                     <Row style={{ marginTop: 32 }}>
