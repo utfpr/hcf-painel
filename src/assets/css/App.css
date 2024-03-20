@@ -76,3 +76,7 @@
 .ant-select-single {
     width: 100%;
 }
+
+.ant-legacy-form-explain {
+    color: #cf1322;
+}
