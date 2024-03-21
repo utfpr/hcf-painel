@@ -426,34 +426,36 @@ class NovoTomboScreen extends Component {
         } = values
         const json = {}
 
-        if (nomePopular !== undefined) json.principal = { nome_popular: nomePopular }
+        console.log('longitude', longitude)
+
+        if (nomePopular) json.principal = { nome_popular: nomePopular }
         json.principal = { ...json.principal, entidade_id: entidade }
         json.principal.numero_coleta = numColeta
-        if (dataColetaDia !== undefined) json.principal.data_coleta = { dia: dataColetaDia }
-        if (dataColetaMes !== undefined) json.principal.data_coleta = { ...json.principal.data_coleta, mes: dataColetaMes }
-        if (dataColetaAno !== undefined) json.principal.data_coleta = { ...json.principal.data_coleta, ano: dataColetaAno }
-        if (tipo !== '') json.principal.tipo_id = tipo
+        if (dataColetaDia) json.principal.data_coleta = { dia: dataColetaDia }
+        if (dataColetaMes) json.principal.data_coleta = { ...json.principal.data_coleta, mes: dataColetaMes }
+        if (dataColetaAno) json.principal.data_coleta = { ...json.principal.data_coleta, ano: dataColetaAno }
+        if (tipo) json.principal.tipo_id = tipo
         json.principal.cor = localidadeCor
-        if (familia !== undefined && familia !== '') json.taxonomia = { ...json.taxonomia, familia_id: familia }
-        if (genero !== undefined && genero !== '') json.taxonomia = { ...json.taxonomia, genero_id: genero }
-        if (subfamilia !== undefined && subfamilia !== '') json.taxonomia = { ...json.taxonomia, sub_familia_id: subfamilia }
-        if (especie !== undefined && especie !== '') json.taxonomia = { ...json.taxonomia, especie_id: especie }
-        if (variedade !== undefined && variedade !== '') json.taxonomia = { ...json.taxonomia, variedade_id: variedade }
-        if (subespecie !== undefined && subespecie !== '') json.taxonomia = { ...json.taxonomia, sub_especie_id: subespecie }
-        if (latitude !== undefined) json.localidade = { latitude: converteDecimalParaGrausMinutosSegundos(latitude, false, true) }
-        if (longitude !== undefined) json.localidade = { ...json.localidade, longitude: converteDecimalParaGrausMinutosSegundos(longitude, true, true) }
-        if (altitude !== undefined) json.localidade = { ...json.localidade, altitude }
+        if (familia) json.taxonomia = { ...json.taxonomia, familia_id: familia }
+        if (genero) json.taxonomia = { ...json.taxonomia, genero_id: genero }
+        if (subfamilia) json.taxonomia = { ...json.taxonomia, sub_familia_id: subfamilia }
+        if (especie) json.taxonomia = { ...json.taxonomia, especie_id: especie }
+        if (variedade) json.taxonomia = { ...json.taxonomia, variedade_id: variedade }
+        if (subespecie) json.taxonomia = { ...json.taxonomia, sub_especie_id: subespecie }
+        if (latitude) json.localidade = { latitude: converteDecimalParaGrausMinutosSegundos(latitude, false, true) }
+        if (longitude) json.localidade = { ...json.localidade, longitude: converteDecimalParaGrausMinutosSegundos(longitude, true, true) }
+        if (altitude) json.localidade = { ...json.localidade, altitude }
         json.localidade = { ...json.localidade, cidade_id: cidade }
-        if (complemento !== undefined && complemento !== '') {
+        if (complemento) {
             json.localidade = { ...json.localidade, complemento }
         }
-        if (solo !== undefined && solo !== '') json.paisagem = { ...json.paisagem, solo_id: solo }
-        if (relevoDescricao !== undefined && relevoDescricao !== '') json.paisagem = { ...json.paisagem, descricao: relevoDescricao }
-        if (relevo !== undefined && relevo !== '') json.paisagem = { ...json.paisagem, relevo_id: relevo }
-        if (vegetacao !== undefined && vegetacao !== '') json.paisagem = { ...json.paisagem, vegetacao_id: vegetacao }
-        if (fases !== undefined && fases !== '') json.paisagem = { ...json.paisagem, fase_sucessional_id: fases }
-        if (identificador !== undefined && identificador !== '') json.identificacao = { identificador_id: identificador }
-        if (dataIdentDia !== undefined && dataColetaDia !== '') {
+        if (solo) json.paisagem = { ...json.paisagem, solo_id: solo }
+        if (relevoDescricao) json.paisagem = { ...json.paisagem, descricao: relevoDescricao }
+        if (relevo) json.paisagem = { ...json.paisagem, relevo_id: relevo }
+        if (vegetacao) json.paisagem = { ...json.paisagem, vegetacao_id: vegetacao }
+        if (fases) json.paisagem = { ...json.paisagem, fase_sucessional_id: fases }
+        if (identificador) json.identificacao = { identificador_id: identificador }
+        if (dataIdentDia) {
             json.identificacao = {
                 ...json.identificacao,
                 data_identificacao: {
@@ -461,7 +463,7 @@ class NovoTomboScreen extends Component {
                 }
             }
         }
-        if (dataIdentMes !== undefined && dataIdentMes !== '') {
+        if (dataIdentMes) {
             json.identificacao = {
                 ...json.identificacao,
                 data_identificacao: {
@@ -470,7 +472,7 @@ class NovoTomboScreen extends Component {
                 }
             }
         }
-        if (dataIdentAno !== undefined && dataIdentAno !== '') {
+        if (dataIdentAno) {
             json.identificacao = {
                 ...json.identificacao,
                 data_identificacao: {
@@ -481,15 +483,12 @@ class NovoTomboScreen extends Component {
         }
         const converterInteiroColetores = () => coletores.map(item => parseInt(item.key))
         json.coletores = converterInteiroColetores()
-        if (tipoColecaoAnexa !== undefined && tipoColecaoAnexa != '') json.colecoes_anexas = { tipo: tipoColecaoAnexa }
-        if (observacoesColecaoAnexa !== undefined && observacoesColecaoAnexa !== '') json.colecoes_anexas = { ...json.colecoes_anexas, observacoes: observacoesColecaoAnexa }
-        if (observacoesTombo !== undefined && observacoesTombo !== '') json.observacoes = observacoesTombo
-        if (autorEspecie !== undefined && autorEspecie !== '') json.autores = { especie: autorEspecie }
-        if (autoresSubespecie !== undefined && autoresSubespecie !== '') json.autores = { ...json.autores, subespecie: autoresSubespecie }
-        if (autorVariedade !== undefined && autorVariedade !== '') json.autores = { ...json.autores, variedade: autorVariedade }
-
-        console.log('TOMBO ENVIADO:')
-        console.log(json)
+        if (tipoColecaoAnexa) json.colecoes_anexas = { tipo: tipoColecaoAnexa }
+        if (observacoesColecaoAnexa) json.colecoes_anexas = { ...json.colecoes_anexas, observacoes: observacoesColecaoAnexa }
+        if (observacoesTombo) json.observacoes = observacoesTombo
+        if (autorEspecie) json.autores = { especie: autorEspecie }
+        if (autoresSubespecie) json.autores = { ...json.autores, subespecie: autoresSubespecie }
+        if (autorVariedade) json.autores = { ...json.autores, variedade: autorVariedade }
 
         axios.post('/tombos', { json })
             .then(response => {
