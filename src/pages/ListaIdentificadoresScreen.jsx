@@ -93,18 +93,8 @@ class ListaIdentificadoresScreen extends Component {
             limite: pageSize
         }
 
-        if (valores !== undefined) {
-            const { nome, email, sigla } = valores
-
-            // if (nome) {
-            //     params.nome = nome
-            // }
-            // if (email) {
-            //     params.email = email
-            // }
-            // if (sigla) {
-            //     params.sigla = sigla
-            // }
+        if (valores && valores.nome) {
+            params.nome = valores.nome
         }
 
         try {
@@ -112,7 +102,7 @@ class ListaIdentificadoresScreen extends Component {
 
             this.setState({
                 herbarios: this.formataDadosIdentificadores(data.identificadores),
-                metadados: { pagina: data.metadados.pagina, limite: data.metadados.limite, total: 200 },
+                metadados: data.metadados,
                 loading: false
             })
         } catch (err) {
