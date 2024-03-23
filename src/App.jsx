@@ -17,6 +17,7 @@ import DetalhesTomboScreen from './pages/DetalhesTomboScreen'
 import FichaTomboScreen from './pages/FichaTomboScreen'
 import InicioScreen from './pages/InicioScreen'
 import ListaHerbariosScreen from './pages/ListaHerbariosScreen'
+import ListaIdentificadoresScreen from './pages/ListaIdentificadoresScreen'
 import ListaPendenciasScreen from './pages/ListaPendenciasScreen'
 import ListaRemessasScreen from './pages/ListaRemessasScreen'
 import ListaTaxonomiaAutores from './pages/ListaTaxonomiaAutores'
@@ -32,6 +33,7 @@ import ListaUsuariosScreen from './pages/ListaUsuariosScreen'
 import LivroTomboScreen from './pages/LivroTomboScreen'
 import NovaRemessaScreen from './pages/NovaRemessaScreen'
 import NovoHerbarioScreen from './pages/NovoHerbarioScreen'
+import NovoIdentificadorScreen from './pages/NovoIdentificadorScreen'
 import NovoTomboScreen from './pages/NovoTomboScreen'
 import NovoUsuarioScreen from './pages/NovoUsuarioScreen'
 import ServicosRefloraScreen from './pages/ServicosRefloraScreen'
@@ -101,6 +103,9 @@ export default class App extends Component {
                 <PrivateRoute authed={isCurador()} path="/usuarios/novo" component={NovoUsuarioScreen} />
                 <PrivateRoute authed={isCurador()} path="/usuarios/:usuario_id" component={NovoUsuarioScreen} />
                 <PrivateRoute authed={isCurador()} path="/usuarios" component={ListaUsuariosScreen} />
+                <PrivateRoute authed={isCurador()} path="/identificadores/novo" component={NovoIdentificadorScreen} />
+                <PrivateRoute authed={isCurador()} path="/identificadores/:identificador_id" component={NovoIdentificadorScreen} />
+                <PrivateRoute authed={isCurador()} path="/identificadores" component={ListaIdentificadoresScreen} />
                 <PrivateRoute authed={isCurador()} path="/herbarios/novo" component={NovoHerbarioScreen} />
                 <PrivateRoute authed={isCurador()} path="/herbarios/:herbario_id" component={NovoHerbarioScreen} />
 

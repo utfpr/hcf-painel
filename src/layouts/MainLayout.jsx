@@ -147,7 +147,15 @@ export default class MainLayout extends Component {
                                 </Link>
                             </Menu.Item>
                         ) : null}
-                        <Menu.Item key="12">
+                        {isCurador() ? (
+                            <Menu.Item key="12">
+                                <Link to="/identificadores">
+                                    <TeamOutlined />
+                                    <span>Identificadores</span>
+                                </Link>
+                            </Menu.Item>
+                        ) : null}
+                        <Menu.Item key="13">
                             <Link to="/herbarios">
                                 <FlagOutlined />
                                 <span>Herbários</span>
@@ -162,14 +170,14 @@ export default class MainLayout extends Component {
                                 </span>
                             )}
                         >
-                            <Menu.Item key="13">
+                            <Menu.Item key="14">
                                 {' '}
                                 <Link to="/fichas/tombos">Ficha tombo</Link>
                                 {' '}
                             </Menu.Item>
                         </SubMenu>
                         {isCuradorOuOperador() ? (
-                            <Menu.Item key="14">
+                            <Menu.Item key="15">
                                 <a href={`${baseUrl}/darwincore`} target="_blank" rel="noreferrer">
                                     <DesktopOutlined />
                                     <span>Darwin Core</span>
@@ -189,17 +197,17 @@ export default class MainLayout extends Component {
                                     </span>
                                 )}
                             >
-                                <Menu.Item key="15">
+                                <Menu.Item key="16">
                                     <Link to="/reflora">Reflora</Link>
                                 </Menu.Item>
-                                <Menu.Item key="16">
+                                <Menu.Item key="17">
                                     <Link to="/specieslink">speciesLink</Link>
                                 </Menu.Item>
                             </SubMenu>
                         ) : null}
                         {isLogado() ? (
 
-                            <Menu.Item key="17">
+                            <Menu.Item key="18">
                                 <Link
                                     to="/inicio"
                                     onClick={() => {
