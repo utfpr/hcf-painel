@@ -132,6 +132,26 @@ class NovoTomboScreen extends Component {
         })
     }
 
+    defineValoresIniciais = dados => {
+        console.log('dados', dados.retorno.relevo)
+
+        const state = {}
+        if (dados.retorno.solo?.id) {
+            state.soloInicial = dados.retorno.solo.id
+        }
+        if (dados.retorno.relevo?.id) {
+            state.relevoInicial = dados.retorno.relevo.id
+        }
+        if (dados.retorno.vegetaco?.id) {
+            state.vegetacaoInicial = dados.retorno.vegetaco.id
+        }
+        if (dados.retorno.fase_sucessional?.id) {
+            state.faseInicial = dados.retorno.fase_sucessional.id
+        }
+
+        this.setState({ ...state })
+    }
+
     requisitaDadosEdicao = id => {
         axios.get(`/tombos/${id}`)
             .then(response => {
@@ -142,6 +162,7 @@ class NovoTomboScreen extends Component {
                         loading: false,
                         ...data
                     })
+                    this.defineValoresIniciais(data)
                     this.insereDadosFormulario(data)
 
                     if (data.identificacao && data.identificacao.usuario_id) {
@@ -154,6 +175,8 @@ class NovoTomboScreen extends Component {
                 }
             })
             .catch(err => {
+                console.log('err', err)
+
                 this.setState({
                     loading: false
                 })
@@ -425,8 +448,6 @@ class NovoTomboScreen extends Component {
             subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao
         } = values
         const json = {}
-
-        console.log('longitude', longitude)
 
         if (nomePopular) json.principal = { nome_popular: nomePopular }
         json.principal = { ...json.principal, entidade_id: entidade }
