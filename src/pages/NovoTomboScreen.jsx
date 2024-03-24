@@ -348,7 +348,8 @@ class NovoTomboScreen extends Component {
                 console.log(err)
                 this.openNotificationWithIcon('warning', 'Falha', 'Preencha todos os dados requiridos.')
             } else {
-                this.requisitaCadastroTombo(values)
+                this.handleRequisicao(values)
+
                 this.setState({
                     loading: true
                 })
@@ -416,7 +417,17 @@ class NovoTomboScreen extends Component {
         }
     }
 
-    requisitaCadastroTombo(values) {
+    handleRequisicao(values) {
+        const json = this.montaFormularioJson(values)
+
+        if (this.props.match.params.tombo_id) {
+            this.requisitaEdicaoTombo(json)
+        } else {
+            this.requisitaCadastroTombo(json)
+        }
+    }
+
+    montaFormularioJson(values) {
         const {
             altitude, autorEspecie, autorVariedade, autoresSubespecie, cidade, coletores, complemento,
             dataColetaAno, dataColetaDia, dataColetaMes, dataIdentAno, dataIdentDia, dataIdentMes,
@@ -490,6 +501,65 @@ class NovoTomboScreen extends Component {
         if (autoresSubespecie) json.autores = { ...json.autores, subespecie: autoresSubespecie }
         if (autorVariedade) json.autores = { ...json.autores, variedade: autorVariedade }
 
+        return json
+    }
+
+    async requisitaEdicaoTombo(json) {
+        try {
+            const response = await axios.put(`/tombos/${this.props.match.params.tombo_id}`, { json })
+            if (response.status === 200) {
+                const tombo = response.data
+                const criaRequisicaoFoto = (hcf, emVivo, foto) => {
+                    const form = new FormData()
+                    form.append('imagem', foto)
+                    form.append('tombo_hcf', hcf)
+                    form.append('em_vivo', emVivo)
+
+                    return axios.post('/uploads', form, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    })
+                }
+
+                const criaFuncaoMap = (hcf, emVivo) => foto => criaRequisicaoFoto(hcf, emVivo, foto)
+
+                const { fotosEmVivo, fotosExsicata } = this.state
+
+                const promises = [
+                    ...fotosEmVivo.map(criaFuncaoMap(tombo.hcf, true)),
+                    ...fotosExsicata.map(criaFuncaoMap(tombo.hcf, false))
+                ]
+
+                await Promise.all(promises)
+                this.setState({
+                    loading: false
+                })
+
+                this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                this.props.history.goBack()
+            }
+        } catch (err) {
+            this.setState({
+                loading: false
+            })
+            const { response } = err
+
+            if (response.status === 400) {
+                this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+            } else {
+                this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao alterar o tombo, tente novamente.')
+            }
+            if (response && response.data) {
+                const { error } = response.data
+                console.log(error.message)
+            } else {
+                throw err
+            }
+        }
+    }
+
+    requisitaCadastroTombo(json) {
         axios.post('/tombos', { json })
             .then(response => {
                 if (response.status === 201) {
