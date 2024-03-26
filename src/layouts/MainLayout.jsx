@@ -168,6 +168,12 @@ export default class MainLayout extends Component {
                                 {' '}
                             </Menu.Item>
                         </SubMenu>
+                        <Menu.Item key="18">
+                            <Link to="/mapa">
+                                <DesktopOutlined />
+                                <span>Mapa</span>
+                            </Link>
+                        </Menu.Item>
                         {isCuradorOuOperador() ? (
                             <Menu.Item key="14">
                                 <a href={`${baseUrl}/darwincore`} target="_blank" rel="noreferrer">

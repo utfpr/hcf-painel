@@ -37,6 +37,8 @@ import NovoUsuarioScreen from './pages/NovoUsuarioScreen'
 import ServicosRefloraScreen from './pages/ServicosRefloraScreen'
 import ServicosSpeciesLinkScreen from './pages/ServicosSpeciesLinkScreen'
 import PendenciaPagina from './pages/VerPendenciaScreen'
+import Mapa from './pages/Mapa';
+
 
 import 'antd/dist/antd.css'
 import './assets/css/App.css'
@@ -117,6 +119,7 @@ export default class App extends Component {
                 <Route path="/subfamilias" component={ListaTaxonomiaSubfamilia} />
                 <Route path="/variedades" component={ListaTaxonomiaVariedade} />
                 <Route path="/autores" component={ListaTaxonomiaAutores} />
+                <Route path="/mapa" component={Mapa} />
             </Switch>
         </MainLayout>
     )
