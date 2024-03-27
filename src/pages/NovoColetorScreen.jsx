@@ -84,7 +84,7 @@ class NovoColetorScreen extends Component {
         this.setState({ loading: true })
 
         try {
-            await axios.put(`/coletor/${this.props.match.params.coletor_id}`, valores)
+            await axios.put(`/coletores/${this.props.match.params.coletor_id}`, valores)
 
             this.notificacao('success', 'Sucesso', 'Coletor atualizado com sucesso.')
 
