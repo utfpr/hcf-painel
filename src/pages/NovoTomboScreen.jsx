@@ -1917,7 +1917,7 @@ class NovoTomboScreen extends Component {
                                         message: 'Insira o numero da coleta'
                                     }]
                                 })(
-                                    <Input type="text" placeholder="785" style={{ width: '100%' }} />
+                                    <Input type="text" placeholder="785" style={{ width: '100%' }} status={getFieldError('numColeta') ? 'error' : ''} />
                                 )}
                             </FormItem>
                         </Col>
