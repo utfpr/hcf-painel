@@ -103,7 +103,7 @@ class NovoTomboScreen extends Component {
             relevoInicial: '',
             vegetacaoInicial: '',
             faseInicial: '',
-            identificadorInicial: '',
+            identificadorInicial: [],
             coletoresInicial: '',
             colecaoInicial: '',
             complementoInicial: '',
@@ -146,7 +146,9 @@ class NovoTomboScreen extends Component {
 
                     if (data.identificacao && data.identificacao.usuario_id) {
                         this.setState({
-                            identificadorInicial: data.identificacao.usuario_id
+                            identificadorInicial: Array.isArray(data.identificacao.usuario_id)
+                                ? data.identificacao.usuario_id
+                                : [data.identificacao.usuario_id]
                         })
                     }
                 } else {
@@ -2667,13 +2669,16 @@ class NovoTomboScreen extends Component {
                         <Col span={24}>
                             <FormItem>
                                 {getFieldDecorator('identificador', {
-                                    initialValue: String(this.state.identificadorInicial)
+                                    initialValue: Array.isArray(this.state.identificadorInicial)
+                                        ? this.state.identificadorInicial.map(item => String(item))
+                                        : []
                                 })(
                                     <Select
                                         showSearch
                                         style={{ width: '100%' }}
                                         optionFilterProp="children"
                                         // onChange={this.handleChangeIdentificadores}
+                                        mode="multiple"
                                         placeholder="Selecione o idenficador"
                                         onSearch={value => {
                                             this.requisitaIdentificadores(value)
