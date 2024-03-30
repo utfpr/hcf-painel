@@ -536,7 +536,7 @@ class NovoTomboScreen extends Component {
                     loading: false
                 })
 
-                this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                this.openNotificationWithIcon('success', 'Sucesso', 'A alteração foi realizada com sucesso.')
                 this.props.history.goBack()
             }
         } catch (err) {
