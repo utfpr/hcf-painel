@@ -65,7 +65,7 @@ class ListaIdentificadoresScreen extends Component {
         })
     }
 
-    formataDadosIdentificadores = herbarios => herbarios.map(item => ({
+    formataDadosIdentificadores = identificadores => identificadores.map(item => ({
         key: item.id,
         nome: item.nome,
         acao: this.gerarAcao(item.id)
@@ -112,15 +112,11 @@ class ListaIdentificadoresScreen extends Component {
 
     handleSubmit = (err, valores) => {
         if (!err) {
-            if (valores.nome || valores.sigla || valores.email) {
-                this.setState({
-                    valores,
-                    loading: true
-                })
-                this.requisitaListaIdentificadores(valores, this.state.pagina)
-            } else {
-                this.notificacao('warning', 'Buscar', 'Informe ao menos um campo para realizar a busca.')
-            }
+            this.setState({
+                valores,
+                loading: true
+            })
+            this.requisitaListaIdentificadores(valores, this.state.pagina)
         }
     }
 

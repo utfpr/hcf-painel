@@ -58,7 +58,7 @@ class NovoIdentificadorScreen extends Component {
 
             this.notificacao('success', 'Sucesso', 'Identificador cadastrado com sucesso.')
 
-            this.props.history.goBack()
+            this.props.history.push('/identificadores')
         } catch (err) {
             this.notificacao('error', 'Falha', 'Houve um problema ao cadastrar o identificador, tente novamente.')
         } finally {
@@ -88,7 +88,7 @@ class NovoIdentificadorScreen extends Component {
 
             this.notificacao('success', 'Sucesso', 'Identificador atualizado com sucesso.')
 
-            this.props.history.goBack()
+            this.props.history.push('/identificadores')
         } catch (err) {
             this.notificacao('error', 'Falha', 'Houve um problema ao atualizar o identificador, tente novamente.')
         } finally {
