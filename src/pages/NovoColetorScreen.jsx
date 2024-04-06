@@ -58,7 +58,7 @@ class NovoColetorScreen extends Component {
 
             this.notificacao('success', 'Sucesso', 'Coletor cadastrado com sucesso.')
 
-            this.props.history.goBack()
+            this.props.history.push('/coletores')
         } catch (err) {
             this.notificacao('error', 'Falha', 'Houve um problema ao cadastrar o coletor, tente novamente.')
         } finally {
@@ -88,7 +88,7 @@ class NovoColetorScreen extends Component {
 
             this.notificacao('success', 'Sucesso', 'Coletor atualizado com sucesso.')
 
-            this.props.history.goBack()
+            this.props.history.push('/coletores')
         } catch (err) {
             this.notificacao('error', 'Falha', 'Houve um problema ao atualizar o coletor, tente novamente.')
         } finally {
