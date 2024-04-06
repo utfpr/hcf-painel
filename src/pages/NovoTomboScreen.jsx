@@ -133,8 +133,6 @@ class NovoTomboScreen extends Component {
     }
 
     defineValoresIniciais = dados => {
-        console.log('dados', dados.retorno.relevo)
-
         const state = {}
         if (dados.retorno.solo?.id) {
             state.soloInicial = dados.retorno.solo.id
@@ -175,7 +173,7 @@ class NovoTomboScreen extends Component {
                 }
             })
             .catch(err => {
-                console.log('err', err)
+                console.error('err', err)
 
                 this.setState({
                     loading: false
@@ -183,7 +181,7 @@ class NovoTomboScreen extends Component {
                 const { response } = err
                 if (response && response.data) {
                     const { error } = response.data
-                    console.log(error.message)
+                    console.error(error.message)
                 }
             })
             .catch(this.catchRequestError)
@@ -200,12 +198,10 @@ class NovoTomboScreen extends Component {
             variedades: dados.variedades
         }
         if (dados.coletores) {
-            console.log('PASSOU TUR')
             const colet = dados.coletores.map(item => ({
                 key: item.id,
                 label: item.nome
             }))
-            console.log(colet)
 
             this.props.form.setFields({
                 coletores: {
@@ -430,7 +426,7 @@ class NovoTomboScreen extends Component {
                     }
                     if (response && response.data) {
                         const { error } = response.data
-                        console.log(error.message)
+                        console.error(error.message)
                     } else {
                         throw err
                     }
@@ -561,7 +557,7 @@ class NovoTomboScreen extends Component {
                 }
                 if (response && response.data) {
                     const { error } = response.data
-                    console.log(error.message)
+                    console.error(error.message)
                 } else {
                     throw err
                 }
@@ -2766,7 +2762,6 @@ class NovoTomboScreen extends Component {
     }
 
     handleChangeIdentificadores = valor => {
-        console.log(valor)
         this.setState({
             fetchingIdentificadores: false,
             identificadorInicial: `${valor}`,
@@ -3328,8 +3323,6 @@ class NovoTomboScreen extends Component {
     }
 
     render() {
-        console.log('COLETOOOOOORES')
-        console.log(this.props.form.getFieldsValue())
         if (this.state.loading) {
             return (
                 <Spin tip="Carregando...">
