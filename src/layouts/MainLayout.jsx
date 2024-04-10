@@ -7,7 +7,7 @@ import axios from 'axios'
 import { Link } from 'react-router-dom'
 
 import {
-    BarsOutlined, DatabaseOutlined, DesktopOutlined, FileTextOutlined,
+    BarsOutlined, DatabaseOutlined, DesktopOutlined, FileTextOutlined, EnvironmentOutlined,
     FlagOutlined, LogoutOutlined, MenuUnfoldOutlined, SearchOutlined, TeamOutlined
 } from '@ant-design/icons'
 
@@ -170,7 +170,7 @@ export default class MainLayout extends Component {
                         </SubMenu>
                         <Menu.Item key="18">
                             <Link to="/mapa">
-                                <DesktopOutlined />
+                                <EnvironmentOutlined />
                                 <span>Mapa</span>
                             </Link>
                         </Menu.Item>
