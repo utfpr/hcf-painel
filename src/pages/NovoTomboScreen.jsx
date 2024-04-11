@@ -132,6 +132,24 @@ class NovoTomboScreen extends Component {
         })
     }
 
+    defineValoresIniciais = dados => {
+        const state = {}
+        if (dados.retorno.solo?.id) {
+            state.soloInicial = dados.retorno.solo.id
+        }
+        if (dados.retorno.relevo?.id) {
+            state.relevoInicial = dados.retorno.relevo.id
+        }
+        if (dados.retorno.vegetaco?.id) {
+            state.vegetacaoInicial = dados.retorno.vegetaco.id
+        }
+        if (dados.retorno.fase_sucessional?.id) {
+            state.faseInicial = dados.retorno.fase_sucessional.id
+        }
+
+        this.setState({ ...state })
+    }
+
     requisitaDadosEdicao = id => {
         axios.get(`/tombos/${id}`)
             .then(response => {
@@ -142,6 +160,7 @@ class NovoTomboScreen extends Component {
                         loading: false,
                         ...data
                     })
+                    this.defineValoresIniciais(data)
                     this.insereDadosFormulario(data)
 
                     if (data.identificacao && data.identificacao.usuario_id) {
@@ -154,13 +173,15 @@ class NovoTomboScreen extends Component {
                 }
             })
             .catch(err => {
+                console.error('err', err)
+
                 this.setState({
                     loading: false
                 })
                 const { response } = err
                 if (response && response.data) {
                     const { error } = response.data
-                    console.log(error.message)
+                    console.error(error.message)
                 }
             })
             .catch(this.catchRequestError)
@@ -177,12 +198,10 @@ class NovoTomboScreen extends Component {
             variedades: dados.variedades
         }
         if (dados.coletores) {
-            console.log('PASSOU TUR')
             const colet = dados.coletores.map(item => ({
                 key: item.id,
                 label: item.nome
             }))
-            console.log(colet)
 
             this.props.form.setFields({
                 coletores: {
@@ -407,7 +426,7 @@ class NovoTomboScreen extends Component {
                     }
                     if (response && response.data) {
                         const { error } = response.data
-                        console.log(error.message)
+                        console.error(error.message)
                     } else {
                         throw err
                     }
@@ -425,8 +444,6 @@ class NovoTomboScreen extends Component {
             subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao
         } = values
         const json = {}
-
-        console.log('longitude', longitude)
 
         if (nomePopular) json.principal = { nome_popular: nomePopular }
         json.principal = { ...json.principal, entidade_id: entidade }
@@ -540,7 +557,7 @@ class NovoTomboScreen extends Component {
                 }
                 if (response && response.data) {
                     const { error } = response.data
-                    console.log(error.message)
+                    console.error(error.message)
                 } else {
                     throw err
                 }
@@ -1896,7 +1913,7 @@ class NovoTomboScreen extends Component {
                                         message: 'Insira o numero da coleta'
                                     }]
                                 })(
-                                    <Input type="text" placeholder="785" style={{ width: '100%' }} />
+                                    <Input type="text" placeholder="785" style={{ width: '100%' }} status={getFieldError('numColeta') ? 'error' : ''} />
                                 )}
                             </FormItem>
                         </Col>
@@ -2745,7 +2762,6 @@ class NovoTomboScreen extends Component {
     }
 
     handleChangeIdentificadores = valor => {
-        console.log(valor)
         this.setState({
             fetchingIdentificadores: false,
             identificadorInicial: `${valor}`,
@@ -3307,8 +3323,6 @@ class NovoTomboScreen extends Component {
     }
 
     render() {
-        console.log('COLETOOOOOORES')
-        console.log(this.props.form.getFieldsValue())
         if (this.state.loading) {
             return (
                 <Spin tip="Carregando...">
