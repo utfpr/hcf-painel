@@ -21,7 +21,7 @@ export default class InicioScreen extends Component {
     renderViewLogin() {
         return (
             <LoginLayout
-                redirect={() => this.props.history.push('/')}
+                redirect={() => this.props.history.push('/tombos')}
                 load={valor => {
                     this.setState({
                         loading: valor
