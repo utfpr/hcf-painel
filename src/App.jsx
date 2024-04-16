@@ -46,6 +46,8 @@ import './assets/css/FormEnterSystem.css'
 import './assets/css/Main.css'
 import './assets/css/Search.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
+import ListaColetoresScreen from './pages/ListaColetoresScreen'
+import NovoColetorScreen from './pages/NovoColetorScreen'
 
 const PrivateRoute = ({ component: Component, authed, ...rest }) => {
     return (
@@ -108,6 +110,9 @@ export default class App extends Component {
                 <PrivateRoute authed={isCurador()} path="/identificadores" component={ListaIdentificadoresScreen} />
                 <PrivateRoute authed={isCurador()} path="/herbarios/novo" component={NovoHerbarioScreen} />
                 <PrivateRoute authed={isCurador()} path="/herbarios/:herbario_id" component={NovoHerbarioScreen} />
+                <PrivateRoute authed={isCurador()} path="/coletores/novo" component={NovoColetorScreen} />
+                <PrivateRoute authed={isCurador()} path="/coletores/:coletor_id" component={NovoColetorScreen} />
+                <PrivateRoute authed={isCurador()} path="/coletores" component={ListaColetoresScreen} />
 
                 <Route path="/herbarios" component={ListaHerbariosScreen} />
                 <Route path="/fichas/tombos" component={FichaTomboScreen} />
