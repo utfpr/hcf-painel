@@ -665,13 +665,7 @@ class NovoTomboScreen extends Component {
                 console.log(err)
                 this.openNotificationWithIcon('warning', 'Falha', 'Preencha todos os dados requiridos.')
             } else {
-                const { editing } = this.state
-                const valoresFormatados = this.formatValues(values)
-                if (editing) {
-                    this.requisitaAtualizacaoTombo(values)
-                } else {
-                    this.requisitaCadastroTombo(valoresFormatados)
-                }
+                this.handleRequisicao(values)
                 this.setState({
                     loading: true
                 })
@@ -739,7 +733,17 @@ class NovoTomboScreen extends Component {
         }
     }
 
-    formatValues(values) {
+    handleRequisicao(values) {
+        const json = this.montaFormularioJson(values)
+
+        if (this.props.match.params.tombo_id) {
+            this.requisitaEdicaoTombo(json)
+        } else {
+            this.requisitaCadastroTombo(json)
+        }
+    }
+
+    montaFormularioJson(values) {
         const {
             altitude, autorEspecie, autorVariedade, autoresSubespecie, cidade, coletores, complemento,
             dataColetaAno, dataColetaDia, dataColetaMes, dataIdentAno, dataIdentDia, dataIdentMes,
@@ -813,6 +817,61 @@ class NovoTomboScreen extends Component {
         return json
     }
 
+    async requisitaEdicaoTombo(json) {
+        try {
+            const response = await axios.put(`/tombos/${this.props.match.params.tombo_id}`, { json })
+            if (response.status === 200) {
+                const tombo = response.data
+                const criaRequisicaoFoto = (hcf, emVivo, foto) => {
+                    const form = new FormData()
+                    form.append('imagem', foto)
+                    form.append('tombo_hcf', hcf)
+                    form.append('em_vivo', emVivo)
+
+                    return axios.post('/uploads', form, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    })
+                }
+
+                const criaFuncaoMap = (hcf, emVivo) => foto => criaRequisicaoFoto(hcf, emVivo, foto)
+
+                const { fotosEmVivo, fotosExsicata } = this.state
+
+                const promises = [
+                    ...fotosEmVivo.map(criaFuncaoMap(tombo.hcf, true)),
+                    ...fotosExsicata.map(criaFuncaoMap(tombo.hcf, false))
+                ]
+
+                await Promise.all(promises)
+                this.setState({
+                    loading: false
+                })
+
+                this.openNotificationWithIcon('success', 'Sucesso', 'A alteração foi realizada com sucesso.')
+                this.props.history.goBack()
+            }
+        } catch (err) {
+            this.setState({
+                loading: false
+            })
+            const { response } = err
+
+            if (response.status === 400) {
+                this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+            } else {
+                this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao alterar o tombo, tente novamente.')
+            }
+            if (response && response.data) {
+                const { error } = response.data
+                console.log(error.message)
+            } else {
+                throw err
+            }
+        }
+    }
+
     requisitaCadastroTombo(json) {
         axios.post('/tombos', { json })
             .then(response => {
@@ -865,181 +924,6 @@ class NovoTomboScreen extends Component {
                 if (response && response.data) {
                     const { error } = response.data
                     console.error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
-    }
-
-    requisitaAtualizacaoTombo(values) {
-        const {
-            altitude, autorEspecie, autorVariedade, autoresSubespecie, cidade, coletores, complemento,
-            dataColetaAno, dataColetaDia, dataColetaMes, dataIdentAno, dataIdentDia, dataIdentMes,
-            especie, familia, fases, genero, identificador, latitude, localidadeCor, longitude,
-            nomePopular, numColeta, observacoesColecaoAnexa, observacoesTombo, relevo, solo,
-            subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao
-        } = values
-
-        const json = {}
-        const dados = this.state.dadosFormulario
-
-        json.principal = {}
-
-        if (nomePopular !== undefined && nomePopular !== dados.retorno.nomes_populares) json.principal = { nome_popular: nomePopular }
-
-        if (entidade !== undefined && entidade !== dados.herbarioInicial.toString()) json.principal = { ...json.principal, entidade_id: entidade }
-        if (numColeta !== undefined && numColeta !== dados.numero_coleta) json.principal.numero_coleta = numColeta
-
-        if (dataColetaDia !== undefined && dataColetaDia !== dados.data_coleta_dia) json.principal.data_coleta = { dia: dataColetaDia }
-        if (dataColetaMes !== undefined && dataColetaMes !== dados.data_coleta_mes) json.principal.data_coleta = { ...json.principal.data_coleta, mes: dataColetaMes }
-        if (dataColetaAno !== undefined && dataColetaAno !== dados.data_coleta_ano) json.principal.data_coleta = { ...json.principal.data_coleta, ano: dataColetaAno }
-        if (tipo !== '' && tipo !== dados.tipoInicial.toString()) json.principal.tipo_id = tipo
-
-        if (localidadeCor !== '' && localidadeCor !== dados.localidadeInicial) json.principal.cor = localidadeCor
-
-        json.taxonomia = {}
-
-        if (familia !== undefined && familia !== '' && familia !== dados.familiaInicial.toString()) {
-            json.taxonomia = {
-                ...json.taxonomia, familia_id: familia, genero_id: null, sub_familia_id: null, especie_id: null, variedade_id: null, sub_especie_id: null
-            }
-        }
-        if (genero !== undefined && genero !== '' && genero !== dados.generoInicial.toString()) {
-            json.taxonomia = {
-                ...json.taxonomia, genero_id: genero, especie_id: null, sub_especie_id: null, variedade_id: null
-            }
-        }
-        if (subfamilia !== undefined && subfamilia !== '' && subfamilia !== dados.subfamiliaInicial.toString()) json.taxonomia = { ...json.taxonomia, sub_familia_id: subfamilia }
-        if (especie !== undefined && especie !== '' && especie !== dados.especieInicial.toString()) {
-            json.taxonomia = {
-                ...json.taxonomia, especie_id: especie, sub_especie_id: null, variedade_id: null
-            }
-        }
-        if (variedade !== undefined && variedade !== '' && variedade !== dados.variedadeInicial.toString()) json.taxonomia = { ...json.taxonomia, variedade_id: variedade }
-        if (subespecie !== undefined && subespecie !== '' && subespecie !== dados.subespecieInicial.toString()) json.taxonomia = { ...json.taxonomia, sub_especie_id: subespecie }
-
-        json.localidade = {}
-
-        if (latitude !== undefined && latitude !== dados.localizacao.latitude_graus) json.localidade = { ...json.localidade, latitude }
-        if (longitude !== undefined && longitude !== dados.localizacao.longitude_graus) json.localidade = { ...json.localidade, longitude }
-        if (altitude !== undefined && altitude !== dados.localizacao.altitude) json.localidade = { ...json.localidade, altitude }
-        if (cidade !== undefined && cidade !== dados.cidadeInicial.toString()) json.localidade = { ...json.localidade, cidade_id: cidade }
-        if (complemento !== undefined && complemento !== '' && complemento !== dados.localizacao.complemento) json.localidade = { ...json.localidade, complemento }
-
-        json.paisagem = {}
-
-        if (solo !== undefined && solo !== '' && solo !== dados.soloInicial.toString()) json.paisagem = { ...json.paisagem, solo_id: solo }
-        if (relevoDescricao !== undefined && relevoDescricao !== '' && relevoDescricao !== dados.local_coleta.descricao) json.paisagem = { ...json.paisagem, descricao: relevoDescricao }
-        if (relevo !== undefined && relevo !== '' && relevo !== dados.relevoInicial.toString()) json.paisagem = { ...json.paisagem, relevo_id: relevo }
-        if (vegetacao !== undefined && vegetacao !== '' && vegetacao !== dados.vegetacaoInicial.toString()) json.paisagem = { ...json.paisagem, vegetacao_id: vegetacao }
-        if (fases !== undefined && fases !== '' && fases !== dados.faseInicial.toString()) json.paisagem = { ...json.paisagem, fase_sucessional_id: fases }
-
-        json.identificacao = {}
-
-        if (identificador !== undefined && identificador !== '' && identificador !== dados.identificadorInicial) json.identificacao = { identificador_id: identificador }
-        if (dataIdentDia !== undefined && dataIdentDia !== '' && dataIdentDia !== dados.data_identificacao_dia) {
-            json.identificacao = {
-                ...json.identificacao,
-                data_identificacao: {
-                    dia: dataIdentDia
-                }
-            }
-        }
-        if (dataIdentMes !== undefined && dataIdentMes !== '' && dataIdentMes !== dados.data_identificacao_mes) {
-            json.identificacao = {
-                ...json.identificacao,
-                data_identificacao: {
-                    ...json.identificacao.data_identificacao,
-                    mes: dataIdentMes
-                }
-            }
-        }
-        if (dataIdentAno !== undefined && dataIdentAno !== '' && dataIdentAno !== dados.data_identificacao_ano) {
-            json.identificacao = {
-                ...json.identificacao,
-                data_identificacao: {
-                    ...json.identificacao.data_identificacao,
-                    ano: dataIdentAno
-                }
-            }
-        }
-
-        const converterInteiroColetores = () => coletores.map(item => parseInt(item.key))
-        console.log('estes sao meus coletores', dados.coletoresInicial.map(item => parseInt(item.key)))
-        if (converterInteiroColetores().toString() !== dados.coletoresInicial.map(item => parseInt(item.key)).toString()) json.coletores = converterInteiroColetores()
-
-        json.colecoes_anexas = {}
-
-        if (tipoColecaoAnexa !== undefined && tipoColecaoAnexa !== '' && tipoColecaoAnexa !== dados.colecao_anexa.tipo) json.colecoes_anexas = { tipo: tipoColecaoAnexa }
-        if (observacoesColecaoAnexa !== undefined && observacoesColecaoAnexa !== '' && observacoesColecaoAnexa !== dados.colecao_anexa.observacao) json.colecoes_anexas = { ...json.colecoes_anexas, observacoes: observacoesColecaoAnexa }
-        if (observacoesTombo !== undefined && observacoesTombo !== '' && observacoesTombo !== dados.observacao) json.observacoes = observacoesTombo
-
-        json.autores = {}
-
-        if (autorEspecie !== undefined && autorEspecie !== '') json.autores = { especie: autorEspecie }
-        if (autoresSubespecie !== undefined && autoresSubespecie !== '') json.autores = { ...json.autores, subespecie: autoresSubespecie }
-        if (autorVariedade !== undefined && autorVariedade !== '') json.autores = { ...json.autores, variedade: autorVariedade }
-
-        const tomboId = this.props.match.params.tombo_id
-        axios.put(`/tombos/${tomboId}`, { json })
-            .then(response => {
-                const pendencia = response.data
-                console.log('tombo!\n', response)
-                if (response.status === 200) {
-                    const criaRequisicaoFoto = (hcf, emVivo, foto) => {
-                        const form = new FormData()
-                        form.append('imagem', foto)
-                        form.append('tombo_hcf', this.props.match.params.tombo_id)
-                        form.append('em_vivo', emVivo)
-
-                        axios.post('/uploads', form, {
-                            headers: {
-                                'Content-Type': 'multipart/form-data'
-                            }
-                        })
-                    }
-
-                    const pendenciaId = pendencia.id
-                    axios.post(`/pendencias/${pendenciaId}`)
-                        .then(response2 => {
-                            console.log(response2)
-                        })
-
-                    const criaFuncaoMap = (hcf, emVivo) => foto => criaRequisicaoFoto(hcf, emVivo, foto)
-
-                    const { fotosEmVivo, fotosExsicata } = this.state
-
-                    const promises = [
-                        ...fotosEmVivo.map(criaFuncaoMap(pendencia.hcf, true)),
-                        ...fotosExsicata.map(criaFuncaoMap(pendencia.hcf, false))
-                    ]
-
-                    return Promise.all(promises)
-                }
-            })
-            .then(response => {
-                this.setState({
-                    loading: false
-                })
-
-                this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
-                window.location.reload()
-            })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                })
-                const { response } = err
-
-                if (response.status === 400) {
-                    this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
-                } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar o novo tombo tente novamente.')
-                }
-                if (response && response.data) {
-                    const { error } = response.data
-                    console.log(error.message)
                 } else {
                     throw err
                 }
