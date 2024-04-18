@@ -1,3 +1,4 @@
+/* eslint-disable no-const-assign */
 import {
     MapContainer, TileLayer, useMapEvent, useMap
 } from 'react-leaflet'
@@ -5,6 +6,8 @@ import 'leaflet.markercluster/dist/leaflet.markercluster'
 import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 import L from 'leaflet'
+
+import React from 'react'
 
 import pin from '../assets/img/pin.svg'
 import styles from '../helpers/MapExamplePage.module.scss'
@@ -45,18 +48,47 @@ function MapLogic() {
     })
 }
 
-const center = [-24.0438, -52.3811]
+function LayersControl() {
+    const map = useMap()
 
-const mapContainerStyle = { height: '100%' }
+    React.useEffect(() => {
+        const scale = L.control.scale().addTo(map)
+        // map.attributionControl.addAttribution('OpenTopoMap')
+        const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map)
+
+        const basetopo = L.tileLayer('https://tile.opentopomap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA)',
+            maxZoom: 17
+        })
+
+        const esriArcGis = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles © Esri — Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+        })
+
+        const baseLayers = {
+            OpenStreetMap: osm,
+            Satellite: esriArcGis,
+            Relevo: basetopo
+        }
+
+        const layerControl = L.control.layers(baseLayers).addTo(map)
+
+        return () => {
+            layerControl.remove()
+            scale.remove()
+        }
+    }, [map])
+
+    return null
+}
 
 function Mapa() {
     return (
         <div className={styles.page}>
-            <MapContainer center={center} zoom={13} scrollWheelZoom style={mapContainerStyle}>
-                <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
+            <MapContainer style={{ height: '100%' }} center={[-24.0438, -52.3811]} zoom={13}>
+                <LayersControl />
                 <MapLogic />
             </MapContainer>
         </div>
