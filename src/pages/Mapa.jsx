@@ -68,8 +68,8 @@ function LayersControl() {
         })
 
         const baseLayers = {
-            OpenStreetMap: osm,
-            Satellite: esriArcGis,
+            Padrão: osm,
+            Satélite: esriArcGis,
             Relevo: basetopo
         }
 
