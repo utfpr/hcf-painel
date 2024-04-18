@@ -1,10 +1,15 @@
 /* eslint-disable no-const-assign */
 import {
-    MapContainer, TileLayer, useMapEvent, useMap
+    MapContainer, useMapEvent, useMap, ZoomControl
 } from 'react-leaflet'
 import 'leaflet.markercluster/dist/leaflet.markercluster'
+import 'leaflet/dist/leaflet.css'
 import 'leaflet.markercluster/dist/MarkerCluster.css'
+import 'leaflet.fullscreen'
+import 'leaflet.fullscreen/Control.FullScreen.css'
+
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
+
 import L from 'leaflet'
 
 import React from 'react'
@@ -48,6 +53,28 @@ function MapLogic() {
     })
 }
 
+function FullScreenControl() {
+    const map = useMap()
+
+    React.useEffect(() => {
+        if (map && !map.fullscreenControl) {
+            L.control.fullscreen({
+                position: 'topright',
+                title: 'Enter fullscreen mode'
+            }).addTo(map)
+        }
+
+        // Função de limpeza para remover o controle de tela cheia quando o componente for desmontado
+        return () => {
+            if (map && map.fullscreenControl) {
+                map.removeControl(map.fullscreenControl)
+            }
+        }
+    }, [map])
+
+    return null
+}
+
 function LayersControl() {
     const map = useMap()
 
@@ -68,9 +95,9 @@ function LayersControl() {
         })
 
         const baseLayers = {
-            Padrão: osm,
+            Base: osm,
             Satélite: esriArcGis,
-            Relevo: basetopo
+            Topografia: basetopo
         }
 
         const layerControl = L.control.layers(baseLayers).addTo(map)
@@ -87,7 +114,9 @@ function LayersControl() {
 function Mapa() {
     return (
         <div className={styles.page}>
-            <MapContainer style={{ height: '100%' }} center={[-24.0438, -52.3811]} zoom={13}>
+            <MapContainer style={{ height: '100%' }} center={[-24.0438, -52.3811]} zoom={13} zoomControl={false}>
+                <FullScreenControl />
+                <ZoomControl position="topright" />
                 <LayersControl />
                 <MapLogic />
             </MapContainer>
