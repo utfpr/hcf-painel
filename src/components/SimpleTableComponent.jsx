@@ -30,7 +30,7 @@ export default class SimpleTableComponent extends Component {
         if (props.metadados) {
             this.setState({
                 paginacao: {
-                    total: props.metadados.total,
+                    total: props.metadados.total ?? 0,
                     current: props.metadados.pagina,
                     defaultPageSize: props.metadados.limite
                 }
