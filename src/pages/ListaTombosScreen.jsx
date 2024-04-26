@@ -180,6 +180,10 @@ class ListaTombosScreen extends Component {
         return this.renderDetalhes(id)
     }
 
+    retornaColetores = coletores => coletores.map(item => (
+        `${item.nome}, `
+    ))
+
     retornaDataColeta(dia, mes, ano) {
         if (dia == null && mes == null && ano == null) {
             return ''
@@ -206,7 +210,7 @@ class ListaTombosScreen extends Component {
         nomePopular: item.nomes_populares,
         nomeCientifico: item.nome_cientifico,
         data: this.retornaDataColeta(item.data_coleta_dia, item.data_coleta_mes, item.data_coleta_ano),
-        coletor: item.coletores.map(coletor => coletor.nome).join(', '),
+        coletor: this.retornaColetores(item.coletores),
         acao: <div style={{ display: 'flex' }}>{this.gerarAcao(item.hcf)}</div>
     }))
 
@@ -325,6 +329,7 @@ class ListaTombosScreen extends Component {
                                 <FormItem>
                                     {getFieldDecorator('tipo')(
                                         <Select initialValue="2" placeholder="Selecione" allowClear>
+                                            <Option value="-1">Selecione</Option>
                                             <Option value="1">Parátipo</Option>
                                             <Option value="2">Isótipo</Option>
                                         </Select>
@@ -340,6 +345,7 @@ class ListaTombosScreen extends Component {
                                 <FormItem>
                                     {getFieldDecorator('situacao')(
                                         <Select initialValue="2" placeholder="Selecione" allowClear>
+                                            <Option value="-1">Selecione</Option>
                                             <Option value="regular">Regular</Option>
                                             <Option value="permutado">Permutado</Option>
                                             <Option value="emprestado">Emprestado</Option>

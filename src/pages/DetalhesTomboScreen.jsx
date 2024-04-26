@@ -49,7 +49,11 @@ export default class DetalhesTomboScreen extends Component {
                         tombo: response.data
                     })
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar os dados do tombo, tente novamente.')
+                    this.openNotificationWithIcon(
+                        'error',
+                        'Falha',
+                        'Houve um problema ao buscar os dados do tombo, tente novamente.'
+                    )
                 }
                 if (response.data.coletores) {
                     let coletores = ''
