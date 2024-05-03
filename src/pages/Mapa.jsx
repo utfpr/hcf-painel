@@ -1,18 +1,20 @@
 /* eslint-disable no-const-assign */
 import {
-    MapContainer, useMapEvent, useMap, ZoomControl
+    MapContainer, useMap, ZoomControl
 } from 'react-leaflet'
 import 'leaflet.markercluster/dist/leaflet.markercluster'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.fullscreen'
 import 'leaflet.fullscreen/Control.FullScreen.css'
+import 'leaflet-easyprint'
+import '../assets/leaflet-plugins/leaflet.navbar.css'
 
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 
 import L from 'leaflet'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import pin from '../assets/img/pin.svg'
 import styles from '../helpers/MapExamplePage.module.scss'
@@ -43,13 +45,8 @@ function MapLogic() {
 
     map.whenReady(() => {
         setTimeout(() => {
-            requestAndAddMarkers() // Must be inside "setTimeout"
+            requestAndAddMarkers()
         }, 0)
-    })
-
-    useMapEvent('zoomend', () => {
-        console.log('User changed zoom')
-        console.log(map.getBounds()) // Gets the coordinates and requests the markers from the API
     })
 }
 
@@ -64,7 +61,6 @@ function FullScreenControl() {
             }).addTo(map)
         }
 
-        // Função de limpeza para remover o controle de tela cheia quando o componente for desmontado
         return () => {
             if (map && map.fullscreenControl) {
                 map.removeControl(map.fullscreenControl)
@@ -80,7 +76,6 @@ function LayersControl() {
 
     React.useEffect(() => {
         const scale = L.control.scale().addTo(map)
-        // map.attributionControl.addAttribution('OpenTopoMap')
         const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map)
@@ -111,12 +106,59 @@ function LayersControl() {
     return null
 }
 
+function DownloadMapControl() {
+    const map = useMap()
+
+    React.useEffect(() => {
+        const printer = L.easyPrint({
+            title: 'Print Map',
+            position: 'topright',
+            sizeModes: ['A4Portrait', 'A4Landscape'],
+            filename: 'MapPrint',
+            exportOnly: true,
+            hideControlContainer: false
+        }).addTo(map)
+
+        return () => {
+            printer.remove(map)
+        }
+    }, [map])
+
+    return null
+}
+
+function NavBarControl() {
+    const map = useMap()
+
+    useEffect(() => {
+        const loadScript = async () => {
+            await import('../assets/leaflet-plugins/leaflet.navbar.min')
+            if (L.control.navbar) {
+                const navbarControl = L.control.navbar({
+                    position: 'topright',
+                    center: [-24.0438, -52.3811],
+                    zoom: 13
+                })
+                navbarControl.addTo(map)
+            }
+        }
+
+        loadScript()
+
+        return () => map.navbarControl && map.removeControl(map.navbarControl)
+    }, [map])
+
+    return null
+}
+
 function Mapa() {
     return (
         <div className={styles.page}>
             <MapContainer style={{ height: '100%' }} center={[-24.0438, -52.3811]} zoom={13} zoomControl={false}>
                 <FullScreenControl />
                 <ZoomControl position="topright" />
+                <NavBarControl />
+                <DownloadMapControl />
                 <LayersControl />
                 <MapLogic />
             </MapContainer>
