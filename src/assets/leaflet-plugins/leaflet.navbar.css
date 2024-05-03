@@ -11,6 +11,7 @@ background-image: url("img/arrow-left_000000_14.png");
 
 .leaflet-control-navbar-home {
 background-image: url("img/home_000000_14.png");
+background-size: 55%;
 }
 
 
