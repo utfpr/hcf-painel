@@ -24,6 +24,14 @@ const columns = [
         key: 'subfamilia'
     },
     {
+        title: 'Família',
+        key: 'familia'
+    },
+    {
+        title: 'Autor',
+        key: 'autor'
+    },
+    {
         title: 'Ação',
         key: 'acao'
     }
@@ -144,6 +152,8 @@ class ListaTaxonomiaSubfamilia extends Component {
     formataDadosSubfamilia = subfamilias => subfamilias.map(item => ({
         key: item.id,
         subfamilia: item.nome,
+        familia: item.familia?.nome,
+        autor: item.autor?.nome,
         acao: this.gerarAcao(item)
     }))
 
@@ -154,10 +164,14 @@ class ListaTaxonomiaSubfamilia extends Component {
         }
 
         if (valores !== undefined) {
-            const { subfamilia } = valores
+            const { subfamilia, familia } = valores
 
             if (subfamilia) {
                 params.subfamilia = subfamilia
+            }
+
+            if (familia) {
+                params.familia = familia
             }
         }
         axios.get('/subfamilias', { params })
@@ -336,17 +350,30 @@ class ListaTaxonomiaSubfamilia extends Component {
             <Card title="Buscar subfamília">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
-                        <Col span={24}>
-                            <span>Nome da subfamília:</span>
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                            <Col span={24}>
+                                <span>Nome da subfamília:</span>
+                            </Col>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('subfamilia')(
+                                        <Input placeholder="Bromeliaceae" type="text" />
+                                    )}
+                                </FormItem>
+                            </Col>
                         </Col>
-                    </Row>
-                    <Row gutter={8}>
-                        <Col span={24}>
-                            <FormItem>
-                                {getFieldDecorator('subfamilia')(
-                                    <Input placeholder="Bromeliaceae" type="text" />
-                                )}
-                            </FormItem>
+
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                            <Col span={24}>
+                                <span>Nome da família:</span>
+                            </Col>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('familia')(
+                                        <Input placeholder="Fabaceae" type="text" />
+                                    )}
+                                </FormItem>
+                            </Col>
                         </Col>
                     </Row>
 

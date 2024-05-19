@@ -25,6 +25,11 @@ const columns = [
         key: 'autor'
     },
     {
+        title: 'Iniciais',
+        type: 'text',
+        key: 'iniciais'
+    },
+    {
         title: 'Ação',
         key: 'acao'
     }
@@ -141,7 +146,8 @@ class ListaTaxonomiaAutores extends Component {
     formataDadosAutores = autores => autores.map(item => ({
         key: item.id,
         autor: item.nome,
-        acao: this.gerarAcao(item)
+        acao: this.gerarAcao(item),
+        iniciais: item.iniciais
     }))
 
     requisitaListaAutores = (valores, pg, pageSize) => {
