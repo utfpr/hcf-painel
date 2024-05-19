@@ -185,11 +185,11 @@ class ListaTaxonomiaEspecie extends Component {
             }
 
             if (familia) {
-                params.familia = familia
+                params.familia_nome = familia
             }
 
             if (genero) {
-                params.genero = genero
+                params.genero_nome = genero
             }
         }
         axios.get('/especies', { params })

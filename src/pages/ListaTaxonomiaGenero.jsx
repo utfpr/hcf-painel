@@ -190,7 +190,7 @@ class ListaTaxonomiaGenero extends Component {
             }
 
             if (familia) {
-                params.familia = familia
+                params.familia_nome = familia
             }
         }
         axios.get('/generos', { params })
