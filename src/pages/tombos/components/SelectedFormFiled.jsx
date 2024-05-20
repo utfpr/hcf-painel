@@ -29,6 +29,8 @@ const SelectedFormFiled = ({
                         rules
                     })(
                         <Select
+                            style={{ width: '100%' }}
+                            mode={title === 'Identificador:' ? 'multiple' : ''}
                             showSearch
                             placeholder={placeholder}
                             optionFilterProp="children"

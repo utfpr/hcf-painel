@@ -269,7 +269,7 @@ class NovoTomboScreen extends Component {
 
         requestService(getResponse, ...params)
             .then(() => {
-                successCalback(response)
+                successCalback(response, params)
                 if (successMessage !== '') {
                     // this.openNotificationWithIcon('success', 'Sucesso', 'SIM')
                     this.openNotificationWithIcon('success', 'Sucesso', successMessage)
@@ -463,7 +463,7 @@ class NovoTomboScreen extends Component {
         }
     }
 
-    onRequisitaEdicaoTomboComSucesso = response => {
+    onRequisitaEdicaoTomboComSucesso = async (response, params) => {
         const tombo = response.data
         const criaRequisicaoFoto = (hcf, emVivo, foto) => {
             const form = new FormData()
@@ -488,6 +488,12 @@ class NovoTomboScreen extends Component {
         ]
 
         Promise.all(promises)
+        console.log('params', params)
+
+        await axios.put(`/tombos/${this.props.match.params.tombo_id}`, {
+            ...params[1]
+        })
+
         this.setState({
             loading: false
         })
@@ -1893,12 +1899,13 @@ class NovoTomboScreen extends Component {
         //     })
         // }
 
-        /*   if (dados.retorno.identificadores) {
+        if (dados.retorno.identificadores) {
             this.setState({
                 insereState,
-                identificadores: dados.retorno.identificadores
+                identificadorInicial: dados.retorno.identificadores.map(item => item.id)
             })
-        } */
+        }
+
         form.setFields({
             altitude: {
                 value: dados.localizacao.altitude
@@ -2029,7 +2036,7 @@ class NovoTomboScreen extends Component {
         if (relevo) json.paisagem = { ...json.paisagem, relevo_id: relevo }
         if (vegetacao) json.paisagem = { ...json.paisagem, vegetacao_id: vegetacao }
         if (fases) json.paisagem = { ...json.paisagem, fase_sucessional_id: fases }
-        if (identificador) json.identificacao = { identificador_id: identificador }
+        if (identificador) json.identificacao = { identificadores: identificador }
         if (dataIdentDia) {
             json.identificacao = {
                 ...json.identificacao,
