@@ -10,7 +10,7 @@ const FaseFormField = ({
     initialValue, fases, getFieldDecorator, onClickAddMore, onChange, validateStatus
 }) => {
     const optionFases = () => fases.map(item => (
-        <Option value={`${item.id}`}>{item.nome}</Option>
+        <Option value={`${item.numero}`}>{item.nome}</Option>
     ))
     return (
         <SelectedFormFiled
