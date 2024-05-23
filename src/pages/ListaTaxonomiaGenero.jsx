@@ -24,6 +24,11 @@ const columns = [
         key: 'Genero'
     },
     {
+        title: 'Família',
+        type: 'text',
+        key: 'Familia'
+    },
+    {
         title: 'Ação',
         key: 'acao'
     }
@@ -145,7 +150,8 @@ class ListaTaxonomiaGenero extends Component {
     formataDadosGenero = generos => generos.map(item => ({
         key: item.id,
         Genero: item.nome,
-        acao: this.gerarAcao(item)
+        acao: this.gerarAcao(item),
+        Familia: item.familia?.nome
     }))
 
     renderAdd = () => {
@@ -177,10 +183,14 @@ class ListaTaxonomiaGenero extends Component {
         }
 
         if (valores !== undefined) {
-            const { genero } = valores
+            const { genero, familia } = valores
 
             if (genero) {
                 params.genero = genero
+            }
+
+            if (familia) {
+                params.familia_nome = familia
             }
         }
         axios.get('/generos', { params })
@@ -336,17 +346,30 @@ class ListaTaxonomiaGenero extends Component {
             <Card title="Buscar gênero">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
-                        <Col span={24}>
-                            <span>Nome do gênero:</span>
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                            <Col span={24}>
+                                <span>Nome do gênero:</span>
+                            </Col>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('genero')(
+                                        <Input placeholder="Passion Flower" type="text" />
+                                    )}
+                                </FormItem>
+                            </Col>
                         </Col>
-                    </Row>
-                    <Row gutter={8}>
-                        <Col span={24}>
-                            <FormItem>
-                                {getFieldDecorator('genero')(
-                                    <Input placeholder="Passion Flower" type="text" />
-                                )}
-                            </FormItem>
+
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                            <Col span={24}>
+                                <span>Nome da família:</span>
+                            </Col>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('familia')(
+                                        <Input placeholder="Fabaceae" type="text" />
+                                    )}
+                                </FormItem>
+                            </Col>
                         </Col>
                     </Row>
 

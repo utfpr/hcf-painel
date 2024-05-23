@@ -24,6 +24,18 @@ const columns = [
         key: 'especie'
     },
     {
+        title: 'Família',
+        key: 'familia'
+    },
+    {
+        title: 'Gênero',
+        key: 'genero'
+    },
+    {
+        title: 'Autor',
+        key: 'autor'
+    },
+    {
         title: 'Ação',
         key: 'acao'
     }
@@ -153,7 +165,10 @@ class ListaTaxonomiaEspecie extends Component {
     formataDadosEspecie = especies => especies.map(item => ({
         key: item.id,
         especie: item.nome,
-        acao: this.gerarAcao(item)
+        acao: this.gerarAcao(item),
+        genero: item.genero?.nome,
+        familia: item.familia?.nome,
+        autor: item.autor?.nome
     }))
 
     requisitaListaEspecie = (valores, pg, pageSize) => {
@@ -162,11 +177,19 @@ class ListaTaxonomiaEspecie extends Component {
             limite: pageSize || 20
         }
 
-        if (valores !== undefined) {
-            const { especie } = valores
+        if (valores) {
+            const { especie, familia, genero } = valores
 
             if (especie) {
                 params.especie = especie
+            }
+
+            if (familia) {
+                params.familia_nome = familia
+            }
+
+            if (genero) {
+                params.genero_nome = genero
             }
         }
         axios.get('/especies', { params })
@@ -381,17 +404,44 @@ class ListaTaxonomiaEspecie extends Component {
             <Card title="Buscar espécie">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
-                        <Col span={24}>
-                            <span>Nome da espécie:</span>
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+
+                            <Col span={24}>
+                                <span>Nome da espécie:</span>
+                            </Col>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('especie')(
+                                        <Input placeholder="A. comosus" type="text" />
+                                    )}
+                                </FormItem>
+                            </Col>
                         </Col>
-                    </Row>
-                    <Row gutter={8}>
-                        <Col span={24}>
-                            <FormItem>
-                                {getFieldDecorator('especie')(
-                                    <Input placeholder="A. comosus" type="text" />
-                                )}
-                            </FormItem>
+
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                            <Col span={24}>
+                                <span>Nome da família:</span>
+                            </Col>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('familia')(
+                                        <Input placeholder="Fabaceae" type="text" />
+                                    )}
+                                </FormItem>
+                            </Col>
+                        </Col>
+
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                            <Col span={24}>
+                                <span>Nome do gênero:</span>
+                            </Col>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('genero')(
+                                        <Input placeholder="Lantana" type="text" />
+                                    )}
+                                </FormItem>
+                            </Col>
                         </Col>
                     </Row>
 
