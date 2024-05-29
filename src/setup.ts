@@ -21,6 +21,7 @@ axios.interceptors.response.use(
 
         if (err.error.code === 401) {
             localStorage.removeItem('token')
+            localStorage.removeItem('usuario')
             window.location.href = '/inicio'
         }
         return Promise.reject(error)
