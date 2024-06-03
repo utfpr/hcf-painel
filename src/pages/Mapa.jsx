@@ -1,7 +1,3 @@
-/* eslint-disable no-const-assign */
-import {
-    MapContainer, useMap, ZoomControl
-} from 'react-leaflet'
 import 'leaflet.markercluster/dist/leaflet.markercluster'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet.markercluster/dist/MarkerCluster.css'
@@ -12,13 +8,16 @@ import '../assets/leaflet-plugins/leaflet.navbar.css'
 
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 
-import L from 'leaflet'
-
 import React, { useEffect, useState } from 'react'
+
+import axios from 'axios'
+import L from 'leaflet'
+import {
+    MapContainer, useMap, ZoomControl
+} from 'react-leaflet'
 
 import pin from '../assets/img/pin.svg'
 import styles from '../helpers/MapExamplePage.module.scss'
-import points from '../helpers/points.json'
 
 const icon = new L.Icon({
     iconUrl: pin,
@@ -28,32 +27,49 @@ const icon = new L.Icon({
 
 function MapLogic() {
     const map = useMap()
+    const [pontos, setPontos] = useState([])
+
+    useEffect(() => {
+        // Fazer a requisição à API para buscar os pontos
+        axios.get('http://localhost:3000/api/pontos')
+            .then(response => {
+                setPontos(response.data)
+            })
+            .catch(error => {
+                console.error('Erro ao buscar os pontos: ', error)
+            })
+    }, [])
 
     const requestAndAddMarkers = () => {
         const markers = L.markerClusterGroup()
 
-        points.forEach(point => {
-            const [latitude, longitude, title] = point
-            const marker = L.marker(new L.LatLng(latitude, longitude), { title, icon })
-
-            marker.bindPopup(title)
-            markers.addLayer(marker)
+        pontos.forEach(ponto => {
+            const {
+                latitude, longitude, cidade, hcf
+            } = ponto
+            if (latitude && longitude) {
+                const marker = L.marker(new L.LatLng(latitude, longitude), { title: cidade, icon })
+                marker.bindPopup(`<strong>HCF: ${hcf}</strong>`)
+                markers.addLayer(marker)
+            }
         })
 
         map.addLayer(markers)
     }
 
-    map.whenReady(() => {
-        setTimeout(() => {
+    useEffect(() => {
+        if (map) {
             requestAndAddMarkers()
-        }, 0)
-    })
+        }
+    }, [map, pontos])
+
+    return null
 }
 
 function FullScreenControl() {
     const map = useMap()
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (map && !map.fullscreenControl) {
             L.control.fullscreen({
                 position: 'topright',
@@ -74,7 +90,7 @@ function FullScreenControl() {
 function LayersControl() {
     const map = useMap()
 
-    React.useEffect(() => {
+    useEffect(() => {
         const scale = L.control.scale().addTo(map)
         const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -109,7 +125,7 @@ function LayersControl() {
 function DownloadMapControl() {
     const map = useMap()
 
-    React.useEffect(() => {
+    useEffect(() => {
         const printer = L.easyPrint({
             title: 'Print Map',
             position: 'topright',
