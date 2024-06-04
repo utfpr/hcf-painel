@@ -22,7 +22,7 @@ const SelectedFormFiled = ({
             <Col span={24}>
                 <span>{title}</span>
             </Col>
-            <Col span={22}>
+            <Col span={24}>
                 <FormItem validateStatus={validateStatus}>
                     {getFieldDecorator(fieldName, {
                         initialValue,

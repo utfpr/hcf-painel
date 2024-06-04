@@ -488,7 +488,6 @@ class NovoTomboScreen extends Component {
         ]
 
         Promise.all(promises)
-        console.log('params', params)
 
         await axios.put(`/tombos/${this.props.match.params.tombo_id}`, {
             ...params[1]
@@ -1860,15 +1859,15 @@ class NovoTomboScreen extends Component {
             subespecies: dados.subespecies,
             variedades: dados.variedades
         }
-        if (dados.coletores) {
-            const colet = dados.coletores.map(item => ({
-                key: item.id,
-                label: item.nome
-            }))
 
+        if (dados.coletor) {
             form.setFields({
                 coletores: {
-                    value: colet
+                    value: {
+                        key: dados.coletor.id,
+                        label: dados.coletor.nome
+
+                    }
                 }
             })
         }
@@ -1907,6 +1906,7 @@ class NovoTomboScreen extends Component {
         }
 
         form.setFields({
+
             altitude: {
                 value: dados.localizacao.altitude
             },
@@ -1954,6 +1954,9 @@ class NovoTomboScreen extends Component {
             },
             autorEspecie: {
                 value: dados.complemento
+            },
+            coletoresComplementares: {
+                value: dados.retorno.coletor_complementar?.complementares
             }
         })
     }
@@ -2002,7 +2005,7 @@ class NovoTomboScreen extends Component {
 
     montaFormularioJson = values => {
         const {
-            altitude, autorEspecie, autorVariedade, autoresSubespecie, cidade, coletores, complemento,
+            altitude, autorEspecie, autorVariedade, autoresSubespecie, cidade, coletores, coletoresComplementares, complemento,
             dataColetaAno, dataColetaDia, dataColetaMes, dataIdentAno, dataIdentDia, dataIdentMes,
             especie, familia, fases, genero, identificador, latitude, localidadeCor, longitude,
             nomePopular, numColeta, observacoesColecaoAnexa, observacoesTombo, relevo, solo,
@@ -2063,8 +2066,9 @@ class NovoTomboScreen extends Component {
                 }
             }
         }
-        const converterInteiroColetores = () => coletores?.map(item => parseInt(item.key))
-        json.coletores = converterInteiroColetores()
+
+        json.coletores = coletores.key
+        if (coletoresComplementares) json.coletor_complementar = { complementares: coletoresComplementares }
         if (tipoColecaoAnexa) json.colecoes_anexas = { tipo: tipoColecaoAnexa }
         if (observacoesColecaoAnexa) json.colecoes_anexas = { ...json.colecoes_anexas, observacoes: observacoesColecaoAnexa }
         if (observacoesTombo) json.observacoes = observacoesTombo
@@ -2141,8 +2145,8 @@ class NovoTomboScreen extends Component {
     }
 
     ajustaColetores = value => {
-        if (value.length !== 0) {
-            axios.get(`/api/tombos/numeroColetor/${value[0].key}`)
+        if (value) {
+            axios.get(`/api/tombos/numeroColetor/${value.key}`)
                 .then(response => {
                     if (response.status === 200) {
                         const todosNumeros = response.data
@@ -2201,41 +2205,61 @@ class NovoTomboScreen extends Component {
         return (
             <div>
                 <Row gutter={8}>
-                    <ColetorFormField
-                        initialValue={String(coletoresInicial)}
-                        coletores={coletores}
-                        validateStatus={search.coletor}
-                        getFieldDecorator={getFieldDecorator}
-                        onChange={value => {
-                            this.ajustaColetores(value)
-                        }}
-                        onClickAddMore={() => {
-                            this.requisitaNumeroColetor()
-                            this.setState({
-                                formulario: {
-                                    tipo: 11
-                                },
-                                formColetor: true,
-                                visibleModal: true
-                            })
-                        }}
-                        rules={[{
-                            required: true,
-                            message: 'Insira ao menos um coletor'
-                        }]}
-                        mode="multiple"
-                        style={{ width: '100%' }}
-                        notFoundContent={fetchingColetores ? <Spin size="small" /> : null}
-                        labelInValue
-                        value={valoresColetores}
-                        // onChange={this.handleChangeColetores}
-                        placeholder="Selecione os coletores"
-                        filterOption={false}
-                        onSearch={value => {
-                            this.requisitaColetores(value)
-                        }}
-                        status={getFieldError('coletores') ? 'error' : ''}
-                    />
+                    <Col span={12}>
+                        <ColetorFormField
+                            initialValue={String(coletoresInicial)}
+                            coletores={coletores}
+                            validateStatus={search.coletor}
+                            getFieldDecorator={getFieldDecorator}
+                            onChange={value => {
+                                this.ajustaColetores(value)
+                            }}
+                            onClickAddMore={() => {
+                                this.requisitaNumeroColetor()
+                                this.setState({
+                                    formulario: {
+                                        tipo: 11
+                                    },
+                                    formColetor: true,
+                                    visibleModal: true
+                                })
+                            }}
+                            rules={[{
+                                required: true,
+                                message: 'Insira ao menos um coletor'
+                            }]}
+                            style={{ width: '100%' }}
+                            notFoundContent={fetchingColetores ? <Spin size="small" /> : null}
+                            labelInValue
+                            value={valoresColetores}
+                            // onChange={this.handleChangeColetores}
+                            placeholder="Selecione os coletores"
+                            filterOption={false}
+                            onSearch={value => {
+                                this.requisitaColetores(value)
+                            }}
+                            status={getFieldError('coletores') ? 'error' : ''}
+                        />
+                    </Col>
+
+                    <Col span={12}>
+                        <Row gutter={8}>
+                            <Col span={24}>
+                                <span>
+                                    Coletores complementares:
+                                </span>
+                            </Col>
+                        </Row>
+                        <Row gutter={8}>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('coletoresComplementares')(
+                                        <Input placeholder="" type="text" />
+                                    )}
+                                </FormItem>
+                            </Col>
+                        </Row>
+                    </Col>
                 </Row>
             </div>
         )

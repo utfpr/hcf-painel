@@ -17,9 +17,9 @@ const ColetorFormField = ({
         <SelectedFormFiled
             xs={24}
             sm={24}
-            md={12}
-            lg={12}
-            xl={12}
+            md={24}
+            lg={24}
+            xl={24}
             title="Coletores:"
             initialValue={initialValue}
             placeholder="Selecione os coletores"
