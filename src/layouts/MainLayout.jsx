@@ -1,7 +1,8 @@
 import { Component } from 'react'
 
 import {
-    Layout, Menu, Col, Spin, Button, Row
+    Layout, Menu, Col, Spin, Button, Row,
+    Divider
 } from 'antd'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
@@ -29,7 +30,19 @@ export default class MainLayout extends Component {
         super(props)
         this.state = {
             collapsed: false,
-            loading: false
+            loading: false,
+            userName: ''
+        }
+    }
+
+    componentDidMount() {
+        const userInfo = localStorage.getItem('usuario')
+
+        if (userInfo) {
+            const user = JSON.parse(userInfo)
+            this.setState({
+                userName: user.nome
+            })
         }
     }
 
@@ -69,6 +82,14 @@ export default class MainLayout extends Component {
             .catch(() => {
                 this.notificacao('error', 'Falha', 'Houve um problema ao requisitar o arquivo Darwin Core, tente novamente.')
             })
+    }
+
+    fazLogout = () => {
+        setTokenUsuario('')
+        localStorage.setItem('token', '')
+
+        setUsuario('')
+        localStorage.setItem('usuario', '')
     }
 
     renderFormulario() {
@@ -220,14 +241,7 @@ export default class MainLayout extends Component {
                             <Menu.Item key="20">
                                 <Link
                                     to="/inicio"
-                                    onClick={() => {
-                                        setTokenUsuario('')
-                                        localStorage.setItem('token', '')
-
-                                        setUsuario('')
-                                        localStorage.setItem('usuario', '')
-                                        console.log('ZERO TOKEN')
-                                    }}
+                                    onClick={this.fazLogout}
                                 >
                                     <LogoutOutlined />
                                     <span>Sair</span>
@@ -246,7 +260,20 @@ export default class MainLayout extends Component {
                                 <Link to="/inicio">
                                     <Button>Entrar</Button>
                                 </Link>
-                            ) : null}
+                            ) : (
+                                <div>
+                                    {this.state.userName}
+
+                                    <Divider type="vertical" />
+
+                                    <Link
+                                        to="/inicio"
+                                        onClick={this.fazLogout}
+                                    >
+                                        <Button size="small">Sair</Button>
+                                    </Link>
+                                </div>
+                            )}
                         </Row>
                     </Header>
                     <Content
