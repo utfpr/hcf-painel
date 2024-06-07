@@ -6,8 +6,6 @@ import 'leaflet.fullscreen/Control.FullScreen.css'
 import 'leaflet-easyprint'
 import '../assets/leaflet-plugins/leaflet.navbar.css'
 
-import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
-
 import React, { useEffect, useState } from 'react'
 
 import axios from 'axios'
@@ -18,6 +16,7 @@ import {
 
 import pin from '../assets/img/pin.svg'
 import styles from '../helpers/MapExamplePage.module.scss'
+import '../helpers/MarkerClusterStyles.css'
 
 const icon = new L.Icon({
     iconUrl: pin,
@@ -25,9 +24,33 @@ const icon = new L.Icon({
     iconSize: new L.Point(20, 40)
 })
 
+function createClusterIcon(cluster) {
+    const childCount = cluster.getChildCount()
+    let c = ' marker-cluster-'
+    if (childCount <= 10) {
+        c += 'small'
+    } else if (childCount <= 150) {
+        c += 'medium'
+    } else if (childCount <= 1000) {
+        c += 'large'
+    } else {
+        c += 'xlarge'
+    }
+
+    return new L.DivIcon({
+        html: `<div><span>${childCount}</span></div>`,
+        className: `marker-cluster${c}`,
+        iconSize: new L.Point(40, 40)
+    })
+}
+
 function MapLogic() {
     const map = useMap()
     const [pontos, setPontos] = useState([])
+    const [clusterMarkers, setClusterMarkers] = useState(L.markerClusterGroup({
+        iconCreateFunction: createClusterIcon,
+        maxClusterRadius: 40
+    }))
 
     useEffect(() => {
         // Fazer a requisição à API para buscar os pontos
@@ -40,26 +63,55 @@ function MapLogic() {
             })
     }, [])
 
-    const requestAndAddMarkers = () => {
-        const markers = L.markerClusterGroup()
-
-        pontos.forEach(ponto => {
-            const {
-                latitude, longitude, cidade, hcf
-            } = ponto
-            if (latitude && longitude) {
-                const marker = L.marker(new L.LatLng(latitude, longitude), { title: cidade, icon })
-                marker.bindPopup(`<strong>HCF: ${hcf}</strong>`)
-                markers.addLayer(marker)
-            }
-        })
-
-        map.addLayer(markers)
-    }
-
     useEffect(() => {
         if (map) {
-            requestAndAddMarkers()
+            pontos.forEach(ponto => {
+                const {
+                    latitude, longitude, cidade, hcf
+                } = ponto
+                if (latitude && longitude) {
+                    const marker = L.marker(new L.LatLng(latitude, longitude), { title: cidade, icon })
+                    marker.bindPopup(`<strong>HCF: ${hcf}</strong>`)
+                    clusterMarkers.addLayer(marker)
+                }
+            })
+
+            map.addLayer(clusterMarkers)
+
+            const updateMarkers = () => {
+                const currentZoom = map.getZoom()
+                if (currentZoom >= 17) {
+                    const bounds = map.getBounds()
+                    const visibleMarkers = L.layerGroup()
+
+                    pontos.forEach(ponto => {
+                        const {
+                            latitude, longitude, cidade, hcf
+                        } = ponto
+                        if (latitude && longitude) {
+                            const latLng = new L.LatLng(latitude, longitude)
+                            if (bounds.contains(latLng)) {
+                                const marker = L.marker(latLng, { title: cidade, icon })
+                                marker.bindPopup(`<strong>HCF: ${hcf}</strong>`)
+                                visibleMarkers.addLayer(marker)
+                            }
+                        }
+                    })
+
+                    map.removeLayer(clusterMarkers)
+                    map.addLayer(visibleMarkers)
+                } else {
+                    map.eachLayer(layer => {
+                        if (layer instanceof L.Marker && !(layer instanceof L.MarkerCluster)) {
+                            map.removeLayer(layer)
+                        }
+                    })
+                    map.addLayer(clusterMarkers)
+                }
+            }
+
+            map.on('zoomend moveend', updateMarkers)
+            updateMarkers()
         }
     }, [map, pontos])
 
