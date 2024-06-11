@@ -118,7 +118,7 @@ export default class MainLayout extends Component {
                             title={(
                                 <span>
                                     <DesktopOutlined />
-                                    <span>Taxonomias</span>
+                                    <span>Taxonomia</span>
                                 </span>
                             )}
                         >

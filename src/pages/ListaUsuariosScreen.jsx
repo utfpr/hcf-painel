@@ -261,7 +261,14 @@ class ListaUsuariosScreen extends Component {
                     </Row>
                     <Row>
                         <Col span={24}>
-                            <Row type="flex" justify="end" gutter={4}>
+                            <Row align="middle" type="flex" justify="end" gutter={16}>
+                                <Col xs={24} sm={8} md={12} lg={16} xl={16}>
+                                    Foram encontrados
+                                    {' '}
+                                    {this.state.metadados?.total || 0}
+                                    {' '}
+                                    registros.
+                                </Col>
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
                                     <FormItem>
                                         <Button
