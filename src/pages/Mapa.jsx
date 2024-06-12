@@ -14,7 +14,7 @@ import {
     MapContainer, useMap, ZoomControl
 } from 'react-leaflet'
 
-import pin from '../assets/img/pin.svg'
+import pin from '../assets/img/location-pin.png'
 import styles from '../helpers/MapExamplePage.module.scss'
 import '../helpers/MarkerClusterStyles.css'
 
