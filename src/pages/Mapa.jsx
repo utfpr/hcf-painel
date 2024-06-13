@@ -105,7 +105,7 @@ function MapLogic() {
                             if (bounds.contains(latLng)) {
                                 const marker = L.marker(latLng, { title: cidade, icon })
                                 marker.bindPopup(`
-                                    <strong>HCF: ${hcf}</strong>
+                                    <strong>𝐇𝐂𝐅: <span style="color: #af0000; font-size: 15px;">${hcf}</span></strong>
                                     <br>
                                     <button 
                                         onclick="window.location.href='/tombos/detalhes/${hcf}'"
