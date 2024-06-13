@@ -325,7 +325,7 @@ class ListaTaxonomiaScreen extends Component {
         const { getFieldDecorator } = this.props.form
         return (
             <Form onSubmit={this.onSubmit}>
-                <HeaderListComponent title="Taxonomias" link="/taxonomias/novo" />
+                <HeaderListComponent title="Taxonomia" link="/taxonomias/novo" />
                 <Divider dashed />
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />

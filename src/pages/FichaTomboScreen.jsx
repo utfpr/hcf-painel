@@ -174,6 +174,14 @@ class FichaTomboScreen extends Component {
                             Pesquisar
                         </Button>
                     </Col>
+
+                    <Col xs={24} sm={8} md={12} lg={16} xl={16} style={{ marginTop: 16 }}>
+                        Foram encontrados
+                        {' '}
+                        {this.state.metadados?.total || 0}
+                        {' '}
+                        registros.
+                    </Col>
                 </Row>
                 <Divider dashed />
 

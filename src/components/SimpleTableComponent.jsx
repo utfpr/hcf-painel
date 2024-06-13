@@ -99,7 +99,22 @@ export default class SimpleTableComponent extends Component {
                         columns={this.columns}
                         dataSource={this.props.data}
                         onChange={this.handleChange}
-                        pagination={this.state.paginacao}
+                        pagination={{
+                            ...this.state.paginacao,
+                            locale: {
+                                items_per_page: '/ página',
+                                jump_to: 'Ir para',
+                                jump_to_confirm: 'confirmar',
+                                page: 'página',
+                                prev_page: 'Página anterior',
+                                next_page: 'Próxima página',
+                                prev_5: 'Voltar 5 páginas',
+                                next_5: 'Avançar 5 páginas',
+                                prev_3: 'Voltar 3 páginas',
+                                next_3: 'Avançar 3 páginas'
+                            },
+                            showSizeChanger: true
+                        }}
                         loading={this.props.loading}
                         scroll={{ x: 800 }}
                     />

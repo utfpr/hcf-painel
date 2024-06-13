@@ -233,6 +233,18 @@ class ListaHerbariosScreen extends Component {
                     <Row gutter={8}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
+                                <span>Sigla:</span>
+                            </Col>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('sigla')(
+                                        <Input placeholder="HCF" type="text" />
+                                    )}
+                                </FormItem>
+                            </Col>
+                        </Col>
+                        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+                            <Col span={24}>
                                 <span>Nome:</span>
                             </Col>
                             <Col span={24}>
@@ -255,23 +267,19 @@ class ListaHerbariosScreen extends Component {
                                 </FormItem>
                             </Col>
                         </Col>
-                        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-                            <Col span={24}>
-                                <span>Sigla:</span>
-                            </Col>
-                            <Col span={24}>
-                                <FormItem>
-                                    {getFieldDecorator('sigla')(
-                                        <Input placeholder="HCF" type="text" />
-                                    )}
-                                </FormItem>
-                            </Col>
-                        </Col>
+
                     </Row>
 
                     <Row style={{ marginTop: 32 }}>
                         <Col span={24}>
-                            <Row type="flex" justify="end" gutter={16}>
+                            <Row align="middle" type="flex" justify="end" gutter={16}>
+                                <Col xs={24} sm={8} md={12} lg={16} xl={16}>
+                                    Foram encontrados
+                                    {' '}
+                                    {this.state.metadados?.total || 0}
+                                    {' '}
+                                    registros.
+                                </Col>
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
                                     <FormItem>
                                         <Button
@@ -315,7 +323,7 @@ class ListaHerbariosScreen extends Component {
 
         return (
             <div>
-                <HeaderListComponent title="Listagem de herbários" link="/herbarios/novo" />
+                <HeaderListComponent title="Herbários" link="/herbarios/novo" />
                 <Divider dashed />
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />

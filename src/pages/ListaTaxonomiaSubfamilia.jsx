@@ -120,7 +120,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                                     value: item.nome
                                 },
                                 nomeFamilia: {
-                                    value: item.familia_id
+                                    value: { key: item.familia.id, label: item.familia.nome }
                                 }
                             })
                             this.setState({
@@ -379,7 +379,14 @@ class ListaTaxonomiaSubfamilia extends Component {
 
                     <Row style={{ marginTop: 32 }}>
                         <Col span={24}>
-                            <Row type="flex" justify="end" gutter={16}>
+                            <Row align="middle" type="flex" justify="end" gutter={16}>
+                                <Col xs={24} sm={8} md={12} lg={16} xl={16}>
+                                    Foram encontrados
+                                    {' '}
+                                    {this.state.metadados?.total || 0}
+                                    {' '}
+                                    registros.
+                                </Col>
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
                                     <FormItem>
                                         <Button
@@ -511,7 +518,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
                 <SimpleTableComponent
-                    columns={columns}
+                    columns={isCuradorOuOperador() ? columns : columns.filter(column => column.key !== 'acao')}
                     data={this.state.subfamilias}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
