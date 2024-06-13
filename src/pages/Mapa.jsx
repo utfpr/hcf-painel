@@ -10,9 +10,10 @@ import React, { useEffect, useState } from 'react'
 
 import axios from 'axios'
 import L from 'leaflet'
-import {
-    MapContainer, useMap, ZoomControl
-} from 'react-leaflet'
+import ReactDOMServer from 'react-dom/server'
+import { MapContainer, useMap, ZoomControl } from 'react-leaflet'
+
+import { PlusCircleTwoTone } from '@ant-design/icons'
 
 import pin from '../assets/img/location-pin.png'
 import styles from '../helpers/MapExamplePage.module.scss'
@@ -47,7 +48,7 @@ function createClusterIcon(cluster) {
 function MapLogic() {
     const map = useMap()
     const [pontos, setPontos] = useState([])
-    const [clusterMarkers, setClusterMarkers] = useState(L.markerClusterGroup({
+    const [clusterMarkers] = useState(L.markerClusterGroup({
         iconCreateFunction: createClusterIcon,
         maxClusterRadius: 40
     }))
@@ -71,7 +72,18 @@ function MapLogic() {
                 } = ponto
                 if (latitude && longitude) {
                     const marker = L.marker(new L.LatLng(latitude, longitude), { title: cidade, icon })
-                    marker.bindPopup(`<strong>HCF: ${hcf}</strong>`)
+                    marker.bindPopup(`
+                        <strong>HCF: ${hcf}</strong>
+                        <br>
+                        <button 
+                            onclick="window.location.href='/tombos/detalhes/${hcf}'"
+                            style="background: none; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; margin: 0 auto;"
+                        >
+                            <span style="color: #008000; font-size: 24px;">
+                                ${ReactDOMServer.renderToString(<PlusCircleTwoTone twoToneColor="#008000" />)}
+                            </span>
+                        </button>
+                    `)
                     clusterMarkers.addLayer(marker)
                 }
             })
@@ -92,7 +104,18 @@ function MapLogic() {
                             const latLng = new L.LatLng(latitude, longitude)
                             if (bounds.contains(latLng)) {
                                 const marker = L.marker(latLng, { title: cidade, icon })
-                                marker.bindPopup(`<strong>HCF: ${hcf}</strong>`)
+                                marker.bindPopup(`
+                                    <strong>HCF: ${hcf}</strong>
+                                    <br>
+                                    <button 
+                                        onclick="window.location.href='/tombos/detalhes/${hcf}'"
+                                        style="background: none; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; margin: 0 auto;"
+                                    >
+                                        <span style="color: #008000; font-size: 24px;">
+                                            ${ReactDOMServer.renderToString(<PlusCircleTwoTone twoToneColor="#008000" />)}
+                                        </span>
+                                    </button>
+                                `)
                                 visibleMarkers.addLayer(marker)
                             }
                         }
@@ -113,7 +136,7 @@ function MapLogic() {
             map.on('zoomend moveend', updateMarkers)
             updateMarkers()
         }
-    }, [map, pontos])
+    }, [map, pontos, clusterMarkers])
 
     return null
 }
