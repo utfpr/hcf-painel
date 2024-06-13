@@ -190,7 +190,8 @@ class ServicosRefloraScreen extends Component {
         }
         AXIOS.get('/reflora-log', { params }).then(response => {
             if (this.state.estaMontado) {
-                this.setState({ saidaLOG: response.data.log })
+                const saidaLogSplit = response.data.split('\n')
+                this.setState({ saidaLOG: saidaLogSplit })
             }
         })
     }
