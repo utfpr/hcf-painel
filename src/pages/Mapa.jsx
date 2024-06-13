@@ -76,7 +76,7 @@ function MapLogic() {
                         <strong>HCF: ${hcf}</strong>
                         <br>
                         <button 
-                            onclick="window.location.href='/tombos/detalhes/${hcf}'"
+                            onclick="window.open('/tombos/detalhes/${hcf}', '_blank')"
                             style="background: none; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; margin: 0 auto;"
                         >
                             <span style="color: #008000; font-size: 24px;">
@@ -105,10 +105,10 @@ function MapLogic() {
                             if (bounds.contains(latLng)) {
                                 const marker = L.marker(latLng, { title: cidade, icon })
                                 marker.bindPopup(`
-                                    <strong>𝐇𝐂𝐅: <span style="color: #af0000; font-size: 15px;">${hcf}</span></strong>
+                                    <strong>HCF: <span style="color: #af0000; font-size: 15px;">${hcf}</span></strong>
                                     <br>
                                     <button 
-                                        onclick="window.location.href='/tombos/detalhes/${hcf}'"
+                                        onclick="window.open('/tombos/detalhes/${hcf}', '_blank')"
                                         style="background: none; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; margin: 0 auto;"
                                     >
                                         <span style="color: #008000; font-size: 24px;">
