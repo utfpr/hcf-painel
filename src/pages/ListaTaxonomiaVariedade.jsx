@@ -182,7 +182,7 @@ class ListaTaxonomiaVariedade extends Component {
 
         if (valores !== undefined) {
             const {
-                variedade, familia, genero, especie
+                autor, variedade, familia, genero, especie
             } = valores
 
             if (variedade) {
@@ -199,6 +199,10 @@ class ListaTaxonomiaVariedade extends Component {
 
             if (especie) {
                 params.especie_nome = especie
+            }
+
+            if (autor) {
+                params.autor = autor
             }
         }
         axios.get('/variedades', { params })
@@ -460,6 +464,19 @@ class ListaTaxonomiaVariedade extends Component {
                                 <FormItem>
                                     {getFieldDecorator('especie')(
                                         <Input placeholder="guianensis" type="text" />
+                                    )}
+                                </FormItem>
+                            </Col>
+                        </Col>
+
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                            <Col span={24}>
+                                <span>Nome do autor:</span>
+                            </Col>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('autor')(
+                                        <Input placeholder="(Sleumer) K.S.Edwards" type="text" />
                                     )}
                                 </FormItem>
                             </Col>
