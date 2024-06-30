@@ -1,7 +1,7 @@
 import { Component } from 'react'
 
 import {
-    Divider, Modal, Spin, Card, Row, Col,
+    Divider, Modal, Card, Row, Col,
     Input, Button, notification
 } from 'antd'
 import axios from 'axios'
@@ -20,11 +20,15 @@ const columns = [
     {
         title: 'Família',
         type: 'text',
-        key: 'familia'
+        key: 'familia',
+        dataIndex: 'familia',
+        sorter: true,
+        width: '93%'
     },
     {
         title: 'Ação',
-        key: 'acao'
+        key: 'acao',
+        width: 100
     }
 ]
 
@@ -139,10 +143,14 @@ class ListaTaxonomiaFamilia extends Component {
         acao: this.gerarAcao(item)
     }))
 
-    requisitaListaFamilia = (valores, pg, pageSize) => {
+    requisitaListaFamilia = (valores, pg, pageSize, sorter) => {
+        const campo = sorter && sorter.field ? sorter.field : 'familia'
+        const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
+
         const params = {
             pagina: pg,
-            limite: pageSize || 20
+            limite: pageSize || 20,
+            order: `${campo}:${ordem}`
         }
 
         if (valores !== undefined) {
@@ -437,12 +445,12 @@ class ListaTaxonomiaFamilia extends Component {
                     data={this.state.familias}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
-                    changePage={(pg, pageSize) => {
+                    changePage={(pg, pageSize, sorter) => {
                         this.setState({
                             pagina: pg,
                             loading: true
                         })
-                        this.requisitaListaFamilia(this.state.valores, pg, pageSize)
+                        this.requisitaListaFamilia(this.state.valores, pg, pageSize, sorter)
                     }}
                 />
                 <Divider dashed />
@@ -451,13 +459,6 @@ class ListaTaxonomiaFamilia extends Component {
     }
 
     render() {
-        if (this.state.loading) {
-            return (
-                <Spin tip="Carregando...">
-                    {this.renderFormulario()}
-                </Spin>
-            )
-        }
         return (
             this.renderFormulario()
         )

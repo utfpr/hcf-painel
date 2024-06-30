@@ -21,16 +21,23 @@ const columns = [
     {
         title: 'Gênero',
         type: 'text',
-        key: 'Genero'
+        key: 'genero',
+        dataIndex: 'genero',
+        sorter: true,
+        width: '46.4%'
     },
     {
         title: 'Família',
         type: 'text',
-        key: 'Familia'
+        key: 'familia',
+        dataIndex: 'familia',
+        sorter: true,
+        width: '46.4%'
     },
     {
         title: 'Ação',
-        key: 'acao'
+        key: 'acao',
+        width: 100
     }
 ]
 
@@ -149,9 +156,9 @@ class ListaTaxonomiaGenero extends Component {
 
     formataDadosGenero = generos => generos.map(item => ({
         key: item.id,
-        Genero: item.nome,
+        genero: item.nome,
         acao: this.gerarAcao(item),
-        Familia: item.familia?.nome
+        familia: item.familia?.nome
     }))
 
     renderAdd = () => {
@@ -176,10 +183,14 @@ class ListaTaxonomiaGenero extends Component {
         return undefined
     }
 
-    requisitaListaGenero = (valores, pg, pageSize) => {
+    requisitaListaGenero = (valores, pg, pageSize, sorter) => {
+        const campo = sorter && sorter.field ? sorter.field : 'genero'
+        const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
+
         const params = {
             pagina: pg,
-            limite: pageSize || 20
+            limite: pageSize || 20,
+            order: `${campo}:${ordem}`
         }
 
         if (valores !== undefined) {
@@ -518,12 +529,12 @@ class ListaTaxonomiaGenero extends Component {
                     data={this.state.generos}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
-                    changePage={(pg, pageSize) => {
+                    changePage={(pg, pageSize, sorter) => {
                         this.setState({
                             pagina: pg,
                             loading: true
                         })
-                        this.requisitaListaGenero(this.state.valores, pg, pageSize)
+                        this.requisitaListaGenero(this.state.valores, pg, pageSize, sorter)
                     }}
                 />
                 <Divider dashed />
@@ -532,13 +543,6 @@ class ListaTaxonomiaGenero extends Component {
     }
 
     render() {
-        if (this.state.loading) {
-            return (
-                <Spin tip="Carregando...">
-                    {this.renderFormulario()}
-                </Spin>
-            )
-        }
         return (
             this.renderFormulario()
         )
