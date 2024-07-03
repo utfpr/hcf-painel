@@ -22,27 +22,32 @@ const columns = [
     {
         title: 'Código',
         dataIndex: 'codigo',
-        key: 'codigo'
+        key: 'codigo',
+        with: 100
     },
     {
         title: 'Data de envio',
         dataIndex: 'dataEnvio',
-        key: 'dataEnvio'
+        key: 'dataEnvio',
+        width: 325
     },
     {
         title: 'Doador',
         dataIndex: 'doador',
-        key: 'doador'
+        key: 'doador',
+        width: 325
     },
     {
         title: 'Receptor',
         dataIndex: 'receptor',
-        key: 'receptor'
+        key: 'receptor',
+        width: 325
     },
     {
         title: 'Observação',
         dataIndex: 'observacao',
-        key: 'observacao'
+        key: 'observacao',
+        width: 325
     },
     {
         title: 'Ação',

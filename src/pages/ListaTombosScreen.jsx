@@ -30,27 +30,32 @@ const columns = [
     {
         title: 'HCF',
         type: 'number',
-        key: 'hcf'
+        key: 'hcf',
+        width: 100
     },
     {
         title: 'Nome popular',
         type: 'text',
-        key: 'nomePopular'
+        key: 'nomePopular',
+        width: 200
     },
     {
         title: 'Nome científico',
         type: 'text',
-        key: 'nomeCientifico'
+        key: 'nomeCientifico',
+        width: 200
     },
     {
         title: 'Data de coleta',
         type: 'text',
-        key: 'data'
+        key: 'data',
+        width: 100
     },
     {
         title: 'Coletor',
         type: 'text',
-        key: 'coletor'
+        key: 'coletor',
+        width: 200
     },
     {
         title: 'Ação',

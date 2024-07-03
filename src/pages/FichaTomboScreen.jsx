@@ -17,19 +17,23 @@ const FormItem = Form.Item
 const columns = [
     {
         title: 'HCF',
-        key: 'hcf'
+        key: 'hcf',
+        width: 100
     },
     {
         title: 'Data coleta',
-        key: 'data_coleta'
+        key: 'data_coleta',
+        width: 500
     },
     {
         title: 'Nome científico',
-        key: 'nome_cientifico'
+        key: 'nome_cientifico',
+        width: 500
     },
     {
         title: 'Ação',
-        key: 'acao'
+        key: 'acao',
+        width: 100
     }
 ]
 
