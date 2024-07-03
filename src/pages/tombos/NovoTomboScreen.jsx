@@ -2788,7 +2788,7 @@ class NovoTomboScreen extends Component {
         )
     }
 
-    renderIdentificador = getFieldDecorator => {
+    renderIdentificador = (getFieldDecorator, getFieldError) => {
         const { identificadores, identificadorInicial } = this.state
         return (
             <div>
@@ -2802,6 +2802,7 @@ class NovoTomboScreen extends Component {
                         optionFilterProp="children"
                         // onChange={this.handleChangeIdentificadores}
                         placeholder="Selecione o idenficador"
+                        getFieldError={getFieldError}
                         onSearch={value => {
                             this.requisitaIdentificadores(value)
                         }}
@@ -2904,7 +2905,7 @@ class NovoTomboScreen extends Component {
                     <Divider dashed />
                     {this.renderTipoSoloTombo(getFieldDecorator)}
                     <Divider dashed />
-                    {this.renderIdentificador(getFieldDecorator)}
+                    {this.renderIdentificador(getFieldDecorator, getFieldError)}
                     <Divider dashed />
                     {this.renderColecoesAnexas(getFieldDecorator)}
                     <Divider dashed />

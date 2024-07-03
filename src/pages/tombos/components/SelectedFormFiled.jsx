@@ -34,6 +34,7 @@ const SelectedFormFiled = ({
                             showSearch
                             placeholder={placeholder}
                             optionFilterProp="children"
+                            status={getFieldError && getFieldError(fieldName) ? 'error' : ''}
                             onChange={onChange}
                             {...others}
                         >
