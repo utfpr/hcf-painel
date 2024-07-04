@@ -6,22 +6,32 @@ import 'leaflet.fullscreen/Control.FullScreen.css'
 import 'leaflet-easyprint'
 import '../assets/leaflet-plugins/leaflet.navbar.css'
 
-import React, { useEffect, useState } from 'react'
+import React, {
+    Suspense, lazy, useEffect, useState
+} from 'react'
 
 import axios from 'axios'
 import L from 'leaflet'
 import ReactDOMServer from 'react-dom/server'
-import { MapContainer, useMap, ZoomControl } from 'react-leaflet'
+import { MapContainer, useMap } from 'react-leaflet'
 
 import { PlusCircleTwoTone } from '@ant-design/icons'
 
-import pin from '../assets/img/location-pin.png'
-import styles from '../helpers/MapExamplePage.module.scss'
+import pinVerde from '../assets/img/pin-verde.svg'
+import pin from '../assets/img/pin.svg'
 import '../helpers/MarkerClusterStyles.css'
+
+const MapControls = lazy(() => import('../components/MapControls'))
 
 const icon = new L.Icon({
     iconUrl: pin,
     iconRetinaUrl: pin,
+    iconSize: new L.Point(20, 40)
+})
+
+const iconVerde = new L.Icon({
+    iconUrl: pinVerde,
+    iconRetinaUrl: pinVerde,
     iconSize: new L.Point(20, 40)
 })
 
@@ -45,19 +55,28 @@ function createClusterIcon(cluster) {
     })
 }
 
+function getRandomOffset() {
+    const offset = 0.03
+    return Math.random() * (offset * 2) - offset
+}
+
 function MapLogic() {
     const map = useMap()
     const [pontos, setPontos] = useState([])
+    const [visibleMarkers] = useState(L.layerGroup())
     const [clusterMarkers] = useState(L.markerClusterGroup({
         iconCreateFunction: createClusterIcon,
         maxClusterRadius: 40
     }))
 
     useEffect(() => {
-        // Fazer a requisição à API para buscar os pontos
         axios.get('http://localhost:3000/api/pontos')
             .then(response => {
-                setPontos(response.data)
+                setPontos(response.data.map(ponto => ({
+                    ...ponto,
+                    randomLatOffset: getRandomOffset(),
+                    randomLngOffset: getRandomOffset()
+                })))
             })
             .catch(error => {
                 console.error('Erro ao buscar os pontos: ', error)
@@ -66,24 +85,40 @@ function MapLogic() {
 
     useEffect(() => {
         if (map) {
+            clusterMarkers.clearLayers()
+            visibleMarkers.clearLayers()
+
             pontos.forEach(ponto => {
                 const {
-                    latitude, longitude, cidade, hcf
+                    latitude, longitude, cidade, hcf, latitudeCidade, longitudeCidade, randomLatOffset, randomLngOffset
                 } = ponto
+                let latLng = null
+                let markerIcon = null
+
                 if (latitude && longitude) {
-                    const marker = L.marker(new L.LatLng(latitude, longitude), { title: cidade, icon })
-                    marker.bindPopup(`
-                        <strong>HCF: ${hcf}</strong>
-                        <br>
-                        <button 
-                            onclick="window.open('/tombos/detalhes/${hcf}', '_blank')"
-                            style="background: none; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; margin: 0 auto;"
-                        >
-                            <span style="color: #008000; font-size: 24px;">
-                                ${ReactDOMServer.renderToString(<PlusCircleTwoTone twoToneColor="#008000" />)}
-                            </span>
-                        </button>
-                    `)
+                    latLng = new L.LatLng(latitude, longitude)
+                    markerIcon = icon
+                } else if (latitudeCidade && longitudeCidade) {
+                    latLng = new L.LatLng(latitudeCidade + randomLatOffset, longitudeCidade + randomLngOffset)
+                    markerIcon = iconVerde
+                }
+
+                if (latLng) {
+                    const marker = L.marker(latLng, { title: cidade, icon: markerIcon })
+                    marker.on('click', () => {
+                        marker.bindPopup(`
+                            <strong>HCF: ${hcf}</strong>
+                            <br>
+                            <button 
+                                onclick="window.open('/tombos/detalhes/${hcf}', '_blank')"
+                                style="background: none; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; margin: 0 auto;"
+                            >
+                                <span style="color: #008000; font-size: 24px;">
+                                    ${ReactDOMServer.renderToString(<PlusCircleTwoTone twoToneColor="#008000" />)}
+                                </span>
+                            </button>
+                        `).openPopup()
+                    })
                     clusterMarkers.addLayer(marker)
                 }
             })
@@ -94,163 +129,55 @@ function MapLogic() {
                 const currentZoom = map.getZoom()
                 if (currentZoom >= 17) {
                     const bounds = map.getBounds()
-                    const visibleMarkers = L.layerGroup()
-
-                    pontos.forEach(ponto => {
-                        const {
-                            latitude, longitude, cidade, hcf
-                        } = ponto
-                        if (latitude && longitude) {
-                            const latLng = new L.LatLng(latitude, longitude)
-                            if (bounds.contains(latLng)) {
-                                const marker = L.marker(latLng, { title: cidade, icon })
-                                marker.bindPopup(`
-                                    <strong>HCF: <span style="color: #af0000; font-size: 15px;">${hcf}</span></strong>
-                                    <br>
-                                    <button 
-                                        onclick="window.open('/tombos/detalhes/${hcf}', '_blank')"
-                                        style="background: none; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; margin: 0 auto;"
-                                    >
-                                        <span style="color: #008000; font-size: 24px;">
-                                            ${ReactDOMServer.renderToString(<PlusCircleTwoTone twoToneColor="#008000" />)}
-                                        </span>
-                                    </button>
-                                `)
-                                visibleMarkers.addLayer(marker)
-                            }
+                    clusterMarkers.eachLayer(layer => {
+                        const marker = layer
+                        if (bounds.contains(marker.getLatLng())) {
+                            visibleMarkers.addLayer(marker)
                         }
                     })
-
                     map.removeLayer(clusterMarkers)
                     map.addLayer(visibleMarkers)
                 } else {
-                    map.eachLayer(layer => {
-                        if (layer instanceof L.Marker && !(layer instanceof L.MarkerCluster)) {
-                            map.removeLayer(layer)
-                        }
-                    })
+                    map.removeLayer(visibleMarkers)
                     map.addLayer(clusterMarkers)
                 }
             }
 
-            map.on('zoomend moveend', updateMarkers)
+            const debounceUpdateMarkers = debounce(updateMarkers, 200)
+
+            map.on('zoomend moveend', () => {
+                requestAnimationFrame(debounceUpdateMarkers)
+            })
             updateMarkers()
         }
-    }, [map, pontos, clusterMarkers])
+    }, [map, pontos, clusterMarkers, visibleMarkers])
 
     return null
 }
 
-function FullScreenControl() {
-    const map = useMap()
-
-    useEffect(() => {
-        if (map && !map.fullscreenControl) {
-            L.control.fullscreen({
-                position: 'topright',
-                title: 'Enter fullscreen mode'
-            }).addTo(map)
-        }
-
-        return () => {
-            if (map && map.fullscreenControl) {
-                map.removeControl(map.fullscreenControl)
-            }
-        }
-    }, [map])
-
-    return null
-}
-
-function LayersControl() {
-    const map = useMap()
-
-    useEffect(() => {
-        const scale = L.control.scale().addTo(map)
-        const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map)
-
-        const basetopo = L.tileLayer('https://tile.opentopomap.org/{z}/{x}/{y}.png', {
-            attribution: 'Map data &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA)',
-            maxZoom: 17
-        })
-
-        const esriArcGis = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles © Esri — Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-        })
-
-        const baseLayers = {
-            Base: osm,
-            Satélite: esriArcGis,
-            Topografia: basetopo
-        }
-
-        const layerControl = L.control.layers(baseLayers).addTo(map)
-
-        return () => {
-            layerControl.remove()
-            scale.remove()
-        }
-    }, [map])
-
-    return null
-}
-
-function DownloadMapControl() {
-    const map = useMap()
-
-    useEffect(() => {
-        const printer = L.easyPrint({
-            title: 'Print Map',
-            position: 'topright',
-            sizeModes: ['A4Portrait', 'A4Landscape'],
-            filename: 'MapPrint',
-            exportOnly: true,
-            hideControlContainer: false
-        }).addTo(map)
-
-        return () => {
-            printer.remove(map)
-        }
-    }, [map])
-
-    return null
-}
-
-function NavBarControl() {
-    const map = useMap()
-
-    useEffect(() => {
-        const loadScript = async () => {
-            await import('../assets/leaflet-plugins/leaflet.navbar.min')
-            if (L.control.navbar) {
-                const navbarControl = L.control.navbar({
-                    position: 'topright',
-                    center: [-24.0438, -52.3811],
-                    zoom: 13
-                })
-                navbarControl.addTo(map)
-            }
-        }
-
-        loadScript()
-
-        return () => map.navbarControl && map.removeControl(map.navbarControl)
-    }, [map])
-
-    return null
+function debounce(func, wait) {
+    let timeout
+    return function (...args) {
+        const context = this
+        clearTimeout(timeout)
+        timeout = setTimeout(() => func.apply(context, args), wait)
+    }
 }
 
 function Mapa() {
     return (
-        <div className={styles.page}>
-            <MapContainer style={{ height: '100%' }} center={[-24.0438, -52.3811]} zoom={13} zoomControl={false}>
-                <FullScreenControl />
-                <ZoomControl position="topright" />
-                <NavBarControl />
-                <DownloadMapControl />
-                <LayersControl />
+        <div style={{ padding: '1rem', height: '800px' }}>
+            <MapContainer
+                style={{ height: '100%' }}
+                center={[-24.0438, -52.3811]}
+                zoom={13}
+                zoomControl={false}
+                minZoom={0}
+                maxZoom={18}
+            >
+                <Suspense fallback={<div>Loading...</div>}>
+                    <MapControls />
+                </Suspense>
                 <MapLogic />
             </MapContainer>
         </div>
