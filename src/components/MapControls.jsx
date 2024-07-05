@@ -53,7 +53,6 @@ const MapControls = () => {
             if (L.control.navbar) {
                 const navbarControl = L.control.navbar({
                     position: 'topright',
-                    center: [-24.0438, -52.3811],
                     zoom: 13
                 })
                 navbarControl.addTo(map)

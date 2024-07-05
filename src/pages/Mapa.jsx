@@ -175,7 +175,7 @@ function Mapa() {
                 minZoom={0}
                 maxZoom={18}
             >
-                <Suspense fallback={<div>Loading...</div>}>
+                <Suspense fallback={<div>Carregando...</div>}>
                     <MapControls />
                 </Suspense>
                 <MapLogic />
