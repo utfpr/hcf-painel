@@ -105,19 +105,27 @@ function MapLogic() {
 
                 if (latLng) {
                     const marker = L.marker(latLng, { title: cidade, icon: markerIcon })
-                    const popupContent = `
-                        <strong>HCF: ${hcf}</strong>
-                        <br>
-                        <button 
-                            onclick="window.open('/tombos/detalhes/${hcf}', '_blank')"
-                            style="background: none; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; margin: 0 auto;"
-                        >
-                            <span style="color: #008000; font-size: 24px;">
-                                ${ReactDOMServer.renderToString(<PlusCircleTwoTone twoToneColor="#008000" />)}
-                            </span>
-                        </button>
-                    `
-                    marker.bindPopup(popupContent)
+                    marker.on('click', () => {
+                        axios.get(`http://localhost:3000/api/tombos/${hcf}`)
+                            .then(response => {
+                                const popupContent = `
+                                    <strong>HCF: ${response.data.hcf}</strong>
+                                    <br>
+                                    <button 
+                                        onclick="window.open('/tombos/detalhes/${response.data.hcf}', '_blank')"
+                                        style="background: none; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; margin: 0 auto;"
+                                    >
+                                        <span style="color: #008000; font-size: 24px;">
+                                            ${ReactDOMServer.renderToString(<PlusCircleTwoTone twoToneColor="#008000" />)}
+                                        </span>
+                                    </button>
+                                `
+                                marker.bindPopup(popupContent).openPopup()
+                            })
+                            .catch(error => {
+                                console.error('Erro ao buscar detalhes do ponto: ', error)
+                            })
+                    })
                     clusterMarkers.addLayer(marker)
                 }
             })
