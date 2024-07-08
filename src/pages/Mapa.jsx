@@ -13,7 +13,7 @@ import React, {
 import axios from 'axios'
 import L from 'leaflet'
 import ReactDOMServer from 'react-dom/server'
-import { MapContainer, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer, useMap } from 'react-leaflet'
 
 import { PlusCircleTwoTone } from '@ant-design/icons'
 
@@ -105,20 +105,19 @@ function MapLogic() {
 
                 if (latLng) {
                     const marker = L.marker(latLng, { title: cidade, icon: markerIcon })
-                    marker.on('click', () => {
-                        marker.bindPopup(`
-                            <strong>HCF: ${hcf}</strong>
-                            <br>
-                            <button 
-                                onclick="window.open('/tombos/detalhes/${hcf}', '_blank')"
-                                style="background: none; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; margin: 0 auto;"
-                            >
-                                <span style="color: #008000; font-size: 24px;">
-                                    ${ReactDOMServer.renderToString(<PlusCircleTwoTone twoToneColor="#008000" />)}
-                                </span>
-                            </button>
-                        `).openPopup()
-                    })
+                    const popupContent = `
+                        <strong>HCF: ${hcf}</strong>
+                        <br>
+                        <button 
+                            onclick="window.open('/tombos/detalhes/${hcf}', '_blank')"
+                            style="background: none; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; margin: 0 auto;"
+                        >
+                            <span style="color: #008000; font-size: 24px;">
+                                ${ReactDOMServer.renderToString(<PlusCircleTwoTone twoToneColor="#008000" />)}
+                            </span>
+                        </button>
+                    `
+                    marker.bindPopup(popupContent)
                     clusterMarkers.addLayer(marker)
                 }
             })
