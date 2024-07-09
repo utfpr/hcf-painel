@@ -4,7 +4,7 @@ import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.fullscreen'
 import 'leaflet.fullscreen/Control.FullScreen.css'
 import 'leaflet-easyprint'
-import '../assets/leaflet-plugins/leaflet.navbar.css'
+import '../helpers/leaflet-plugins/leaflet.navbar.css'
 
 import React, {
     Suspense, lazy, useEffect, useState
@@ -19,7 +19,8 @@ import { PlusCircleTwoTone } from '@ant-design/icons'
 
 import pinVerde from '../assets/img/pin-verde.svg'
 import pin from '../assets/img/pin.svg'
-import '../helpers/MarkerClusterStyles.css'
+import '../assets/css/MarkerClusterStyles.css'
+import '../assets/css/Map.css'
 
 const MapControls = lazy(() => import('../components/MapControls'))
 
@@ -60,16 +61,17 @@ function getRandomOffset() {
     return Math.random() * (offset * 2) - offset
 }
 
-function MapLogic() {
+function MapLogic({ setLoading }) {
     const map = useMap()
     const [pontos, setPontos] = useState([])
-    const [visibleMarkers] = useState(L.layerGroup())
-    const [clusterMarkers] = useState(L.markerClusterGroup({
+    const visibleMarkers = L.layerGroup()
+    const clusterMarkers = L.markerClusterGroup({
         iconCreateFunction: createClusterIcon,
         maxClusterRadius: 40
-    }))
+    })
 
     useEffect(() => {
+        setLoading(true)
         axios.get('http://localhost:3000/api/pontos')
             .then(response => {
                 setPontos(response.data.map(ponto => ({
@@ -77,14 +79,19 @@ function MapLogic() {
                     randomLatOffset: getRandomOffset(),
                     randomLngOffset: getRandomOffset()
                 })))
+                setLoading(false)
+                setTimeout(() => {
+                    map.invalidateSize()
+                }, 0)
             })
             .catch(error => {
                 console.error('Erro ao buscar os pontos: ', error)
+                setLoading(false)
             })
-    }, [])
+    }, [setLoading, map])
 
     useEffect(() => {
-        if (map) {
+        if (map && pontos.length > 0) {
             clusterMarkers.clearLayers()
             visibleMarkers.clearLayers()
 
@@ -157,7 +164,7 @@ function MapLogic() {
             })
             updateMarkers()
         }
-    }, [map, pontos, clusterMarkers, visibleMarkers])
+    }, [map, pontos])
 
     return null
 }
@@ -172,21 +179,46 @@ function debounce(func, wait) {
 }
 
 function Mapa() {
+    const [isLoading, setIsLoading] = useState(true)
+
+    useEffect(() => {
+        if (!isLoading) {
+            document.getElementById('map-container').style.display = 'block'
+            setTimeout(() => {
+                const mapContainer = document.querySelector('.leaflet-container')
+                if (mapContainer) {
+                    const mapInstance = mapContainer._leaflet_map // eslint-disable-line
+                    if (mapInstance) {
+                        mapInstance.invalidateSize()
+                    }
+                }
+            }, 0)
+        }
+    }, [isLoading])
+
     return (
-        <div style={{ padding: '1rem', height: '800px' }}>
-            <MapContainer
-                style={{ height: '100%' }}
-                center={[-24.0438, -52.3811]}
-                zoom={13}
-                zoomControl={false}
-                minZoom={0}
-                maxZoom={18}
-            >
-                <Suspense fallback={<div>Carregando...</div>}>
-                    <MapControls />
-                </Suspense>
-                <MapLogic />
-            </MapContainer>
+        <div style={{ padding: '1rem', height: '800px', position: 'relative' }}>
+            {isLoading && (
+                <div className="loading-container">
+                    <div className="spinner" />
+                    <p className="loading-text">analisando dados</p>
+                </div>
+            )}
+            <div id="map-container" style={{ height: '100%', display: 'none' }}>
+                <MapContainer
+                    style={{ height: '100%' }}
+                    center={[-24.0438, -52.3811]}
+                    zoom={13}
+                    zoomControl={false}
+                    minZoom={0}
+                    maxZoom={18}
+                >
+                    <Suspense>
+                        <MapControls />
+                    </Suspense>
+                    <MapLogic setLoading={setIsLoading} />
+                </MapContainer>
+            </div>
         </div>
     )
 }

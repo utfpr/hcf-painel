@@ -49,7 +49,7 @@ const MapControls = () => {
         const layerControl = L.control.layers(baseLayers).addTo(map)
 
         const loadNavBarScript = async () => {
-            await import('../assets/leaflet-plugins/leaflet.navbar.min')
+            await import('../helpers/leaflet-plugins/leaflet.navbar.min')
             if (L.control.navbar) {
                 const navbarControl = L.control.navbar({
                     position: 'topright',

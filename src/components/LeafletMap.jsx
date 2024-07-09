@@ -9,7 +9,7 @@ import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.fullscreen'
 import 'leaflet.fullscreen/Control.FullScreen.css'
 import 'leaflet-easyprint'
-import '../assets/leaflet-plugins/leaflet.navbar.css'
+import '../helpers/leaflet-plugins/leaflet.navbar.css'
 
 const MapControls = lazy(() => import('./MapControls'))
 
