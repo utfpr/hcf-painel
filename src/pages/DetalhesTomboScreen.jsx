@@ -5,9 +5,11 @@ import {
     Col,
     Divider,
     notification,
-    Spin
+    Spin,
+    Button
 } from 'antd'
 import axios from 'axios'
+import { Link } from 'react-router-dom'
 
 import GalleryComponent from '../components/GalleryComponent'
 import LeafletMap from '../components/LeafletMap'
@@ -90,7 +92,13 @@ export default class DetalhesTomboScreen extends Component {
         if (tombo) {
             return (
                 <div>
-                    <Row gutter={8} style={{ marginBottom: '20px' }}>
+                    <Link to={`/tombos/${this.props.match.params.tombo_id}`}>
+                        <Button type="primary">
+                            Editar Tombo
+                        </Button>
+                    </Link>
+                    <Row gutter={8} style={{ margin: '20px 0' }}>
+
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
                                 <h4>Número de tombo:</h4>
