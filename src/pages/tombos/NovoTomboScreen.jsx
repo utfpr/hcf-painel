@@ -310,19 +310,26 @@ class NovoTomboScreen extends Component {
     }
 
     onRequisitarDadosComSucesso = response => {
+        const dados = response.data
+
         const { match } = this.props
         this.requisitaNumeroHcf()
-        const dados = response.data
         this.setState({
             ...this.state,
             ...dados
         })
+
         if (match.params.tombo_id) {
             this.setState({ showTable: true })
             this.requisitaDadosEdicao(match.params.tombo_id)
         } else {
+            const hcfHerbario = dados.herbarios.find(herbario => herbario.sigla === 'HCF')
+
             this.setState({
-                loading: false
+                loading: false,
+                herbarioInicial: {
+                    value: hcfHerbario?.id
+                }
             })
         }
         this.requisitaIdentificadoresPredicao()
@@ -2788,7 +2795,7 @@ class NovoTomboScreen extends Component {
         )
     }
 
-    renderIdentificador = getFieldDecorator => {
+    renderIdentificador = (getFieldDecorator, getFieldError) => {
         const { identificadores, identificadorInicial } = this.state
         return (
             <div>
@@ -2802,6 +2809,7 @@ class NovoTomboScreen extends Component {
                         optionFilterProp="children"
                         // onChange={this.handleChangeIdentificadores}
                         placeholder="Selecione o idenficador"
+                        getFieldError={getFieldError}
                         onSearch={value => {
                             this.requisitaIdentificadores(value)
                         }}
@@ -2904,7 +2912,7 @@ class NovoTomboScreen extends Component {
                     <Divider dashed />
                     {this.renderTipoSoloTombo(getFieldDecorator)}
                     <Divider dashed />
-                    {this.renderIdentificador(getFieldDecorator)}
+                    {this.renderIdentificador(getFieldDecorator, getFieldError)}
                     <Divider dashed />
                     {this.renderColecoesAnexas(getFieldDecorator)}
                     <Divider dashed />
@@ -3244,7 +3252,7 @@ class NovoTomboScreen extends Component {
                         <Col span={24}>
                             <FormItem>
                                 {getFieldDecorator('entidade', {
-                                    initialValue: String(this.state.herbarioInicial),
+                                    initialValue: String(!this.props.match.params.tombo_id ? this.state.herbarioInicial?.value || '' : this.state.herbarioInicial),
                                     rules: [{
                                         required: true,
                                         message: 'Escolha uma entidade'
