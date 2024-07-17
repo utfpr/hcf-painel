@@ -11,6 +11,8 @@ import {
 import axios from 'axios'
 import { Link } from 'react-router-dom'
 
+import { isCuradorOuOperadorOuIdentificador } from '@/helpers/usuarios'
+
 import GalleryComponent from '../components/GalleryComponent'
 import LeafletMap from '../components/LeafletMap'
 import { formatarDataBDtoDataHora } from '../helpers/conversoes/ConversoesData'
@@ -92,11 +94,15 @@ export default class DetalhesTomboScreen extends Component {
         if (tombo) {
             return (
                 <div>
-                    <Link to={`/tombos/${this.props.match.params.tombo_id}`}>
-                        <Button type="primary">
-                            Editar Tombo
-                        </Button>
-                    </Link>
+                    {isCuradorOuOperadorOuIdentificador()
+                        ? (
+                            <Link to={`/tombos/${this.props.match.params.tombo_id}`}>
+                                <Button type="primary">
+                                    Editar Tombo
+                                </Button>
+                            </Link>
+                        )
+                        : null}
                     <Row gutter={8} style={{ margin: '20px 0' }}>
 
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
