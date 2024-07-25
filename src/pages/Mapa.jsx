@@ -57,7 +57,7 @@ function createClusterIcon(cluster) {
 }
 
 function getRandomOffset() {
-    const offset = 0.02
+    const offset = 0.01
     return Math.random() * (offset * 2) - offset
 }
 
