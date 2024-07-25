@@ -57,7 +57,7 @@ function createClusterIcon(cluster) {
 }
 
 function getRandomOffset() {
-    const offset = 0.03
+    const offset = 0.02
     return Math.random() * (offset * 2) - offset
 }
 
@@ -201,7 +201,7 @@ function Mapa() {
             {isLoading && (
                 <div className="loading-container">
                     <div className="spinner" />
-                    <p className="loading-text">analisando dados</p>
+                    <p className="loading-text">analisando dados...</p>
                 </div>
             )}
             <div id="map-container" style={{ height: '100%', display: 'none' }}>
