@@ -7,5 +7,6 @@ export default foto => ({
     originalAlt: foto.original,
     originalTitle: foto.original,
     thumbnailAlt: foto.thumbnail,
-    thumbnailTitle: foto.thumbnail
+    thumbnailTitle: foto.thumbnail,
+    originalHeight: 500
 })
