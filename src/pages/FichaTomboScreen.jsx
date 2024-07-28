@@ -6,6 +6,7 @@ import {
 } from 'antd'
 import axios from 'axios'
 
+import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import { PrinterOutlined, SearchOutlined } from '@ant-design/icons'
 
@@ -176,11 +177,9 @@ class FichaTomboScreen extends Component {
                     </Col>
 
                     <Col xs={24} sm={8} md={12} lg={16} xl={16} style={{ marginTop: 16 }}>
-                        Foram encontrados
-                        {' '}
-                        {this.state.metadados?.total || 0}
-                        {' '}
-                        registros.
+                        <TotalRecordFound
+                            total={this.state.metadados?.total}
+                        />
                     </Col>
                 </Row>
                 <Divider dashed />
