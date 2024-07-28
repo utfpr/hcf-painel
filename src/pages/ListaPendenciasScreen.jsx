@@ -209,7 +209,7 @@ class ListaPendenciasScreen extends Component {
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('status')(
-                                        <Select initialValue="2">
+                                        <Select placeholder="Selecione" allowClear>
                                             <Option value="ESPERANDO">Esperando</Option>
                                             <Option value="APROVADO">Aprovado</Option>
                                             <Option value="REPROVADO">Reprovado</Option>

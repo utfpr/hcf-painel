@@ -325,8 +325,7 @@ class ListaTombosScreen extends Component {
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('tipo')(
-                                        <Select initialValue="2" placeholder="Selecione" allowClear>
-                                            <Option value="-1">Selecione</Option>
+                                        <Select placeholder="Selecione" allowClear>
                                             <Option value="1">Parátipo</Option>
                                             <Option value="2">Isótipo</Option>
                                         </Select>
@@ -341,8 +340,7 @@ class ListaTombosScreen extends Component {
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('situacao')(
-                                        <Select initialValue="2" placeholder="Selecione" allowClear>
-                                            <Option value="-1">Selecione</Option>
+                                        <Select placeholder="Selecione" allowClear>
                                             <Option value="regular">Regular</Option>
                                             <Option value="permutado">Permutado</Option>
                                             <Option value="emprestado">Emprestado</Option>

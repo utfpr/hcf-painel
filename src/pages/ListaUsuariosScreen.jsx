@@ -236,7 +236,7 @@ class ListaUsuariosScreen extends Component {
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('tipo')(
-                                        <Select initialValue="2">
+                                        <Select placeholder="Selecione" allowClear>
                                             <Option value="1">Curador</Option>
                                             <Option value="2">Operador</Option>
                                             <Option value="3">Identificador</Option>
