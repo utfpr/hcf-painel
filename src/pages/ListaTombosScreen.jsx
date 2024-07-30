@@ -11,6 +11,7 @@ import debounce from 'lodash.debounce'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
 
+import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import {
     DeleteOutlined, EditOutlined, ExportOutlined, SearchOutlined
@@ -324,8 +325,7 @@ class ListaTombosScreen extends Component {
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('tipo')(
-                                        <Select initialValue="2" placeholder="Selecione" allowClear>
-                                            <Option value="-1">Selecione</Option>
+                                        <Select placeholder="Selecione" allowClear>
                                             <Option value="1">Parátipo</Option>
                                             <Option value="2">Isótipo</Option>
                                         </Select>
@@ -340,8 +340,7 @@ class ListaTombosScreen extends Component {
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('situacao')(
-                                        <Select initialValue="2" placeholder="Selecione" allowClear>
-                                            <Option value="-1">Selecione</Option>
+                                        <Select placeholder="Selecione" allowClear>
                                             <Option value="regular">Regular</Option>
                                             <Option value="permutado">Permutado</Option>
                                             <Option value="emprestado">Emprestado</Option>
@@ -383,11 +382,9 @@ class ListaTombosScreen extends Component {
 
                     <Row align="middle" type="flex" justify="end" gutter={16}>
                         <Col xs={24} sm={8} md={12} lg={16} xl={16}>
-                            Foram encontrados
-                            {' '}
-                            {this.state.metadados?.total || 0}
-                            {' '}
-                            registros.
+                            <TotalRecordFound
+                                total={this.state.metadados?.total}
+                            />
                         </Col>
                         <Col xs={24} sm={8} md={6} lg={4} xl={4}>
                             <FormItem>

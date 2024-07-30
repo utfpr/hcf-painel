@@ -7,6 +7,7 @@ import {
 import axios from 'axios'
 import { Link } from 'react-router-dom'
 
+import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import { CheckOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons'
 
@@ -302,7 +303,7 @@ class ListaRemessasScreen extends Component {
             <Card title="Buscar remessas">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
-                        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+                        <Col xs={24} sm={24} md={12} lg={6} xl={6}>
                             <Col span={24}>
                                 <span>Número da remessa:</span>
                             </Col>
@@ -317,7 +318,7 @@ class ListaRemessasScreen extends Component {
                                 </FormItem>
                             </Col>
                         </Col>
-                        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+                        <Col xs={24} sm={24} md={12} lg={6} xl={6}>
                             <Col span={24}>
                                 <span>Número do tombo:</span>
                             </Col>
@@ -332,14 +333,14 @@ class ListaRemessasScreen extends Component {
                                 </FormItem>
                             </Col>
                         </Col>
-                        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+                        <Col xs={24} sm={24} md={24} lg={12} xl={12}>
                             <Col span={24}>
                                 <span>Herbário:</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('herbario')(
-                                        <Select initialValue="2">
+                                        <Select placeholder="Selecione" allowClear>
                                             {this.optionHerbario()}
                                         </Select>
                                     )}
@@ -351,11 +352,9 @@ class ListaRemessasScreen extends Component {
                         <Col span={24}>
                             <Row align="middle" type="flex" justify="end" gutter={16}>
                                 <Col xs={24} sm={8} md={12} lg={16} xl={16}>
-                                    Foram encontrados
-                                    {' '}
-                                    {this.state.metadados?.total || 0}
-                                    {' '}
-                                    registros.
+                                    <TotalRecordFound
+                                        total={this.state.metadados?.total}
+                                    />
                                 </Col>
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
                                     <FormItem>

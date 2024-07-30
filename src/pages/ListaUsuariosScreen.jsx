@@ -7,6 +7,7 @@ import {
 import axios from 'axios'
 import { Link } from 'react-router-dom'
 
+import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 
@@ -235,7 +236,7 @@ class ListaUsuariosScreen extends Component {
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('tipo')(
-                                        <Select initialValue="2">
+                                        <Select placeholder="Selecione" allowClear>
                                             <Option value="1">Curador</Option>
                                             <Option value="2">Operador</Option>
                                             <Option value="3">Identificador</Option>
@@ -263,11 +264,9 @@ class ListaUsuariosScreen extends Component {
                         <Col span={24}>
                             <Row align="middle" type="flex" justify="end" gutter={16}>
                                 <Col xs={24} sm={8} md={12} lg={16} xl={16}>
-                                    Foram encontrados
-                                    {' '}
-                                    {this.state.metadados?.total || 0}
-                                    {' '}
-                                    registros.
+                                    <TotalRecordFound
+                                        total={this.state.metadados?.total}
+                                    />
                                 </Col>
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
                                     <FormItem>
