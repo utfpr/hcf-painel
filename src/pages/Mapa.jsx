@@ -7,32 +7,32 @@ import 'leaflet-easyprint'
 import '../helpers/leaflet-plugins/leaflet.navbar.css'
 
 import React, {
-    Suspense, lazy, useEffect, useState
+    Suspense, lazy, useEffect, useState, useRef
 } from 'react'
 
 import axios from 'axios'
 import L from 'leaflet'
-import ReactDOMServer from 'react-dom/server'
-import { MapContainer, TileLayer, useMap } from 'react-leaflet'
-
-import { PlusCircleTwoTone } from '@ant-design/icons'
+import ReactDOM from 'react-dom/client'
+import { MapContainer, useMap } from 'react-leaflet'
 
 import pinVerde from '../assets/img/pin-verde.svg'
 import pin from '../assets/img/pin.svg'
+import PopupContentCity from '../components/PopupContentCity'
+import PopupContentGreen from '../components/PopupContentGreen'
 import '../assets/css/MarkerClusterStyles.css'
 import '../assets/css/Map.css'
 
 const MapControls = lazy(() => import('../components/MapControls'))
 
 const icon = new L.Icon({
-    iconUrl: pin,
-    iconRetinaUrl: pin,
+    iconUrl: pinVerde,
+    iconRetinaUrl: pinVerde,
     iconSize: new L.Point(20, 40)
 })
 
 const iconVerde = new L.Icon({
-    iconUrl: pinVerde,
-    iconRetinaUrl: pinVerde,
+    iconUrl: pin,
+    iconRetinaUrl: pin,
     iconSize: new L.Point(20, 40)
 })
 
@@ -56,28 +56,21 @@ function createClusterIcon(cluster) {
     })
 }
 
-function getRandomOffset() {
-    const offset = 0.01
-    return Math.random() * (offset * 2) - offset
-}
-
 function MapLogic({ setLoading }) {
     const map = useMap()
     const [pontos, setPontos] = useState([])
-    const visibleMarkers = L.layerGroup()
-    const clusterMarkers = L.markerClusterGroup({
+    const clusterMarkersRef = useRef(L.markerClusterGroup({
         iconCreateFunction: createClusterIcon,
         maxClusterRadius: 40
-    })
+    }))
+    const visibleMarkersRef = useRef(L.layerGroup())
 
     useEffect(() => {
         setLoading(true)
         axios.get('http://localhost:3000/api/pontos')
             .then(response => {
                 setPontos(response.data.map(ponto => ({
-                    ...ponto,
-                    randomLatOffset: getRandomOffset(),
-                    randomLngOffset: getRandomOffset()
+                    ...ponto
                 })))
                 setLoading(false)
                 setTimeout(() => {
@@ -92,12 +85,16 @@ function MapLogic({ setLoading }) {
 
     useEffect(() => {
         if (map && pontos.length > 0) {
+            const clusterMarkers = clusterMarkersRef.current
+            const visibleMarkers = visibleMarkersRef.current
             clusterMarkers.clearLayers()
             visibleMarkers.clearLayers()
 
+            const citiesPlotted = new Set()
+
             pontos.forEach(ponto => {
                 const {
-                    latitude, longitude, cidade, hcf, latitudeCidade, longitudeCidade, randomLatOffset, randomLngOffset
+                    latitude, longitude, cidade, hcf, latitudeCidade, longitudeCidade
                 } = ponto
                 let latLng = null
                 let markerIcon = null
@@ -105,33 +102,41 @@ function MapLogic({ setLoading }) {
                 if (latitude && longitude) {
                     latLng = new L.LatLng(latitude, longitude)
                     markerIcon = icon
-                } else if (latitudeCidade && longitudeCidade) {
-                    latLng = new L.LatLng(latitudeCidade + randomLatOffset, longitudeCidade + randomLngOffset)
+                } else if (latitudeCidade && longitudeCidade && !citiesPlotted.has(cidade)) {
+                    latLng = new L.LatLng(latitudeCidade, longitudeCidade)
                     markerIcon = iconVerde
+                    citiesPlotted.add(cidade)
                 }
 
                 if (latLng) {
                     const marker = L.marker(latLng, { title: cidade, icon: markerIcon })
                     marker.on('click', () => {
-                        axios.get(`http://localhost:3000/api/tombos/${hcf}`)
-                            .then(response => {
-                                const popupContent = `
-                                    <strong>HCF: ${response.data.hcf}</strong>
-                                    <br>
-                                    <button 
-                                        onclick="window.open('/tombos/detalhes/${response.data.hcf}', '_blank')"
-                                        style="background: none; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; margin: 0 auto;"
-                                    >
-                                        <span style="color: #008000; font-size: 24px;">
-                                            ${ReactDOMServer.renderToString(<PlusCircleTwoTone twoToneColor="#008000" />)}
-                                        </span>
-                                    </button>
-                                `
-                                marker.bindPopup(popupContent).openPopup()
-                            })
-                            .catch(error => {
-                                console.error('Erro ao buscar detalhes do ponto: ', error)
-                            })
+                        map.eachLayer(layer => {
+                            if (layer instanceof L.Popup) {
+                                map.removeLayer(layer)
+                            }
+                        })
+
+                        const popupContent = document.createElement('div')
+                        const root = ReactDOM.createRoot(popupContent)
+
+                        if (latitude && longitude) {
+                            axios.get(`http://localhost:3000/api/tombos/${hcf}`)
+                                .then(response => {
+                                    root.render(<PopupContentGreen hcf={response.data.hcf} />)
+                                    marker.bindPopup(popupContent)
+                                    marker.openPopup()
+                                    setTimeout(() => marker.openPopup(), 0)
+                                })
+                                .catch(error => {
+                                    console.error('Erro ao buscar detalhes do ponto: ', error)
+                                })
+                        } else {
+                            root.render(<PopupContentCity cidade={cidade} />)
+                            marker.bindPopup(popupContent)
+                            marker.openPopup()
+                            setTimeout(() => marker.openPopup(), 0)
+                        }
                     })
                     clusterMarkers.addLayer(marker)
                 }

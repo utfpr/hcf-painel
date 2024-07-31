@@ -3,7 +3,7 @@ import React, { useEffect, Suspense, lazy } from 'react'
 import L from 'leaflet'
 import { MapContainer, useMap } from 'react-leaflet'
 
-import pin from '../assets/img/pin.svg'
+import pin from '../assets/img/pin-verde.svg'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.fullscreen'
