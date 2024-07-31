@@ -50,6 +50,12 @@ const PopupContentCity = ({ cidade }) => {
         }
     }
 
+    const handleKeyDown = e => {
+        if (e.key === 'Enter') {
+            fetchPoints(cidade, 1, searchTerm)
+        }
+    }
+
     const itemRender = (current, type, originalElement) => {
         if (type === 'prev') {
             return <a>&lt;</a>
@@ -96,6 +102,7 @@ const PopupContentCity = ({ cidade }) => {
                     type="text"
                     value={searchTerm}
                     onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
                     placeholder="Pesquisar HCF..."
                     maxLength={10}
                     style={{
