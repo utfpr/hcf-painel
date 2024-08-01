@@ -70,11 +70,11 @@ class FichaTomboScreen extends Component {
 
     geraColunaAcao = tombo => (
         <div>
-            <a target="_blank" rel="noreferrer" href={`${fichaTomboUrl}/tombos/${tombo.hcf}/1`} title="Imprimir ficha com código de barras">
+            <a target="_blank" rel="noreferrer" href={`${fichaTomboUrl}/fichas/tombos/${tombo.hcf}/1`} title="Imprimir ficha com código de barras">
                 <PrinterOutlined style={{ color: '#277a01' }} />
             </a>
             <Divider type="vertical" />
-            <a target="_blank" rel="noreferrer" href={`${fichaTomboUrl}/tombos/${tombo.hcf}/0`} title="Imprimir ficha sem código de barras">
+            <a target="_blank" rel="noreferrer" href={`${fichaTomboUrl}/fichas/tombos/${tombo.hcf}/0`} title="Imprimir ficha sem código de barras">
                 <PrinterOutlined style={{ color: '#0066ff' }} />
             </a>
         </div>
