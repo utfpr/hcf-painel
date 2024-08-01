@@ -92,6 +92,10 @@ const PopupContentCity = ({ cidade }) => {
                         display: flex;
                         align-items: center;
                     }
+                    .custom-popup input:focus {
+                        border-color: #1D54BF !important; 
+                        outline: none;
+                    }
                 `}
             </style>
             <div style={{
