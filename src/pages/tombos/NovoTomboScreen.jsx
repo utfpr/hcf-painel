@@ -2153,37 +2153,27 @@ class NovoTomboScreen extends Component {
 
     ajustaColetores = value => {
         if (value) {
-            axios.get(`/api/tombos/numeroColetor/${value.key}`)
+            axios.get(`/tombos/numeroColetor/${value.key}`)
                 .then(response => {
                     if (response.status === 200) {
                         const todosNumeros = response.data
-                        let numeros = todosNumeros.map(e => e.numero_coleta)
+                        todosNumeros.sort((a, b) => { return (b.numero_coleta - a.numero_coleta) })
 
-                        numeros.sort((a, b) => { return (a - b) })
-                        let numero = 0
-                        let result = 0
-                        const lacuna = []
-                        if (numeros === []) numero = 1
-                        else if (numeros.length == 1) numero += 1
-                        else {
-                            numeros = [0].concat(numeros)
-                            for (let i = 0; i < numeros.length; i++) {
-                                if (numeros[i + 1] - numeros[i] !== 1 && numeros[i + 1] - numeros[i] !== 0) {
-                                    lacuna.push(numeros[i])
-                                }
-                            }
-                            if (lacuna.length === 0) {
-                                result = numeros[numeros.length - 1] + 1
-                            } else {
-                                const index = lacuna.indexOf(Math.min(...lacuna))
-                                result = lacuna.splice(index, 1)[0] + 1
-                            }
+                        if (todosNumeros.length === 0 || todosNumeros[0].numero_coleta === null) {
                             this.props.form.setFields({
                                 numColeta: {
-                                    value: result
+                                    value: 1
                                 }
                             })
+
+                            return
                         }
+
+                        this.props.form.setFields({
+                            numColeta: {
+                                value: todosNumeros[0].numero_coleta + 1
+                            }
+                        })
                     }
                 })
                 .catch(this.catchRequestError)
