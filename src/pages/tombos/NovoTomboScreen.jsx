@@ -2159,19 +2159,9 @@ class NovoTomboScreen extends Component {
                         const todosNumeros = response.data
                         todosNumeros.sort((a, b) => { return (b.numero_coleta - a.numero_coleta) })
 
-                        if (todosNumeros.length === 0 || todosNumeros[0].numero_coleta === null) {
-                            this.props.form.setFields({
-                                numColeta: {
-                                    value: 1
-                                }
-                            })
-
-                            return
-                        }
-
                         this.props.form.setFields({
                             numColeta: {
-                                value: todosNumeros[0].numero_coleta + 1
+                                value: todosNumeros.length === 0 || todosNumeros[0].numero_coleta === null ? 1 : todosNumeros[0].numero_coleta + 1
                             }
                         })
                     }
