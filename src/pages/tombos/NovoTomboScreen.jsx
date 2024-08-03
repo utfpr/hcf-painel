@@ -2157,7 +2157,7 @@ class NovoTomboScreen extends Component {
                 .then(response => {
                     if (response.status === 200) {
                         const todosNumeros = response.data
-                        todosNumeros.sort((a, b) => { return (b.numero_coleta - a.numero_coleta) })
+                        todosNumeros.sort((a, b) => b.numero_coleta - a.numero_coleta)
 
                         this.props.form.setFields({
                             numColeta: {
