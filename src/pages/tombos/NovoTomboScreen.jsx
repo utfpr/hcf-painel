@@ -2733,7 +2733,13 @@ class NovoTomboScreen extends Component {
                         validateStatus={search.subespecie}
                         getFieldDecorator={getFieldDecorator}
                         autor={this.state.autorSubespecie}
-                        onChange={value => this.encontraAutor(subespecies, value, 'autorSubespecie')}
+                        onChange={value => {
+                            this.encontraAutor(subespecies, value, 'autorSubespecie')
+
+                            this.setState({
+                                autorVariedade: ''
+                            })
+                        }}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
@@ -2741,8 +2747,7 @@ class NovoTomboScreen extends Component {
                                     tipo: 5
                                 },
                                 formComAutor: true,
-                                visibleModal: true,
-                                autorVariedade: ''
+                                visibleModal: true
                             })
                         }}
                     />
