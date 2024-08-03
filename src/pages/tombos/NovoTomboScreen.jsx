@@ -184,15 +184,19 @@ class NovoTomboScreen extends Component {
             fotosTeste: [],
             codigoBarras: '',
             dadosFormulario: {},
-            editing: Boolean(this.props.match.params.tombo_id)
+            editing: Boolean(this.props.match.params.tombo_id),
+            autorSubfamilia: '',
+            autorEspecie: '',
+            autorSubespecie: '',
+            autorVariedade: ''
         }
     }
 
     componentDidMount() {
-        this.requisitaDadosFormulario()
         this.setState({
             loading: true
         })
+        this.requisitaDadosFormulario()
     }
 
     handleRequisicao = values => {
@@ -219,6 +223,16 @@ class NovoTomboScreen extends Component {
                 identificadorInicial: data.identificacao.usuario_id
             })
         }
+    }
+
+    encontraAutor = (lista, valorSelecionado, campoTaxonomiaAutor) => {
+        console.log({ lista, valorSelecionado, campoTaxonomiaAutor })
+
+        const itemEncontrado = lista.find(item => item.id === Number(valorSelecionado))
+
+        this.setState({
+            [campoTaxonomiaAutor]: itemEncontrado?.autor?.nome || ''
+        })
     }
 
     criaCodigoBarrasSemFotos = emVivo => {
@@ -735,6 +749,14 @@ class NovoTomboScreen extends Component {
                 }
             })
             .catch(this.catchRequestError)
+            .finally(() => {
+                this.setState({
+                    autorSubfamilia: '',
+                    autorEspecie: '',
+                    autorSubespecie: '',
+                    autorVariedade: ''
+                })
+            })
     }
 
     requisitaFamilias = () => {
@@ -2571,7 +2593,11 @@ class NovoTomboScreen extends Component {
                                 search: {
                                     subfamilia: 'validating',
                                     genero: 'validating'
-                                }
+                                },
+                                autorSubfamilia: '',
+                                autorEspecie: '',
+                                autorSubespecie: '',
+                                autorVariedade: ''
                             })
                             this.props.form.setFields({
                                 subfamilia: {
@@ -2606,6 +2632,8 @@ class NovoTomboScreen extends Component {
                         subfamilias={subfamilias}
                         validateStatus={search.subfamilia}
                         getFieldDecorator={getFieldDecorator}
+                        onChange={value => this.encontraAutor(subfamilias, value, 'autorSubfamilia')}
+                        autor={this.state.autorSubfamilia}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
@@ -2629,7 +2657,10 @@ class NovoTomboScreen extends Component {
                             this.setState({
                                 search: {
                                     especie: 'validating'
-                                }
+                                },
+                                autorEspecie: '',
+                                autorSubespecie: '',
+                                autorVariedade: ''
                             })
                             this.props.form.setFields({
                                 especie: {
@@ -2658,6 +2689,7 @@ class NovoTomboScreen extends Component {
                         especies={especies}
                         validateStatus={search.especie}
                         getFieldDecorator={getFieldDecorator}
+                        autor={this.state.autorEspecie}
                         onChange={value => {
                             this.requisitaSubespecies(value)
                             this.requisitaVariedades(value)
@@ -2666,7 +2698,9 @@ class NovoTomboScreen extends Component {
                                     subespecie: 'validating',
                                     variedade: 'validating'
                                 },
-                                formComAutor: true
+                                formComAutor: true,
+                                autorSubespecie: '',
+                                autorVariedade: ''
                             })
                             this.props.form.setFields({
                                 subespecie: {
@@ -2676,6 +2710,8 @@ class NovoTomboScreen extends Component {
                                     value: ''
                                 }
                             })
+
+                            this.encontraAutor(especies, value, 'autorEspecie')
                         }}
                         onClickAddMore={() => {
                             this.setState({
@@ -2696,6 +2732,8 @@ class NovoTomboScreen extends Component {
                         subespecies={subespecies}
                         validateStatus={search.subespecie}
                         getFieldDecorator={getFieldDecorator}
+                        autor={this.state.autorSubespecie}
+                        onChange={value => this.encontraAutor(subespecies, value, 'autorSubespecie')}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
@@ -2703,7 +2741,8 @@ class NovoTomboScreen extends Component {
                                     tipo: 5
                                 },
                                 formComAutor: true,
-                                visibleModal: true
+                                visibleModal: true,
+                                autorVariedade: ''
                             })
                         }}
                     />
@@ -2712,6 +2751,8 @@ class NovoTomboScreen extends Component {
                         variedades={variedades}
                         validateStatus={search.variedade}
                         getFieldDecorator={getFieldDecorator}
+                        autor={this.state.autorVariedade}
+                        onChange={value => this.encontraAutor(variedades, value, 'autorVariedade')}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {

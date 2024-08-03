@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { Select } from 'antd'
 
@@ -7,7 +7,7 @@ import SelectedFormFiled from './SelectedFormFiled'
 const { Option } = Select
 
 const SubfamiliaFormField = ({
-    initialValue, subfamilias, getFieldDecorator, onClickAddMore, onChange, validateStatus
+    initialValue, subfamilias, getFieldDecorator, onClickAddMore, validateStatus, onChange, autor
 }) => {
     const optionSubfamilia = () => subfamilias.map(item => (
         <Option value={`${item.id}`}>{item.nome}</Option>
@@ -27,6 +27,7 @@ const SubfamiliaFormField = ({
             onClickAddMore={onClickAddMore}
             onChange={onChange}
             validateStatus={validateStatus}
+            autor={autor}
         >
             {optionSubfamilia()}
         </SelectedFormFiled>

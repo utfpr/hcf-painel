@@ -14,7 +14,7 @@ const FormItem = Form.Item
 const SelectedFormFiled = ({
     title, validateStatus, initialValue, rules,
     placeholder, children, fieldName, onClickAddMore,
-    getFieldDecorator, getFieldError, onChange,
+    getFieldDecorator, getFieldError, onChange, autor,
     xs, sm, md, lg, xl, others
 }) => {
     return (
@@ -43,6 +43,17 @@ const SelectedFormFiled = ({
                     )}
                 </FormItem>
             </Col>
+            {autor ? (
+                <Col span={24}>
+                    <span>
+                        Autor:
+                        {' '}
+                        {autor}
+                    </span>
+                </Col>
+            )
+                : null}
+
             {onClickAddMore
                 ? (
                     <Col span={2}>
