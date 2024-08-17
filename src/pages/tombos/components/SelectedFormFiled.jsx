@@ -46,7 +46,7 @@ const SelectedFormFiled = ({
             {autor ? (
                 <Col span={24}>
                     <span>
-                        Autor:
+                        <b>Autor:</b>
                         {' '}
                         {autor}
                     </span>

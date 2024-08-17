@@ -211,6 +211,12 @@ class NovoTomboScreen extends Component {
 
     onEditarTomboComSucesso = response => {
         const { data } = response
+
+        this.encontraAutor(data.subfamilias, data.subfamiliaInicial, 'autorSubfamilia')
+        this.encontraAutor(data.especies, data.especieInicial, 'autorEspecie')
+        this.encontraAutor(data.subespecies, data.subespecieInicial, 'autorSubespecie')
+        this.encontraAutor(data.variedades, data.variedadeInicial, 'autorVariedade')
+
         this.setState(prevState => ({
             ...prevState,
             loading: false,
@@ -227,6 +233,7 @@ class NovoTomboScreen extends Component {
 
     encontraAutor = (lista, valorSelecionado, campoTaxonomiaAutor) => {
         console.log({ lista, valorSelecionado, campoTaxonomiaAutor })
+        if ((!valorSelecionado && !lista) || Number.isNaN(valorSelecionado)) return
 
         const itemEncontrado = lista.find(item => item.id === Number(valorSelecionado))
 
@@ -316,7 +323,7 @@ class NovoTomboScreen extends Component {
         this.defaultRequest(
             null,
             requisitaDadosEdicaoService,
-            'Dados editados com sucesso',
+            '',
             'Houve um problema ao editar os dados do tombo, tente novamente.',
             this.onEditarTomboComSucesso,
             id
