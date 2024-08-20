@@ -1,7 +1,8 @@
 import { Component } from 'react'
 
 import {
-    Layout, Menu, Col, Spin, Button, Row
+    Layout, Menu, Col, Spin, Button, Row,
+    Divider
 } from 'antd'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
@@ -29,7 +30,19 @@ export default class MainLayout extends Component {
         super(props)
         this.state = {
             collapsed: false,
-            loading: false
+            loading: false,
+            userName: ''
+        }
+    }
+
+    componentDidMount() {
+        const userInfo = localStorage.getItem('usuario')
+
+        if (userInfo) {
+            const user = JSON.parse(userInfo)
+            this.setState({
+                userName: user.nome
+            })
         }
     }
 
@@ -71,6 +84,14 @@ export default class MainLayout extends Component {
             })
     }
 
+    fazLogout = () => {
+        setTokenUsuario('')
+        localStorage.setItem('token', '')
+
+        setUsuario('')
+        localStorage.setItem('usuario', '')
+    }
+
     renderFormulario() {
         return (
             <Layout style={{ minHeight: '100vh' }}>
@@ -97,7 +118,7 @@ export default class MainLayout extends Component {
                             title={(
                                 <span>
                                     <DesktopOutlined />
-                                    <span>Taxonomias</span>
+                                    <span>Taxonomia</span>
                                 </span>
                             )}
                         >
@@ -147,7 +168,23 @@ export default class MainLayout extends Component {
                                 </Link>
                             </Menu.Item>
                         ) : null}
-                        <Menu.Item key="12">
+                        {isCurador() ? (
+                            <Menu.Item key="12">
+                                <Link to="/identificadores">
+                                    <TeamOutlined />
+                                    <span>Identificadores</span>
+                                </Link>
+                            </Menu.Item>
+                        ) : null}
+                        {isCurador() ? (
+                            <Menu.Item key="13">
+                                <Link to="/coletores">
+                                    <TeamOutlined />
+                                    <span>Coletores</span>
+                                </Link>
+                            </Menu.Item>
+                        ) : null}
+                        <Menu.Item key="14">
                             <Link to="/herbarios">
                                 <FlagOutlined />
                                 <span>Herbários</span>
@@ -162,7 +199,7 @@ export default class MainLayout extends Component {
                                 </span>
                             )}
                         >
-                            <Menu.Item key="13">
+                            <Menu.Item key="15">
                                 {' '}
                                 <Link to="/fichas/tombos">Ficha tombo</Link>
                                 {' '}
@@ -175,7 +212,7 @@ export default class MainLayout extends Component {
                             </Link>
                         </Menu.Item>
                         {isCuradorOuOperador() ? (
-                            <Menu.Item key="14">
+                            <Menu.Item key="16">
                                 <a href={`${baseUrl}/darwincore`} target="_blank" rel="noreferrer">
                                     <DesktopOutlined />
                                     <span>Darwin Core</span>
@@ -195,27 +232,22 @@ export default class MainLayout extends Component {
                                     </span>
                                 )}
                             >
-                                <Menu.Item key="15">
+                                <Menu.Item key="17">
                                     <Link to="/reflora">Reflora</Link>
                                 </Menu.Item>
-                                <Menu.Item key="16">
+                                <Menu.Item key="18">
+                                    <Link to="/reflora">Reflora</Link>
+                                </Menu.Item>
+                                <Menu.Item key="19">
                                     <Link to="/specieslink">speciesLink</Link>
                                 </Menu.Item>
                             </SubMenu>
                         ) : null}
                         {isLogado() ? (
-
-                            <Menu.Item key="17">
+                            <Menu.Item key="20">
                                 <Link
                                     to="/inicio"
-                                    onClick={() => {
-                                        setTokenUsuario('')
-                                        localStorage.setItem('token', '')
-
-                                        setUsuario('')
-                                        localStorage.setItem('usuario', '')
-                                        console.log('ZERO TOKEN')
-                                    }}
+                                    onClick={this.fazLogout}
                                 >
                                     <LogoutOutlined />
                                     <span>Sair</span>
@@ -234,7 +266,20 @@ export default class MainLayout extends Component {
                                 <Link to="/inicio">
                                     <Button>Entrar</Button>
                                 </Link>
-                            ) : null}
+                            ) : (
+                                <div>
+                                    {this.state.userName}
+
+                                    <Divider type="vertical" />
+
+                                    <Link
+                                        to="/inicio"
+                                        onClick={this.fazLogout}
+                                    >
+                                        <Button size="small">Sair</Button>
+                                    </Link>
+                                </div>
+                            )}
                         </Row>
                     </Header>
                     <Content

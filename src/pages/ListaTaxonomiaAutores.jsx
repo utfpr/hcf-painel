@@ -5,6 +5,7 @@ import {
 } from 'antd'
 import axios from 'axios'
 
+import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
@@ -23,6 +24,11 @@ const columns = [
         title: 'Autor',
         type: 'text',
         key: 'autor'
+    },
+    {
+        title: 'Iniciais',
+        type: 'text',
+        key: 'iniciais'
     },
     {
         title: 'Ação',
@@ -141,7 +147,8 @@ class ListaTaxonomiaAutores extends Component {
     formataDadosAutores = autores => autores.map(item => ({
         key: item.id,
         autor: item.nome,
-        acao: this.gerarAcao(item)
+        acao: this.gerarAcao(item),
+        iniciais: item.iniciais
     }))
 
     requisitaListaAutores = (valores, pg, pageSize) => {
@@ -326,7 +333,14 @@ class ListaTaxonomiaAutores extends Component {
 
                     <Row style={{ marginTop: 32 }}>
                         <Col span={24}>
-                            <Row type="flex" justify="end" gutter={16}>
+
+                            <Row align="middle" type="flex" justify="end" gutter={16}>
+                                <Col xs={24} sm={8} md={12} lg={16} xl={16}>
+                                    <TotalRecordFound
+                                        total={this.state.metadados?.total}
+                                    />
+                                </Col>
+
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
                                     <FormItem>
                                         <Button
@@ -450,7 +464,7 @@ class ListaTaxonomiaAutores extends Component {
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
                 <SimpleTableComponent
-                    columns={columns}
+                    columns={isCuradorOuOperador() ? columns : columns.filter(column => column.key !== 'acao')}
                     data={this.state.autores}
                     metadados={this.state.metadados}
                     loading={this.state.loading}

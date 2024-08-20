@@ -6,6 +6,7 @@ import {
 } from 'antd'
 import axios from 'axios'
 
+import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
@@ -22,6 +23,14 @@ const columns = [
         title: 'Subfamília',
         type: 'text',
         key: 'subfamilia'
+    },
+    {
+        title: 'Família',
+        key: 'familia'
+    },
+    {
+        title: 'Autor',
+        key: 'autor'
     },
     {
         title: 'Ação',
@@ -112,7 +121,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                                     value: item.nome
                                 },
                                 nomeFamilia: {
-                                    value: item.familia_id
+                                    value: { key: item.familia.id, label: item.familia.nome }
                                 }
                             })
                             this.setState({
@@ -144,6 +153,8 @@ class ListaTaxonomiaSubfamilia extends Component {
     formataDadosSubfamilia = subfamilias => subfamilias.map(item => ({
         key: item.id,
         subfamilia: item.nome,
+        familia: item.familia?.nome,
+        autor: item.autor?.nome,
         acao: this.gerarAcao(item)
     }))
 
@@ -154,10 +165,14 @@ class ListaTaxonomiaSubfamilia extends Component {
         }
 
         if (valores !== undefined) {
-            const { subfamilia } = valores
+            const { subfamilia, familia } = valores
 
             if (subfamilia) {
                 params.subfamilia = subfamilia
+            }
+
+            if (familia) {
+                params.familia_nome = familia
             }
         }
         axios.get('/subfamilias', { params })
@@ -336,23 +351,41 @@ class ListaTaxonomiaSubfamilia extends Component {
             <Card title="Buscar subfamília">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
-                        <Col span={24}>
-                            <span>Nome da subfamília:</span>
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                            <Col span={24}>
+                                <span>Nome da subfamília:</span>
+                            </Col>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('subfamilia')(
+                                        <Input placeholder="Bromeliaceae" type="text" />
+                                    )}
+                                </FormItem>
+                            </Col>
                         </Col>
-                    </Row>
-                    <Row gutter={8}>
-                        <Col span={24}>
-                            <FormItem>
-                                {getFieldDecorator('subfamilia')(
-                                    <Input placeholder="Bromeliaceae" type="text" />
-                                )}
-                            </FormItem>
+
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                            <Col span={24}>
+                                <span>Nome da família:</span>
+                            </Col>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('familia')(
+                                        <Input placeholder="Fabaceae" type="text" />
+                                    )}
+                                </FormItem>
+                            </Col>
                         </Col>
                     </Row>
 
                     <Row style={{ marginTop: 32 }}>
                         <Col span={24}>
-                            <Row type="flex" justify="end" gutter={16}>
+                            <Row align="middle" type="flex" justify="end" gutter={16}>
+                                <Col xs={24} sm={8} md={12} lg={16} xl={16}>
+                                    <TotalRecordFound
+                                        total={this.state.metadados?.total}
+                                    />
+                                </Col>
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
                                     <FormItem>
                                         <Button
@@ -484,7 +517,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
                 <SimpleTableComponent
-                    columns={columns}
+                    columns={isCuradorOuOperador() ? columns : columns.filter(column => column.key !== 'acao')}
                     data={this.state.subfamilias}
                     metadados={this.state.metadados}
                     loading={this.state.loading}

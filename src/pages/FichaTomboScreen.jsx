@@ -6,11 +6,12 @@ import {
 } from 'antd'
 import axios from 'axios'
 
+import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import { PrinterOutlined, SearchOutlined } from '@ant-design/icons'
 
 import SimpleTableComponent from '../components/SimpleTableComponent'
-import { baseUrl } from '../config/api'
+import { baseUrl, fichaTomboUrl } from '../config/api'
 
 const FormItem = Form.Item
 
@@ -42,15 +43,42 @@ class FichaTomboScreen extends Component {
         }
     }
 
+    componentDidMount() {
+        axios.get('/tombos', { })
+            .then(response => {
+                const { data } = response
+                const { metadados, tombos } = data
+
+                this.setState({
+                    loading: false,
+                    metadados,
+                    tombos: tombos.map(this.formataTomboItem)
+                })
+            })
+            .catch(err => {
+                console.error(err)
+            })
+
+        this.setState({
+            loading: true
+        })
+    }
+
     handleFormSubmit = event => {
         event.preventDefault()
         this.props.form.validateFields(this.validaCamposFormulario)
     }
 
     geraColunaAcao = tombo => (
-        <a target="_blank" rel="noreferrer" href={`${baseUrl}/fichas/tombos/${tombo.hcf}`} title="Imprimir ficha">
-            <PrinterOutlined style={{ color: '#277a01' }} />
-        </a>
+        <div>
+            <a target="_blank" rel="noreferrer" href={`${fichaTomboUrl}/fichas/tombos/${tombo.hcf}/1`} title="Imprimir ficha com código de barras">
+                <PrinterOutlined style={{ color: '#277a01' }} />
+            </a>
+            <Divider type="vertical" />
+            <a target="_blank" rel="noreferrer" href={`${fichaTomboUrl}/fichas/tombos/${tombo.hcf}/0`} title="Imprimir ficha sem código de barras">
+                <PrinterOutlined style={{ color: '#0066ff' }} />
+            </a>
+        </div>
     )
 
     geraColunaDataColeta = (...args) => {
@@ -102,9 +130,9 @@ class FichaTomboScreen extends Component {
                 }
             }, {})
 
-        this.obtemTombos(params)
-
         this.setState({ loading: true })
+
+        this.obtemTombos(params)
     }
 
     render() {
@@ -147,6 +175,12 @@ class FichaTomboScreen extends Component {
                         <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
                             Pesquisar
                         </Button>
+                    </Col>
+
+                    <Col xs={24} sm={8} md={12} lg={16} xl={16} style={{ marginTop: 16 }}>
+                        <TotalRecordFound
+                            total={this.state.metadados?.total}
+                        />
                     </Col>
                 </Row>
                 <Divider dashed />

@@ -11,6 +11,7 @@ import debounce from 'lodash.debounce'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
 
+import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import {
     DeleteOutlined, EditOutlined, ExportOutlined, SearchOutlined
@@ -203,10 +204,10 @@ class ListaTombosScreen extends Component {
     formataDadosTombo = tombos => tombos.map(item => ({
         key: item.hcf,
         hcf: item.hcf,
-        nomePopular: item.nomes_populares,
-        nomeCientifico: item.nome_cientifico,
-        data: this.retornaDataColeta(item.data_coleta_dia, item.data_coleta_mes, item.data_coleta_ano),
-        coletor: item.coletores.map(coletor => coletor.nome).join(', '),
+        nomePopular: item?.nomes_populares,
+        nomeCientifico: item?.nome_cientifico,
+        data: this.retornaDataColeta(item?.data_coleta_dia, item?.data_coleta_mes, item?.data_coleta_ano),
+        coletor: item?.coletore?.nome,
         acao: <div style={{ display: 'flex' }}>{this.gerarAcao(item.hcf)}</div>
     }))
 
@@ -324,7 +325,7 @@ class ListaTombosScreen extends Component {
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('tipo')(
-                                        <Select initialValue="2" placeholder="Selecione" allowClear>
+                                        <Select placeholder="Selecione" allowClear>
                                             <Option value="1">Parátipo</Option>
                                             <Option value="2">Isótipo</Option>
                                         </Select>
@@ -339,7 +340,7 @@ class ListaTombosScreen extends Component {
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('situacao')(
-                                        <Select initialValue="2" placeholder="Selecione" allowClear>
+                                        <Select placeholder="Selecione" allowClear>
                                             <Option value="regular">Regular</Option>
                                             <Option value="permutado">Permutado</Option>
                                             <Option value="emprestado">Emprestado</Option>
@@ -378,7 +379,13 @@ class ListaTombosScreen extends Component {
                         </Col>
                     </Row>
                     <br />
-                    <Row type="flex" justify="end" gutter={16}>
+
+                    <Row align="middle" type="flex" justify="end" gutter={16}>
+                        <Col xs={24} sm={8} md={12} lg={16} xl={16}>
+                            <TotalRecordFound
+                                total={this.state.metadados?.total}
+                            />
+                        </Col>
                         <Col xs={24} sm={8} md={6} lg={4} xl={4}>
                             <FormItem>
                                 <Button

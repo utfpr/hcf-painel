@@ -23,7 +23,7 @@ export default class ModalCadastroComponent extends Component {
                         loading={this.props.loadingModal}
                         onClick={this.props.onOk}
                     >
-                        Cadastrar
+                        {this.props.title}
                     </Button>
                 ]}
             >

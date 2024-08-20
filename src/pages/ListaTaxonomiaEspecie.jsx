@@ -6,6 +6,7 @@ import {
 } from 'antd'
 import axios from 'axios'
 
+import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
@@ -22,6 +23,18 @@ const columns = [
         title: 'Espécie',
         type: 'text',
         key: 'especie'
+    },
+    {
+        title: 'Família',
+        key: 'familia'
+    },
+    {
+        title: 'Gênero',
+        key: 'genero'
+    },
+    {
+        title: 'Autor',
+        key: 'autor'
     },
     {
         title: 'Ação',
@@ -118,10 +131,10 @@ class ListaTaxonomiaEspecie extends Component {
                                     value: item.nome
                                 },
                                 nomeGenero: {
-                                    value: item.genero_id
+                                    value: { key: item.genero.id, label: item.genero.nome }
                                 },
                                 nomeAutor: {
-                                    value: item.autor_id
+                                    value: { key: item.autor.id, label: item.autor.nome }
                                 }
                             })
                             this.setState({
@@ -153,7 +166,10 @@ class ListaTaxonomiaEspecie extends Component {
     formataDadosEspecie = especies => especies.map(item => ({
         key: item.id,
         especie: item.nome,
-        acao: this.gerarAcao(item)
+        acao: this.gerarAcao(item),
+        genero: item.genero?.nome,
+        familia: item.familia?.nome,
+        autor: item.autor?.nome
     }))
 
     requisitaListaEspecie = (valores, pg, pageSize) => {
@@ -162,11 +178,19 @@ class ListaTaxonomiaEspecie extends Component {
             limite: pageSize || 20
         }
 
-        if (valores !== undefined) {
-            const { especie } = valores
+        if (valores) {
+            const { especie, familia, genero } = valores
 
             if (especie) {
                 params.especie = especie
+            }
+
+            if (familia) {
+                params.familia_nome = familia
+            }
+
+            if (genero) {
+                params.genero_nome = genero
             }
         }
         axios.get('/especies', { params })
@@ -381,23 +405,55 @@ class ListaTaxonomiaEspecie extends Component {
             <Card title="Buscar espécie">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
-                        <Col span={24}>
-                            <span>Nome da espécie:</span>
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+
+                            <Col span={24}>
+                                <span>Nome da espécie:</span>
+                            </Col>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('especie')(
+                                        <Input placeholder="A. comosus" type="text" />
+                                    )}
+                                </FormItem>
+                            </Col>
                         </Col>
-                    </Row>
-                    <Row gutter={8}>
-                        <Col span={24}>
-                            <FormItem>
-                                {getFieldDecorator('especie')(
-                                    <Input placeholder="A. comosus" type="text" />
-                                )}
-                            </FormItem>
+
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                            <Col span={24}>
+                                <span>Nome da família:</span>
+                            </Col>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('familia')(
+                                        <Input placeholder="Fabaceae" type="text" />
+                                    )}
+                                </FormItem>
+                            </Col>
+                        </Col>
+
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                            <Col span={24}>
+                                <span>Nome do gênero:</span>
+                            </Col>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('genero')(
+                                        <Input placeholder="Lantana" type="text" />
+                                    )}
+                                </FormItem>
+                            </Col>
                         </Col>
                     </Row>
 
                     <Row style={{ marginTop: 32 }}>
                         <Col span={24}>
-                            <Row type="flex" justify="end" gutter={16}>
+                            <Row align="middle" type="flex" justify="end" gutter={16}>
+                                <Col xs={24} sm={8} md={12} lg={16} xl={16}>
+                                    <TotalRecordFound
+                                        total={this.state.metadados?.total}
+                                    />
+                                </Col>
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
                                     <FormItem>
                                         <Button
@@ -555,7 +611,7 @@ class ListaTaxonomiaEspecie extends Component {
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
                 <SimpleTableComponent
-                    columns={columns}
+                    columns={isCuradorOuOperador() ? columns : columns.filter(column => column.key !== 'acao')}
                     data={this.state.especies}
                     metadados={this.state.metadados}
                     loading={this.state.loading}

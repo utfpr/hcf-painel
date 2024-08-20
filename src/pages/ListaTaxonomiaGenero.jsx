@@ -6,6 +6,7 @@ import {
 } from 'antd'
 import axios from 'axios'
 
+import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
@@ -22,6 +23,11 @@ const columns = [
         title: 'Gênero',
         type: 'text',
         key: 'Genero'
+    },
+    {
+        title: 'Família',
+        type: 'text',
+        key: 'Familia'
     },
     {
         title: 'Ação',
@@ -112,7 +118,7 @@ class ListaTaxonomiaGenero extends Component {
                                     value: item.nome
                                 },
                                 nomeFamilia: {
-                                    value: item.familia_id
+                                    value: { key: item.familia.id, label: item.familia.nome }
                                 }
                             })
                             this.setState({
@@ -145,7 +151,8 @@ class ListaTaxonomiaGenero extends Component {
     formataDadosGenero = generos => generos.map(item => ({
         key: item.id,
         Genero: item.nome,
-        acao: this.gerarAcao(item)
+        acao: this.gerarAcao(item),
+        Familia: item.familia?.nome
     }))
 
     renderAdd = () => {
@@ -177,10 +184,14 @@ class ListaTaxonomiaGenero extends Component {
         }
 
         if (valores !== undefined) {
-            const { genero } = valores
+            const { genero, familia } = valores
 
             if (genero) {
                 params.genero = genero
+            }
+
+            if (familia) {
+                params.familia_nome = familia
             }
         }
         axios.get('/generos', { params })
@@ -336,23 +347,41 @@ class ListaTaxonomiaGenero extends Component {
             <Card title="Buscar gênero">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
-                        <Col span={24}>
-                            <span>Nome do gênero:</span>
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                            <Col span={24}>
+                                <span>Nome do gênero:</span>
+                            </Col>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('genero')(
+                                        <Input placeholder="Passion Flower" type="text" />
+                                    )}
+                                </FormItem>
+                            </Col>
                         </Col>
-                    </Row>
-                    <Row gutter={8}>
-                        <Col span={24}>
-                            <FormItem>
-                                {getFieldDecorator('genero')(
-                                    <Input placeholder="Passion Flower" type="text" />
-                                )}
-                            </FormItem>
+
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                            <Col span={24}>
+                                <span>Nome da família:</span>
+                            </Col>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('familia')(
+                                        <Input placeholder="Fabaceae" type="text" />
+                                    )}
+                                </FormItem>
+                            </Col>
                         </Col>
                     </Row>
 
                     <Row style={{ marginTop: 32 }}>
                         <Col span={24}>
-                            <Row type="flex" justify="end" gutter={16}>
+                            <Row align="middle" type="flex" justify="end" gutter={16}>
+                                <Col xs={24} sm={8} md={12} lg={16} xl={16}>
+                                    <TotalRecordFound
+                                        total={this.state.metadados?.total}
+                                    />
+                                </Col>
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
                                     <FormItem>
                                         <Button
@@ -484,7 +513,7 @@ class ListaTaxonomiaGenero extends Component {
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
                 <SimpleTableComponent
-                    columns={columns}
+                    columns={isCuradorOuOperador() ? columns : columns.filter(column => column.key !== 'acao')}
                     data={this.state.generos}
                     metadados={this.state.metadados}
                     loading={this.state.loading}

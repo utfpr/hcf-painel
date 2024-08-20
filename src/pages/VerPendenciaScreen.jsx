@@ -251,7 +251,14 @@ class VerPendenciaScreen extends Component {
                 {this.renderFotos()}
                 <Divider dashed />
                 <Row gutter={8} style={{ marginBottom: '20px' }}>
-                    <SimpleTableComponent pageSize={30} columns={columns} data={this.state.data} noAction pagination={false} />
+                    <SimpleTableComponent
+                        pageSize={30}
+                        columns={columns}
+                        data={this.state.data}
+                        noAction
+                        pagination={false}
+                        total={0}
+                    />
                 </Row>
                 <Divider dashed />
 

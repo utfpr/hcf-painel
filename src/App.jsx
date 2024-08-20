@@ -17,6 +17,7 @@ import DetalhesTomboScreen from './pages/DetalhesTomboScreen'
 import FichaTomboScreen from './pages/FichaTomboScreen'
 import InicioScreen from './pages/InicioScreen'
 import ListaHerbariosScreen from './pages/ListaHerbariosScreen'
+import ListaIdentificadoresScreen from './pages/ListaIdentificadoresScreen'
 import ListaPendenciasScreen from './pages/ListaPendenciasScreen'
 import ListaRemessasScreen from './pages/ListaRemessasScreen'
 import ListaTaxonomiaAutores from './pages/ListaTaxonomiaAutores'
@@ -33,10 +34,11 @@ import LivroTomboScreen from './pages/LivroTomboScreen'
 import Mapa from './pages/Mapa'
 import NovaRemessaScreen from './pages/NovaRemessaScreen'
 import NovoHerbarioScreen from './pages/NovoHerbarioScreen'
-import NovoTomboScreen from './pages/NovoTomboScreen'
+import NovoIdentificadorScreen from './pages/NovoIdentificadorScreen'
 import NovoUsuarioScreen from './pages/NovoUsuarioScreen'
 import ServicosRefloraScreen from './pages/ServicosRefloraScreen'
 import ServicosSpeciesLinkScreen from './pages/ServicosSpeciesLinkScreen'
+import NovoTomboScreen from './pages/tombos/NovoTomboScreen'
 import PendenciaPagina from './pages/VerPendenciaScreen'
 
 import 'antd/dist/antd.css'
@@ -45,6 +47,8 @@ import './assets/css/FormEnterSystem.css'
 import './assets/css/Main.css'
 import './assets/css/Search.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
+import ListaColetoresScreen from './pages/ListaColetoresScreen'
+import NovoColetorScreen from './pages/NovoColetorScreen'
 
 const PrivateRoute = ({ component: Component, authed, ...rest }) => {
     return (
@@ -102,8 +106,14 @@ export default class App extends Component {
                 <PrivateRoute authed={isCurador()} path="/usuarios/novo" component={NovoUsuarioScreen} />
                 <PrivateRoute authed={isCurador()} path="/usuarios/:usuario_id" component={NovoUsuarioScreen} />
                 <PrivateRoute authed={isCurador()} path="/usuarios" component={ListaUsuariosScreen} />
+                <PrivateRoute authed={isCurador()} path="/identificadores/novo" component={NovoIdentificadorScreen} />
+                <PrivateRoute authed={isCurador()} path="/identificadores/:identificador_id" component={NovoIdentificadorScreen} />
+                <PrivateRoute authed={isCurador()} path="/identificadores" component={ListaIdentificadoresScreen} />
                 <PrivateRoute authed={isCurador()} path="/herbarios/novo" component={NovoHerbarioScreen} />
                 <PrivateRoute authed={isCurador()} path="/herbarios/:herbario_id" component={NovoHerbarioScreen} />
+                <PrivateRoute authed={isCurador()} path="/coletores/novo" component={NovoColetorScreen} />
+                <PrivateRoute authed={isCurador()} path="/coletores/:coletor_id" component={NovoColetorScreen} />
+                <PrivateRoute authed={isCurador()} path="/coletores" component={ListaColetoresScreen} />
 
                 <Route path="/herbarios" component={ListaHerbariosScreen} />
                 <Route path="/fichas/tombos" component={FichaTomboScreen} />
