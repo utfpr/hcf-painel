@@ -59,11 +59,10 @@ export default class DetalhesTomboScreen extends Component {
                         'Houve um problema ao buscar os dados do tombo, tente novamente.'
                     )
                 }
-                if (response.data.coletores) {
-                    let coletores = ''
-                    coletores = response.data.coletores.map(coletor => `${coletores}${coletor.nome},`).toString()
+
+                if (response.data.coletor) {
                     this.setState({
-                        nomesColetores: coletores
+                        nomesColetores: response.data.coletor.nome
                     })
                 }
             })
