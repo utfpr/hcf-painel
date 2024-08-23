@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react'
 
 import L from 'leaflet'
-import { useMap, ZoomControl } from 'react-leaflet'
+import { useMap } from 'react-leaflet'
+import 'leaflet.fullscreen/Control.FullScreen'
+import 'leaflet.fullscreen/Control.FullScreen.css'
+import 'leaflet-easyprint'
 
 const MapControls = () => {
     const map = useMap()
@@ -27,26 +30,22 @@ const MapControls = () => {
         }).addTo(map)
 
         const scale = L.control.scale().addTo(map)
-        const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map)
-
-        const basetopo = L.tileLayer('https://tile.opentopomap.org/{z}/{x}/{y}.png', {
-            attribution: 'Map data &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA)',
-            maxZoom: 17
-        })
-
-        const esriArcGis = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles © Esri — Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-        })
 
         const baseLayers = {
-            Base: osm,
-            Satélite: esriArcGis,
-            Topografia: basetopo
+            Base: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }),
+            Satélite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles © Esri — Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+            }),
+            Topografia: L.tileLayer('https://tile.opentopomap.org/{z}/{x}/{y}.png', {
+                attribution: 'Map data &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA)',
+                maxZoom: 17
+            })
         }
 
-        const layerControl = L.control.layers(baseLayers).addTo(map)
+        L.control.layers(baseLayers).addTo(map)
+        baseLayers.Base.addTo(map)
 
         const loadNavBarScript = async () => {
             await import('../helpers/leaflet-plugins/leaflet.navbar.min')
@@ -66,9 +65,8 @@ const MapControls = () => {
                 map.removeControl(map.fullscreenControl)
             }
             map.removeControl(zoomControl)
-            layerControl.remove()
-            scale.remove()
-            printer.remove(map)
+            map.removeControl(scale)
+            map.removeControl(printer)
             if (map.navbarControl) {
                 map.removeControl(map.navbarControl)
             }

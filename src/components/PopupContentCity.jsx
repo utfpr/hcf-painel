@@ -14,33 +14,45 @@ const PopupContentCity = ({ cidade }) => {
     const [mounted, setMounted] = useState(false)
 
     useEffect(() => {
-        if (cidade && mounted) {
-            fetchPoints(cidade, 1, '')
-        }
-    }, [cidade, mounted])
-
-    useEffect(() => {
         setMounted(true)
         return () => setMounted(false)
     }, [])
 
-    const fetchPoints = async (cidade, page, search) => {
+    useEffect(() => {
+        if (cidade && mounted) {
+            fetchPoints(1, '')
+        }
+    }, [cidade, mounted])
+
+    const fetchPoints = async (page, search) => {
         setIsLoading(true)
         const limit = 5
-        const response = await axios.get(`http://localhost:3000/api/pontos/?cidade=${cidade}&limite=${limit}&page=${page}&search=${search}`)
-        const { data } = response
-        setResults({
-            points: data.points,
-            totalPages: data.totalPages
-        })
-        setCurrentPage(page)
-        setIsLoading(false)
+        try {
+            const response = await axios.get('http://localhost:3000/api/pontos/', {
+                params: {
+                    cidade,
+                    limite: limit,
+                    page,
+                    search
+                }
+            })
+            const { data } = response
+            setResults({
+                points: data.points,
+                totalPages: data.totalPages
+            })
+            setCurrentPage(page)
+        } catch (error) {
+            console.error('Erro ao buscar pontos:', error)
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     const clearSearch = event => {
         event.stopPropagation()
         setSearchTerm('')
-        fetchPoints(cidade, 1, '')
+        fetchPoints(1, '')
     }
 
     const handleInputChange = e => {
@@ -52,22 +64,25 @@ const PopupContentCity = ({ cidade }) => {
 
     const handleKeyDown = e => {
         if (e.key === 'Enter') {
-            fetchPoints(cidade, 1, searchTerm)
+            fetchPoints(1, searchTerm)
         }
     }
 
-    const itemRender = (current, type, originalElement) => {
-        if (type === 'prev') {
-            return <a>&lt;</a>
-        }
-        if (type === 'next') {
-            return <a>&gt;</a>
-        }
-        if (type === 'page' && (current === 1 || current === results.totalPages)) {
-            return <a>{current}</a>
-        }
-        if (type === 'page' && current === currentPage) {
-            return <a style={{ backgroundColor: '#1890ff', color: '#fff', borderRadius: '4px' }}>{current}</a>
+    const itemRender = (current, type) => {
+        if (type === 'prev') return <a>&lt;</a>
+        if (type === 'next') return <a>&gt;</a>
+        if (type === 'page') {
+            return (
+                <a
+                    style={
+                        current === currentPage
+                            ? { backgroundColor: '#1890ff', color: '#fff', borderRadius: '4px' }
+                            : {}
+                    }
+                >
+                    {current}
+                </a>
+            )
         }
         return null
     }
@@ -76,27 +91,27 @@ const PopupContentCity = ({ cidade }) => {
         <div className="custom-popup">
             <style>
                 {`
-                    .custom-popup .result-item {
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        margin-bottom: 5px;
-                    }
-                    .custom-popup .hcf-number {
-                        margin-right: 8px;
-                    }
-                    .custom-popup .result-item strong {
-                        white-space: nowrap;
-                    }
-                    .custom-popup .button-container {
-                        display: flex;
-                        align-items: center;
-                    }
-                    .custom-popup input:focus {
-                        border-color: #1D54BF !important; 
-                        outline: none;
-                    }
-                `}
+                .custom-popup .result-item {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    margin-bottom: 5px;
+                }
+                .custom-popup .hcf-number {
+                    margin-right: 8px;
+                }
+                .custom-popup .result-item strong {
+                    white-space: nowrap;
+                }
+                .custom-popup .button-container {
+                    display: flex;
+                    align-items: center;
+                }
+                .custom-popup input:focus {
+                    border-color: #1D54BF !important;
+                    outline: none;
+                }
+            `}
             </style>
             <div style={{
                 display: 'flex', alignItems: 'center', marginBottom: '10px', marginTop: '4px', justifyContent: 'center'
@@ -122,7 +137,7 @@ const PopupContentCity = ({ cidade }) => {
                     />
                 )}
                 <SearchOutlined
-                    onClick={() => !isLoading && fetchPoints(cidade, 1, searchTerm)}
+                    onClick={() => !isLoading && fetchPoints(1, searchTerm)}
                     style={{ cursor: isLoading ? 'not-allowed' : 'pointer', color: '#1D54BF', fontSize: '15px' }}
                 />
             </div>
@@ -132,7 +147,6 @@ const PopupContentCity = ({ cidade }) => {
                         <div className="button-container">
                             <strong className="hcf-number">
                                 HCF:
-                                {' '}
                                 {point.hcf}
                             </strong>
                             <button
@@ -142,9 +156,7 @@ const PopupContentCity = ({ cidade }) => {
                                     background: 'none', border: 'none', cursor: 'pointer', display: 'inline-flex', justifyContent: 'center', alignItems: 'center', marginLeft: '8px'
                                 }}
                             >
-                                <span style={{ color: '#008000', fontSize: '24px' }}>
-                                    <PlusCircleTwoTone twoToneColor="#008000" />
-                                </span>
+                                <PlusCircleTwoTone twoToneColor="#008000" style={{ fontSize: '24px' }} />
                             </button>
                         </div>
                     </div>
@@ -154,7 +166,7 @@ const PopupContentCity = ({ cidade }) => {
                 <Pagination
                     current={currentPage}
                     total={results.totalPages * 10}
-                    onChange={page => !isLoading && fetchPoints(cidade, page, searchTerm)}
+                    onChange={page => !isLoading && fetchPoints(page, searchTerm)}
                     disabled={isLoading}
                     showSizeChanger={false}
                     itemRender={itemRender}

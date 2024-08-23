@@ -3,13 +3,13 @@ import React, { useEffect, Suspense, lazy } from 'react'
 import L from 'leaflet'
 import { MapContainer, useMap } from 'react-leaflet'
 
-import pin from '../assets/img/pin-verde.svg'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.fullscreen'
 import 'leaflet.fullscreen/Control.FullScreen.css'
 import 'leaflet-easyprint'
 import '../helpers/leaflet-plugins/leaflet.navbar.css'
+import pin from '../assets/img/pin-verde.svg'
 
 const MapControls = lazy(() => import('./MapControls'))
 
@@ -25,13 +25,9 @@ function DetalheColetaMap({ latitude, longitude, hcf }) {
     useEffect(() => {
         if (latitude && longitude) {
             const latLng = new L.LatLng(latitude, longitude)
-            const markerIcon = icon
-
-            const popupContent = `<div style="font-size: 14px; font-weight: bold; text-align: center;">HCF: ${hcf}</div>`
-
-            L.marker(latLng, { icon: markerIcon })
+            L.marker(latLng, { icon })
                 .addTo(map)
-                .bindPopup(popupContent)
+                .bindPopup(`<div style="font-size: 14px; font-weight: bold; text-align: center;">HCF: ${hcf}</div>`)
                 .openPopup()
             map.setView(latLng, 13)
         }
@@ -41,9 +37,7 @@ function DetalheColetaMap({ latitude, longitude, hcf }) {
 }
 
 const LeafletMap = ({ lat, lng, hcf }) => {
-    if (!lat && !lng) {
-        return null
-    }
+    if (!lat || !lng) return null
 
     const center = [lat, lng]
 
@@ -61,11 +55,7 @@ const LeafletMap = ({ lat, lng, hcf }) => {
                 <Suspense fallback={<div>Carregando...</div>}>
                     <MapControls />
                 </Suspense>
-                <DetalheColetaMap
-                    latitude={lat}
-                    longitude={lng}
-                    hcf={hcf}
-                />
+                <DetalheColetaMap latitude={lat} longitude={lng} hcf={hcf} />
             </MapContainer>
         </div>
     )

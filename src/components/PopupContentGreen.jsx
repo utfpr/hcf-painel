@@ -3,17 +3,20 @@ import React from 'react'
 import { PlusCircleTwoTone } from '@ant-design/icons'
 
 const PopupContentGreen = ({ hcf }) => {
+    const handleClick = () => {
+        window.open(`/tombos/detalhes/${hcf}`, '_blank')
+    }
+
     return (
         <div className="custom-popup">
             <strong>
                 HCF:
-                {' '}
-                {hcf}
+                {` ${hcf}`}
             </strong>
             <br />
             <button
                 type="button"
-                onClick={() => window.open(`/tombos/detalhes/${hcf}`, '_blank')}
+                onClick={handleClick}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -24,9 +27,7 @@ const PopupContentGreen = ({ hcf }) => {
                     margin: '0 auto'
                 }}
             >
-                <span style={{ color: '#008000', fontSize: '24px' }}>
-                    <PlusCircleTwoTone twoToneColor="#008000" />
-                </span>
+                <PlusCircleTwoTone twoToneColor="#008000" style={{ fontSize: '24px' }} />
             </button>
         </div>
     )

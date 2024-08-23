@@ -77,8 +77,7 @@ function MapLogic({ setLoading }) {
                     map.invalidateSize()
                 }, 0)
             })
-            .catch(error => {
-                console.error('Erro ao buscar os pontos: ', error)
+            .catch(() => {
                 setLoading(false)
             })
     }, [setLoading, map])
@@ -127,9 +126,6 @@ function MapLogic({ setLoading }) {
                                     marker.bindPopup(popupContent)
                                     marker.openPopup()
                                     setTimeout(() => marker.openPopup(), 0)
-                                })
-                                .catch(error => {
-                                    console.error('Erro ao buscar detalhes do ponto: ', error)
                                 })
                         } else {
                             root.render(<PopupContentCity cidade={cidade} />)
