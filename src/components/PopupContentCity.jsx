@@ -24,24 +24,25 @@ const PopupContentCity = ({ cidade }) => {
         }
     }, [cidade, mounted])
 
-    const fetchPoints = async (page, search) => {
+    const fetchPoints = async (pagina, search) => {
         setIsLoading(true)
-        const limit = 5
+        const limite = 5
         try {
             const response = await axios.get('http://localhost:3000/api/pontos/', {
                 params: {
                     cidade,
-                    limite: limit,
-                    page,
+                    limite,
+                    pagina,
                     search
                 }
             })
-            const { data } = response
+            const { points, totalPoints } = response.data
+            const totalPages = Math.ceil(totalPoints / limite)
             setResults({
-                points: data.points,
-                totalPages: data.totalPages
+                points,
+                totalPages
             })
-            setCurrentPage(page)
+            setCurrentPage(pagina)
         } catch (error) {
             console.error('Erro ao buscar pontos:', error)
         } finally {
@@ -147,8 +148,10 @@ const PopupContentCity = ({ cidade }) => {
                         <div className="button-container">
                             <strong className="hcf-number">
                                 HCF:
+                                {' '}
                                 {point.hcf}
                             </strong>
+
                             <button
                                 type="button"
                                 onClick={() => window.open(`/tombos/detalhes/${point.hcf}`, '_blank')}
@@ -165,7 +168,7 @@ const PopupContentCity = ({ cidade }) => {
             <div className="pagination" style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
                 <Pagination
                     current={currentPage}
-                    total={results.totalPages * 10}
+                    total={results.totalPages * 5}
                     onChange={page => !isLoading && fetchPoints(page, searchTerm)}
                     disabled={isLoading}
                     showSizeChanger={false}

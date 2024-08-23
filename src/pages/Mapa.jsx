@@ -69,7 +69,7 @@ function MapLogic({ setLoading }) {
         setLoading(true)
         axios.get('http://localhost:3000/api/pontos')
             .then(response => {
-                setPontos(response.data.map(ponto => ({
+                setPontos(response.data.points.map(ponto => ({
                     ...ponto
                 })))
                 setLoading(false)
@@ -77,7 +77,8 @@ function MapLogic({ setLoading }) {
                     map.invalidateSize()
                 }, 0)
             })
-            .catch(() => {
+            .catch(error => {
+                console.error('Erro ao buscar os pontos: ', error)
                 setLoading(false)
             })
     }, [setLoading, map])
@@ -93,7 +94,7 @@ function MapLogic({ setLoading }) {
 
             pontos.forEach(ponto => {
                 const {
-                    latitude, longitude, cidade, hcf, latitudeCidade, longitudeCidade
+                    latitude, longitude, cidade, hcf
                 } = ponto
                 let latLng = null
                 let markerIcon = null
@@ -101,14 +102,14 @@ function MapLogic({ setLoading }) {
                 if (latitude && longitude) {
                     latLng = new L.LatLng(latitude, longitude)
                     markerIcon = icon
-                } else if (latitudeCidade && longitudeCidade && !citiesPlotted.has(cidade)) {
-                    latLng = new L.LatLng(latitudeCidade, longitudeCidade)
+                } else if (cidade && cidade.latitude && cidade.longitude && !citiesPlotted.has(cidade.nome)) {
+                    latLng = new L.LatLng(cidade.latitude, cidade.longitude)
                     markerIcon = iconVerde
-                    citiesPlotted.add(cidade)
+                    citiesPlotted.add(cidade.nome)
                 }
 
                 if (latLng) {
-                    const marker = L.marker(latLng, { title: cidade, icon: markerIcon })
+                    const marker = L.marker(latLng, { title: cidade.nome, icon: markerIcon })
                     marker.on('click', () => {
                         map.eachLayer(layer => {
                             if (layer instanceof L.Popup) {
@@ -127,8 +128,11 @@ function MapLogic({ setLoading }) {
                                     marker.openPopup()
                                     setTimeout(() => marker.openPopup(), 0)
                                 })
+                                .catch(error => {
+                                    console.error('Erro ao buscar detalhes do ponto: ', error)
+                                })
                         } else {
-                            root.render(<PopupContentCity cidade={cidade} />)
+                            root.render(<PopupContentCity cidade={cidade.nome} />)
                             marker.bindPopup(popupContent)
                             marker.openPopup()
                             setTimeout(() => marker.openPopup(), 0)
