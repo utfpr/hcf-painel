@@ -8,8 +8,9 @@ import 'antd/dist/antd.css'
 
 const PopupContentCity = ({ cidade }) => {
     const [searchTerm, setSearchTerm] = useState('')
-    const [results, setResults] = useState({ points: [], totalPages: 0 })
-    const [currentPage, setCurrentPage] = useState(1)
+    const [results, setResults] = useState({
+        points: [], totalPages: 0, totalPoints: 0, currentPage: 1
+    })
     const [isLoading, setIsLoading] = useState(false)
     const [mounted, setMounted] = useState(false)
 
@@ -36,13 +37,15 @@ const PopupContentCity = ({ cidade }) => {
                     search
                 }
             })
-            const { points, totalPoints } = response.data
-            const totalPages = Math.ceil(totalPoints / limite)
+            const {
+                points, totalPages, totalPoints, currentPage
+            } = response.data
             setResults({
                 points,
-                totalPages
+                totalPages,
+                totalPoints,
+                currentPage
             })
-            setCurrentPage(pagina)
         } catch (error) {
             console.error('Erro ao buscar pontos:', error)
         } finally {
@@ -76,7 +79,7 @@ const PopupContentCity = ({ cidade }) => {
             return (
                 <a
                     style={
-                        current === currentPage
+                        current === results.currentPage
                             ? { backgroundColor: '#1890ff', color: '#fff', borderRadius: '4px' }
                             : {}
                     }
@@ -167,8 +170,9 @@ const PopupContentCity = ({ cidade }) => {
             </div>
             <div className="pagination" style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
                 <Pagination
-                    current={currentPage}
-                    total={results.totalPages * 5}
+                    current={results.currentPage} // Usando results.currentPage
+                    total={results.totalPoints} // Total de pontos
+                    pageSize={5} // Limite de pontos por página
                     onChange={page => !isLoading && fetchPoints(page, searchTerm)}
                     disabled={isLoading}
                     showSizeChanger={false}

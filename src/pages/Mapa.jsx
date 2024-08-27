@@ -69,7 +69,7 @@ function MapLogic({ setLoading }) {
         setLoading(true)
         axios.get('http://localhost:3000/api/pontos')
             .then(response => {
-                setPontos(response.data.points.map(ponto => ({
+                setPontos(Object.values(response.data).map(ponto => ({
                     ...ponto
                 })))
                 setLoading(false)
