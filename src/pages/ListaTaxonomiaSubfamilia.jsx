@@ -22,19 +22,29 @@ const columns = [
     {
         title: 'Subfamília',
         type: 'text',
-        key: 'subfamilia'
+        key: 'subfamilia',
+        dataIndex: 'subfamilia',
+        width: '31%',
+        sorter: true
     },
     {
         title: 'Família',
-        key: 'familia'
+        key: 'familia',
+        dataIndex: 'familia',
+        width: '31%',
+        sorter: true
     },
     {
         title: 'Autor',
-        key: 'autor'
+        key: 'autor',
+        dataIndex: 'autor',
+        width: '31%',
+        sorter: true
     },
     {
         title: 'Ação',
-        key: 'acao'
+        key: 'acao',
+        width: 100
     }
 ]
 
@@ -158,10 +168,14 @@ class ListaTaxonomiaSubfamilia extends Component {
         acao: this.gerarAcao(item)
     }))
 
-    requisitaListaSubfamilia = (valores, pg, pageSize) => {
+    requisitaListaSubfamilia = (valores, pg, pageSize, sorter) => {
+        const campo = sorter && sorter.field ? sorter.field : 'subfamilia'
+        const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
+
         const params = {
             pagina: pg,
-            limite: pageSize || 20
+            limite: pageSize || 20,
+            order: `${campo}:${ordem}`
         }
 
         if (valores !== undefined) {
@@ -521,12 +535,12 @@ class ListaTaxonomiaSubfamilia extends Component {
                     data={this.state.subfamilias}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
-                    changePage={(pg, pageSize) => {
+                    changePage={(pg, pageSize, sorter) => {
                         this.setState({
                             pagina: pg,
                             loading: true
                         })
-                        this.requisitaListaSubfamilia(this.state.valores, pg, pageSize)
+                        this.requisitaListaSubfamilia(this.state.valores, pg, pageSize, sorter)
                     }}
                 />
                 <Divider dashed />
@@ -535,13 +549,6 @@ class ListaTaxonomiaSubfamilia extends Component {
     }
 
     render() {
-        if (this.state.loading) {
-            return (
-                <Spin tip="Carregando...">
-                    {this.renderFormulario()}
-                </Spin>
-            )
-        }
         return (
             this.renderFormulario()
         )

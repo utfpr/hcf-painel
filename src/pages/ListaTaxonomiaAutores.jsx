@@ -23,16 +23,23 @@ const columns = [
     {
         title: 'Autor',
         type: 'text',
-        key: 'autor'
+        key: 'autor',
+        dataIndex: 'autor',
+        width: '46.5%',
+        sorter: true
     },
     {
         title: 'Iniciais',
         type: 'text',
-        key: 'iniciais'
+        key: 'iniciais',
+        dataIndex: 'iniciais',
+        width: '46.5%',
+        sorter: true
     },
     {
         title: 'Ação',
-        key: 'acao'
+        key: 'acao',
+        width: 100
     }
 ]
 
@@ -151,10 +158,14 @@ class ListaTaxonomiaAutores extends Component {
         iniciais: item.iniciais
     }))
 
-    requisitaListaAutores = (valores, pg, pageSize) => {
+    requisitaListaAutores = (valores, pg, pageSize, sorter) => {
+        const campo = sorter && sorter.field ? sorter.field : 'autor'
+        const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
+
         const params = {
             pagina: pg,
-            limite: pageSize || 20
+            limite: pageSize || 20,
+            order: `${campo}:${ordem}`
         }
 
         if (valores !== undefined) {
@@ -468,12 +479,12 @@ class ListaTaxonomiaAutores extends Component {
                     data={this.state.autores}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
-                    changePage={(pg, pageSize) => {
+                    changePage={(pg, pageSize, sorter) => {
                         this.setState({
                             pagina: pg,
                             loading: true
                         })
-                        this.requisitaListaAutores(this.state.valores, pg, pageSize)
+                        this.requisitaListaAutores(this.state.valores, pg, pageSize, sorter)
                     }}
                 />
                 <Divider dashed />
@@ -482,13 +493,6 @@ class ListaTaxonomiaAutores extends Component {
     }
 
     render() {
-        if (this.state.loading) {
-            return (
-                <Spin tip="Carregando...">
-                    {this.renderFormulario()}
-                </Spin>
-            )
-        }
         return (
             this.renderFormulario()
         )

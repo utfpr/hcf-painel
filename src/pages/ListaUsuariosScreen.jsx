@@ -24,31 +24,37 @@ const columns = [
     {
         title: 'Nome',
         type: 'text',
-        key: 'nome'
+        key: 'nome',
+        width: 300
     },
     {
         title: 'Tipo',
         type: 'text',
-        key: 'tipo'
+        key: 'tipo',
+        width: 300
     },
     {
         title: 'E-mail',
         type: 'text',
-        key: 'email'
+        key: 'email',
+        width: 300
     },
     {
         title: 'Telefone',
         type: 'text',
-        key: 'telefone'
+        key: 'telefone',
+        width: 300
     },
     {
         title: 'Data de criação',
         type: 'text',
-        key: 'dataCriacao'
+        key: 'dataCriacao',
+        width: 300
     },
     {
         title: 'Ação',
-        key: 'acao'
+        key: 'acao',
+        width: 100
     }
 
 ]

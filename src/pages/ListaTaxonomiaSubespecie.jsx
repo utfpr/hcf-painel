@@ -22,27 +22,43 @@ const columns = [
     {
         title: 'Subespécie',
         type: 'text',
-        key: 'subespecie'
+        key: 'subespecie',
+        dataIndex: 'subespecie',
+        width: '18.6%',
+        sorter: true
     },
     {
         title: 'Família',
-        key: 'familia'
+        key: 'familia',
+        dataIndex: 'familia',
+        width: '18.6%',
+        sorter: true
     },
     {
         title: 'Gênero',
-        key: 'genero'
+        key: 'genero',
+        dataIndex: 'genero',
+        width: '18.6%',
+        sorter: true
     },
     {
         title: 'Espécie',
-        key: 'especie'
+        key: 'especie',
+        dataIndex: 'especie',
+        width: '18.6%',
+        sorter: true
     },
     {
         title: 'Autor',
-        key: 'autor'
+        key: 'autor',
+        dataIndex: 'autor',
+        width: '18.6%',
+        sorter: true
     },
     {
         title: 'Ação',
-        key: 'acao'
+        key: 'acao',
+        width: 100
     }
 ]
 
@@ -197,10 +213,14 @@ class ListaTaxonomiaSubespecie extends Component {
         autor: item.autor?.nome
     }))
 
-    requisitaListaSubespecie = (valores, pg, pageSize) => {
+    requisitaListaSubespecie = (valores, pg, pageSize, sorter) => {
+        const campo = sorter && sorter.field ? sorter.field : 'subespecie'
+        const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
+
         const params = {
             pagina: pg,
-            limite: pageSize || 20
+            limite: pageSize || 20,
+            order: `${campo}:${ordem}`
         }
 
         if (valores) {
@@ -635,12 +655,12 @@ class ListaTaxonomiaSubespecie extends Component {
                     data={this.state.subespecies}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
-                    changePage={(pg, pageSize) => {
+                    changePage={(pg, pageSize, sorter) => {
                         this.setState({
                             pagina: pg,
                             loading: true
                         })
-                        this.requisitaListaSubespecie(this.state.valores, pg, pageSize)
+                        this.requisitaListaSubespecie(this.state.valores, pg, pageSize, sorter)
                     }}
                 />
                 <Divider dashed />
@@ -649,13 +669,6 @@ class ListaTaxonomiaSubespecie extends Component {
     }
 
     render() {
-        if (this.state.loading) {
-            return (
-                <Spin tip="Carregando...">
-                    {this.renderFormulario()}
-                </Spin>
-            )
-        }
         return (
             this.renderFormulario()
         )

@@ -22,22 +22,26 @@ class ListaHerbariosScreen extends Component {
         {
             title: 'Sigla',
             type: 'text',
-            key: 'sigla'
+            key: 'sigla',
+            width: 100
         },
         {
             title: 'Nome',
             type: 'text',
-            key: 'nome'
+            key: 'nome',
+            width: 400
         },
         {
             title: 'Endereço',
             type: 'text',
-            key: 'endereco'
+            key: 'endereco',
+            width: 400
         },
         {
             title: 'E-mail',
             type: 'text',
-            key: 'email'
+            key: 'email',
+            width: 400
         }
     ]
 

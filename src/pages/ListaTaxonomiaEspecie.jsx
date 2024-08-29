@@ -22,23 +22,36 @@ const columns = [
     {
         title: 'Espécie',
         type: 'text',
-        key: 'especie'
+        key: 'especie',
+        dataIndex: 'especie',
+        width: '23.2%',
+        sorter: true
     },
     {
         title: 'Família',
-        key: 'familia'
+        key: 'familia',
+        dataIndex: 'familia',
+        width: '23.2%',
+        sorter: true
     },
     {
         title: 'Gênero',
-        key: 'genero'
+        key: 'genero',
+        dataIndex: 'genero',
+        width: '23.2%',
+        sorter: true
     },
     {
         title: 'Autor',
-        key: 'autor'
+        key: 'autor',
+        dataIndex: 'autor',
+        width: '23.2%',
+        sorter: true
     },
     {
         title: 'Ação',
-        key: 'acao'
+        key: 'acao',
+        width: 100
     }
 ]
 
@@ -172,10 +185,14 @@ class ListaTaxonomiaEspecie extends Component {
         autor: item.autor?.nome
     }))
 
-    requisitaListaEspecie = (valores, pg, pageSize) => {
+    requisitaListaEspecie = (valores, pg, pageSize, sorter) => {
+        const campo = sorter && sorter.field ? sorter.field : 'especie'
+        const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
+
         const params = {
             pagina: pg,
-            limite: pageSize || 20
+            limite: pageSize || 20,
+            order: `${campo}:${ordem}`
         }
 
         if (valores) {
@@ -615,12 +632,12 @@ class ListaTaxonomiaEspecie extends Component {
                     data={this.state.especies}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
-                    changePage={(pg, pageSize) => {
+                    changePage={(pg, pageSize, sorter) => {
                         this.setState({
                             pagina: pg,
                             loading: true
                         })
-                        this.requisitaListaEspecie(this.state.valores, pg, pageSize)
+                        this.requisitaListaEspecie(this.state.valores, pg, pageSize, sorter)
                     }}
                 />
                 <Divider dashed />
@@ -629,13 +646,6 @@ class ListaTaxonomiaEspecie extends Component {
     }
 
     render() {
-        if (this.state.loading) {
-            return (
-                <Spin tip="Carregando...">
-                    {this.renderFormulario()}
-                </Spin>
-            )
-        }
         return (
             this.renderFormulario()
         )
