@@ -67,7 +67,7 @@ function MapLogic({ setLoading }) {
 
     useEffect(() => {
         setLoading(true)
-        axios.get('http://localhost:3000/api/pontos')
+        axios.get('/pontos')
             .then(response => {
                 setPontos(Object.values(response.data).map(ponto => ({
                     ...ponto
@@ -121,7 +121,7 @@ function MapLogic({ setLoading }) {
                         const root = ReactDOM.createRoot(popupContent)
 
                         if (latitude && longitude) {
-                            axios.get(`http://localhost:3000/api/tombos/${hcf}`)
+                            axios.get(`/tombos/${hcf}`)
                                 .then(response => {
                                     root.render(<PopupContentGreen hcf={response.data.hcf} />)
                                     marker.bindPopup(popupContent)
