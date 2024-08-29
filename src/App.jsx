@@ -31,6 +31,7 @@ import ListaTaxonomiaVariedade from './pages/ListaTaxonomiaVariedade'
 import ListaTombosScreen from './pages/ListaTombosScreen'
 import ListaUsuariosScreen from './pages/ListaUsuariosScreen'
 import LivroTomboScreen from './pages/LivroTomboScreen'
+import Mapa from './pages/Mapa'
 import NovaRemessaScreen from './pages/NovaRemessaScreen'
 import NovoHerbarioScreen from './pages/NovoHerbarioScreen'
 import NovoIdentificadorScreen from './pages/NovoIdentificadorScreen'
@@ -127,6 +128,7 @@ export default class App extends Component {
                 <Route path="/subfamilias" component={ListaTaxonomiaSubfamilia} />
                 <Route path="/variedades" component={ListaTaxonomiaVariedade} />
                 <Route path="/autores" component={ListaTaxonomiaAutores} />
+                <Route path="/mapa" component={Mapa} />
             </Switch>
         </MainLayout>
     )

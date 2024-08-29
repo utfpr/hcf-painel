@@ -8,7 +8,7 @@ import axios from 'axios'
 import { Link } from 'react-router-dom'
 
 import {
-    BarsOutlined, DatabaseOutlined, DesktopOutlined, FileTextOutlined,
+    BarsOutlined, DatabaseOutlined, DesktopOutlined, FileTextOutlined, EnvironmentOutlined,
     FlagOutlined, LogoutOutlined, MenuUnfoldOutlined, SearchOutlined, TeamOutlined
 } from '@ant-design/icons'
 
@@ -205,6 +205,12 @@ export default class MainLayout extends Component {
                                 {' '}
                             </Menu.Item>
                         </SubMenu>
+                        <Menu.Item key="18">
+                            <Link to="/mapa">
+                                <EnvironmentOutlined />
+                                <span>Mapa</span>
+                            </Link>
+                        </Menu.Item>
                         {isCuradorOuOperador() ? (
                             <Menu.Item key="16">
                                 <a href={`${baseUrl}/darwincore`} target="_blank" rel="noreferrer">

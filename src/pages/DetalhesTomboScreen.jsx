@@ -361,7 +361,7 @@ export default class DetalhesTomboScreen extends Component {
                             <Col span={24}>
                                 <span>
                                     {' '}
-                                    { tombo.localizacao.longitude ? decimalParaGrausMinutosSegundos(tombo.localizacao.longitude, true, true) : ''}
+                                    {tombo.localizacao.longitude ? decimalParaGrausMinutosSegundos(tombo.localizacao.longitude, true, true) : ''}
                                     {' '}
                                 </span>
                             </Col>
@@ -654,7 +654,11 @@ export default class DetalhesTomboScreen extends Component {
                 {this.renderComments()}
                 <Divider dashed />
 
-                <LeafletMap lat={tombo.localizacao.latitude} lng={tombo.localizacao.longitude} />
+                <LeafletMap
+                    lat={tombo.localizacao.latitude}
+                    lng={tombo.localizacao.longitude}
+                    hcf={tombo.hcf}
+                />
             </div>
         )
     }
