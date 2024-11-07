@@ -205,12 +205,22 @@ export default class MainLayout extends Component {
                                 {' '}
                             </Menu.Item>
                         </SubMenu>
-                        <Menu.Item key="18">
-                            <Link to="/mapa">
-                                <EnvironmentOutlined />
-                                <span>Mapa</span>
-                            </Link>
-                        </Menu.Item>
+                        <SubMenu
+                            key="sub3"
+                            title={(
+                                <span>
+                                    <EnvironmentOutlined />
+                                    <span>Mapa</span>
+                                </span>
+                            )}
+                        >
+                            <Menu.Item key="18">
+                                <Link to="/mapa">Mapa</Link>
+                            </Menu.Item>
+                            <Menu.Item key="19">
+                                <Link to="/filtros">Filtros</Link>
+                            </Menu.Item>
+                        </SubMenu>
                         {isCuradorOuOperador() ? (
                             <Menu.Item key="16">
                                 <a href={`${baseUrl}/darwincore`} target="_blank" rel="noreferrer">
