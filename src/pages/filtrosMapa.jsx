@@ -12,6 +12,7 @@ import {
 } from 'react-leaflet'
 
 import 'leaflet/dist/leaflet.css'
+import 'leaflet.markercluster/dist/leaflet.markercluster'
 import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.fullscreen'
 import 'leaflet.fullscreen/Control.FullScreen.css'
@@ -56,36 +57,63 @@ const FiltrosMapa = () => {
     const initialCenter = [-24.0438, -52.3811]
     const [center, setCenter] = useState(initialCenter)
     const [hcfNumber, setHcfNumber] = useState(null)
+    const [altitudeRange, setAltitudeRange] = useState('')
     const [markerPosition, setMarkerPosition] = useState(null)
     const [errorMessage, setErrorMessage] = useState(null)
     const [hcfData, setHcfData] = useState(null)
+    const [markers, setMarkers] = useState([])
 
     const handleSearch = async () => {
-        if (!hcfNumber) return
-        try {
-            const response = await axios.get(`http://localhost:3000/api/buscaHCF/${hcfNumber}`)
-            const {
-                latitude, longitude, hcf, cidade
-            } = response.data
+        if (hcfNumber) {
+            try {
+                const response = await axios.get(`http://localhost:3000/api/buscaHCF/${hcfNumber}`)
+                const {
+                    latitude, longitude, hcf, cidade
+                } = response.data
 
-            if (latitude !== null && longitude !== null) {
-                setCenter([latitude, longitude])
-                setMarkerPosition([latitude, longitude])
-                setHcfData(response.data)
-                setErrorMessage(null)
-            } else {
-                setErrorMessage(`O HCF ${hcf} está em ${cidade.nome}, porém não possui coordenadas registradas.`)
+                if (latitude !== null && longitude !== null) {
+                    setCenter([latitude, longitude])
+                    setMarkerPosition([latitude, longitude])
+                    setHcfData(response.data)
+                    setErrorMessage(null)
+                } else {
+                    setErrorMessage(`O HCF ${hcf} está em ${cidade.nome}, porém não possui coordenadas registradas.`)
+                    setMarkerPosition(null)
+                    setHcfData(null)
+                }
+            } catch (error) {
+                if (error.response && error.response.status === 404) {
+                    setErrorMessage(`O HCF ${hcfNumber} não foi encontrado.`)
+                } else {
+                    setErrorMessage('Este HCF não existe, tente novamente.')
+                }
                 setMarkerPosition(null)
                 setHcfData(null)
             }
-        } catch (error) {
-            if (error.response && error.response.status === 404) {
-                setErrorMessage(`O HCF ${hcfNumber} não foi encontrado.`)
+        } else if (altitudeRange) {
+            const [altitudeMin, altitudeMax] = altitudeRange.split('-').map(Number)
+            if (altitudeMin != null && altitudeMax != null) {
+                try {
+                    const response = await axios.get(`http://localhost:3000/api/buscaHcfsPorAltitude/${altitudeMin}/${altitudeMax}`)
+                    const { resultados } = response.data
+
+                    if (resultados.length > 0) {
+                        setMarkers(resultados)
+                        setCenter([resultados[0].latitude, resultados[0].longitude])
+                        setErrorMessage(null)
+                    } else {
+                        setErrorMessage('Nenhum HCF encontrado para os valores de altitude especificados.')
+                        setMarkers([])
+                    }
+                } catch (error) {
+                    setErrorMessage('Erro ao buscar dados. Tente novamente.')
+                    setMarkers([])
+                }
             } else {
-                setErrorMessage('Este HCF não existe, tente novamente.')
+                setErrorMessage('Por favor, insira um intervalo de altitude válido (ex: 1800-2000).')
             }
-            setMarkerPosition(null)
-            setHcfData(null)
+        } else {
+            setErrorMessage('Por favor, insira um número HCF ou valores de altitude.')
         }
     }
 
@@ -93,16 +121,15 @@ const FiltrosMapa = () => {
         setCenter(initialCenter)
         setMarkerPosition(null)
         setHcfNumber(null)
+        setAltitudeRange('')
         setErrorMessage(null)
         setHcfData(null)
+        setMarkers([])
     }
 
     return (
         <div style={{ padding: '1rem' }}>
             <Card title="Filtros do mapa" style={{ marginBottom: '1rem' }}>
-                <div style={{ marginBottom: '1rem', color: '#888' }}>
-                    Aqui você pode buscar informações específicas para visualizar no mapa.
-                </div>
                 <Form layout="vertical">
                     <Row gutter={16}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
@@ -111,24 +138,27 @@ const FiltrosMapa = () => {
                                     placeholder="Digite o número HCF. ex: 28140"
                                     value={hcfNumber}
                                     onChange={e => {
-                                        // Remove caracteres não numéricos e limita a 10 dígitos
                                         const onlyNumbers = e.target.value.replace(/[^0-9]/g, '').slice(0, 10)
                                         setHcfNumber(onlyNumbers)
                                     }}
                                     style={{ width: '100%' }}
-                                    maxLength={10} // Limita o comprimento máximo a 10 caracteres
+                                    maxLength={10}
                                 />
-                                {errorMessage && (
-                                    <Text type="danger">{errorMessage}</Text>
-                                )}
+                                {errorMessage && <Text type="danger">{errorMessage}</Text>}
                             </Form.Item>
-
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-                            <Form.Item label="Buscar por altitude:">
-                                <InputNumber placeholder="Digite a altitude ex: 300-500." style={{ width: '100%' }} disabled />
+                            <Form.Item label="Buscar por altitude (min-max):">
+                                <Input
+                                    placeholder="ex: 1800-2000"
+                                    value={altitudeRange}
+                                    onChange={e => setAltitudeRange(e.target.value)}
+                                    style={{ width: '100%' }}
+                                />
                             </Form.Item>
                         </Col>
+                    </Row>
+                    <Row gutter={16}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Form.Item label="Buscar por taxonomia:">
                                 <Select placeholder="Selecione" allowClear disabled>
@@ -140,8 +170,6 @@ const FiltrosMapa = () => {
                                 </Select>
                             </Form.Item>
                         </Col>
-                    </Row>
-                    <Row gutter={16}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Form.Item label="Buscar por nome científico:">
                                 <Input placeholder="ex: Passiflora edulis" disabled />
@@ -185,6 +213,14 @@ const FiltrosMapa = () => {
                     {markerPosition && hcfData && (
                         <PontoMarcador latitude={markerPosition[0]} longitude={markerPosition[1]} hcf={hcfData.hcf} />
                     )}
+                    {markers.map(marker => (
+                        <PontoMarcador
+                            key={marker.hcf}
+                            latitude={marker.latitude}
+                            longitude={marker.longitude}
+                            hcf={marker.hcf}
+                        />
+                    ))}
                 </MapContainer>
             </div>
         </div>
