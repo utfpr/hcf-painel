@@ -1,12 +1,13 @@
 import React, {
-    Suspense, lazy, useEffect, useState
+    Suspense, lazy, useEffect, useState, useRef
 } from 'react'
 
 import {
-    Card, Form, InputNumber, Select, Button, Row, Col, Input, Typography
+    Card, Form, Button, Select, Row, Col, Input, Typography
 } from 'antd'
 import axios from 'axios'
 import L from 'leaflet'
+import ReactDOM from 'react-dom/client'
 import {
     MapContainer, Marker, Popup, useMap
 } from 'react-leaflet'
@@ -16,13 +17,12 @@ import 'leaflet.markercluster/dist/leaflet.markercluster'
 import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.fullscreen'
 import 'leaflet.fullscreen/Control.FullScreen.css'
-import 'leaflet-easyprint'
 import '../helpers/leaflet-plugins/leaflet.navbar.css'
 import pin from '../assets/img/pin-verde.svg'
 import PopupContentGreen from '../components/PopupContentGreen'
 
-const { Option } = Select
 const { Text } = Typography
+const { Option } = Select
 const MapControls = lazy(() => import('../components/MapControls'))
 
 const icon = new L.Icon({
@@ -30,18 +30,6 @@ const icon = new L.Icon({
     iconRetinaUrl: pin,
     iconSize: new L.Point(20, 40)
 })
-
-function PontoMarcador({ latitude, longitude, hcf }) {
-    return (
-        latitude && longitude ? (
-            <Marker position={[latitude, longitude]} icon={icon}>
-                <Popup>
-                    <PopupContentGreen hcf={hcf} />
-                </Popup>
-            </Marker>
-        ) : null
-    )
-}
 
 function RecenterMap({ lat, lng }) {
     const map = useMap()
@@ -53,15 +41,50 @@ function RecenterMap({ lat, lng }) {
     return null
 }
 
+function ClusterLayer({ markers, clusterGroup }) {
+    const map = useMap()
+
+    useEffect(() => {
+        if (markers.length > 0) {
+            clusterGroup.clearLayers()
+
+            markers.forEach(marker => {
+                const { latitude, longitude, hcf } = marker
+                if (latitude && longitude) {
+                    const markerInstance = L.marker([latitude, longitude], { icon })
+
+                    const popupContent = document.createElement('div')
+                    const root = ReactDOM.createRoot(popupContent)
+
+                    root.render(<PopupContentGreen hcf={hcf} />)
+
+                    markerInstance.bindPopup(popupContent)
+
+                    clusterGroup.addLayer(markerInstance)
+                }
+            })
+
+            map.addLayer(clusterGroup)
+        }
+
+        return () => {
+            map.removeLayer(clusterGroup)
+        }
+    }, [markers, clusterGroup, map])
+
+    return null
+}
+
 const FiltrosMapa = () => {
     const initialCenter = [-24.0438, -52.3811]
     const [center, setCenter] = useState(initialCenter)
     const [hcfNumber, setHcfNumber] = useState(null)
     const [altitudeRange, setAltitudeRange] = useState('')
-    const [markerPosition, setMarkerPosition] = useState(null)
+    const [totalRegistros, setTotalRegistros] = useState(0)
     const [errorMessage, setErrorMessage] = useState(null)
     const [hcfData, setHcfData] = useState(null)
     const [markers, setMarkers] = useState([])
+    const clusterMarkersRef = useRef(L.markerClusterGroup())
 
     const handleSearch = async () => {
         if (hcfNumber) {
@@ -73,12 +96,10 @@ const FiltrosMapa = () => {
 
                 if (latitude !== null && longitude !== null) {
                     setCenter([latitude, longitude])
-                    setMarkerPosition([latitude, longitude])
                     setHcfData(response.data)
                     setErrorMessage(null)
                 } else {
                     setErrorMessage(`O HCF ${hcf} está em ${cidade.nome}, porém não possui coordenadas registradas.`)
-                    setMarkerPosition(null)
                     setHcfData(null)
                 }
             } catch (error) {
@@ -87,49 +108,51 @@ const FiltrosMapa = () => {
                 } else {
                     setErrorMessage('Este HCF não existe, tente novamente.')
                 }
-                setMarkerPosition(null)
                 setHcfData(null)
             }
         } else if (altitudeRange) {
             const [altitudeMin, altitudeMax] = altitudeRange.split('-').map(Number)
             if (altitudeMin != null && altitudeMax != null) {
                 try {
+                    // eslint-disable-next-line max-len
                     const response = await axios.get(`http://localhost:3000/api/buscaHcfsPorAltitude/${altitudeMin}/${altitudeMax}`)
-                    const { resultados } = response.data
+                    const { resultados, total } = response.data
 
                     if (resultados.length > 0) {
                         setMarkers(resultados)
+                        setTotalRegistros(total)
                         setCenter([resultados[0].latitude, resultados[0].longitude])
                         setErrorMessage(null)
                     } else {
-                        setErrorMessage('Nenhum HCF encontrado para os valores de altitude especificados.')
                         setMarkers([])
+                        setTotalRegistros(0)
+                        setErrorMessage('Nenhum HCF encontrado para os valores de altitude especificados.')
                     }
                 } catch (error) {
-                    setErrorMessage('Erro ao buscar dados. Tente novamente.')
                     setMarkers([])
+                    setTotalRegistros(0)
+                    setErrorMessage('Erro ao buscar dados. Tente novamente.')
                 }
             } else {
                 setErrorMessage('Por favor, insira um intervalo de altitude válido (ex: 1800-2000).')
             }
-        } else {
-            setErrorMessage('Por favor, insira um número HCF ou valores de altitude.')
         }
     }
 
     const handleClear = () => {
         setCenter(initialCenter)
-        setMarkerPosition(null)
         setHcfNumber(null)
         setAltitudeRange('')
         setErrorMessage(null)
         setHcfData(null)
         setMarkers([])
+        setTotalRegistros(0)
+        clusterMarkersRef.current.clearLayers()
     }
 
     return (
         <div style={{ padding: '1rem' }}>
-            <Card title="Filtros do mapa" style={{ marginBottom: '1rem' }}>
+            <Card title="Filtros do mapa" style={{ marginBottom: '1rem font-weight: bold' }}>
                 <Form layout="vertical">
                     <Row gutter={16}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
@@ -155,7 +178,17 @@ const FiltrosMapa = () => {
                                     onChange={e => setAltitudeRange(e.target.value)}
                                     style={{ width: '100%' }}
                                 />
+                                {totalRegistros > 0 && (
+                                    <Text style={{ display: 'block', marginTop: '8px', color: '#8c8c8c' }}>
+                                        Foram encontrados
+                                        {' '}
+                                        {totalRegistros}
+                                        {' '}
+                                        registros.
+                                    </Text>
+                                )}
                             </Form.Item>
+
                         </Col>
                     </Row>
                     <Row gutter={16}>
@@ -203,24 +236,19 @@ const FiltrosMapa = () => {
                     center={center}
                     zoom={13}
                     zoomControl={false}
-                    minZoom={0}
-                    maxZoom={18}
                 >
                     <Suspense fallback={<div>Carregando...</div>}>
                         <MapControls />
                     </Suspense>
                     <RecenterMap lat={center[0]} lng={center[1]} />
-                    {markerPosition && hcfData && (
-                        <PontoMarcador latitude={markerPosition[0]} longitude={markerPosition[1]} hcf={hcfData.hcf} />
+                    <ClusterLayer markers={markers} clusterGroup={clusterMarkersRef.current} />
+                    {hcfData && hcfData.latitude && hcfData.longitude && (
+                        <Marker position={[hcfData.latitude, hcfData.longitude]} icon={icon}>
+                            <Popup>
+                                <PopupContentGreen hcf={hcfData.hcf} />
+                            </Popup>
+                        </Marker>
                     )}
-                    {markers.map(marker => (
-                        <PontoMarcador
-                            key={marker.hcf}
-                            latitude={marker.latitude}
-                            longitude={marker.longitude}
-                            hcf={marker.hcf}
-                        />
-                    ))}
                 </MapContainer>
             </div>
         </div>
