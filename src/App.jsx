@@ -15,7 +15,7 @@ import {
 import MainLayout from './layouts/MainLayout'
 import DetalhesTomboScreen from './pages/DetalhesTomboScreen'
 import FichaTomboScreen from './pages/FichaTomboScreen'
-import filtrosMapa from './pages/filtrosMapa'
+import filtrosMapa from './pages/FiltrosMapa'
 import InicioScreen from './pages/InicioScreen'
 import ListaHerbariosScreen from './pages/ListaHerbariosScreen'
 import ListaIdentificadoresScreen from './pages/ListaIdentificadoresScreen'

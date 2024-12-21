@@ -210,15 +210,15 @@ export default class MainLayout extends Component {
                             title={(
                                 <span>
                                     <EnvironmentOutlined />
-                                    <span>Mapa</span>
+                                    <span>Geolocalização</span>
                                 </span>
                             )}
                         >
                             <Menu.Item key="18">
-                                <Link to="/mapa">Mapa</Link>
+                                <Link to="/mapa">Mapa Completo</Link>
                             </Menu.Item>
                             <Menu.Item key="19">
-                                <Link to="/filtros">Filtros</Link>
+                                <Link to="/filtros">Filtros Avançados</Link>
                             </Menu.Item>
                         </SubMenu>
                         {isCuradorOuOperador() ? (
