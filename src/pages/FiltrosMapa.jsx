@@ -26,7 +26,6 @@ const icon = new L.Icon({
     iconSize: new L.Point(20, 40)
 })
 
-// Componente para recentralizar o mapa
 function RecenterMap({ lat, lng }) {
     const map = useMap()
     useEffect(() => {
@@ -37,7 +36,6 @@ function RecenterMap({ lat, lng }) {
     return null
 }
 
-// Camada de cluster para múltiplos marcadores
 function ClusterLayer({ markers, clusterGroup }) {
     const map = useMap()
 
@@ -71,9 +69,8 @@ function ClusterLayer({ markers, clusterGroup }) {
     return null
 }
 
-// Componente principal
 const FiltrosMapa = () => {
-    const initialCenter = [-24.0438, -52.3811] // Coordenadas de Campo Mourão
+    const initialCenter = [-24.0438, -52.3811]
     const [center, setCenter] = useState(initialCenter)
     const [markers, setMarkers] = useState([])
     const [hcfData, setHcfData] = useState(null)
@@ -82,13 +79,14 @@ const FiltrosMapa = () => {
     const [totalRegistros, setTotalRegistros] = useState(0)
 
     const handleSearch = async filters => {
-        console.log('🔍 Filtros aplicados:', filters)
+        // console.log('Filtros aplicados:', filters)
 
-        const { hcf, altitudeMin, altitudeMax } = filters
+        const {
+            hcf, altitudeMin, altitudeMax, taxonomia
+        } = filters
 
         try {
             if (hcf) {
-                console.log(`📡 Buscando HCF: ${hcf}`)
                 const response = await axios.get(`http://localhost:3000/api/buscaHCF/${hcf}`)
                 const { latitude, longitude, cidade } = response.data
 
@@ -108,7 +106,6 @@ const FiltrosMapa = () => {
                     return
                 }
 
-                console.log(`📡 Buscando por Altitude: ${altitudeMin} - ${altitudeMax}`)
                 const response = await axios.get(
                     `http://localhost:3000/api/buscaHcfsPorAltitude/${altitudeMin}/${altitudeMax}`
                 )
@@ -119,7 +116,6 @@ const FiltrosMapa = () => {
                     setMarkers(resultados)
                     setCenter([resultados[0].latitude, resultados[0].longitude])
                     setErrorMessage(null)
-                    console.log(`✅ ${total} resultados encontrados.`)
                 } else {
                     setMarkers([])
                     setTotalRegistros(0)
@@ -128,9 +124,48 @@ const FiltrosMapa = () => {
                 return
             }
 
+            if (taxonomia && taxonomia.length > 0) {
+                const taxonomyParams = {}
+                taxonomia.forEach(taxonomy => {
+                    const paramKey = `nome${taxonomy.replace(/\s+/g, '').normalize('NFD')
+                        .replace(/[\u0300-\u036f]/g, '')}`
+                    if (filters[`taxonomia_${taxonomy}`]) {
+                        taxonomyParams[paramKey] = filters[`taxonomia_${taxonomy}`]
+                    }
+                })
+
+                if (Object.keys(taxonomyParams).length === 0) {
+                    setErrorMessage('Pelo menos um valor de taxonomia deve ser preenchido.')
+                    return
+                }
+
+                try {
+                    const queryString = new URLSearchParams(taxonomyParams).toString()
+
+                    // eslint-disable-next-line max-len
+                    const response = await axios.get(`http://localhost:3000/api/pontosTaxonomiaComFiltros?${queryString}`)
+                    const { resultados, total } = response.data
+
+                    if (resultados.length > 0) {
+                        setMarkers(resultados)
+                        setTotalRegistros(total)
+                        setCenter([resultados[0].latitude, resultados[0].longitude])
+                        setErrorMessage(null)
+                    } else {
+                        setMarkers([])
+                        setTotalRegistros(0)
+                        setErrorMessage('Nenhum ponto encontrado para os filtros de taxonomia especificados.')
+                    }
+                } catch (error) {
+                    setErrorMessage(error.response?.data?.message || 'Revise os dados e tente novamente.')
+                    setTotalRegistros(0)
+                }
+                return
+            }
+
             setErrorMessage('Nenhum filtro válido foi aplicado.')
+            setTotalRegistros(0)
         } catch (error) {
-            console.error('Erro na busca:', error)
             setErrorMessage('Erro ao buscar dados. Tente novamente.')
         }
     }
@@ -147,7 +182,6 @@ const FiltrosMapa = () => {
     return (
         <div style={{ padding: '1rem' }}>
             <FiltersMap onSearch={handleSearch} onClear={handleClear} />
-            {/* Mensagem de erro */}
             {errorMessage && (
                 <div style={{ marginTop: '1rem', color: 'red' }}>
                     {errorMessage}
@@ -160,7 +194,7 @@ const FiltrosMapa = () => {
                     {' '}
                     <strong>{totalRegistros}</strong>
                     {' '}
-                    registros no intervalo especificado.
+                    registros com geolocalização para os filtros aplicados.
                 </div>
             )}
             <div style={{ width: '100%', height: '500px' }}>

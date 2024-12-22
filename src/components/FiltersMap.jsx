@@ -83,14 +83,6 @@ const FiltersMap = ({ onSearch, onClear }) => {
     const handleTaxonomyChange = selectedTaxonomies => {
         const updatedFilters = { ...filterValues, taxonomia: selectedTaxonomies }
 
-        // Remove entradas de taxonomias desmarcadas
-        Object.keys(updatedFilters).forEach(key => {
-            if (key.startsWith('taxonomia_') && !selectedTaxonomies.includes(key.replace('taxonomia_', ''))) {
-                delete updatedFilters[key]
-            }
-        })
-
-        // Adiciona entradas para taxonomias selecionadas
         selectedTaxonomies.forEach(taxonomy => {
             if (!updatedFilters[`taxonomia_${taxonomy}`]) {
                 updatedFilters[`taxonomia_${taxonomy}`] = ''
@@ -107,13 +99,11 @@ const FiltersMap = ({ onSearch, onClear }) => {
         })
         setFilterValues(resetValues)
 
-        // Chama a função de limpar o mapa
         onClear()
     }
 
     return (
         <Card title="Filtros do Mapa" style={{ marginBottom: '1rem' }}>
-            {/* Dropdown para adicionar filtros */}
             <Dropdown
                 overlay={(
                     <Menu>
@@ -129,7 +119,6 @@ const FiltersMap = ({ onSearch, onClear }) => {
                 <Button icon={<PlusCircleOutlined />}>Adicionar Filtro</Button>
             </Dropdown>
 
-            {/* Filtros selecionados */}
             <Collapse style={{ marginTop: '1rem' }}>
                 {selectedFilters.map(key => {
                     const filter = availableFilters.find(f => f.key === key)
@@ -152,7 +141,6 @@ const FiltersMap = ({ onSearch, onClear }) => {
                                 <Form.Item>
                                     {filter?.component}
                                 </Form.Item>
-                                {/* Inputs individuais para cada taxonomia selecionada */}
                                 {filterValues.taxonomia?.map(taxonomy => (
                                     <Form.Item
                                         key={`taxonomia_${taxonomy}`}
@@ -165,6 +153,7 @@ const FiltersMap = ({ onSearch, onClear }) => {
                                         />
                                     </Form.Item>
                                 ))}
+
                             </Panel>
                         )
                     }
@@ -200,7 +189,7 @@ const FiltersMap = ({ onSearch, onClear }) => {
                 <Button
                     type="primary"
                     onClick={() => {
-                        console.log('🔍 Enviando filtros para onSearch:', filterValues)
+                        // console.log('Enviando filtros para onSearch:', filterValues)
                         onSearch(filterValues)
                     }}
                 >
