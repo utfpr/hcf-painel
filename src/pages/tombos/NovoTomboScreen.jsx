@@ -33,6 +33,7 @@ import IdentificadorFormField from './components/IdentificadorFormField'
 import InputFormField from './components/InputFormField'
 import LatLongFormField from './components/LatLongFormField'
 import PaisFormField from './components/PaisFormField'
+import ReinoFormField from './components/ReinoFormField'
 import RelevoFormField from './components/RelevoFormField'
 import SoloFormField from './components/SoloFormField'
 import SubespecieFormField from './components/SubespecieFormField'
@@ -138,6 +139,7 @@ class NovoTomboScreen extends Component {
             paises: [],
             estados: [],
             cidades: [],
+            reinos: [],
             familias: [],
             subfamilias: [],
             autores: [],
@@ -160,6 +162,7 @@ class NovoTomboScreen extends Component {
             paisInicial: '',
             estadoInicial: '',
             cidadeInicial: '',
+            reinoInicial: '',
             familiaInicial: '',
             subfamiliaInicial: '',
             generoInicial: '',
@@ -197,6 +200,7 @@ class NovoTomboScreen extends Component {
             loading: true
         })
         this.requisitaDadosFormulario()
+        this.requisitaReinos()
     }
 
     handleRequisicao = values => {
@@ -232,7 +236,6 @@ class NovoTomboScreen extends Component {
     }
 
     encontraAutor = (lista, valorSelecionado, campoTaxonomiaAutor) => {
-        console.log({ lista, valorSelecionado, campoTaxonomiaAutor })
         if ((!valorSelecionado && !lista) || Number.isNaN(valorSelecionado)) return
 
         const itemEncontrado = lista.find(item => item.id === Number(valorSelecionado))
@@ -337,7 +340,8 @@ class NovoTomboScreen extends Component {
         this.requisitaNumeroHcf()
         this.setState({
             ...this.state,
-            ...dados
+            ...dados,
+            familias: []
         })
 
         if (match.params.tombo_id) {
@@ -453,13 +457,17 @@ class NovoTomboScreen extends Component {
     handleSubmitIdentificador = e => {
         e.preventDefault()
         const {
-            familia, subfamilia, genero, especie, subespecie, variedade
+            reino, familia, subfamilia, genero, especie, subespecie, variedade
         } = this.props.form.getFieldsValue()
         if ((familia || subfamilia || genero || especie || subespecie || variedade)) {
             this.setState({
                 loading: true
             })
             const json = {}
+
+            if (reino) {
+                json.reino_id = reino
+            }
             if (familia) {
                 json.familia_id = familia
             }
@@ -766,13 +774,55 @@ class NovoTomboScreen extends Component {
             })
     }
 
-    requisitaFamilias = () => {
+    requisitaReinos = () => {
+        this.setState({
+            loading: true
+        })
+        axios.get('/reinos', {
+            params: {
+                limite: 9999999999
+            }
+        })
+            .then(response => {
+                this.setState({
+                    loading: false
+                })
+                if (response.status === 200) {
+                    this.setState({
+                        reinos: response.data.resultado
+                    })
+                } else {
+                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar reinos, tente novamente.')
+                }
+            })
+            .catch(err => {
+                this.setState({
+                    loading: false
+                })
+                const { response } = err
+                if (response && response.data) {
+                    if (response.status === 400 || response.status === 422) {
+                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                    } else {
+                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar a listagem dos reinos, tente novamente.')
+                    }
+                    const { error } = response.data
+                    throw new Error(error.message)
+                } else {
+                    throw err
+                }
+            })
+            .catch(this.catchRequestError)
+    }
+
+    requisitaFamilias = reinoId => {
         this.setState({
             loading: true
         })
         axios.get('/familias', {
             params: {
-                limite: 9999999999
+                limite: 9999999999,
+                reino_id: reinoId
             }
         })
             .then(response => {
@@ -2043,7 +2093,7 @@ class NovoTomboScreen extends Component {
         const {
             altitude, autorEspecie, autorVariedade, autoresSubespecie, cidade, coletores, coletoresComplementares, complemento,
             dataColetaAno, dataColetaDia, dataColetaMes, dataIdentAno, dataIdentDia, dataIdentMes,
-            especie, familia, fases, genero, identificador, latitude, localidadeCor, longitude,
+            especie, reino, familia, fases, genero, identificador, latitude, localidadeCor, longitude,
             nomePopular, numColeta, observacoesColecaoAnexa, observacoesTombo, relevo, solo,
             subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao
         } = values
@@ -2057,6 +2107,7 @@ class NovoTomboScreen extends Component {
         if (dataColetaAno) json.principal.data_coleta = { ...json.principal.data_coleta, ano: dataColetaAno }
         if (tipo) json.principal.tipo_id = tipo
         json.principal.cor = localidadeCor
+        if (reino) json.taxonomia = { reino_id: reino }
         if (familia) json.taxonomia = { ...json.taxonomia, familia_id: familia }
         if (genero) json.taxonomia = { ...json.taxonomia, genero_id: genero }
         if (subfamilia) json.taxonomia = { ...json.taxonomia, sub_familia_id: subfamilia }
@@ -2547,7 +2598,7 @@ class NovoTomboScreen extends Component {
 
     renderFamiliaTombo = getFieldDecorator => {
         const {
-            familiaInicial, familias, generoInicial, generos, search,
+            reinoInicial, familiaInicial, reinos, familias, generoInicial, generos, search,
             especieInicial, especies, subespecieInicial, subespecies,
             variedadeInicial, variedades, subfamiliaInicial, subfamilias
         } = this.state
@@ -2569,6 +2620,52 @@ class NovoTomboScreen extends Component {
                 </Row>
                 <br />
                 <Row gutter={8}>
+                    <ReinoFormField
+                        initialValue={String(reinoInicial)}
+                        reinos={reinos}
+                        getFieldDecorator={getFieldDecorator}
+                        onChange={value => {
+                            this.requisitaFamilias(value)
+                            this.setState({
+                                search: {
+                                    familia: 'validating'
+                                },
+                                autorSubfamilia: '',
+                                autorEspecie: '',
+                                autorSubespecie: '',
+                                autorVariedade: ''
+                            })
+                            this.props.form.setFields({
+                                familia: {
+                                    value: ''
+                                },
+                                subfamilia: {
+                                    value: ''
+                                },
+                                genero: {
+                                    value: ''
+                                },
+                                especie: {
+                                    value: ''
+                                },
+                                subespecie: {
+                                    value: ''
+                                },
+                                variedade: {
+                                    value: ''
+                                }
+                            })
+                        }}
+                        onClickAddMore={() => {
+                            this.setState({
+                                formulario: {
+                                    desc: 'do novo reino',
+                                    tipo: 1
+                                },
+                                visibleModal: true
+                            })
+                        }}
+                    />
                     <FamiliaFormField
                         initialValue={String(familiaInicial)}
                         familias={familias}
@@ -2614,6 +2711,9 @@ class NovoTomboScreen extends Component {
                             })
                         }}
                     />
+                </Row>
+                <br />
+                <Row gutter={8}>
                     <SubfamiliaFormField
                         initialValue={String(subfamiliaInicial)}
                         subfamilias={subfamilias}
@@ -2631,9 +2731,6 @@ class NovoTomboScreen extends Component {
                             })
                         }}
                     />
-                </Row>
-                <br />
-                <Row gutter={8}>
                     <GeneroFormField
                         initialValue={String(generoInicial)}
                         generos={generos}
@@ -2671,6 +2768,9 @@ class NovoTomboScreen extends Component {
                             })
                         }}
                     />
+                </Row>
+                <br />
+                <Row gutter={8}>
                     <EspecieFormField
                         initialValue={String(especieInicial)}
                         especies={especies}
@@ -2711,9 +2811,6 @@ class NovoTomboScreen extends Component {
                             })
                         }}
                     />
-                </Row>
-                <br />
-                <Row gutter={8}>
                     <SubespecieFormField
                         initialValue={String(subespecieInicial)}
                         subespecies={subespecies}
@@ -2738,6 +2835,9 @@ class NovoTomboScreen extends Component {
                             })
                         }}
                     />
+                </Row>
+                <br />
+                <Row gutter={8}>
                     <VariedadeFormField
                         initialValue={String(variedadeInicial)}
                         variedades={variedades}

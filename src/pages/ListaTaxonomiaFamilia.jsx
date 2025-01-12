@@ -2,7 +2,8 @@ import { Component } from 'react'
 
 import {
     Divider, Modal, Card, Row, Col,
-    Input, Button, notification
+    Input, Button, notification,
+    Select
 } from 'antd'
 import axios from 'axios'
 
@@ -17,6 +18,8 @@ import { isCuradorOuOperador } from '../helpers/usuarios'
 const { confirm } = Modal
 const FormItem = Form.Item
 
+const { Option } = Select
+
 const columns = [
     {
         title: 'Família',
@@ -24,7 +27,15 @@ const columns = [
         key: 'familia',
         dataIndex: 'familia',
         sorter: true,
-        width: '93%'
+        width: '46.5%'
+    },
+    {
+        title: 'Reino',
+        type: 'text',
+        key: 'reino',
+        dataIndex: 'reino',
+        sorter: true,
+        width: '46.5%'
     },
     {
         title: 'Ação',
@@ -37,6 +48,7 @@ class ListaTaxonomiaFamilia extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            reinos: [],
             familias: [],
             metadados: {},
             pagina: 1,
@@ -99,6 +111,7 @@ class ListaTaxonomiaFamilia extends Component {
 
     componentDidMount() {
         this.requisitaListaFamilia({}, this.state.pagina)
+        this.requisitaReinos()
     }
 
     gerarAcao(item) {
@@ -141,6 +154,7 @@ class ListaTaxonomiaFamilia extends Component {
     formataDadosFamilia = familias => familias.map(item => ({
         key: item.id,
         familia: item.nome,
+        reino: item.reino?.nome,
         acao: this.gerarAcao(item)
     }))
 
@@ -350,6 +364,28 @@ class ListaTaxonomiaFamilia extends Component {
         )
     }
 
+    requisitaReinos = () => {
+        axios.get('/reinos', {
+            params: {
+                limite: 9999999
+            }
+        })
+            .then(response => {
+                if (response.status === 200) {
+                    this.setState({
+                        reinos: response.data.resultado
+                    })
+                }
+            })
+            .catch(err => {
+                const { response } = err
+                if (response && response.data) {
+                    const { error } = response.data
+                    console.error(error.message)
+                }
+            })
+    }
+
     renderAdd = () => {
         if (isCuradorOuOperador()) {
             return (
@@ -371,6 +407,10 @@ class ListaTaxonomiaFamilia extends Component {
         }
         return undefined
     }
+
+    optionReino = () => this.state.reinos.map(item => (
+        <Option value={item.id}>{item.nome}</Option>
+    ))
 
     renderFormulario() {
         const { getFieldDecorator } = this.props.form
@@ -408,6 +448,28 @@ class ListaTaxonomiaFamilia extends Component {
 
                         <div>
                             <Row gutter={8}>
+                                <Col span={24}>
+                                    <span>Nome do reino:</span>
+                                </Col>
+                            </Row>
+                            <Row gutter={8}>
+                                <Col span={24}>
+                                    <FormItem>
+                                        {getFieldDecorator('nomeReino')(
+                                            <Select
+                                                showSearch
+                                                style={{ width: '100%' }}
+                                                placeholder="Selecione um reino"
+                                                optionFilterProp="children"
+                                            >
+
+                                                {this.optionReino()}
+                                            </Select>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                            </Row>
+                            <Row gutter={8} style={{ marginTop: 16 }}>
                                 <Col span={24}>
                                     <span>Informe o nome da família:</span>
                                 </Col>
