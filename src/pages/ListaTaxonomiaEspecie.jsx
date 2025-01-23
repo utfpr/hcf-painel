@@ -6,6 +6,7 @@ import {
 } from 'antd'
 import axios from 'axios'
 
+import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
@@ -21,23 +22,36 @@ const columns = [
     {
         title: 'Espécie',
         type: 'text',
-        key: 'especie'
+        key: 'especie',
+        dataIndex: 'especie',
+        width: '23.2%',
+        sorter: true
     },
     {
         title: 'Família',
-        key: 'familia'
+        key: 'familia',
+        dataIndex: 'familia',
+        width: '23.2%',
+        sorter: true
     },
     {
         title: 'Gênero',
-        key: 'genero'
+        key: 'genero',
+        dataIndex: 'genero',
+        width: '23.2%',
+        sorter: true
     },
     {
         title: 'Autor',
-        key: 'autor'
+        key: 'autor',
+        dataIndex: 'autor',
+        width: '23.2%',
+        sorter: true
     },
     {
         title: 'Ação',
-        key: 'acao'
+        key: 'acao',
+        width: 100
     }
 ]
 
@@ -130,10 +144,10 @@ class ListaTaxonomiaEspecie extends Component {
                                     value: item.nome
                                 },
                                 nomeGenero: {
-                                    value: item.genero_id
+                                    value: { key: item.genero.id, label: item.genero.nome }
                                 },
                                 nomeAutor: {
-                                    value: item.autor_id
+                                    value: { key: item.autor.id, label: item.autor.nome }
                                 }
                             })
                             this.setState({
@@ -171,10 +185,14 @@ class ListaTaxonomiaEspecie extends Component {
         autor: item.autor?.nome
     }))
 
-    requisitaListaEspecie = (valores, pg, pageSize) => {
+    requisitaListaEspecie = (valores, pg, pageSize, sorter) => {
+        const campo = sorter && sorter.field ? sorter.field : 'especie'
+        const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
+
         const params = {
             pagina: pg,
-            limite: pageSize || 20
+            limite: pageSize || 20,
+            order: `${campo}:${ordem}`
         }
 
         if (valores) {
@@ -447,7 +465,12 @@ class ListaTaxonomiaEspecie extends Component {
 
                     <Row style={{ marginTop: 32 }}>
                         <Col span={24}>
-                            <Row type="flex" justify="end" gutter={16}>
+                            <Row align="middle" type="flex" justify="end" gutter={16}>
+                                <Col xs={24} sm={8} md={12} lg={16} xl={16}>
+                                    <TotalRecordFound
+                                        total={this.state.metadados?.total}
+                                    />
+                                </Col>
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
                                     <FormItem>
                                         <Button
@@ -605,16 +628,16 @@ class ListaTaxonomiaEspecie extends Component {
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
                 <SimpleTableComponent
-                    columns={columns}
+                    columns={isCuradorOuOperador() ? columns : columns.filter(column => column.key !== 'acao')}
                     data={this.state.especies}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
-                    changePage={(pg, pageSize) => {
+                    changePage={(pg, pageSize, sorter) => {
                         this.setState({
                             pagina: pg,
                             loading: true
                         })
-                        this.requisitaListaEspecie(this.state.valores, pg, pageSize)
+                        this.requisitaListaEspecie(this.state.valores, pg, pageSize, sorter)
                     }}
                 />
                 <Divider dashed />
@@ -623,13 +646,6 @@ class ListaTaxonomiaEspecie extends Component {
     }
 
     render() {
-        if (this.state.loading) {
-            return (
-                <Spin tip="Carregando...">
-                    {this.renderFormulario()}
-                </Spin>
-            )
-        }
         return (
             this.renderFormulario()
         )

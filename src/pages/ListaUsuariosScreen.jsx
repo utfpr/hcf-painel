@@ -7,6 +7,7 @@ import {
 import axios from 'axios'
 import { Link } from 'react-router-dom'
 
+import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 
@@ -23,31 +24,37 @@ const columns = [
     {
         title: 'Nome',
         type: 'text',
-        key: 'nome'
+        key: 'nome',
+        width: 300
     },
     {
         title: 'Tipo',
         type: 'text',
-        key: 'tipo'
+        key: 'tipo',
+        width: 300
     },
     {
         title: 'E-mail',
         type: 'text',
-        key: 'email'
+        key: 'email',
+        width: 300
     },
     {
         title: 'Telefone',
         type: 'text',
-        key: 'telefone'
+        key: 'telefone',
+        width: 300
     },
     {
         title: 'Data de criação',
         type: 'text',
-        key: 'dataCriacao'
+        key: 'dataCriacao',
+        width: 300
     },
     {
         title: 'Ação',
-        key: 'acao'
+        key: 'acao',
+        width: 100
     }
 
 ]
@@ -235,7 +242,7 @@ class ListaUsuariosScreen extends Component {
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('tipo')(
-                                        <Select initialValue="2">
+                                        <Select placeholder="Selecione" allowClear>
                                             <Option value="1">Curador</Option>
                                             <Option value="2">Operador</Option>
                                             <Option value="3">Identificador</Option>
@@ -261,7 +268,12 @@ class ListaUsuariosScreen extends Component {
                     </Row>
                     <Row>
                         <Col span={24}>
-                            <Row type="flex" justify="end" gutter={4}>
+                            <Row align="middle" type="flex" justify="end" gutter={16}>
+                                <Col xs={24} sm={8} md={12} lg={16} xl={16}>
+                                    <TotalRecordFound
+                                        total={this.state.metadados?.total}
+                                    />
+                                </Col>
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
                                     <FormItem>
                                         <Button

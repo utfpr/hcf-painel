@@ -6,6 +6,7 @@ import {
 } from 'antd'
 import axios from 'axios'
 
+import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
@@ -21,19 +22,29 @@ const columns = [
     {
         title: 'Subfamília',
         type: 'text',
-        key: 'subfamilia'
+        key: 'subfamilia',
+        dataIndex: 'subfamilia',
+        width: '31%',
+        sorter: true
     },
     {
         title: 'Família',
-        key: 'familia'
+        key: 'familia',
+        dataIndex: 'familia',
+        width: '31%',
+        sorter: true
     },
     {
         title: 'Autor',
-        key: 'autor'
+        key: 'autor',
+        dataIndex: 'autor',
+        width: '31%',
+        sorter: true
     },
     {
         title: 'Ação',
-        key: 'acao'
+        key: 'acao',
+        width: 100
     }
 ]
 
@@ -120,7 +131,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                                     value: item.nome
                                 },
                                 nomeFamilia: {
-                                    value: item.familia_id
+                                    value: { key: item.familia.id, label: item.familia.nome }
                                 }
                             })
                             this.setState({
@@ -157,10 +168,14 @@ class ListaTaxonomiaSubfamilia extends Component {
         acao: this.gerarAcao(item)
     }))
 
-    requisitaListaSubfamilia = (valores, pg, pageSize) => {
+    requisitaListaSubfamilia = (valores, pg, pageSize, sorter) => {
+        const campo = sorter && sorter.field ? sorter.field : 'subfamilia'
+        const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
+
         const params = {
             pagina: pg,
-            limite: pageSize || 20
+            limite: pageSize || 20,
+            order: `${campo}:${ordem}`
         }
 
         if (valores !== undefined) {
@@ -379,7 +394,12 @@ class ListaTaxonomiaSubfamilia extends Component {
 
                     <Row style={{ marginTop: 32 }}>
                         <Col span={24}>
-                            <Row type="flex" justify="end" gutter={16}>
+                            <Row align="middle" type="flex" justify="end" gutter={16}>
+                                <Col xs={24} sm={8} md={12} lg={16} xl={16}>
+                                    <TotalRecordFound
+                                        total={this.state.metadados?.total}
+                                    />
+                                </Col>
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
                                     <FormItem>
                                         <Button
@@ -511,16 +531,16 @@ class ListaTaxonomiaSubfamilia extends Component {
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
                 <SimpleTableComponent
-                    columns={columns}
+                    columns={isCuradorOuOperador() ? columns : columns.filter(column => column.key !== 'acao')}
                     data={this.state.subfamilias}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
-                    changePage={(pg, pageSize) => {
+                    changePage={(pg, pageSize, sorter) => {
                         this.setState({
                             pagina: pg,
                             loading: true
                         })
-                        this.requisitaListaSubfamilia(this.state.valores, pg, pageSize)
+                        this.requisitaListaSubfamilia(this.state.valores, pg, pageSize, sorter)
                     }}
                 />
                 <Divider dashed />
@@ -529,13 +549,6 @@ class ListaTaxonomiaSubfamilia extends Component {
     }
 
     render() {
-        if (this.state.loading) {
-            return (
-                <Spin tip="Carregando...">
-                    {this.renderFormulario()}
-                </Spin>
-            )
-        }
         return (
             this.renderFormulario()
         )

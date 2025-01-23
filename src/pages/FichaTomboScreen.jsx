@@ -6,30 +6,35 @@ import {
 } from 'antd'
 import axios from 'axios'
 
+import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import { PrinterOutlined, SearchOutlined } from '@ant-design/icons'
 
 import SimpleTableComponent from '../components/SimpleTableComponent'
-import { baseUrl } from '../config/api'
+import { baseUrl, fichaTomboUrl } from '../config/api'
 
 const FormItem = Form.Item
 
 const columns = [
     {
         title: 'HCF',
-        key: 'hcf'
+        key: 'hcf',
+        width: 100
     },
     {
         title: 'Data coleta',
-        key: 'data_coleta'
+        key: 'data_coleta',
+        width: 500
     },
     {
         title: 'Nome científico',
-        key: 'nome_cientifico'
+        key: 'nome_cientifico',
+        width: 500
     },
     {
         title: 'Ação',
-        key: 'acao'
+        key: 'acao',
+        width: 100
     }
 ]
 
@@ -70,10 +75,11 @@ class FichaTomboScreen extends Component {
 
     geraColunaAcao = tombo => (
         <div>
-            <a target="_blank" rel="noreferrer" href={`${baseUrl}/api/fichas/tombos/${tombo.hcf}/1`} title="Imprimir ficha com código de barras">
+            <a target="_blank" rel="noreferrer" href={`${fichaTomboUrl}/fichas/tombos/${tombo.hcf}/1`} title="Imprimir ficha com código de barras">
                 <PrinterOutlined style={{ color: '#277a01' }} />
             </a>
-            <a target="_blank" rel="noreferrer" href={`${baseUrl}/api/fichas/tombos/${tombo.hcf}/0`} title="Imprimir ficha sem código de barras">
+            <Divider type="vertical" />
+            <a target="_blank" rel="noreferrer" href={`${fichaTomboUrl}/fichas/tombos/${tombo.hcf}/0`} title="Imprimir ficha sem código de barras">
                 <PrinterOutlined style={{ color: '#0066ff' }} />
             </a>
         </div>
@@ -173,6 +179,12 @@ class FichaTomboScreen extends Component {
                         <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
                             Pesquisar
                         </Button>
+                    </Col>
+
+                    <Col xs={24} sm={8} md={12} lg={16} xl={16} style={{ marginTop: 16 }}>
+                        <TotalRecordFound
+                            total={this.state.metadados?.total}
+                        />
                     </Col>
                 </Row>
                 <Divider dashed />

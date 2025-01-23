@@ -5,9 +5,13 @@ import {
     Col,
     Divider,
     notification,
-    Spin
+    Spin,
+    Button
 } from 'antd'
 import axios from 'axios'
+import { Link } from 'react-router-dom'
+
+import { isCuradorOuOperadorOuIdentificador } from '@/helpers/usuarios'
 
 import GalleryComponent from '../components/GalleryComponent'
 import LeafletMap from '../components/LeafletMap'
@@ -55,11 +59,10 @@ export default class DetalhesTomboScreen extends Component {
                         'Houve um problema ao buscar os dados do tombo, tente novamente.'
                     )
                 }
-                if (response.data.coletores) {
-                    let coletores = ''
-                    coletores = response.data.coletores.map(coletor => `${coletores}${coletor.nome},`).toString()
+
+                if (response.data.coletor) {
                     this.setState({
-                        nomesColetores: coletores
+                        nomesColetores: response.data.coletor.nome
                     })
                 }
             })
@@ -90,7 +93,17 @@ export default class DetalhesTomboScreen extends Component {
         if (tombo) {
             return (
                 <div>
-                    <Row gutter={8} style={{ marginBottom: '20px' }}>
+                    {isCuradorOuOperadorOuIdentificador()
+                        ? (
+                            <Link to={`/tombos/${this.props.match.params.tombo_id}`}>
+                                <Button type="primary">
+                                    Editar Tombo
+                                </Button>
+                            </Link>
+                        )
+                        : null}
+                    <Row gutter={8} style={{ margin: '20px 0' }}>
+
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
                                 <h4>Número de tombo:</h4>
@@ -348,7 +361,7 @@ export default class DetalhesTomboScreen extends Component {
                             <Col span={24}>
                                 <span>
                                     {' '}
-                                    { tombo.localizacao.longitude ? decimalParaGrausMinutosSegundos(tombo.localizacao.longitude, true, true) : ''}
+                                    {tombo.localizacao.longitude ? decimalParaGrausMinutosSegundos(tombo.localizacao.longitude, true, true) : ''}
                                     {' '}
                                 </span>
                             </Col>
@@ -641,7 +654,11 @@ export default class DetalhesTomboScreen extends Component {
                 {this.renderComments()}
                 <Divider dashed />
 
-                <LeafletMap lat={tombo.localizacao.latitude} lng={tombo.localizacao.longitude} />
+                <LeafletMap
+                    lat={tombo.localizacao.latitude}
+                    lng={tombo.localizacao.longitude}
+                    hcf={tombo.hcf}
+                />
             </div>
         )
     }

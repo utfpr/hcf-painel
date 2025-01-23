@@ -184,15 +184,19 @@ class NovoTomboScreen extends Component {
             fotosTeste: [],
             codigoBarras: '',
             dadosFormulario: {},
-            editing: Boolean(this.props.match.params.tombo_id)
+            editing: Boolean(this.props.match.params.tombo_id),
+            autorSubfamilia: '',
+            autorEspecie: '',
+            autorSubespecie: '',
+            autorVariedade: ''
         }
     }
 
     componentDidMount() {
-        this.requisitaDadosFormulario()
         this.setState({
             loading: true
         })
+        this.requisitaDadosFormulario()
     }
 
     handleRequisicao = values => {
@@ -207,6 +211,12 @@ class NovoTomboScreen extends Component {
 
     onEditarTomboComSucesso = response => {
         const { data } = response
+
+        this.encontraAutor(data.subfamilias, data.subfamiliaInicial, 'autorSubfamilia')
+        this.encontraAutor(data.especies, data.especieInicial, 'autorEspecie')
+        this.encontraAutor(data.subespecies, data.subespecieInicial, 'autorSubespecie')
+        this.encontraAutor(data.variedades, data.variedadeInicial, 'autorVariedade')
+
         this.setState(prevState => ({
             ...prevState,
             loading: false,
@@ -219,6 +229,17 @@ class NovoTomboScreen extends Component {
                 identificadorInicial: data.identificacao.usuario_id
             })
         }
+    }
+
+    encontraAutor = (lista, valorSelecionado, campoTaxonomiaAutor) => {
+        console.log({ lista, valorSelecionado, campoTaxonomiaAutor })
+        if ((!valorSelecionado && !lista) || Number.isNaN(valorSelecionado)) return
+
+        const itemEncontrado = lista.find(item => item.id === Number(valorSelecionado))
+
+        this.setState({
+            [campoTaxonomiaAutor]: itemEncontrado?.autor?.nome || ''
+        })
     }
 
     criaCodigoBarrasSemFotos = emVivo => {
@@ -302,7 +323,7 @@ class NovoTomboScreen extends Component {
         this.defaultRequest(
             null,
             requisitaDadosEdicaoService,
-            'Dados editados com sucesso',
+            '',
             'Houve um problema ao editar os dados do tombo, tente novamente.',
             this.onEditarTomboComSucesso,
             id
@@ -310,19 +331,26 @@ class NovoTomboScreen extends Component {
     }
 
     onRequisitarDadosComSucesso = response => {
+        const dados = response.data
+
         const { match } = this.props
         this.requisitaNumeroHcf()
-        const dados = response.data
         this.setState({
             ...this.state,
             ...dados
         })
+
         if (match.params.tombo_id) {
             this.setState({ showTable: true })
             this.requisitaDadosEdicao(match.params.tombo_id)
         } else {
+            const hcfHerbario = dados.herbarios.find(herbario => herbario.sigla === 'HCF')
+
             this.setState({
-                loading: false
+                loading: false,
+                herbarioInicial: {
+                    value: hcfHerbario?.id
+                }
             })
         }
         this.requisitaIdentificadoresPredicao()
@@ -728,6 +756,14 @@ class NovoTomboScreen extends Component {
                 }
             })
             .catch(this.catchRequestError)
+            .finally(() => {
+                this.setState({
+                    autorSubfamilia: '',
+                    autorEspecie: '',
+                    autorSubespecie: '',
+                    autorVariedade: ''
+                })
+            })
     }
 
     requisitaFamilias = () => {
@@ -2146,37 +2182,17 @@ class NovoTomboScreen extends Component {
 
     ajustaColetores = value => {
         if (value) {
-            axios.get(`/api/tombos/numeroColetor/${value.key}`)
+            axios.get(`/tombos/numeroColetor/${value.key}`)
                 .then(response => {
                     if (response.status === 200) {
                         const todosNumeros = response.data
-                        let numeros = todosNumeros.map(e => e.numero_coleta)
+                        todosNumeros.sort((a, b) => b.numero_coleta - a.numero_coleta)
 
-                        numeros.sort((a, b) => { return (a - b) })
-                        let numero = 0
-                        let result = 0
-                        const lacuna = []
-                        if (numeros === []) numero = 1
-                        else if (numeros.length == 1) numero += 1
-                        else {
-                            numeros = [0].concat(numeros)
-                            for (let i = 0; i < numeros.length; i++) {
-                                if (numeros[i + 1] - numeros[i] !== 1 && numeros[i + 1] - numeros[i] !== 0) {
-                                    lacuna.push(numeros[i])
-                                }
+                        this.props.form.setFields({
+                            numColeta: {
+                                value: todosNumeros.length === 0 || todosNumeros[0].numero_coleta === null ? 1 : todosNumeros[0].numero_coleta + 1
                             }
-                            if (lacuna.length === 0) {
-                                result = numeros[numeros.length - 1] + 1
-                            } else {
-                                const index = lacuna.indexOf(Math.min(...lacuna))
-                                result = lacuna.splice(index, 1)[0] + 1
-                            }
-                            this.props.form.setFields({
-                                numColeta: {
-                                    value: result
-                                }
-                            })
-                        }
+                        })
                     }
                 })
                 .catch(this.catchRequestError)
@@ -2564,7 +2580,11 @@ class NovoTomboScreen extends Component {
                                 search: {
                                     subfamilia: 'validating',
                                     genero: 'validating'
-                                }
+                                },
+                                autorSubfamilia: '',
+                                autorEspecie: '',
+                                autorSubespecie: '',
+                                autorVariedade: ''
                             })
                             this.props.form.setFields({
                                 subfamilia: {
@@ -2599,6 +2619,8 @@ class NovoTomboScreen extends Component {
                         subfamilias={subfamilias}
                         validateStatus={search.subfamilia}
                         getFieldDecorator={getFieldDecorator}
+                        onChange={value => this.encontraAutor(subfamilias, value, 'autorSubfamilia')}
+                        autor={this.state.autorSubfamilia}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
@@ -2622,7 +2644,10 @@ class NovoTomboScreen extends Component {
                             this.setState({
                                 search: {
                                     especie: 'validating'
-                                }
+                                },
+                                autorEspecie: '',
+                                autorSubespecie: '',
+                                autorVariedade: ''
                             })
                             this.props.form.setFields({
                                 especie: {
@@ -2651,6 +2676,7 @@ class NovoTomboScreen extends Component {
                         especies={especies}
                         validateStatus={search.especie}
                         getFieldDecorator={getFieldDecorator}
+                        autor={this.state.autorEspecie}
                         onChange={value => {
                             this.requisitaSubespecies(value)
                             this.requisitaVariedades(value)
@@ -2659,7 +2685,9 @@ class NovoTomboScreen extends Component {
                                     subespecie: 'validating',
                                     variedade: 'validating'
                                 },
-                                formComAutor: true
+                                formComAutor: true,
+                                autorSubespecie: '',
+                                autorVariedade: ''
                             })
                             this.props.form.setFields({
                                 subespecie: {
@@ -2669,6 +2697,8 @@ class NovoTomboScreen extends Component {
                                     value: ''
                                 }
                             })
+
+                            this.encontraAutor(especies, value, 'autorEspecie')
                         }}
                         onClickAddMore={() => {
                             this.setState({
@@ -2689,6 +2719,14 @@ class NovoTomboScreen extends Component {
                         subespecies={subespecies}
                         validateStatus={search.subespecie}
                         getFieldDecorator={getFieldDecorator}
+                        autor={this.state.autorSubespecie}
+                        onChange={value => {
+                            this.encontraAutor(subespecies, value, 'autorSubespecie')
+
+                            this.setState({
+                                autorVariedade: ''
+                            })
+                        }}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
@@ -2705,6 +2743,8 @@ class NovoTomboScreen extends Component {
                         variedades={variedades}
                         validateStatus={search.variedade}
                         getFieldDecorator={getFieldDecorator}
+                        autor={this.state.autorVariedade}
+                        onChange={value => this.encontraAutor(variedades, value, 'autorVariedade')}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
@@ -2788,7 +2828,7 @@ class NovoTomboScreen extends Component {
         )
     }
 
-    renderIdentificador = getFieldDecorator => {
+    renderIdentificador = (getFieldDecorator, getFieldError) => {
         const { identificadores, identificadorInicial } = this.state
         return (
             <div>
@@ -2802,6 +2842,7 @@ class NovoTomboScreen extends Component {
                         optionFilterProp="children"
                         // onChange={this.handleChangeIdentificadores}
                         placeholder="Selecione o idenficador"
+                        getFieldError={getFieldError}
                         onSearch={value => {
                             this.requisitaIdentificadores(value)
                         }}
@@ -2904,7 +2945,7 @@ class NovoTomboScreen extends Component {
                     <Divider dashed />
                     {this.renderTipoSoloTombo(getFieldDecorator)}
                     <Divider dashed />
-                    {this.renderIdentificador(getFieldDecorator)}
+                    {this.renderIdentificador(getFieldDecorator, getFieldError)}
                     <Divider dashed />
                     {this.renderColecoesAnexas(getFieldDecorator)}
                     <Divider dashed />
@@ -3244,7 +3285,7 @@ class NovoTomboScreen extends Component {
                         <Col span={24}>
                             <FormItem>
                                 {getFieldDecorator('entidade', {
-                                    initialValue: String(this.state.herbarioInicial),
+                                    initialValue: String(!this.props.match.params.tombo_id ? this.state.herbarioInicial?.value || '' : this.state.herbarioInicial),
                                     rules: [{
                                         required: true,
                                         message: 'Escolha uma entidade'

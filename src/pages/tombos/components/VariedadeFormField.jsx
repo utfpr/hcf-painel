@@ -7,7 +7,7 @@ import SelectedFormFiled from './SelectedFormFiled'
 const { Option } = Select
 
 const VariedadeFormField = ({
-    initialValue, variedades, getFieldDecorator, onClickAddMore, onChange, validateStatus
+    initialValue, variedades, getFieldDecorator, onClickAddMore, onChange, validateStatus, autor
 }) => {
     const optionVariedades = () => variedades.map(item => (
         <Option value={`${item.id}`}>{item.nome}</Option>
@@ -27,6 +27,7 @@ const VariedadeFormField = ({
             onClickAddMore={onClickAddMore}
             onChange={onChange}
             validateStatus={validateStatus}
+            autor={autor}
         >
             {optionVariedades()}
         </SelectedFormFiled>

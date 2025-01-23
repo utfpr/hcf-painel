@@ -5,6 +5,7 @@ import {
 } from 'antd'
 import axios from 'axios'
 
+import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
@@ -22,16 +23,23 @@ const columns = [
     {
         title: 'Autor',
         type: 'text',
-        key: 'autor'
+        key: 'autor',
+        dataIndex: 'autor',
+        width: '46.5%',
+        sorter: true
     },
     {
         title: 'Iniciais',
         type: 'text',
-        key: 'iniciais'
+        key: 'iniciais',
+        dataIndex: 'iniciais',
+        width: '46.5%',
+        sorter: true
     },
     {
         title: 'Ação',
-        key: 'acao'
+        key: 'acao',
+        width: 100
     }
 ]
 
@@ -150,10 +158,14 @@ class ListaTaxonomiaAutores extends Component {
         iniciais: item.iniciais
     }))
 
-    requisitaListaAutores = (valores, pg, pageSize) => {
+    requisitaListaAutores = (valores, pg, pageSize, sorter) => {
+        const campo = sorter && sorter.field ? sorter.field : 'autor'
+        const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
+
         const params = {
             pagina: pg,
-            limite: pageSize || 20
+            limite: pageSize || 20,
+            order: `${campo}:${ordem}`
         }
 
         if (valores !== undefined) {
@@ -332,7 +344,14 @@ class ListaTaxonomiaAutores extends Component {
 
                     <Row style={{ marginTop: 32 }}>
                         <Col span={24}>
-                            <Row type="flex" justify="end" gutter={16}>
+
+                            <Row align="middle" type="flex" justify="end" gutter={16}>
+                                <Col xs={24} sm={8} md={12} lg={16} xl={16}>
+                                    <TotalRecordFound
+                                        total={this.state.metadados?.total}
+                                    />
+                                </Col>
+
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
                                     <FormItem>
                                         <Button
@@ -456,16 +475,16 @@ class ListaTaxonomiaAutores extends Component {
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
                 <SimpleTableComponent
-                    columns={columns}
+                    columns={isCuradorOuOperador() ? columns : columns.filter(column => column.key !== 'acao')}
                     data={this.state.autores}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
-                    changePage={(pg, pageSize) => {
+                    changePage={(pg, pageSize, sorter) => {
                         this.setState({
                             pagina: pg,
                             loading: true
                         })
-                        this.requisitaListaAutores(this.state.valores, pg, pageSize)
+                        this.requisitaListaAutores(this.state.valores, pg, pageSize, sorter)
                     }}
                 />
                 <Divider dashed />
@@ -474,13 +493,6 @@ class ListaTaxonomiaAutores extends Component {
     }
 
     render() {
-        if (this.state.loading) {
-            return (
-                <Spin tip="Carregando...">
-                    {this.renderFormulario()}
-                </Spin>
-            )
-        }
         return (
             this.renderFormulario()
         )

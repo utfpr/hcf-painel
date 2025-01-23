@@ -1,11 +1,12 @@
 import { Component } from 'react'
 
 import {
-    Divider, Modal, Spin, Card, Row, Col,
+    Divider, Modal, Card, Row, Col,
     Input, Button, notification
 } from 'antd'
 import axios from 'axios'
 
+import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
@@ -20,11 +21,15 @@ const columns = [
     {
         title: 'Família',
         type: 'text',
-        key: 'familia'
+        key: 'familia',
+        dataIndex: 'familia',
+        sorter: true,
+        width: '93%'
     },
     {
         title: 'Ação',
-        key: 'acao'
+        key: 'acao',
+        width: 100
     }
 ]
 
@@ -139,10 +144,14 @@ class ListaTaxonomiaFamilia extends Component {
         acao: this.gerarAcao(item)
     }))
 
-    requisitaListaFamilia = (valores, pg, pageSize) => {
+    requisitaListaFamilia = (valores, pg, pageSize, sorter) => {
+        const campo = sorter && sorter.field ? sorter.field : 'familia'
+        const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
+
         const params = {
             pagina: pg,
-            limite: pageSize || 20
+            limite: pageSize || 20,
+            order: `${campo}:${ordem}`
         }
 
         if (valores !== undefined) {
@@ -230,6 +239,8 @@ class ListaTaxonomiaFamilia extends Component {
                 if (response && response.data) {
                     const { error } = response.data
                     console.error(error.message)
+
+                    this.openNotificationWithIcon('error', 'Falha', 'Família já cadastrada.')
                 }
             })
             .catch(this.catchRequestError)
@@ -295,7 +306,12 @@ class ListaTaxonomiaFamilia extends Component {
 
                     <Row style={{ marginTop: 32 }}>
                         <Col span={24}>
-                            <Row type="flex" justify="end" gutter={16}>
+                            <Row align="middle" type="flex" justify="end" gutter={16}>
+                                <Col xs={24} sm={8} md={12} lg={16} xl={16}>
+                                    <TotalRecordFound
+                                        total={this.state.metadados?.total}
+                                    />
+                                </Col>
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
                                     <FormItem>
                                         <Button
@@ -424,16 +440,16 @@ class ListaTaxonomiaFamilia extends Component {
                 <Divider dashed />
 
                 <SimpleTableComponent
-                    columns={columns}
+                    columns={isCuradorOuOperador() ? columns : columns.filter(column => column.key !== 'acao')}
                     data={this.state.familias}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
-                    changePage={(pg, pageSize) => {
+                    changePage={(pg, pageSize, sorter) => {
                         this.setState({
                             pagina: pg,
                             loading: true
                         })
-                        this.requisitaListaFamilia(this.state.valores, pg, pageSize)
+                        this.requisitaListaFamilia(this.state.valores, pg, pageSize, sorter)
                     }}
                 />
                 <Divider dashed />
@@ -442,13 +458,6 @@ class ListaTaxonomiaFamilia extends Component {
     }
 
     render() {
-        if (this.state.loading) {
-            return (
-                <Spin tip="Carregando...">
-                    {this.renderFormulario()}
-                </Spin>
-            )
-        }
         return (
             this.renderFormulario()
         )
