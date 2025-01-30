@@ -174,7 +174,7 @@ class ListaTaxonomiaSubfamilia extends Component {
         key: item.id,
         subfamilia: item.nome,
         familia: item.familia?.nome,
-        reino: item.familia?.reino?.nome,
+        reino: item.reino?.nome,
         autor: item.autor?.nome,
         acao: this.gerarAcao(item)
     }))

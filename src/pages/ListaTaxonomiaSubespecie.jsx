@@ -216,7 +216,7 @@ class ListaTaxonomiaSubespecie extends Component {
         subespecie: item.nome,
         acao: this.gerarAcao(item),
         familia: item.familia?.nome,
-        reino: item.familia?.reino?.nome,
+        reino: item.reino?.nome,
         genero: item.genero?.nome,
         especie: item.especie?.nome,
         autor: item.autor?.nome

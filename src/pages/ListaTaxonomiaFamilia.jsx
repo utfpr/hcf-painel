@@ -225,7 +225,8 @@ class ListaTaxonomiaFamilia extends Component {
             loading: true
         })
         axios.post('/familias', {
-            nome: this.props.form.getFieldsValue().nomeFamilia
+            nome: this.props.form.getFieldsValue().nomeFamilia,
+            reinoId: this.props.form.getFieldsValue().nomeReino
         })
             .then(response => {
                 this.setState({

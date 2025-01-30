@@ -192,7 +192,7 @@ class ListaTaxonomiaGenero extends Component {
         genero: item.nome,
         acao: this.gerarAcao(item),
         familia: item.familia?.nome,
-        reino: item.familia?.reino?.nome
+        reino: item.reino?.nome
     }))
 
     renderAdd = () => {

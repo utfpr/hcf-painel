@@ -190,7 +190,7 @@ class ListaTaxonomiaEspecie extends Component {
         acao: this.gerarAcao(item),
         genero: item.genero?.nome,
         familia: item.familia?.nome,
-        reino: item.familia?.reino?.nome,
+        reino: item.reino?.nome,
         autor: item.autor?.nome
     }))
 
