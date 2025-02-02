@@ -28,19 +28,19 @@ const columns = [
         sorter: true
     },
     {
-        title: 'Família',
-        key: 'familia',
-        dataIndex: 'familia',
-        width: '18.6%',
-        sorter: true
-    },
-    {
         title: 'Reino',
         type: 'text',
         key: 'reino',
         dataIndex: 'reino',
         sorter: true,
         width: '18.6%'
+    },
+    {
+        title: 'Família',
+        key: 'familia',
+        dataIndex: 'familia',
+        width: '18.6%',
+        sorter: true
     },
     {
         title: 'Gênero',

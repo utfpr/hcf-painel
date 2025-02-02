@@ -54,7 +54,7 @@ const SelectedFormFiled = ({
             )
                 : null}
 
-            {onClickAddMore && title !== 'Reino:'
+            {onClickAddMore
                 ? (
                     <Col span={2}>
                         <Button

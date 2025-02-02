@@ -28,18 +28,18 @@ const columns = [
         width: '30.4%'
     },
     {
-        title: 'Família',
-        type: 'text',
-        key: 'familia',
-        dataIndex: 'familia',
-        sorter: true,
-        width: '30.4%'
-    },
-    {
         title: 'Reino',
         type: 'text',
         key: 'reino',
         dataIndex: 'reino',
+        sorter: true,
+        width: '30.4%'
+    },
+    {
+        title: 'Família',
+        type: 'text',
+        key: 'familia',
+        dataIndex: 'familia',
         sorter: true,
         width: '30.4%'
     },
@@ -507,28 +507,6 @@ class ListaTaxonomiaGenero extends Component {
                     >
 
                         <div>
-                            <Row gutter={8}>
-                                <Col span={24}>
-                                    <span>Nome do reino:</span>
-                                </Col>
-                            </Row>
-                            <Row gutter={8}>
-                                <Col span={24}>
-                                    <FormItem>
-                                        {getFieldDecorator('nomeReino')(
-                                            <Select
-                                                showSearch
-                                                style={{ width: '100%' }}
-                                                placeholder="Selecione um reino"
-                                                optionFilterProp="children"
-                                            >
-
-                                                {this.optionReino()}
-                                            </Select>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                            </Row>
                             <Row gutter={8} style={{ marginTop: 16 }}>
                                 <Col span={24}>
                                     <span>Nome da família:</span>

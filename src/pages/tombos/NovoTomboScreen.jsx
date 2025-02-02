@@ -162,7 +162,7 @@ class NovoTomboScreen extends Component {
             paisInicial: '',
             estadoInicial: '',
             cidadeInicial: '',
-            reinoInicial: '',
+            reinoInicial: '1',
             familiaInicial: '',
             subfamiliaInicial: '',
             generoInicial: '',
@@ -201,6 +201,7 @@ class NovoTomboScreen extends Component {
         })
         this.requisitaDadosFormulario()
         this.requisitaReinos()
+        this.requisitaFamilias(this.state.reinoInicial)
     }
 
     handleRequisicao = values => {
@@ -725,6 +726,43 @@ class NovoTomboScreen extends Component {
             .catch(this.catchRequestError)
     }
 
+    cadastraNovoReino = () => {
+        this.setState({
+            loading: true
+        })
+        axios.post('/reinos', {
+            nome: this.props.form.getFieldsValue().campo
+        })
+            .then(response => {
+                this.setState({
+                    loading: false
+                })
+                if (response.status === 204) {
+                    this.requisitaReinos()
+                    this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                }
+                this.props.form.setFields({ campo: { value: '' } }) // eslint-disable-line     
+            })
+            .catch(err => {
+                this.setState({
+                    loading: false
+                })
+                const { response } = err
+                if (response && response.data) {
+                    if (response.status === 400 || response.status === 422) {
+                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                    } else {
+                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar o novo reino, tente novamente.')
+                    }
+                    const { error } = response.data
+                    throw new Error(error.message)
+                } else {
+                    throw err
+                }
+            })
+            .catch(this.catchRequestError)
+    }
+
     cadastraNovaFamilia = () => {
         this.setState({
             loading: true
@@ -833,6 +871,8 @@ class NovoTomboScreen extends Component {
                     this.setState({
                         familias: response.data.resultado
                     })
+
+                    console.log('familias', this.state.familias)
                 } else {
                     this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar famílias, tente novamente.')
                 }
@@ -2416,6 +2456,7 @@ class NovoTomboScreen extends Component {
                 </div>
             )
         }
+
         return (
             <div>
                 <Row gutter={8}>
@@ -2461,6 +2502,9 @@ class NovoTomboScreen extends Component {
                         onOk={() => {
                             if (this.validacaoModal()) {
                                 switch (this.state.formulario.tipo) {
+                                    case 8:
+                                        this.cadastraNovoReino()
+                                        break
                                     case 1:
                                         this.cadastraNovaFamilia()
                                         break
@@ -2659,8 +2703,8 @@ class NovoTomboScreen extends Component {
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: 'do novo reino',
-                                    tipo: 1
+                                    desc: ' do novo reino',
+                                    tipo: 12
                                 },
                                 visibleModal: true
                             })
@@ -2704,7 +2748,7 @@ class NovoTomboScreen extends Component {
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: 'da nova família',
+                                    desc: ' da nova família',
                                     tipo: 1
                                 },
                                 visibleModal: true
@@ -2761,7 +2805,7 @@ class NovoTomboScreen extends Component {
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: 'do novo gênero',
+                                    desc: ' do novo gênero',
                                     tipo: 3
                                 },
                                 visibleModal: true
@@ -2803,7 +2847,7 @@ class NovoTomboScreen extends Component {
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: 'da nova espécie',
+                                    desc: ' da nova espécie',
                                     tipo: 4
                                 },
                                 formComAutor: true,
@@ -3011,6 +3055,9 @@ class NovoTomboScreen extends Component {
                                         break
                                     case 11:
                                         this.cadastraNovoColetor()
+                                        break
+                                    case 12:
+                                        this.cadastraNovoReino()
                                         break
                                     default:
                                         break

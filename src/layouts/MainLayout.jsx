@@ -122,6 +122,9 @@ export default class MainLayout extends Component {
                                 </span>
                             )}
                         >
+                            <Menu.Item key="80">
+                                <Link to="/reinos">Reinos</Link>
+                            </Menu.Item>
                             <Menu.Item key="2">
                                 <Link to="/familias">Famílias</Link>
                             </Menu.Item>
