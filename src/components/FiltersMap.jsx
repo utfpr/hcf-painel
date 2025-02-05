@@ -1,17 +1,18 @@
 import React, { useState } from 'react'
 
 import {
-    Card, Button, Dropdown, Menu, Collapse, Form, Input, Select, Space
+    Card, Button, Dropdown, Menu, Collapse, Form, Input, Space
 } from 'antd'
 
 import { PlusCircleOutlined, MinusCircleOutlined } from '@ant-design/icons'
 
-const { Option } = Select
 const { Panel } = Collapse
 
 const FiltersMap = ({ onSearch, onClear }) => {
     const [selectedFilters, setSelectedFilters] = useState([])
     const [filterValues, setFilterValues] = useState({})
+
+    const taxonomiaOptions = ['Família', 'SubFamília', 'Gênero', 'Espécie', 'SubEspécie', 'Variedade']
 
     const availableFilters = [
         {
@@ -22,6 +23,28 @@ const FiltersMap = ({ onSearch, onClear }) => {
                     placeholder="Digite o número HCF, ex: 28140"
                     onChange={e => handleFilterChange('hcf', e.target.value)}
                     value={filterValues.hcf}
+                />
+            )
+        },
+        {
+            key: 'nomesPopulares',
+            label: 'Nome Popular',
+            component: (
+                <Input
+                    placeholder="Digite o nome popular, ex: maracujá"
+                    onChange={e => handleFilterChange('nomesPopulares', e.target.value)}
+                    value={filterValues.nomesPopulares}
+                />
+            )
+        },
+        {
+            key: 'nomeCientifico',
+            label: 'Nome Científico',
+            component: (
+                <Input
+                    placeholder="Digite o nome científico, ex: Hancornia speciosa"
+                    onChange={e => handleFilterChange('nomeCientifico', e.target.value)}
+                    value={filterValues.nomeCientifico}
                 />
             )
         },
@@ -47,20 +70,17 @@ const FiltersMap = ({ onSearch, onClear }) => {
             key: 'taxonomia',
             label: 'Taxonomia',
             component: (
-                <Select
-                    mode="multiple"
-                    placeholder="Selecione"
-                    allowClear
-                    onChange={value => handleTaxonomyChange(value)}
-                    value={filterValues.taxonomia || []}
-                >
-                    <Option value="Família">Família</Option>
-                    <Option value="SubFamília">Subfamília</Option>
-                    <Option value="Gênero">Gênero</Option>
-                    <Option value="Espécie">Espécie</Option>
-                    <Option value="SubEspécie">Subespécie</Option>
-                    <Option value="Variedade">Variedade</Option>
-                </Select>
+                <div>
+                    {taxonomiaOptions.map(taxonomia => (
+                        <Form.Item key={taxonomia} label={taxonomia}>
+                            <Input
+                                placeholder={`Digite valor para ${taxonomia}`}
+                                value={filterValues[`taxonomia_${taxonomia}`]}
+                                onChange={e => handleFilterChange(`taxonomia_${taxonomia}`, e.target.value)}
+                            />
+                        </Form.Item>
+                    ))}
+                </div>
             )
         }
     ]
@@ -80,25 +100,12 @@ const FiltersMap = ({ onSearch, onClear }) => {
         setFilterValues(prev => ({ ...prev, [key]: value }))
     }
 
-    const handleTaxonomyChange = selectedTaxonomies => {
-        const updatedFilters = { ...filterValues, taxonomia: selectedTaxonomies }
-
-        selectedTaxonomies.forEach(taxonomy => {
-            if (!updatedFilters[`taxonomia_${taxonomy}`]) {
-                updatedFilters[`taxonomia_${taxonomy}`] = ''
-            }
-        })
-
-        setFilterValues(updatedFilters)
-    }
-
     const handleReset = () => {
         const resetValues = {}
         selectedFilters.forEach(key => {
-            resetValues[key] = key === 'taxonomia' ? [] : ''
+            resetValues[key] = key === 'taxonomia' ? {} : ''
         })
         setFilterValues(resetValues)
-
         onClear()
     }
 
@@ -122,41 +129,6 @@ const FiltersMap = ({ onSearch, onClear }) => {
             <Collapse style={{ marginTop: '1rem' }}>
                 {selectedFilters.map(key => {
                     const filter = availableFilters.find(f => f.key === key)
-                    if (key === 'taxonomia') {
-                        return (
-                            <Panel
-                                header={filter?.label}
-                                key={key}
-                                extra={(
-                                    <Button
-                                        type="text"
-                                        danger
-                                        onClick={() => handleRemoveFilter(key)}
-                                    >
-                                        <MinusCircleOutlined style={{ marginRight: -3 }} />
-                                        Remover
-                                    </Button>
-                                )}
-                            >
-                                <Form.Item>
-                                    {filter?.component}
-                                </Form.Item>
-                                {filterValues.taxonomia?.map(taxonomy => (
-                                    <Form.Item
-                                        key={`taxonomia_${taxonomy}`}
-                                        label={`${taxonomy}`}
-                                    >
-                                        <Input
-                                            placeholder={`Digite valor para ${taxonomy}`}
-                                            value={filterValues[`taxonomia_${taxonomy}`]}
-                                            onChange={e => handleFilterChange(`taxonomia_${taxonomy}`, e.target.value)}
-                                        />
-                                    </Form.Item>
-                                ))}
-
-                            </Panel>
-                        )
-                    }
 
                     return (
                         <Panel
@@ -174,10 +146,7 @@ const FiltersMap = ({ onSearch, onClear }) => {
                             )}
                         >
                             <Form.Item>
-                                {React.cloneElement(filter?.component, {
-                                    value: filterValues[key],
-                                    onChange: e => handleFilterChange(key, e.target?.value || e)
-                                })}
+                                {filter?.component}
                             </Form.Item>
                         </Panel>
                     )
@@ -189,13 +158,11 @@ const FiltersMap = ({ onSearch, onClear }) => {
                 <Button
                     type="primary"
                     onClick={() => {
-                        // console.log('Enviando filtros para onSearch:', filterValues)
                         onSearch(filterValues)
                     }}
                 >
                     Pesquisar
                 </Button>
-
             </Space>
         </Card>
     )

@@ -79,15 +79,15 @@ const FiltrosMapa = () => {
     const [totalRegistros, setTotalRegistros] = useState(0)
 
     const handleSearch = async filters => {
-        // console.log('Filtros aplicados:', filters)
-
         const {
-            hcf, altitudeMin, altitudeMax, taxonomia
+            hcf, altitudeMin, altitudeMax, nomesPopulares, nomeCientifico
         } = filters
+
+        const taxonomiaOptions = ['Família', 'SubFamília', 'Gênero', 'Espécie', 'SubEspécie', 'Variedade']
 
         try {
             if (hcf) {
-                const response = await axios.get(`http://localhost:3000/api/buscaHCF/${hcf}`)
+                const response = await axios.get(`/buscaHCF/${hcf}`)
                 const { latitude, longitude, cidade } = response.data
 
                 if (latitude && longitude) {
@@ -106,8 +106,13 @@ const FiltrosMapa = () => {
                     return
                 }
 
+                if (parseFloat(altitudeMin) > parseFloat(altitudeMax)) {
+                    setErrorMessage('O valor mínimo da altitude não pode ser maior que o valor máximo.')
+                    return
+                }
+
                 const response = await axios.get(
-                    `http://localhost:3000/api/buscaHcfsPorAltitude/${altitudeMin}/${altitudeMax}`
+                    `/buscaHcfsPorAltitude/${altitudeMin}/${altitudeMax}`
                 )
                 const { resultados, total } = response.data
 
@@ -124,26 +129,24 @@ const FiltrosMapa = () => {
                 return
             }
 
-            if (taxonomia && taxonomia.length > 0) {
+            // eslint-disable-next-line max-len
+            if (taxonomiaOptions.some(option => filters[`taxonomia_${option}`] && filters[`taxonomia_${option}`].trim() !== '')) {
                 const taxonomyParams = {}
-                taxonomia.forEach(taxonomy => {
-                    const paramKey = `nome${taxonomy.replace(/\s+/g, '').normalize('NFD')
+
+                taxonomiaOptions.forEach(taxonomia => {
+                    const paramKey = `nome${taxonomia.replace(/\s+/g, '').normalize('NFD')
                         .replace(/[\u0300-\u036f]/g, '')}`
-                    if (filters[`taxonomia_${taxonomy}`]) {
-                        taxonomyParams[paramKey] = filters[`taxonomia_${taxonomy}`]
+
+                    // Se o usuário preencheu algum valor, adicionamos ao objeto de parâmetros
+                    if (filters[`taxonomia_${taxonomia}`] && filters[`taxonomia_${taxonomia}`].trim() !== '') {
+                        taxonomyParams[paramKey] = filters[`taxonomia_${taxonomia}`]
                     }
                 })
 
-                if (Object.keys(taxonomyParams).length === 0) {
-                    setErrorMessage('Pelo menos um valor de taxonomia deve ser preenchido.')
-                    return
-                }
+                const queryString = new URLSearchParams(taxonomyParams).toString()
 
                 try {
-                    const queryString = new URLSearchParams(taxonomyParams).toString()
-
-                    // eslint-disable-next-line max-len
-                    const response = await axios.get(`http://localhost:3000/api/pontosTaxonomiaComFiltros?${queryString}`)
+                    const response = await axios.get(`/pontosTaxonomiaComFiltros?${queryString}`)
                     const { resultados, total } = response.data
 
                     if (resultados.length > 0) {
@@ -159,6 +162,44 @@ const FiltrosMapa = () => {
                 } catch (error) {
                     setErrorMessage(error.response?.data?.message || 'Revise os dados e tente novamente.')
                     setTotalRegistros(0)
+                }
+                return
+            }
+
+            if (nomesPopulares) {
+                const response = await axios.get(
+                    `/pontosPorNomePopular?nomePopular=${encodeURIComponent(nomesPopulares)}`
+                )
+                const { resultados, total } = response.data
+
+                if (resultados.length > 0) {
+                    setMarkers(resultados)
+                    setTotalRegistros(total)
+                    setCenter([resultados[0].latitude, resultados[0].longitude])
+                    setErrorMessage(null)
+                } else {
+                    setMarkers([])
+                    setTotalRegistros(0)
+                    setErrorMessage('Nenhum ponto encontrado para o nome popular informado.')
+                }
+                return
+            }
+
+            if (nomeCientifico) {
+                const response = await axios.get(
+                    `/pontosPorNomeCientifico?nomeCientifico=${encodeURIComponent(nomeCientifico)}`
+                )
+                const { resultados, total } = response.data
+
+                if (resultados.length > 0) {
+                    setMarkers(resultados)
+                    setTotalRegistros(total)
+                    setCenter([resultados[0].latitude, resultados[0].longitude])
+                    setErrorMessage(null)
+                } else {
+                    setMarkers([])
+                    setTotalRegistros(0)
+                    setErrorMessage('Nenhum ponto encontrado para o nome científico informado.')
                 }
                 return
             }
