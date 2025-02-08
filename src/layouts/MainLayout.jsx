@@ -236,15 +236,12 @@ export default class MainLayout extends Component {
                                     <Link to="/reflora">Reflora</Link>
                                 </Menu.Item>
                                 <Menu.Item key="18">
-                                    <Link to="/reflora">Reflora</Link>
-                                </Menu.Item>
-                                <Menu.Item key="19">
                                     <Link to="/specieslink">speciesLink</Link>
                                 </Menu.Item>
                             </SubMenu>
                         ) : null}
                         {isLogado() ? (
-                            <Menu.Item key="20">
+                            <Menu.Item key="19">
                                 <Link
                                     to="/inicio"
                                     onClick={this.fazLogout}

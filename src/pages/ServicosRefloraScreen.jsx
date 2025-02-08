@@ -97,6 +97,7 @@ class ServicosRefloraScreen extends Component {
                     if (!response.data.executando) {
                         if (this.state.estaMontado) {
                             this.setState({ executando: false })
+                            this.informacoesReflora()
                         }
                     } else if (response.data.executando) {
                         if (this.state.estaMontado) {
@@ -190,7 +191,8 @@ class ServicosRefloraScreen extends Component {
         }
         AXIOS.get('/reflora-log', { params }).then(response => {
             if (this.state.estaMontado) {
-                this.setState({ saidaLOG: response.data.log })
+                const saidaLogSplit = response.data.split('\n')
+                this.setState({ saidaLOG: saidaLogSplit })
             }
         })
     }
@@ -380,9 +382,11 @@ class ServicosRefloraScreen extends Component {
                     <Col span={6} style={{ textAlign: 'center' }}>
                         <span style={{ fontWeight: 'bold' }}>
                             A última atualização foi feita
+                            {' '}
                             {this.state.horarioUltimaAtualizacao}
                             {' '}
                             e durou
+                            {' '}
                             {this.state.duracaoAtualizacao}
                             .
                         </span>
