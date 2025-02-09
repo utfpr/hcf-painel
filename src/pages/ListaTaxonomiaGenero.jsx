@@ -25,7 +25,15 @@ const columns = [
         key: 'genero',
         dataIndex: 'genero',
         sorter: true,
-        width: '46.4%'
+        width: '30.4%'
+    },
+    {
+        title: 'Reino',
+        type: 'text',
+        key: 'reino',
+        dataIndex: 'reino',
+        sorter: true,
+        width: '30.4%'
     },
     {
         title: 'Família',
@@ -33,7 +41,7 @@ const columns = [
         key: 'familia',
         dataIndex: 'familia',
         sorter: true,
-        width: '46.4%'
+        width: '30.4%'
     },
     {
         title: 'Ação',
@@ -49,6 +57,7 @@ class ListaTaxonomiaGenero extends Component {
             generos: [],
             metadados: {},
             familias: [],
+            reinos: [],
             pagina: 1,
             visibleModal: false,
             loadingModal: false,
@@ -110,6 +119,29 @@ class ListaTaxonomiaGenero extends Component {
     componentDidMount() {
         this.requisitaListaGenero({}, this.state.pagina)
         this.requisitaFamilias()
+        this.requisitaReinos()
+    }
+
+    requisitaReinos = () => {
+        axios.get('/reinos', {
+            params: {
+                limite: 9999999
+            }
+        })
+            .then(response => {
+                if (response.status === 200) {
+                    this.setState({
+                        reinos: response.data.resultado
+                    })
+                }
+            })
+            .catch(err => {
+                const { response } = err
+                if (response && response.data) {
+                    const { error } = response.data
+                    console.error(error.message)
+                }
+            })
     }
 
     gerarAcao(item) {
@@ -159,7 +191,8 @@ class ListaTaxonomiaGenero extends Component {
         key: item.id,
         genero: item.nome,
         acao: this.gerarAcao(item),
-        familia: item.familia?.nome
+        familia: item.familia?.nome,
+        reino: item.reino?.nome
     }))
 
     renderAdd = () => {
@@ -435,6 +468,10 @@ class ListaTaxonomiaGenero extends Component {
         <Option value={item.id}>{item.nome}</Option>
     ))
 
+    optionReino = () => this.state.reinos.map(item => (
+        <Option value={item.id}>{item.nome}</Option>
+    ))
+
     renderFormulario() {
         const { getFieldDecorator } = this.props.form
         return (
@@ -470,7 +507,7 @@ class ListaTaxonomiaGenero extends Component {
                     >
 
                         <div>
-                            <Row gutter={8}>
+                            <Row gutter={8} style={{ marginTop: 16 }}>
                                 <Col span={24}>
                                     <span>Nome da família:</span>
                                 </Col>

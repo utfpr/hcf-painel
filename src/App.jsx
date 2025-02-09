@@ -49,6 +49,7 @@ import './assets/css/Search.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
 import ListaColetoresScreen from './pages/ListaColetoresScreen'
 import NovoColetorScreen from './pages/NovoColetorScreen'
+import ListaTaxonomiaReino from './pages/ListaTaxonomiaReino'
 
 const PrivateRoute = ({ component: Component, authed, ...rest }) => {
     return (
@@ -123,6 +124,7 @@ export default class App extends Component {
                 <Route path="/livro-tombo" component={LivroTomboScreen} />
                 <Route path="/especies" component={ListaTaxonomiaEspecie} />
                 <Route path="/familias" component={ListaTaxonomiaFamilia} />
+                <Route path="/reinos" component={ListaTaxonomiaReino} />
                 <Route path="/generos" component={ListaTaxonomiaGenero} />
                 <Route path="/subespecies" component={ListaTaxonomiaSubespecie} />
                 <Route path="/subfamilias" component={ListaTaxonomiaSubfamilia} />
