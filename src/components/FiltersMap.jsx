@@ -12,7 +12,7 @@ const FiltersMap = ({ onSearch, onClear }) => {
     const [selectedFilters, setSelectedFilters] = useState([])
     const [filterValues, setFilterValues] = useState({})
 
-    const taxonomiaOptions = ['Família', 'SubFamília', 'Gênero', 'Espécie', 'SubEspécie', 'Variedade']
+    const taxonomiaOptions = ['Reino', 'Família', 'SubFamília', 'Gênero', 'Espécie', 'SubEspécie', 'Variedade']
 
     const availableFilters = [
         {

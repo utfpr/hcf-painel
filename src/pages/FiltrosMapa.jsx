@@ -83,7 +83,7 @@ const FiltrosMapa = () => {
             hcf, altitudeMin, altitudeMax, nomesPopulares, nomeCientifico
         } = filters
 
-        const taxonomiaOptions = ['Família', 'SubFamília', 'Gênero', 'Espécie', 'SubEspécie', 'Variedade']
+        const taxonomiaOptions = ['Reino', 'Família', 'SubFamília', 'Gênero', 'Espécie', 'SubEspécie', 'Variedade']
 
         try {
             if (hcf) {
