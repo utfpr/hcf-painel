@@ -24,28 +24,36 @@ const columns = [
         type: 'text',
         key: 'especie',
         dataIndex: 'especie',
-        width: '23.2%',
+        width: '18.6%',
         sorter: true
+    },
+    {
+        title: 'Reino',
+        type: 'text',
+        key: 'reino',
+        dataIndex: 'reino',
+        sorter: true,
+        width: '18.6%'
     },
     {
         title: 'Família',
         key: 'familia',
         dataIndex: 'familia',
-        width: '23.2%',
+        width: '18.6%',
         sorter: true
     },
     {
         title: 'Gênero',
         key: 'genero',
         dataIndex: 'genero',
-        width: '23.2%',
+        width: '18.6%',
         sorter: true
     },
     {
         title: 'Autor',
         key: 'autor',
         dataIndex: 'autor',
-        width: '23.2%',
+        width: '18.6%',
         sorter: true
     },
     {
@@ -182,6 +190,7 @@ class ListaTaxonomiaEspecie extends Component {
         acao: this.gerarAcao(item),
         genero: item.genero?.nome,
         familia: item.familia?.nome,
+        reino: item.reino?.nome,
         autor: item.autor?.nome
     }))
 

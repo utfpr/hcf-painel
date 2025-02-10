@@ -24,35 +24,43 @@ const columns = [
         type: 'text',
         key: 'subespecie',
         dataIndex: 'subespecie',
-        width: '18.6%',
+        width: '15.5%',
         sorter: true
+    },
+    {
+        title: 'Reino',
+        type: 'text',
+        key: 'reino',
+        dataIndex: 'reino',
+        sorter: true,
+        width: '15.5%'
     },
     {
         title: 'Família',
         key: 'familia',
         dataIndex: 'familia',
-        width: '18.6%',
+        width: '15.5%',
         sorter: true
     },
     {
         title: 'Gênero',
         key: 'genero',
         dataIndex: 'genero',
-        width: '18.6%',
+        width: '15.5%',
         sorter: true
     },
     {
         title: 'Espécie',
         key: 'especie',
         dataIndex: 'especie',
-        width: '18.6%',
+        width: '15.5%',
         sorter: true
     },
     {
         title: 'Autor',
         key: 'autor',
         dataIndex: 'autor',
-        width: '18.6%',
+        width: '15.5%',
         sorter: true
     },
     {
@@ -208,6 +216,7 @@ class ListaTaxonomiaSubespecie extends Component {
         subespecie: item.nome,
         acao: this.gerarAcao(item),
         familia: item.familia?.nome,
+        reino: item.reino?.nome,
         genero: item.genero?.nome,
         especie: item.especie?.nome,
         autor: item.autor?.nome
