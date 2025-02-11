@@ -15,6 +15,7 @@ import {
 import MainLayout from './layouts/MainLayout'
 import DetalhesTomboScreen from './pages/DetalhesTomboScreen'
 import FichaTomboScreen from './pages/FichaTomboScreen'
+import filtrosMapa from './pages/FiltrosMapa'
 import InicioScreen from './pages/InicioScreen'
 import ListaHerbariosScreen from './pages/ListaHerbariosScreen'
 import ListaIdentificadoresScreen from './pages/ListaIdentificadoresScreen'
@@ -131,6 +132,7 @@ export default class App extends Component {
                 <Route path="/variedades" component={ListaTaxonomiaVariedade} />
                 <Route path="/autores" component={ListaTaxonomiaAutores} />
                 <Route path="/mapa" component={Mapa} />
+                <Route path="/filtros" component={filtrosMapa} />
             </Switch>
         </MainLayout>
     )
