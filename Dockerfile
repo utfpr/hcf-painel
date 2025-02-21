@@ -1,22 +1,32 @@
-FROM node:10.15-alpine AS build
+FROM node:18.16-alpine AS build
 
-ENV PORT 8080
-ENV SKIP_PREFLIGHT_CHECK true
-ENV PUBLIC_URL $PUBLIC_URL
-ENV REACT_APP_API_URL $REACT_APP_API_URL
+WORKDIR /tmp/app
 
-WORKDIR /var/app
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
+
+ARG VITE_IMAGE_BASE_URL
+ENV VITE_IMAGE_BASE_URL=$VITE_IMAGE_BASE_URL
+
+COPY package.json yarn.lock ./
+
+RUN yarn install \
+  && yarn cache clean
 
 COPY . .
-RUN yarn install --production=false && yarn build
+
+RUN yarn build
 
 
-FROM node:10.15-alpine
+# production image
 
-RUN yarn global add serve
+FROM alpine:3.10 AS runtime
 
-COPY --from=build /var/app/build ./dist
+VOLUME /var/www
 
-EXPOSE 8080
+COPY --from=build /tmp/app/dist /var/app/dist
 
-ENTRYPOINT serve -s -l 8080 ./dist
+CMD rm -rf /var/www/* \
+  && cp -R /var/app/dist/* /var/www/ \
+  && echo "The files were successfully copied" \
+  && sleep 9999d

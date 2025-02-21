@@ -1,5 +1,5 @@
 {
-    "editor.tabSize": 2,
+    "editor.tabSize": 4,
     "editor.useTabStops": true,
     "editor.insertSpaces": true,
     "editor.formatOnSave": false,
@@ -7,13 +7,12 @@
     "editor.detectIndentation": false,
     "editor.semanticHighlighting.enabled": false,
     "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
+        "source.fixAll.eslint": "explicit"
     },
     "editor.rulers": [
         120
     ],
     "files.trimFinalNewlines": true,
     "files.insertFinalNewline": true,
-    "files.encoding": "utf8",
     "files.eol": "\n"
 }

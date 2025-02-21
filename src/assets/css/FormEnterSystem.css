@@ -1,9 +1,7 @@
 .style-form {
   background-color: #fff;
   border-radius: 5px;
-  padding-top: 20px;
-  padding-right: 20px;
-  padding-left: 20px;
+  padding-top: 10px;
   margin-right: 10px;
   margin-top: 5%;
 }
@@ -22,4 +20,12 @@
 
 .termos {
   font-size: 11px !important;
+}
+
+.logo {
+  background-image: url('../img/leaves.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 105;
+  width: 78;
 }

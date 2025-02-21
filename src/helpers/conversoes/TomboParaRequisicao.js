@@ -1,5 +1,4 @@
 export default valores => {
-
     return {
         principal: {
             nome_popular: valores.nomePopular,
@@ -8,10 +7,10 @@ export default valores => {
             data_coleta: {
                 dia: valores.dataColetaDia,
                 mes: valores.dataColetaMes,
-                ano: valores.dataColetaAno,
+                ano: valores.dataColetaAno
             },
             cor: valores.localidadeCor,
-            tipo_id: valores.tipo,
+            tipo_id: valores.tipo
         },
 
         localidade: {
@@ -19,7 +18,7 @@ export default valores => {
             longitude: valores.longitude,
             altitude: valores.altitude,
             cidade_id: valores.cidade,
-            complemento: valores.complemento,
-        },
-    };
-};
+            complemento: valores.complemento
+        }
+    }
+}
