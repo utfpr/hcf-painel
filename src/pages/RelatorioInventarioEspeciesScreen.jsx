@@ -45,13 +45,14 @@ class RelatorioInventarioEspeciesScreen extends Component {
             metadados: {},
             pagina: 1,
             loading: false,
-            loadingExport: false
+            loadingExport: false,
+            familia: null
         }
     }
 
     componentDidMount() {
         const { pagina } = this.state
-        this.requisitaDadosDoRelatorio({}, pagina)
+        this.requisitaDadosDoRelatorio({}, pagina, null, null, true)
     }
 
     notificacao = (type, titulo, descricao) => {
@@ -61,24 +62,32 @@ class RelatorioInventarioEspeciesScreen extends Component {
         })
     }
 
-    formataDadosDoRelatorio = dados => dados.map(item => ({
-        key: item.id,
-        especie: item.especie,
-        tombos: item.tombos.join(', ')
-    }))
+    formataDadosDoRelatorio = dados => {
+        const data = []
+        dados.forEach(item => {
+            item.especies.forEach(especie => {
+                data.push({
+                    especie: especie.especie,
+                    tombos: especie.tombos
+                })
+            })
+        })
 
-    requisitaDadosDoRelatorio = (valores, pg, pageSize, sorter) => {
-        const campo = sorter && sorter.field ? sorter.field : 'familia'
-        const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
+        return data
+    }
 
+    requisitaDadosDoRelatorio = (valores, pg, pageSize, sorter, paraTabela) => {
         const params = {
             pagina: pg,
             limite: pageSize || 20,
-            order: `${campo}:${ordem}`
+            paraTabela
         }
 
         if (valores !== undefined) {
             const { familia } = valores
+            this.setState({
+                familia
+            })
 
             if (familia) {
                 params.familia = familia
@@ -92,7 +101,7 @@ class RelatorioInventarioEspeciesScreen extends Component {
                 if (response.status === 200) {
                     const { data } = response
                     this.setState({
-                        dados: this.formataDadosDoRelatorio(data.dados),
+                        dados: this.formataDadosDoRelatorio(data.resultado),
                         metadados: data.metadados
                     })
                 } else if (response.status === 400) {
@@ -115,20 +124,27 @@ class RelatorioInventarioEspeciesScreen extends Component {
             .catch(this.catchRequestError)
     }
 
-    requisitaExportarPDF = () => {
+    requisitaExportarPDF = async () => {
         this.setState({
             loadingExport: true
         })
+        const params = {}
+
+        if (this.state.familia !== undefined || this.state.familia !== null) {
+            const { familia } = this.state
+
+            if (familia) {
+                params.familia = familia
+            }
+        }
+        const dados = await axios.get('/relatorio/inventario-especies', { params })
         axios.post('/report', {
             template: {
                 name: 'inventario-especies'
             },
             data: {
                 data: formatarDataBDtoDataHora(new Date()),
-                dados: [{
-                    familia: this.state.valores.familia,
-                    especies: this.state.dados
-                }]
+                dados: dados.data.dados
             }
         }, {
             responseType: 'blob'
@@ -168,7 +184,7 @@ class RelatorioInventarioEspeciesScreen extends Component {
                 loading: true
             })
             const { pagina, pageSize } = this.state
-            this.requisitaDadosDoRelatorio(valores, pagina, pageSize)
+            this.requisitaDadosDoRelatorio(valores, pagina, pageSize, null, true)
         }
     }
 
@@ -233,9 +249,10 @@ class RelatorioInventarioEspeciesScreen extends Component {
                                                 this.setState({
                                                     pagina: 1,
                                                     valores: {},
-                                                    metadados: {}
+                                                    metadados: {},
+                                                    familia: null
                                                 })
-                                                this.requisitaListaFamilia({}, 1)
+                                                this.requisitaDadosDoRelatorio({}, 1, null, null, true)
                                             }}
                                             className="login-form-button"
                                         >
@@ -291,7 +308,7 @@ class RelatorioInventarioEspeciesScreen extends Component {
                             loading: true
                         })
                         const { valores } = this.state
-                        this.requisitaListaFamilia(valores, pg, pageSize, sorter)
+                        this.requisitaDadosDoRelatorio(valores, pg, pageSize, sorter, true)
                     }}
                 />
                 <Divider dashed />
