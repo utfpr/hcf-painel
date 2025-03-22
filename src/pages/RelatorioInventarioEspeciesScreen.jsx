@@ -3,39 +3,20 @@ import { Component } from 'react'
 
 import {
     Divider, Card, Row, Col,
-    Input, Button, notification,
-    Spin
+    Button, notification,
+    Spin,
+    Select
 } from 'antd'
 import axios from 'axios'
 
+import TableCollapse from '@/components/TableCollapse'
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { formatarDataBDtoDataHora } from '@/helpers/conversoes/ConversoesData'
 import { Form } from '@ant-design/compatible'
 import { LoadingOutlined } from '@ant-design/icons'
 
-import SimpleTableComponent from '../components/SimpleTableComponent'
-import { isCuradorOuOperador } from '../helpers/usuarios'
-
 const FormItem = Form.Item
-
-const columns = [
-    {
-        title: 'Espécie',
-        type: 'text',
-        key: 'especie',
-        dataIndex: 'especie',
-        sorter: true,
-        width: '46.5%'
-    },
-    {
-        title: 'Tombos',
-        type: 'text',
-        key: 'tombos',
-        dataIndex: 'tombos',
-        sorter: true,
-        width: '46.5%'
-    }
-]
+const { Option } = Select
 
 class RelatorioInventarioEspeciesScreen extends Component {
     constructor(props) {
@@ -46,13 +27,15 @@ class RelatorioInventarioEspeciesScreen extends Component {
             pagina: 1,
             loading: false,
             loadingExport: false,
-            familia: null
+            familia: null,
+            familias: []
         }
     }
 
     componentDidMount() {
         const { pagina } = this.state
         this.requisitaDadosDoRelatorio({}, pagina, null, null, true)
+        this.requisitaFamilias()
     }
 
     notificacao = (type, titulo, descricao) => {
@@ -63,23 +46,13 @@ class RelatorioInventarioEspeciesScreen extends Component {
     }
 
     formataDadosDoRelatorio = dados => {
-        const data = []
-        dados.forEach(item => {
-            item.especies.forEach(especie => {
-                data.push({
-                    especie: especie.especie,
-                    tombos: especie.tombos
-                })
-            })
-        })
-
-        return data
+        return dados
     }
 
     requisitaDadosDoRelatorio = (valores, pg, pageSize, sorter, paraTabela) => {
         const params = {
             pagina: pg,
-            limite: pageSize || 20,
+            limite: pageSize || 100,
             paraTabela
         }
 
@@ -177,10 +150,35 @@ class RelatorioInventarioEspeciesScreen extends Component {
             })
     }
 
+    requisitaFamilias = () => {
+        axios.get('/familias', {
+            params: {
+                limite: 9999999
+            }
+        })
+            .then(response => {
+                if (response.status === 200) {
+                    this.setState({
+                        familias: response.data.resultado
+                    })
+                }
+            })
+            .catch(err => {
+                const { response } = err
+                if (response && response.data) {
+                    const { error } = response.data
+                }
+            })
+            .catch(this.catchRequestError)
+    }
+
+    optionFamilia = () => this.state.familias.map(item => (
+        <Option value={item.nome}>{item.nome}</Option>
+    ))
+
     handleSubmit = (err, valores) => {
         if (!err) {
             this.setState({
-                valores,
                 loading: true
             })
             const { pagina, pageSize } = this.state
@@ -225,7 +223,15 @@ class RelatorioInventarioEspeciesScreen extends Component {
                         <Col span={24}>
                             <FormItem>
                                 {getFieldDecorator('familia')(
-                                    <Input placeholder="Passiflora edulis" type="text" />
+                                    <Select
+                                        showSearch
+                                        style={{ width: '100%' }}
+                                        placeholder="Selecione uma família"
+                                        optionFilterProp="children"
+                                    >
+
+                                        {this.optionFamilia()}
+                                    </Select>
                                 )}
                             </FormItem>
                         </Col>
@@ -297,20 +303,8 @@ class RelatorioInventarioEspeciesScreen extends Component {
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
 
-                <SimpleTableComponent
-                    columns={isCuradorOuOperador() ? columns : columns.filter(column => column.key !== 'acao')}
-                    data={this.state.dados}
-                    metadados={this.state.metadados}
-                    loading={this.state.loading}
-                    changePage={(pg, pageSize, sorter) => {
-                        this.setState({
-                            pagina: pg,
-                            loading: true
-                        })
-                        const { valores } = this.state
-                        this.requisitaDadosDoRelatorio(valores, pg, pageSize, sorter, true)
-                    }}
-                />
+                <p>Clique no nome da família para exibir suas informações</p>
+                <TableCollapse data={this.state.dados} loading={this.state.loading} />
                 <Divider dashed />
             </div>
         )
