@@ -51,6 +51,7 @@ import 'react-image-gallery/styles/css/image-gallery.css'
 import ListaColetoresScreen from './pages/ListaColetoresScreen'
 import NovoColetorScreen from './pages/NovoColetorScreen'
 import ListaTaxonomiaReino from './pages/ListaTaxonomiaReino'
+import RelatorioInventarioEspeciesScreen from './pages/RelatorioInventarioEspeciesScreen'
 
 const PrivateRoute = ({ component: Component, authed, ...rest }) => {
     return (
@@ -133,6 +134,8 @@ export default class App extends Component {
                 <Route path="/autores" component={ListaTaxonomiaAutores} />
                 <Route path="/mapa" component={Mapa} />
                 <Route path="/filtros" component={filtrosMapa} />
+
+                <Route path="/relatorio-inventario-especies" component={RelatorioInventarioEspeciesScreen} />
             </Switch>
         </MainLayout>
     )

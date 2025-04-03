@@ -9,7 +9,8 @@ import { Link } from 'react-router-dom'
 
 import {
     BarsOutlined, DatabaseOutlined, DesktopOutlined, FileTextOutlined, EnvironmentOutlined,
-    FlagOutlined, LogoutOutlined, MenuUnfoldOutlined, SearchOutlined, TeamOutlined
+    FlagOutlined, LogoutOutlined, MenuUnfoldOutlined, SearchOutlined, TeamOutlined,
+    SnippetsOutlined
 } from '@ant-design/icons'
 
 import logoImage from '../assets/img/logo-hcf-branco.png'
@@ -222,6 +223,19 @@ export default class MainLayout extends Component {
                             </Menu.Item>
                             <Menu.Item key="19">
                                 <Link to="/filtros">Filtros Avançados</Link>
+                            </Menu.Item>
+                        </SubMenu>
+                        <SubMenu
+                            key="relatorios"
+                            title={(
+                                <span>
+                                    <SnippetsOutlined />
+                                    <span>Relatórios</span>
+                                </span>
+                            )}
+                        >
+                            <Menu.Item key="relatorio-inventario-especies">
+                                <Link to="/relatorio-inventario-especies">Inventário de Espécies</Link>
                             </Menu.Item>
                         </SubMenu>
                         {isCuradorOuOperador() ? (
