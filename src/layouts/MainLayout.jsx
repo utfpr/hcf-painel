@@ -10,7 +10,8 @@ import { Link } from 'react-router-dom'
 import {
     BarsOutlined, DatabaseOutlined, DesktopOutlined, FileTextOutlined, EnvironmentOutlined,
     FlagOutlined, LogoutOutlined, MenuUnfoldOutlined, SearchOutlined, TeamOutlined,
-    SnippetsOutlined
+    SnippetsOutlined,
+    FlagOutlined, LogoutOutlined, MenuUnfoldOutlined, SearchOutlined, TeamOutlined
 } from '@ant-design/icons'
 
 import logoImage from '../assets/img/logo-hcf-branco.png'
