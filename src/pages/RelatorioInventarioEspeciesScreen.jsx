@@ -110,30 +110,20 @@ class RelatorioInventarioEspeciesScreen extends Component {
                 params.familia = familia
             }
         }
-        const dados = await axios.get('/relatorio/inventario-especies', { params })
-        axios.post('/report', {
-            template: {
-                name: 'inventario-especies'
-            },
-            data: {
-                data: formatarDataBDtoDataHora(new Date()),
-                dados: dados.data.dados
-            }
-        }, {
+        await axios.post('/relatorio/inventario-especies', { params }, {
             responseType: 'blob'
+        }).then(response => {
+            if (response.status === 200) {
+                this.notificacao('success', 'Exportar PDF', 'PDF gerado com sucesso.')
+                const file = new Blob([response.data], { type: 'application/pdf' })
+                const fileUrl = URL.createObjectURL(file)
+                window.open(fileUrl)
+            } else if (response.status === 400) {
+                this.notificacao('warning', 'Exportar PDF', 'Erro ao exportar o PDF.')
+            } else {
+                this.notificacao('error', 'Error', 'Erro de servidor ao exportar o PDF.')
+            }
         })
-            .then(response => {
-                if (response.status === 200) {
-                    this.notificacao('success', 'Exportar PDF', 'PDF gerado com sucesso.')
-                    const file = new Blob([response.data], { type: 'application/pdf' })
-                    const fileUrl = URL.createObjectURL(file)
-                    window.open(fileUrl)
-                } else if (response.status === 400) {
-                    this.notificacao('warning', 'Exportar PDF', 'Erro ao exportar o PDF.')
-                } else {
-                    this.notificacao('error', 'Error', 'Erro de servidor ao exportar o PDF.')
-                }
-            })
             .catch(err => {
                 const { response } = err
                 if (response && response.data) {
