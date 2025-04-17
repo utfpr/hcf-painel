@@ -112,6 +112,7 @@ class RelatorioInventarioEspeciesScreen extends Component {
                 params.familia = familia
             }
         }
+      
         await axios.post(`${relatoriosBaseUrl}/InventarioEspecies`, { params }, {
             responseType: 'blob'
         }).then(response => {
