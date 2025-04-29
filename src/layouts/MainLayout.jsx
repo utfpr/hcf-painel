@@ -237,6 +237,9 @@ export default class MainLayout extends Component {
                             <Menu.Item key="relatorio-inventario-especies">
                                 <Link to="/relatorio-inventario-especies">Inventário de Espécies</Link>
                             </Menu.Item>
+                            <Menu.Item key="relatorio-coleta-local-data">
+                                <Link to="/relatorio-coleta-local-data">Coleta por local e intervalo de data</Link>
+                            </Menu.Item>
                         </SubMenu>
                         {isCuradorOuOperador() ? (
                             <Menu.Item key="16">
