@@ -15,6 +15,8 @@ import { formatarDataBDtoDataHora } from '@/helpers/conversoes/ConversoesData'
 import { Form } from '@ant-design/compatible'
 import { LoadingOutlined } from '@ant-design/icons'
 
+import { relatoriosBaseUrl } from '../config/api'
+
 const FormItem = Form.Item
 const { Option } = Select
 
@@ -110,8 +112,9 @@ class RelatorioInventarioEspeciesScreen extends Component {
                 params.familia = familia
             }
         }
+
         await axios.post('/relatorio/inventario-especies', { params }, {
-            responseType: 'blob'
+            responseType: 'arraybuffer'
         }).then(response => {
             if (response.status === 200) {
                 this.notificacao('success', 'Exportar PDF', 'PDF gerado com sucesso.')
