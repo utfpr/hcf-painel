@@ -112,9 +112,9 @@ class RelatorioInventarioEspeciesScreen extends Component {
                 params.familia = familia
             }
         }
-      
-        await axios.post(`${relatoriosBaseUrl}/InventarioEspecies`, { params }, {
-            responseType: 'blob'
+
+        await axios.post('/relatorio/inventario-especies', { params }, {
+            responseType: 'arraybuffer'
         }).then(response => {
             if (response.status === 200) {
                 this.notificacao('success', 'Exportar PDF', 'PDF gerado com sucesso.')
