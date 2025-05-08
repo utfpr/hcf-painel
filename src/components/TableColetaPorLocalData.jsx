@@ -1,4 +1,4 @@
-import { Collapse, Skeleton, Table } from 'antd'
+import { Skeleton, Table } from 'antd'
 
 const columns = [
     {
@@ -15,6 +15,11 @@ const columns = [
         title: 'Espécie',
         dataIndex: 'especie',
         key: 'especie'
+    },
+    {
+        title: 'Autor',
+        dataIndex: 'autor',
+        key: 'autor'
     },
     {
         title: 'Tombo',
