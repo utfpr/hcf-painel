@@ -53,6 +53,7 @@ import NovoColetorScreen from './pages/NovoColetorScreen'
 import ListaTaxonomiaReino from './pages/ListaTaxonomiaReino'
 import RelatorioInventarioEspeciesScreen from './pages/RelatorioInventarioEspeciesScreen'
 import RelatorioColetaLocalPeriodoScreen from './pages/RelatorioColetaLocalPeriodoScreen'
+import RelatorioColetaPeriodoScreen from './pages/RelatorioColetaPeriodoScreen'
 
 const PrivateRoute = ({ component: Component, authed, ...rest }) => {
     return (
@@ -138,6 +139,7 @@ export default class App extends Component {
 
                 <Route path="/relatorio-inventario-especies" component={RelatorioInventarioEspeciesScreen} />
                 <Route path="/relatorio-coleta-local-data" component={RelatorioColetaLocalPeriodoScreen} />
+                <Route path="/relatorio-coleta-data" component={RelatorioColetaPeriodoScreen} />
             </Switch>
         </MainLayout>
     )
