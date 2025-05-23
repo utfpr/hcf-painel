@@ -19,7 +19,7 @@ COPY ./public ./public
 COPY ./src ./src
 COPY index.html ./
 
-RUN ls -la && yarn build
+RUN yarn build
 
 CMD rm -rf /var/www/* \
   && cp -R /usr/src/app/dist/* /var/www/ \
