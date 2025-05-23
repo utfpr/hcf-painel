@@ -171,7 +171,14 @@ class RelatorioInventarioEspeciesScreen extends Component {
                 this.notificacao('success', 'Exportar PDF', 'PDF gerado com sucesso.')
                 const file = new Blob([response.data], { type: 'application/pdf' })
                 const fileUrl = URL.createObjectURL(file)
-                window.open(fileUrl)
+                const anchor = document.createElement('a')
+                anchor.href = fileUrl
+                const formattedDate = new Date().toISOString()
+                    .substring(0, 19)
+                    .replace(/\D/g, '')
+                anchor.download = `coleta-local-periodo-${formattedDate}.pdf`
+                anchor.click()
+                URL.revokeObjectURL(fileUrl)
             } else if (response.status === 400) {
                 this.notificacao('warning', 'Exportar PDF', 'Erro ao exportar o PDF.')
             } else {
