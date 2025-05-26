@@ -37,13 +37,30 @@ export default class MainLayout extends Component {
     }
 
     componentDidMount() {
-        const userInfo = localStorage.getItem('usuario')
+        this.updateUserNameFromLocalStorage()
 
+        window.addEventListener('userNameUpdated', this.updateUserNameFromLocalStorage)
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        const userInfo = localStorage.getItem('usuario')
         if (userInfo) {
             const user = JSON.parse(userInfo)
-            this.setState({
-                userName: user.nome
-            })
+            if (user.nome !== prevState.userName) {
+                this.setState({ userName: user.nome })
+            }
+        }
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('userNameUpdated', this.updateUserNameFromLocalStorage)
+    }
+
+    updateUserNameFromLocalStorage = () => {
+        const userInfo = localStorage.getItem('usuario')
+        if (userInfo) {
+            const user = JSON.parse(userInfo)
+            this.setState({ userName: user.nome })
         }
     }
 
@@ -296,6 +313,12 @@ export default class MainLayout extends Component {
                             ) : (
                                 <div>
                                     {this.state.userName}
+
+                                    <Divider type="vertical" />
+
+                                    <Link to="/perfil">
+                                        <Button size="small">Perfil</Button>
+                                    </Link>
 
                                     <Divider type="vertical" />
 
