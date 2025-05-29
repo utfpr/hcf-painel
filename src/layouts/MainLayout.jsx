@@ -188,27 +188,32 @@ export default class MainLayout extends Component {
                                 </Link>
                             </Menu.Item>
                         ) : null}
-                        <Menu.Item key="14">
-                            <Link to="/herbarios">
-                                <FlagOutlined />
-                                <span>Herbários</span>
-                            </Link>
-                        </Menu.Item>
-                        <SubMenu
-                            key="sub2"
-                            title={(
-                                <span>
-                                    <FileTextOutlined />
-                                    <span>Fichas</span>
-                                </span>
-                            )}
-                        >
-                            <Menu.Item key="15">
-                                {' '}
-                                <Link to="/fichas/tombos">Ficha tombo</Link>
-                                {' '}
+                        {isLogado() ? (
+                            <Menu.Item key="14">
+                                <Link to="/herbarios">
+                                    <FlagOutlined />
+                                    <span>Herbários</span>
+                                </Link>
                             </Menu.Item>
-                        </SubMenu>
+                        ) : null}
+                        {isLogado() ? (
+                            <SubMenu
+                                key="sub2"
+                                title={(
+                                    <span>
+                                        <FileTextOutlined />
+                                        <span>Fichas</span>
+                                    </span>
+                                )}
+                            >
+                                <Menu.Item key="15">
+                                    {' '}
+                                    <Link to="/fichas/tombos">Ficha tombo</Link>
+                                    {' '}
+                                </Menu.Item>
+                            </SubMenu>
+                        ) : null}
+
                         <SubMenu
                             key="sub3"
                             title={(
@@ -225,22 +230,25 @@ export default class MainLayout extends Component {
                                 <Link to="/filtros">Filtros Avançados</Link>
                             </Menu.Item>
                         </SubMenu>
-                        <SubMenu
-                            key="relatorios"
-                            title={(
-                                <span>
-                                    <SnippetsOutlined />
-                                    <span>Relatórios</span>
-                                </span>
-                            )}
-                        >
-                            <Menu.Item key="relatorio-inventario-especies">
-                                <Link to="/relatorio-inventario-especies">Inventário de Espécies</Link>
-                            </Menu.Item>
-                            <Menu.Item key="relatorio-coleta-local-data">
-                                <Link to="/relatorio-coleta-local-data">Coleta por local e intervalo de data</Link>
-                            </Menu.Item>
-                        </SubMenu>
+                        {isLogado() ? (
+                            <SubMenu
+                                key="relatorios"
+                                title={(
+                                    <span>
+                                        <SnippetsOutlined />
+                                        <span>Relatórios</span>
+                                    </span>
+                                )}
+                            >
+                                <Menu.Item key="relatorio-inventario-especies">
+                                    <Link to="/relatorio-inventario-especies">Inventário de Espécies</Link>
+                                </Menu.Item>
+                                <Menu.Item key="relatorio-coleta-local-data">
+                                    <Link to="/relatorio-coleta-local-data">Coleta por local e intervalo de data</Link>
+                                </Menu.Item>
+                            </SubMenu>
+                        ) : null}
+
                         {isCuradorOuOperador() ? (
                             <Menu.Item key="16">
                                 <a href={`${baseUrl}/darwincore`} target="_blank" rel="noreferrer">
