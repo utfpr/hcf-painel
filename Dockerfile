@@ -1,32 +1,27 @@
-FROM node:18.16-alpine AS build
+FROM node:18.16-alpine
 
-WORKDIR /tmp/app
+WORKDIR /usr/src/app
 
-ARG VITE_API_URL
-ENV VITE_API_URL=$VITE_API_URL
+COPY package.json yarn.lock tsconfig.json vite.config.ts ./
 
-ARG VITE_IMAGE_BASE_URL
-ENV VITE_IMAGE_BASE_URL=$VITE_IMAGE_BASE_URL
+RUN yarn install --production=false && \
+  yarn cache clean
 
-COPY package.json yarn.lock ./
+ARG \
+  VITE_API_URL \
+  VITE_IMAGE_BASE_URL
 
-RUN yarn install \
-  && yarn cache clean
+ENV \
+  VITE_API_URL=$VITE_API_URL \
+  VITE_IMAGE_BASE_URL=$VITE_IMAGE_BASE_URL
 
-COPY . .
+COPY ./public ./public
+COPY ./src ./src
+COPY index.html ./
 
 RUN yarn build
 
-
-# production image
-
-FROM alpine:3.10 AS runtime
-
-VOLUME /var/www
-
-COPY --from=build /tmp/app/dist /var/app/dist
-
 CMD rm -rf /var/www/* \
-  && cp -R /var/app/dist/* /var/www/ \
+  && cp -R /usr/src/app/dist/* /var/www/ \
   && echo "The files were successfully copied" \
   && sleep 9999d

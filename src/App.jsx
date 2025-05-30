@@ -10,7 +10,8 @@ import {
     setTokenUsuario,
     isCurador,
     isCuradorOuOperador,
-    isCuradorOuOperadorOuIdentificador
+    isCuradorOuOperadorOuIdentificador,
+    isLogado
 } from './helpers/usuarios'
 import MainLayout from './layouts/MainLayout'
 import DetalhesTomboScreen from './pages/DetalhesTomboScreen'
@@ -41,6 +42,7 @@ import ServicosRefloraScreen from './pages/ServicosRefloraScreen'
 import ServicosSpeciesLinkScreen from './pages/ServicosSpeciesLinkScreen'
 import NovoTomboScreen from './pages/tombos/NovoTomboScreen'
 import PendenciaPagina from './pages/VerPendenciaScreen'
+import PerfilScreen from './pages/PerfilScreen'
 
 import 'antd/dist/antd.css'
 import './assets/css/App.css'
@@ -53,6 +55,7 @@ import NovoColetorScreen from './pages/NovoColetorScreen'
 import ListaTaxonomiaReino from './pages/ListaTaxonomiaReino'
 import RelatorioInventarioEspeciesScreen from './pages/RelatorioInventarioEspeciesScreen'
 import RelatorioColetaLocalPeriodoScreen from './pages/RelatorioColetaLocalPeriodoScreen'
+import RelatorioColetaPeriodoScreen from './pages/RelatorioColetaPeriodoScreen'
 
 const PrivateRoute = ({ component: Component, authed, ...rest }) => {
     return (
@@ -119,8 +122,8 @@ export default class App extends Component {
                 <PrivateRoute authed={isCurador()} path="/coletores/:coletor_id" component={NovoColetorScreen} />
                 <PrivateRoute authed={isCurador()} path="/coletores" component={ListaColetoresScreen} />
 
-                <Route path="/herbarios" component={ListaHerbariosScreen} />
-                <Route path="/fichas/tombos" component={FichaTomboScreen} />
+                <PrivateRoute authed={isLogado()} path="/herbarios" component={ListaHerbariosScreen} />
+                <PrivateRoute authed={isLogado()} path="/fichas/tombos" component={FichaTomboScreen} />
                 <PrivateRoute authed={isCurador()} path="/reflora" component={ServicosRefloraScreen} />
                 <PrivateRoute authed={isCurador()} path="/specieslink" component={ServicosSpeciesLinkScreen} />
 
@@ -135,9 +138,11 @@ export default class App extends Component {
                 <Route path="/autores" component={ListaTaxonomiaAutores} />
                 <Route path="/mapa" component={Mapa} />
                 <Route path="/filtros" component={filtrosMapa} />
+                <Route path="/perfil" component={PerfilScreen} />
 
-                <Route path="/relatorio-inventario-especies" component={RelatorioInventarioEspeciesScreen} />
-                <Route path="/relatorio-coleta-local-data" component={RelatorioColetaLocalPeriodoScreen} />
+                <PrivateRoute authed={isLogado()} path="/relatorio-coleta-data" component={RelatorioColetaPeriodoScreen} />
+                <PrivateRoute authed={isLogado()} path="/relatorio-inventario-especies" component={RelatorioInventarioEspeciesScreen} />
+                <PrivateRoute authed={isLogado()} path="/relatorio-coleta-local-data" component={RelatorioColetaLocalPeriodoScreen} />
             </Switch>
         </MainLayout>
     )
