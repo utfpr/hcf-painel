@@ -42,6 +42,7 @@ import ServicosRefloraScreen from './pages/ServicosRefloraScreen'
 import ServicosSpeciesLinkScreen from './pages/ServicosSpeciesLinkScreen'
 import NovoTomboScreen from './pages/tombos/NovoTomboScreen'
 import PendenciaPagina from './pages/VerPendenciaScreen'
+import PerfilScreen from './pages/PerfilScreen'
 
 import 'antd/dist/antd.css'
 import './assets/css/App.css'
@@ -136,6 +137,7 @@ export default class App extends Component {
                 <Route path="/autores" component={ListaTaxonomiaAutores} />
                 <Route path="/mapa" component={Mapa} />
                 <Route path="/filtros" component={filtrosMapa} />
+                <Route path="/perfil" component={PerfilScreen} />
 
                 <PrivateRoute authed={isLogado()} path="/relatorio-inventario-especies" component={RelatorioInventarioEspeciesScreen} />
                 <PrivateRoute authed={isLogado()} path="/relatorio-coleta-local-data" component={RelatorioColetaLocalPeriodoScreen} />
