@@ -28,14 +28,6 @@ const columns = [
         width: '30.4%'
     },
     {
-        title: 'Reino',
-        type: 'text',
-        key: 'reino',
-        dataIndex: 'reino',
-        sorter: true,
-        width: '30.4%'
-    },
-    {
         title: 'Família',
         type: 'text',
         key: 'familia',
@@ -57,7 +49,6 @@ class ListaTaxonomiaGenero extends Component {
             generos: [],
             metadados: {},
             familias: [],
-            reinos: [],
             pagina: 1,
             visibleModal: false,
             loadingModal: false,
@@ -119,29 +110,6 @@ class ListaTaxonomiaGenero extends Component {
     componentDidMount() {
         this.requisitaListaGenero({}, this.state.pagina)
         this.requisitaFamilias()
-        this.requisitaReinos()
-    }
-
-    requisitaReinos = () => {
-        axios.get('/reinos', {
-            params: {
-                limite: 9999999
-            }
-        })
-            .then(response => {
-                if (response.status === 200) {
-                    this.setState({
-                        reinos: response.data.resultado
-                    })
-                }
-            })
-            .catch(err => {
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    console.error(error.message)
-                }
-            })
     }
 
     gerarAcao(item) {
@@ -192,7 +160,6 @@ class ListaTaxonomiaGenero extends Component {
         genero: item.nome,
         acao: this.gerarAcao(item),
         familia: item.familia?.nome,
-        reino: item.reino?.nome
     }))
 
     renderAdd = () => {
@@ -465,10 +432,6 @@ class ListaTaxonomiaGenero extends Component {
     }
 
     optionFamilia = () => this.state.familias.map(item => (
-        <Option value={item.id}>{item.nome}</Option>
-    ))
-
-    optionReino = () => this.state.reinos.map(item => (
         <Option value={item.id}>{item.nome}</Option>
     ))
 

@@ -28,14 +28,6 @@ const columns = [
         sorter: true
     },
     {
-        title: 'Reino',
-        type: 'text',
-        key: 'reino',
-        dataIndex: 'reino',
-        sorter: true,
-        width: '18.6%'
-    },
-    {
         title: 'Família',
         key: 'familia',
         dataIndex: 'familia',
@@ -190,7 +182,6 @@ class ListaTaxonomiaEspecie extends Component {
         acao: this.gerarAcao(item),
         genero: item.genero?.nome,
         familia: item.familia?.nome,
-        reino: item.reino?.nome,
         autor: item.autor?.nome
     }))
 
