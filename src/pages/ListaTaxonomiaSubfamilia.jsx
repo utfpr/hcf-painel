@@ -28,14 +28,6 @@ const columns = [
         sorter: true
     },
     {
-        title: 'Reino',
-        type: 'text',
-        key: 'reino',
-        dataIndex: 'reino',
-        sorter: true,
-        width: '23.25%'
-    },
-    {
         title: 'Família',
         key: 'familia',
         dataIndex: 'familia',
@@ -63,7 +55,6 @@ class ListaTaxonomiaSubfamilia extends Component {
             subfamilias: [],
             metadados: {},
             familias: [],
-            reinos: [],
             pagina: 1,
             visibleModal: false,
             loadingModal: false,
@@ -125,7 +116,6 @@ class ListaTaxonomiaSubfamilia extends Component {
     componentDidMount() {
         this.requisitaListaSubfamilia({}, this.state.pagina)
         this.requisitaFamilias()
-        this.requisitaReinos()
     }
 
     gerarAcao(item) {
@@ -174,7 +164,6 @@ class ListaTaxonomiaSubfamilia extends Component {
         key: item.id,
         subfamilia: item.nome,
         familia: item.familia?.nome,
-        reino: item.reino?.nome,
         autor: item.autor?.nome,
         acao: this.gerarAcao(item)
     }))
@@ -449,36 +438,10 @@ class ListaTaxonomiaSubfamilia extends Component {
         )
     }
 
-    requisitaReinos = () => {
-        axios.get('/reinos', {
-            params: {
-                limite: 9999999
-            }
-        })
-            .then(response => {
-                if (response.status === 200) {
-                    this.setState({
-                        reinos: response.data.resultado
-                    })
-                }
-            })
-            .catch(err => {
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    console.error(error.message)
-                }
-            })
-    }
-
     optionFamilia = () => this.state.familias.map(item => (
         <Option value={item.id}>{item.nome}</Option>
     ))
-
-    optionReino = () => this.state.reinos.map(item => (
-        <Option value={item.id}>{item.nome}</Option>
-    ))
-
+    
     renderFormulario() {
         const { getFieldDecorator } = this.props.form
         return (
