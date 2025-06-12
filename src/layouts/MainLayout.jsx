@@ -266,6 +266,9 @@ export default class MainLayout extends Component {
                                 <Menu.Item key="relatorio-coleta-data">
                                     <Link to="/relatorio-coleta-data">Coleta por intervalo de data</Link>
                                 </Menu.Item>
+                                <Menu.Item key="relatorio-coletor-data">
+                                    <Link to="/relatorio-coletor-data">Coleta por coletor e intervalo de data</Link>
+                                </Menu.Item>
                             </SubMenu>
                         ) : null}
                         {isCuradorOuOperador() ? (

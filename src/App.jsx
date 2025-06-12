@@ -18,6 +18,7 @@ import DetalhesTomboScreen from './pages/DetalhesTomboScreen'
 import FichaTomboScreen from './pages/FichaTomboScreen'
 import filtrosMapa from './pages/FiltrosMapa'
 import InicioScreen from './pages/InicioScreen'
+import ListaColetoresScreen from './pages/ListaColetoresScreen'
 import ListaHerbariosScreen from './pages/ListaHerbariosScreen'
 import ListaIdentificadoresScreen from './pages/ListaIdentificadoresScreen'
 import ListaPendenciasScreen from './pages/ListaPendenciasScreen'
@@ -26,6 +27,7 @@ import ListaTaxonomiaAutores from './pages/ListaTaxonomiaAutores'
 import ListaTaxonomiaEspecie from './pages/ListaTaxonomiaEspecie'
 import ListaTaxonomiaFamilia from './pages/ListaTaxonomiaFamilia'
 import ListaTaxonomiaGenero from './pages/ListaTaxonomiaGenero'
+import ListaTaxonomiaReino from './pages/ListaTaxonomiaReino'
 import ListaTaxonomiaScreen from './pages/ListaTaxonomiaScreen'
 import ListaTaxonomiaSubespecie from './pages/ListaTaxonomiaSubespecie'
 import ListaTaxonomiaSubfamilia from './pages/ListaTaxonomiaSubfamilia'
@@ -35,27 +37,25 @@ import ListaUsuariosScreen from './pages/ListaUsuariosScreen'
 import LivroTomboScreen from './pages/LivroTomboScreen'
 import Mapa from './pages/Mapa'
 import NovaRemessaScreen from './pages/NovaRemessaScreen'
+import NovoColetorScreen from './pages/NovoColetorScreen'
 import NovoHerbarioScreen from './pages/NovoHerbarioScreen'
 import NovoIdentificadorScreen from './pages/NovoIdentificadorScreen'
 import NovoUsuarioScreen from './pages/NovoUsuarioScreen'
+import PerfilScreen from './pages/PerfilScreen'
+import RelatorioColetaLocalPeriodoScreen from './pages/RelatorioColetaLocalPeriodoScreen'
+import RelatorioColetaPeriodoScreen from './pages/RelatorioColetaPeriodoScreen'
+import RelatorioColetorPeriodoScreen from './pages/RelatorioColetorPeriodoScreen'
+import RelatorioInventarioEspeciesScreen from './pages/RelatorioInventarioEspeciesScreen'
 import ServicosRefloraScreen from './pages/ServicosRefloraScreen'
 import ServicosSpeciesLinkScreen from './pages/ServicosSpeciesLinkScreen'
 import NovoTomboScreen from './pages/tombos/NovoTomboScreen'
 import PendenciaPagina from './pages/VerPendenciaScreen'
-import PerfilScreen from './pages/PerfilScreen'
-
 import 'antd/dist/antd.css'
 import './assets/css/App.css'
 import './assets/css/FormEnterSystem.css'
 import './assets/css/Main.css'
 import './assets/css/Search.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
-import ListaColetoresScreen from './pages/ListaColetoresScreen'
-import NovoColetorScreen from './pages/NovoColetorScreen'
-import ListaTaxonomiaReino from './pages/ListaTaxonomiaReino'
-import RelatorioInventarioEspeciesScreen from './pages/RelatorioInventarioEspeciesScreen'
-import RelatorioColetaLocalPeriodoScreen from './pages/RelatorioColetaLocalPeriodoScreen'
-import RelatorioColetaPeriodoScreen from './pages/RelatorioColetaPeriodoScreen'
 
 const PrivateRoute = ({ component: Component, authed, ...rest }) => {
     return (
@@ -143,6 +143,7 @@ export default class App extends Component {
                 <PrivateRoute authed={isLogado()} path="/relatorio-coleta-data" component={RelatorioColetaPeriodoScreen} />
                 <PrivateRoute authed={isLogado()} path="/relatorio-inventario-especies" component={RelatorioInventarioEspeciesScreen} />
                 <PrivateRoute authed={isLogado()} path="/relatorio-coleta-local-data" component={RelatorioColetaLocalPeriodoScreen} />
+                <PrivateRoute authed={isLogado()} path="/relatorio-coletor-data" component={RelatorioColetorPeriodoScreen} />
             </Switch>
         </MainLayout>
     )
