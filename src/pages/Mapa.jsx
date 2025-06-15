@@ -24,6 +24,8 @@ import '../assets/css/Map.css'
 
 const MapControls = lazy(() => import('../components/MapControls'))
 
+const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY
+
 const icon = new L.Icon({
     iconUrl: pinVerde,
     iconRetinaUrl: pinVerde,
@@ -67,20 +69,34 @@ function MapLogic({ setLoading }) {
 
     useEffect(() => {
         setLoading(true)
-        axios.get('/pontos')
-            .then(response => {
-                setPontos(Object.values(response.data).map(ponto => ({
-                    ...ponto
-                })))
-                setLoading(false)
-                setTimeout(() => {
-                    map.invalidateSize()
-                }, 0)
-            })
-            .catch(error => {
-                console.error('Erro ao buscar os pontos: ', error)
-                setLoading(false)
-            })
+        window.grecaptcha.ready(() => {
+            window.grecaptcha.execute(SITE_KEY, { action: 'pontos' })
+                .then(token => {
+                    const params = {
+                        recaptchaToken: token
+                    }
+    
+                    axios.get('/pontos', { params })
+                        .then(response => {
+                            setPontos(Object.values(response.data).map(ponto => ({
+                                ...ponto
+                            })))
+                            setLoading(false)
+                            setTimeout(() => {
+                                map.invalidateSize()
+                            }, 0)
+                        })
+                        .catch(error => {
+                            console.error('Erro ao buscar os pontos: ', error)
+                            setLoading(false)
+                        })
+                })
+                .catch(error => {
+                    console.error('Erro ao executar reCAPTCHA: ', error)
+                    this.notificacao('warning', 'Buscar Pontos Mapa', 'Erro ao executar reCAPTCHA')
+                    setLoading(false)
+                })
+        })
     }, [setLoading, map])
 
     useEffect(() => {

@@ -18,6 +18,8 @@ const { confirm } = Modal
 const FormItem = Form.Item
 const { Option } = Select
 
+const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY
+
 const columns = [
     {
         title: 'Subespécie',
@@ -213,67 +215,53 @@ class ListaTaxonomiaSubespecie extends Component {
         autor: item.autor?.nome
     }))
 
-    requisitaListaSubespecie = (valores, pg, pageSize, sorter) => {
-        const campo = sorter && sorter.field ? sorter.field : 'subespecie'
-        const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
-
-        const params = {
-            pagina: pg,
-            limite: pageSize || 20,
-            order: `${campo}:${ordem}`
-        }
-
-        if (valores) {
-            const {
-                subespecie, familia, genero, especie
-            } = valores
-
-            if (subespecie) {
-                params.subespecie = subespecie
+    requisitaListaSubespecie = async (valores, pg, pageSize, sorter) => {
+        this.setState({ loading: true })
+    
+        try {
+            await new Promise(resolve => window.grecaptcha.ready(resolve))
+    
+            const token = await window.grecaptcha.execute(SITE_KEY, { action: 'subespecies' })
+    
+            const campo = sorter && sorter.field ? sorter.field : 'subespecie'
+            const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
+    
+            const params = {
+                pagina: pg,
+                limite: pageSize || 20,
+                order: `${campo}:${ordem}`,
+                recaptchaToken: token,
+                ...(valores && valores.subespecie ? { subespecie: valores.subespecie } : {}),
+                ...(valores && valores.familia ? { familia_nome: valores.familia } : {}),
+                ...(valores && valores.genero ? { genero_nome: valores.genero } : {}),
+                ...(valores && valores.especie ? { especie_nome: valores.especie } : {})
             }
-
-            if (familia) {
-                params.familia_nome = familia
-            }
-
-            if (genero) {
-                params.genero_nome = genero
-            }
-
-            if (especie) {
-                params.especie_nome = especie
-            }
-        }
-        axios.get('/subespecies', { params })
-            .then(response => {
+    
+            const response = await axios.get('/subespecies', { params })
+    
+            if (response.status === 200) {
+                const { data } = response
                 this.setState({
+                    subespecies: this.formataDadosSubespecie(data.resultado),
+                    metadados: data.metadados,
                     loading: false
                 })
-                if (response.status === 200) {
-                    const { data } = response
-                    this.setState({
-                        subespecies: this.formataDadosSubespecie(data.resultado),
-                        metadados: data.metadados
-                    })
-                } else if (response.status === 400) {
-                    this.notificacao('warning', 'Buscar', 'Erro ao buscar as subespécies.')
-                } else {
-                    this.notificacao('error', 'Error', 'Erro do servidor ao buscar as subespécies.')
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
+            } else if (response.status === 400) {
+                this.notificacao('warning', 'Buscar subespécie', 'Erro ao buscar as subespécies.')
+                this.setState({ loading: false })
+            } else {
+                this.notificacao('error', 'Erro', 'Erro do servidor ao buscar as subespécies.')
+                this.setState({ loading: false })
+            }
+        } catch (err) {
+            this.setState({ loading: false })
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                console.error(error.message)
+            }
+            this.notificacao('error', 'Erro', 'Falha ao buscar subespécies.')
+        }
     }
 
     handleSubmit = (err, valores) => {
@@ -291,31 +279,39 @@ class ListaTaxonomiaSubespecie extends Component {
         this.props.form.validateFields(this.handleSubmit)
     }
 
-    requisitaAutores = () => {
-        axios.get('/autores', {
-            params: {
-                limite: 9999999
+    requisitaAutores = async () => {
+        this.setState({ loading: true })
+    
+        try {
+            await new Promise(resolve => window.grecaptcha.ready(resolve))
+    
+            const token = await window.grecaptcha.execute(SITE_KEY, { action: 'autores' })
+    
+            const params = {
+                limite: 9999999,
+                recaptchaToken: token
             }
-        })
-            .then(response => {
-                if (response.status === 200) {
-                    this.setState({
-                        autores: response.data.resultado
-                    })
-                } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar os autores, tente novamente.')
-                }
-            })
-            .catch(err => {
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
+    
+            const response = await axios.get('/autores', { params })
+    
+            if (response.status === 200) {
+                this.setState({
+                    autores: response.data.resultado,
+                    loading: false
+                })
+            } else {
+                this.notificacao('warning', 'Buscar autores', 'Erro ao buscar os autores.')
+                this.setState({ loading: false })
+            }
+        } catch (err) {
+            this.setState({ loading: false })
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                console.error(error.message)
+            }
+            this.notificacao('error', 'Erro', 'Falha ao buscar autores.')
+        }
     }
 
     cadastraNovaSubespecie() {
@@ -402,31 +398,39 @@ class ListaTaxonomiaSubespecie extends Component {
             .catch(this.catchRequestError)
     }
 
-    requisitaEspecies = () => {
-        axios.get('/especies', {
-            params: {
-                limite: 9999999
+    requisitaEspecies = async () => {
+        this.setState({ loading: true })
+    
+        try {
+            await new Promise(resolve => window.grecaptcha.ready(resolve))
+    
+            const token = await window.grecaptcha.execute(SITE_KEY, { action: 'especies' })
+    
+            const params = {
+                limite: 9999999,
+                recaptchaToken: token
             }
-        })
-            .then(response => {
-                if (response.status === 200) {
-                    this.setState({
-                        especies: response.data.resultado
-                    })
-                } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar as espécies, tente novamente.')
-                }
-            })
-            .catch(err => {
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
+    
+            const response = await axios.get('/especies', { params })
+    
+            if (response.status === 200) {
+                this.setState({
+                    especies: response.data.resultado,
+                    loading: false
+                })
+            } else {
+                this.notificacao('warning', 'Buscar espécies', 'Erro ao buscar as espécies.')
+                this.setState({ loading: false })
+            }
+        } catch (err) {
+            this.setState({ loading: false })
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                console.error(error.message)
+            }
+            this.notificacao('error', 'Erro', 'Falha ao buscar espécies.')
+        }
     }
 
     renderPainelBusca(getFieldDecorator) {
