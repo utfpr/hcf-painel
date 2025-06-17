@@ -42,9 +42,11 @@ import NovoHerbarioScreen from './pages/NovoHerbarioScreen'
 import NovoIdentificadorScreen from './pages/NovoIdentificadorScreen'
 import NovoUsuarioScreen from './pages/NovoUsuarioScreen'
 import PerfilScreen from './pages/PerfilScreen'
+import RelatorioCodigoBarrasScreen from './pages/RelatorioCodigoBarrasScreen'
 import RelatorioColetaLocalPeriodoScreen from './pages/RelatorioColetaLocalPeriodoScreen'
 import RelatorioColetaPeriodoScreen from './pages/RelatorioColetaPeriodoScreen'
 import RelatorioColetorPeriodoScreen from './pages/RelatorioColetorPeriodoScreen'
+import RelatorioFamiliasGeneroScreen from './pages/RelatorioFamiliasGeneroScreen'
 import RelatorioInventarioEspeciesScreen from './pages/RelatorioInventarioEspeciesScreen'
 import ServicosRefloraScreen from './pages/ServicosRefloraScreen'
 import ServicosSpeciesLinkScreen from './pages/ServicosSpeciesLinkScreen'
@@ -144,6 +146,8 @@ export default class App extends Component {
                 <PrivateRoute authed={isLogado()} path="/relatorio-inventario-especies" component={RelatorioInventarioEspeciesScreen} />
                 <PrivateRoute authed={isLogado()} path="/relatorio-coleta-local-data" component={RelatorioColetaLocalPeriodoScreen} />
                 <PrivateRoute authed={isLogado()} path="/relatorio-coletor-data" component={RelatorioColetorPeriodoScreen} />
+                <PrivateRoute authed={isLogado()} path="/relatorio-codigo-barras" component={RelatorioCodigoBarrasScreen} />
+                <PrivateRoute authed={isLogado()} path="/relatorio-familias-genero" component={RelatorioFamiliasGeneroScreen} />
             </Switch>
         </MainLayout>
     )
