@@ -5,30 +5,19 @@ import {
     Divider, Card, Row, Col,
     Button, notification,
     Spin,
-    Input,
-    DatePicker
+    Select
 } from 'antd'
-import ptbr from 'antd/es/date-picker/locale/pt_BR'
 import axios from 'axios'
-import moment from 'moment'
 
-import TableCollapseParaLocais from '@/components/TableCollapseParaLocais'
+import TableCollapseParaGeneros from '@/components/TableCollapseParaGeneros'
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import { LoadingOutlined } from '@ant-design/icons'
 
 const FormItem = Form.Item
-const { RangePicker } = DatePicker
+const { Option } = Select
 
-const dateFormat = 'DD/MM/YYYY'
-const dateLocale = {
-    ...ptbr,
-    lang: {
-        ...ptbr.lang
-    }
-}
-
-class RelatorioInventarioEspeciesScreen extends Component {
+class RelatorioFamiliasGeneroScreen extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -37,18 +26,15 @@ class RelatorioInventarioEspeciesScreen extends Component {
             pagina: 1,
             loading: false,
             loadingExport: false,
-            loadingExport2: false,
-            dataInicio: moment().startOf('month')
-                .toISOString(),
-            dataFim: moment().endOf('day')
-                .toISOString(),
-            local: null
+            familia: null,
+            familias: []
         }
     }
 
     componentDidMount() {
         const { pagina } = this.state
         this.requisitaDadosDoRelatorio({}, pagina, null, null, true)
+        this.requisitaFamilias()
     }
 
     notificacao = (type, titulo, descricao) => {
@@ -70,29 +56,16 @@ class RelatorioInventarioEspeciesScreen extends Component {
         }
 
         if (valores !== undefined) {
-            const { local, intervaloData } = valores
+            const { familia } = valores
+            this.setState({
+                familia
+            })
 
-            if (local) {
-                params.local = local
-                this.setState({
-                    local
-                })
-            }
-            if (intervaloData && intervaloData.length > 0) {
-                params.dataInicio = intervaloData[0].toISOString()
-                params.dataFim = intervaloData[1].toISOString()
-                this.setState({
-                    dataInicio: intervaloData[0].toISOString(),
-                    dataFim: intervaloData[1].toISOString()
-                })
-            } else {
-                params.dataInicio = moment().startOf('month')
-                    .toISOString()
-                params.dataFim = moment().endOf('day')
-                    .toISOString()
+            if (familia) {
+                params.familia = familia
             }
         }
-        axios.get('/relatorio/coleta-por-local-intervalo-de-data', { params })
+        axios.get('/relatorio/familias-generos', { params })
             .then(response => {
                 this.setState({
                     loading: false
@@ -123,47 +96,21 @@ class RelatorioInventarioEspeciesScreen extends Component {
             .catch(this.catchRequestError)
     }
 
-    requisitaExportarPDF = async sintetico => {
-        if (sintetico) {
-            this.setState({
-                loadingExport: true
-            })
-        } else {
-            this.setState({
-                loadingExport2: true
-            })
-        }
+    requisitaExportarPDF = async () => {
+        this.setState({
+            loadingExport: true
+        })
         const params = {}
 
-        if (this.state.local !== undefined || this.state.local !== null) {
-            const { local } = this.state
+        if (this.state.familia !== undefined || this.state.familia !== null) {
+            const { familia } = this.state
 
-            if (local) {
-                params.local = local
+            if (familia) {
+                params.familia = familia
             }
         }
 
-        if (this.state.dataInicio !== undefined || this.state.dataInicio !== null) {
-            const { dataInicio } = this.state
-            if (dataInicio) {
-                params.dataInicio = dataInicio
-            }
-        }
-
-        if (this.state.dataFim !== undefined || this.state.dataFim !== null) {
-            const { dataFim } = this.state
-            if (dataFim) {
-                params.dataFim = dataFim
-            }
-        }
-
-        if (sintetico) {
-            params.variante = 'sintetico'
-        } else {
-            params.variante = 'analitico'
-        }
-
-        await axios.post('/relatorio/coleta-por-local-intervalo-de-data', null, {
+        await axios.post('/relatorio/familias-generos', null, {
             params,
             responseType: 'arraybuffer'
         }).then(response => {
@@ -176,7 +123,7 @@ class RelatorioInventarioEspeciesScreen extends Component {
                 const formattedDate = new Date().toISOString()
                     .substring(0, 19)
                     .replace(/\D/g, '')
-                anchor.download = `coleta-local-periodo-${formattedDate}.pdf`
+                anchor.download = `familias-genero-${formattedDate}.pdf`
                 anchor.click()
                 URL.revokeObjectURL(fileUrl)
             } else if (response.status === 400) {
@@ -195,17 +142,37 @@ class RelatorioInventarioEspeciesScreen extends Component {
             })
             .catch(this.catchRequestError)
             .finally(() => {
-                if (sintetico) {
+                this.setState({
+                    loadingExport: false
+                })
+            })
+    }
+
+    requisitaFamilias = () => {
+        axios.get('/familias', {
+            params: {
+                limite: 9999999
+            }
+        })
+            .then(response => {
+                if (response.status === 200) {
                     this.setState({
-                        loadingExport: false
-                    })
-                } else {
-                    this.setState({
-                        loadingExport2: false
+                        familias: response.data.resultado
                     })
                 }
             })
+            .catch(err => {
+                const { response } = err
+                if (response && response.data) {
+                    const { error } = response.data
+                }
+            })
+            .catch(this.catchRequestError)
     }
+
+    optionFamilia = () => this.state.familias.map(item => (
+        <Option value={item.nome}>{item.nome}</Option>
+    ))
 
     handleSubmit = (err, valores) => {
         if (!err) {
@@ -223,23 +190,18 @@ class RelatorioInventarioEspeciesScreen extends Component {
         form.validateFields(this.handleSubmit)
     }
 
-    renderBotaoPDF(sintetico) {
+    renderBotaoPDF() {
         return (
             <Button
                 type="primary"
                 className="login-form-button"
-                onClick={() => this.requisitaExportarPDF(sintetico)}
-                disabled={sintetico ? this.state.loadingExport : this.state.loadingExport2}
+                onClick={() => this.requisitaExportarPDF()}
+                disabled={this.state.loadingExport}
             >
-                {sintetico && this.state.loadingExport
-                    ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ marginRight: 8 }} />
-                    : ''}
-                {!sintetico && this.state.loadingExport2
+                {this.state.loadingExport
                     ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ marginRight: 8 }} />
                     : ''}
                 Gerar PDF
-                {' '}
-                {sintetico ? 'Sintético' : 'Analítico'}
             </Button>
         )
     }
@@ -248,43 +210,26 @@ class RelatorioInventarioEspeciesScreen extends Component {
         const { form } = this.props
         const { getFieldDecorator } = form
         return (
-            <Card title="Filtros do relatório">
+            <Card title="Buscar família">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col span={24}>
-                            <span>Local:</span>
+                            <span>Nome da família:</span>
                         </Col>
                     </Row>
                     <Row gutter={8}>
                         <Col span={24}>
                             <FormItem>
-                                {getFieldDecorator('local')(
-                                    <Input placeholder="RPPN Moreira Sales" type="text" />
-                                )}
-                            </FormItem>
-                        </Col>
-                    </Row>
+                                {getFieldDecorator('familia')(
+                                    <Select
+                                        showSearch
+                                        style={{ width: '100%' }}
+                                        placeholder="Selecione uma família"
+                                        optionFilterProp="children"
+                                    >
 
-                    <Row gutter={8}>
-                        <Col span={24}>
-                            <span>Intervalo de data:</span>
-                        </Col>
-                    </Row>
-                    <Row gutter={8}>
-                        <Col span={24}>
-                            <FormItem>
-                                {getFieldDecorator('intervaloData')(
-                                    <RangePicker
-                                        defaultValue={[moment().startOf('month'), moment().endOf('day')]}
-                                        format={dateFormat}
-                                        locale={dateLocale}
-                                        onChange={a => {
-                                            this.setState({
-                                                dataInicio: a[0].toISOString(),
-                                                dataFim: a[1].toISOString()
-                                            })
-                                        }}
-                                    />
+                                        {this.optionFamilia()}
+                                    </Select>
                                 )}
                             </FormItem>
                         </Col>
@@ -309,11 +254,7 @@ class RelatorioInventarioEspeciesScreen extends Component {
                                                     pagina: 1,
                                                     valores: {},
                                                     metadados: {},
-                                                    local: null,
-                                                    dataInicio: moment().startOf('month')
-                                                        .toISOString(),
-                                                    dataFim: moment().endOf('day')
-                                                        .toISOString()
+                                                    familia: null
                                                 })
                                                 this.requisitaDadosDoRelatorio({}, 1, null, null, true)
                                             }}
@@ -347,20 +288,12 @@ class RelatorioInventarioEspeciesScreen extends Component {
         const { getFieldDecorator } = form
         return (
             <div>
-                <Row
-                    gutter={24}
-                    style={{
-                        marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'
-                    }}
-                >
+                <Row gutter={24} style={{ marginBottom: '20px' }}>
                     <Col xs={24} sm={14} md={18} lg={20} xl={20}>
-                        <h2 style={{ fontWeight: 200 }}>Relatório de Coleta por Local e Intervalo de Data</h2>
+                        <h2 style={{ fontWeight: 200 }}>Relatório de Famílias e Gêneros</h2>
                     </Col>
-                    <Col xs={24} sm={10} md={6} lg={4} xl={4} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <div style={{ display: 'flex', gap: '10px' }}>
-                            {this.renderBotaoPDF()}
-                            {this.renderBotaoPDF(true)}
-                        </div>
+                    <Col xs={24} sm={10} md={6} lg={4} xl={4}>
+                        {this.renderBotaoPDF()}
                     </Col>
                 </Row>
 
@@ -368,7 +301,8 @@ class RelatorioInventarioEspeciesScreen extends Component {
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
 
-                <TableCollapseParaLocais data={this.state.dados} loading={this.state.loading} />
+                <p>Clique no nome da família para exibir suas informações</p>
+                <TableCollapseParaGeneros data={this.state.dados} loading={this.state.loading} />
                 <Divider dashed />
             </div>
         )
@@ -380,4 +314,4 @@ class RelatorioInventarioEspeciesScreen extends Component {
         )
     }
 }
-export default Form.create()(RelatorioInventarioEspeciesScreen)
+export default Form.create()(RelatorioFamiliasGeneroScreen)
