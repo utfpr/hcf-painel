@@ -49,6 +49,7 @@ import RelatorioColetorPeriodoScreen from './pages/RelatorioColetorPeriodoScreen
 import RelatorioFamiliasGeneroScreen from './pages/RelatorioFamiliasGeneroScreen'
 import RelatorioInventarioEspeciesScreen from './pages/RelatorioInventarioEspeciesScreen'
 import RelatorioLocalColetaScreen from './pages/RelatorioLocalColetaPeriodoScreen'
+import RelatorioQuantidadeScreen from './pages/RelatorioQtdPeriodoScreen'
 import ServicosRefloraScreen from './pages/ServicosRefloraScreen'
 import ServicosSpeciesLinkScreen from './pages/ServicosSpeciesLinkScreen'
 import NovoTomboScreen from './pages/tombos/NovoTomboScreen'
@@ -150,6 +151,7 @@ export default class App extends Component {
                 <PrivateRoute authed={isLogado()} path="/relatorio-codigo-barras" component={RelatorioCodigoBarrasScreen} />
                 <PrivateRoute authed={isLogado()} path="/relatorio-familias-genero" component={RelatorioFamiliasGeneroScreen} />
                 <PrivateRoute authed={isLogado()} path="/relatorio-locais-coleta" component={RelatorioLocalColetaScreen} />
+                <PrivateRoute authed={isLogado()} path="/relatorio-quantidade-familia-generos" component={RelatorioQuantidadeScreen} />
             </Switch>
         </MainLayout>
     )

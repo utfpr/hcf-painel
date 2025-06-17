@@ -18,7 +18,20 @@ const columns = [
     }
 ]
 
-const TableCollapseParaGeneros = ({ data, loading }) => {
+const columns2 = [
+    {
+        title: 'Gênero',
+        dataIndex: 'nome',
+        key: 'nome'
+    },
+    {
+        title: 'Quantidade',
+        dataIndex: 'quantidade',
+        key: 'quantidade'
+    }
+]
+
+const TableCollapseParaGeneros = ({ data, loading, modelo = 1 }) => {
     if (!data) return <div />
     if (data.length === 0) return <div />
     if (loading) {
@@ -38,8 +51,10 @@ const TableCollapseParaGeneros = ({ data, loading }) => {
     return (
         <Collapse bordered={false}>
             {data.map(item => (
-                <Collapse.Panel header={`${item.familia} (${item.total})`} key={item.familia}>
-                    <Table dataSource={item.especies} columns={columns} />
+                <Collapse.Panel header={`${item.familia} (${modelo === 1 ? item.total : item.generos.reduce((acc, curr) => acc + curr.quantidade, 0)})`} key={item.familia}>
+                    { modelo === 1
+                        ? <Table dataSource={item.especies} columns={columns} />
+                        : <Table dataSource={item.generos} columns={columns2} />}
                 </Collapse.Panel>
             ))}
         </Collapse>
