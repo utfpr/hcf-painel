@@ -269,6 +269,15 @@ export default class MainLayout extends Component {
                                 <Menu.Item key="relatorio-coletor-data">
                                     <Link to="/relatorio-coletor-data">Coleta por coletor e intervalo de data</Link>
                                 </Menu.Item>
+                                <Menu.Item key="relatorio-familias-genero">
+                                    <Link to="/relatorio-familias-genero">Famílias e Gêneros</Link>
+                                </Menu.Item>
+                                <Menu.Item key="relatorio-locais-coleta">
+                                    <Link to="/relatorio-locais-coleta">Locais de Coleta</Link>
+                                </Menu.Item>
+                                <Menu.Item key="relatorio-quantidade-familia-generos">
+                                    <Link to="/relatorio-quantidade-familia-generos">Quantidade por Família e Gênero</Link>
+                                </Menu.Item>
                                 <Menu.Item key="relatorio-codigo-barras">
                                     <Link to="/relatorio-codigo-barras">Código de Barras</Link>
                                 </Menu.Item>
