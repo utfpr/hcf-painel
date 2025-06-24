@@ -282,6 +282,14 @@ export default class MainLayout extends Component {
                                 </a>
                             </Menu.Item>
                         ) : null}
+                        {isCuradorOuOperador() ? (
+                            <Menu.Item key="17">
+                                <a href={`${baseUrl}/splinker`} target="_blank" rel="noreferrer">
+                                    <DesktopOutlined />
+                                    <span>SPlinker</span>
+                                </a>
+                            </Menu.Item>
+                        ) : null}
                         {isCurador() ? (
                             <SubMenu
                                 key="servicos"
