@@ -18,6 +18,8 @@ const { confirm } = Modal
 const FormItem = Form.Item
 const { Option } = Select
 
+const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY
+
 const columns = [
     {
         title: 'Subfamília',
@@ -168,55 +170,51 @@ class ListaTaxonomiaSubfamilia extends Component {
         acao: this.gerarAcao(item)
     }))
 
-    requisitaListaSubfamilia = (valores, pg, pageSize, sorter) => {
-        const campo = sorter && sorter.field ? sorter.field : 'subfamilia'
-        const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
-
-        const params = {
-            pagina: pg,
-            limite: pageSize || 20,
-            order: `${campo}:${ordem}`
-        }
-
-        if (valores !== undefined) {
-            const { subfamilia, familia } = valores
-
-            if (subfamilia) {
-                params.subfamilia = subfamilia
+    requisitaListaSubfamilia = async (valores, pg, pageSize, sorter) => {
+        this.setState({ loading: true })
+    
+        try {
+            await new Promise(resolve => window.grecaptcha.ready(resolve))
+    
+            const token = await window.grecaptcha.execute(SITE_KEY, { action: 'subfamilias' })
+    
+            const campo = sorter && sorter.field ? sorter.field : 'subfamilia'
+            const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
+    
+            const params = {
+                pagina: pg,
+                limite: pageSize || 20,
+                order: `${campo}:${ordem}`,
+                recaptchaToken: token,
+                ...(valores && valores.subfamilia ? { subfamilia: valores.subfamilia } : {}),
+                ...(valores && valores.familia ? { familia_nome: valores.familia } : {})
             }
-
-            if (familia) {
-                params.familia_nome = familia
-            }
-        }
-        axios.get('/subfamilias', { params })
-            .then(response => {
+    
+            const response = await axios.get('/subfamilias', { params })
+    
+            if (response.status === 200) {
+                const { data } = response
                 this.setState({
+                    subfamilias: this.formataDadosSubfamilia(data.resultado),
+                    metadados: data.metadados,
                     loading: false
                 })
-                if (response.status === 200) {
-                    const { data } = response
-                    this.setState({
-                        subfamilias: this.formataDadosSubfamilia(data.resultado),
-                        metadados: data.metadados
-                    })
-                } else if (response.status === 400) {
-                    this.notificacao('warning', 'Buscar', 'Erro ao buscar as subfamílias.')
-                } else {
-                    this.notificacao('error', 'Error', 'Erro do servidor ao buscar os subfamílias.')
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    console.error(error.message)
-                }
-            })
-            .catch(this.catchRequestError)
+            } else if (response.status === 400) {
+                this.notificacao('warning', 'Buscar subfamília', 'Erro ao buscar as subfamílias.')
+                this.setState({ loading: false })
+            } else {
+                this.notificacao('error', 'Erro', 'Erro do servidor ao buscar as subfamílias.')
+                this.setState({ loading: false })
+            }
+        } catch (err) {
+            this.setState({ loading: false })
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                console.error(error.message)
+            }
+            this.notificacao('error', 'Erro', 'Falha ao buscar subfamílias.')
+        }
     }
 
     handleSubmit = (err, valores) => {
@@ -335,29 +333,39 @@ class ListaTaxonomiaSubfamilia extends Component {
         return undefined
     }
 
-    requisitaFamilias = () => {
-        axios.get('/familias', {
-            params: {
-                limite: 9999999
+    requisitaFamilias = async () => {
+        this.setState({ loading: true })
+    
+        try {
+            await new Promise(resolve => window.grecaptcha.ready(resolve))
+    
+            const token = await window.grecaptcha.execute(SITE_KEY, { action: 'familias' })
+    
+            const params = {
+                limite: 9999999,
+                recaptchaToken: token
             }
-        })
-            .then(response => {
-                if (response.status === 200) {
-                    this.setState({
-                        familias: response.data.resultado
-                    })
-                } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar famílias, tente novamente.')
-                }
-            })
-            .catch(err => {
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    console.error(error.message)
-                }
-            })
-            .catch(this.catchRequestError)
+    
+            const response = await axios.get('/familias', { params })
+    
+            if (response.status === 200) {
+                this.setState({
+                    familias: response.data.resultado,
+                    loading: false
+                })
+            } else {
+                this.notificacao('warning', 'Buscar famílias', 'Erro ao buscar as famílias.')
+                this.setState({ loading: false })
+            }
+        } catch (err) {
+            this.setState({ loading: false })
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                console.error(error.message)
+            }
+            this.notificacao('error', 'Erro', 'Falha ao buscar famílias.')
+        }
     }
 
     renderPainelBusca(getFieldDecorator) {
