@@ -10,6 +10,7 @@ import moment from 'moment'
 import { Form } from '@ant-design/compatible'
 
 import HeaderServicesComponent from '../components/HeaderServicesComponent'
+import { getTokenUsuario } from '../helpers/usuarios'
 
 const FormItem = Form.Item
 const { Option } = Select
@@ -22,7 +23,8 @@ const { Panel } = Collapse
 const AXIOS = axios.create({
     baseURL: 'http://localhost:3003/api',
     headers: {
-        'Access-Control-Allow-Origin': 'http://localhost:3003/api'
+        'Access-Control-Allow-Origin': 'http://localhost:3003/api',
+        token: localStorage.getItem('token') || getTokenUsuario()
     }
 })
 

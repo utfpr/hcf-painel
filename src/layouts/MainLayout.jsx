@@ -20,7 +20,7 @@ import {
     isCuradorOuOperador,
     isLogado,
     isCuradorOuOperadorOuIdentificador,
-    setTokenUsuario, setUsuario
+    setTokenUsuario, setUsuario, getTokenUsuario
 } from '../helpers/usuarios'
 
 const { Header, Content, Sider } = Layout
@@ -276,7 +276,32 @@ export default class MainLayout extends Component {
                         ) : null}
                         {isCuradorOuOperador() ? (
                             <Menu.Item key="16">
-                                <a href={`${baseUrl}/darwincore`} target="_blank" rel="noreferrer">
+                                <a
+                                    href="#"
+                                    onClick={e => {
+                                        e.preventDefault()
+                                        const token = getTokenUsuario()
+                                        axios.get(`${baseUrl}/darwincore`, {
+                                            headers: {
+                                                token
+                                            },
+                                            responseType: 'blob'
+                                        })
+                                            .then(response => {
+                                                const url = window.URL.createObjectURL(new Blob([response.data]))
+                                                const link = document.createElement('a')
+                                                link.href = url
+                                                link.setAttribute('download', 'hcf_darwincore.csv')
+                                                document.body.appendChild(link)
+                                                link.click()
+                                                link.remove()
+                                            })
+                                            .catch(err => {
+                                                console.error('Erro ao acessar Darwin Core:', err)
+                                                alert('Erro ao acessar Darwin Core. Verifique suas permissões.')
+                                            })
+                                    }}
+                                >
                                     <DesktopOutlined />
                                     <span>Darwin Core</span>
                                 </a>
@@ -284,7 +309,32 @@ export default class MainLayout extends Component {
                         ) : null}
                         {isCuradorOuOperador() ? (
                             <Menu.Item key="17">
-                                <a href={`${baseUrl}/splinker`} target="_blank" rel="noreferrer">
+                                <a
+                                    href="#"
+                                    onClick={e => {
+                                        e.preventDefault()
+                                        const token = getTokenUsuario()
+                                        axios.get(`${baseUrl}/splinker`, {
+                                            headers: {
+                                                token
+                                            },
+                                            responseType: 'blob'
+                                        })
+                                            .then(response => {
+                                                const url = window.URL.createObjectURL(new Blob([response.data]))
+                                                const link = document.createElement('a')
+                                                link.href = url
+                                                link.setAttribute('download', 'hcf_splinker.txt')
+                                                document.body.appendChild(link)
+                                                link.click()
+                                                link.remove()
+                                            })
+                                            .catch(err => {
+                                                console.error('Erro ao acessar SPlinker:', err)
+                                                alert('Erro ao acessar SPlinker. Verifique suas permissões.')
+                                            })
+                                    }}
+                                >
                                     <DesktopOutlined />
                                     <span>SPlinker</span>
                                 </a>
@@ -303,16 +353,16 @@ export default class MainLayout extends Component {
                                     </span>
                                 )}
                             >
-                                <Menu.Item key="17">
+                                <Menu.Item key="18">
                                     <Link to="/reflora">Reflora</Link>
                                 </Menu.Item>
-                                <Menu.Item key="18">
+                                <Menu.Item key="19">
                                     <Link to="/specieslink">speciesLink</Link>
                                 </Menu.Item>
                             </SubMenu>
                         ) : null}
                         {isLogado() ? (
-                            <Menu.Item key="19">
+                            <Menu.Item key="20">
                                 <Link
                                     to="/inicio"
                                     onClick={this.fazLogout}
