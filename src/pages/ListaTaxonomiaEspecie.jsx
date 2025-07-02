@@ -18,6 +18,8 @@ const { confirm } = Modal
 const FormItem = Form.Item
 const { Option } = Select
 
+const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY
+
 const columns = [
     {
         title: 'Espécie',
@@ -127,6 +129,7 @@ class ListaTaxonomiaEspecie extends Component {
 
     componentDidMount() {
         this.requisitaListaEspecie({}, this.state.pagina)
+        this.requisitaFamilias()
         this.requisitaGeneros()
         this.requisitaAutores()
     }
@@ -185,61 +188,52 @@ class ListaTaxonomiaEspecie extends Component {
         autor: item.autor?.nome
     }))
 
-    requisitaListaEspecie = (valores, pg, pageSize, sorter) => {
-        const campo = sorter && sorter.field ? sorter.field : 'especie'
-        const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
-
-        const params = {
-            pagina: pg,
-            limite: pageSize || 20,
-            order: `${campo}:${ordem}`
-        }
-
-        if (valores) {
-            const { especie, familia, genero } = valores
-
-            if (especie) {
-                params.especie = especie
+    requisitaListaEspecie = async (valores, pg, pageSize, sorter) => {
+        this.setState({ loading: true })
+    
+        try {
+            await new Promise(resolve => window.grecaptcha.ready(resolve))
+    
+            const token = await window.grecaptcha.execute(SITE_KEY, { action: 'especies' })
+    
+            const campo = sorter && sorter.field ? sorter.field : 'especie'
+            const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
+    
+            const params = {
+                pagina: pg,
+                limite: pageSize || 20,
+                order: `${campo}:${ordem}`,
+                recaptchaToken: token,
+                ...(valores && valores.especie ? { especie: valores.especie } : {}),
+                ...(valores && valores.familia ? { familia_nome: valores.familia } : {}),
+                ...(valores && valores.genero ? { genero_nome: valores.genero } : {})
             }
-
-            if (familia) {
-                params.familia_nome = familia
-            }
-
-            if (genero) {
-                params.genero_nome = genero
-            }
-        }
-        axios.get('/especies', { params })
-            .then(response => {
+    
+            const response = await axios.get('/especies', { params })
+    
+            if (response.status === 200) {
+                const { data } = response
                 this.setState({
+                    especies: this.formataDadosEspecie(data.resultado),
+                    metadados: data.metadados,
                     loading: false
                 })
-                if (response.status === 200) {
-                    const { data } = response
-                    this.setState({
-                        especies: this.formataDadosEspecie(data.resultado),
-                        metadados: data.metadados
-                    })
-                } else if (response.status === 400) {
-                    this.notificacao('warning', 'Buscar', 'Erro ao buscar as espécies.')
-                } else {
-                    this.notificacao('error', 'Error', 'Erro do servidor ao buscar as espécies.')
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
+            } else if (response.status === 400) {
+                this.notificacao('warning', 'Buscar espécie', 'Erro ao buscar as espécies.')
+                this.setState({ loading: false })
+            } else {
+                this.notificacao('error', 'Erro', 'Erro do servidor ao buscar as espécies.')
+                this.setState({ loading: false })
+            }
+        } catch (err) {
+            this.setState({ loading: false })
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                console.error(error.message)
+            }
+            this.notificacao('error', 'Erro', 'Falha ao buscar espécies.')
+        }
     }
 
     handleSubmit = (err, valores) => {
@@ -257,31 +251,109 @@ class ListaTaxonomiaEspecie extends Component {
         this.props.form.validateFields(this.handleSubmit)
     }
 
-    requisitaAutores = () => {
-        axios.get('/autores', {
-            params: {
-                limite: 9999999
+    requisitaAutores = async () => {
+        this.setState({ loading: true })
+    
+        try {
+            await new Promise(resolve => window.grecaptcha.ready(resolve))
+    
+            const token = await window.grecaptcha.execute(SITE_KEY, { action: 'autores' })
+    
+            const params = {
+                limite: 9999999,
+                recaptchaToken: token
             }
-        })
-            .then(response => {
-                if (response.status === 200) {
-                    this.setState({
-                        autores: response.data.resultado
-                    })
-                } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar os autores, tente novamente.')
-                }
-            })
-            .catch(err => {
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
+    
+            const response = await axios.get('/autores', { params })
+    
+            if (response.status === 200) {
+                this.setState({
+                    autores: response.data.resultado,
+                    loading: false
+                })
+            } else {
+                this.notificacao('warning', 'Buscar autores', 'Erro ao buscar os autores.')
+                this.setState({ loading: false })
+            }
+        } catch (err) {
+            this.setState({ loading: false })
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                console.error(error.message)
+            }
+            this.notificacao('error', 'Erro', 'Falha ao buscar autores.')
+        }
+    }
+
+    requisitaGeneros = async () => {
+        this.setState({ loading: true })
+
+        try {
+            await new Promise(resolve => window.grecaptcha.ready(resolve))
+
+            const token = await window.grecaptcha.execute(SITE_KEY, { action: 'generos' })
+
+            const params = {
+                limite: 9999999,
+                recaptchaToken: token
+            }
+
+            const response = await axios.get('/generos', { params })
+
+            if (response.status === 200) {
+                this.setState({
+                    generos: response.data.resultado,
+                    loading: false
+                })
+            } else {
+                this.notificacao('warning', 'Buscar gêneros', 'Erro ao buscar os gêneros.')
+                this.setState({ loading: false })
+            }
+        } catch (err) {
+            this.setState({ loading: false })
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                console.error(error.message)
+            }
+            this.notificacao('error', 'Erro', 'Falha ao buscar gêneros.')
+        }
+    }
+
+    requisitaFamilias = async () => {
+        this.setState({ loading: true })
+    
+        try {
+            await new Promise(resolve => window.grecaptcha.ready(resolve))
+    
+            const token = await window.grecaptcha.execute(SITE_KEY, { action: 'familias' })
+    
+            const params = {
+                limite: 9999999,
+                recaptchaToken: token
+            }
+    
+            const response = await axios.get('/familias', { params })
+    
+            if (response.status === 200) {
+                this.setState({
+                    familias: response.data.resultado,
+                    loading: false
+                })
+            } else {
+                this.notificacao('warning', 'Buscar famílias', 'Erro ao buscar as famílias.')
+                this.setState({ loading: false })
+            }
+        } catch (err) {
+            this.setState({ loading: false })
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                console.error(error.message)
+            }
+            this.notificacao('error', 'Erro', 'Falha ao buscar famílias.')
+        }
     }
 
     cadastraNovaEspecie() {
@@ -368,31 +440,51 @@ class ListaTaxonomiaEspecie extends Component {
             .catch(this.catchRequestError)
     }
 
-    requisitaGeneros = () => {
-        axios.get('/generos', {
-            params: {
-                limite: 9999999
+    requisitaListaGenero = async (valores, pg, pageSize, sorter) => {
+        this.setState({ loading: true })
+    
+        try {
+            await new Promise(resolve => window.grecaptcha.ready(resolve))
+    
+            const token = await window.grecaptcha.execute(SITE_KEY, { action: 'generos' })
+    
+            const campo = sorter && sorter.field ? sorter.field : 'genero'
+            const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
+    
+            const params = {
+                pagina: pg,
+                limite: pageSize || 20,
+                order: `${campo}:${ordem}`,
+                recaptchaToken: token,
+                ...(valores && valores.genero ? { genero: valores.genero } : {}),
+                ...(valores && valores.familia ? { familia_nome: valores.familia } : {})
             }
-        })
-            .then(response => {
-                if (response.status === 200) {
-                    this.setState({
-                        generos: response.data.resultado
-                    })
-                } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar os gêneros, tente novamente.')
-                }
-            })
-            .catch(err => {
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
+    
+            const response = await axios.get('/generos', { params })
+    
+            if (response.status === 200) {
+                const { data } = response
+                this.setState({
+                    generos: this.formataDadosGenero(data.resultado),
+                    metadados: data.metadados,
+                    loading: false
+                })
+            } else if (response.status === 400) {
+                this.notificacao('warning', 'Buscar gênero', 'Erro ao buscar os gêneros.')
+                this.setState({ loading: false })
+            } else {
+                this.notificacao('error', 'Erro', 'Erro do servidor ao buscar os gêneros.')
+                this.setState({ loading: false })
+            }
+        } catch (err) {
+            this.setState({ loading: false })
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                console.error(error.message)
+            }
+            this.notificacao('error', 'Erro', 'Falha ao buscar gêneros.')
+        }
     }
 
     renderAdd = () => {
@@ -510,11 +602,11 @@ class ListaTaxonomiaEspecie extends Component {
     }
 
     optionGenero = () => this.state.generos.map(item => (
-        <Option value={item.id}>{item.nome}</Option>
+        <Option key={item.id} value={item.id}>{item.nome}</Option>
     ))
 
     optionAutores = () => this.state.autores.map(item => (
-        <Option value={item.id}>{item.nome}</Option>
+        <Option key={item.id} value={item.id}>{item.nome}</Option>
     ))
 
     renderFormulario() {
