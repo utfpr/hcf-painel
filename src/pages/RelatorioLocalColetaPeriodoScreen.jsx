@@ -28,7 +28,7 @@ const dateLocale = {
     }
 }
 
-class RelatorioInventarioEspeciesScreen extends Component {
+class RelatorioLocalColetaScreen extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -92,7 +92,7 @@ class RelatorioInventarioEspeciesScreen extends Component {
                     .toISOString()
             }
         }
-        axios.get('/relatorio/coleta-por-local-intervalo-de-data', { params })
+        axios.get('/relatorio/local-coleta', { params })
             .then(response => {
                 this.setState({
                     loading: false
@@ -157,13 +157,7 @@ class RelatorioInventarioEspeciesScreen extends Component {
             }
         }
 
-        if (sintetico) {
-            params.variante = 'sintetico'
-        } else {
-            params.variante = 'analitico'
-        }
-
-        await axios.post('/relatorio/coleta-por-local-intervalo-de-data', null, {
+        await axios.post('/relatorio/local-coleta', null, {
             params,
             responseType: 'arraybuffer'
         }).then(response => {
@@ -239,7 +233,6 @@ class RelatorioInventarioEspeciesScreen extends Component {
                     : ''}
                 Gerar PDF
                 {' '}
-                {sintetico ? 'Sintético' : 'Analítico'}
             </Button>
         )
     }
@@ -354,12 +347,11 @@ class RelatorioInventarioEspeciesScreen extends Component {
                     }}
                 >
                     <Col xs={24} sm={14} md={18} lg={20} xl={20}>
-                        <h2 style={{ fontWeight: 200 }}>Relatório de Coleta por Local e Intervalo de Data</h2>
+                        <h2 style={{ fontWeight: 200 }}>Relatório de Locais de Coleta por Local e Intervalo de Data</h2>
                     </Col>
                     <Col xs={24} sm={10} md={6} lg={4} xl={4} style={{ display: 'flex', justifyContent: 'flex-end' }}>
                         <div style={{ display: 'flex', gap: '10px' }}>
                             {this.renderBotaoPDF()}
-                            {this.renderBotaoPDF(true)}
                         </div>
                     </Col>
                 </Row>
@@ -368,7 +360,7 @@ class RelatorioInventarioEspeciesScreen extends Component {
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
 
-                <TableCollapseParaLocais data={this.state.dados} loading={this.state.loading} />
+                <TableCollapseParaLocais data={this.state.dados?.locais} loading={this.state.loading} />
                 <Divider dashed />
             </div>
         )
@@ -380,4 +372,4 @@ class RelatorioInventarioEspeciesScreen extends Component {
         )
     }
 }
-export default Form.create()(RelatorioInventarioEspeciesScreen)
+export default Form.create()(RelatorioLocalColetaScreen)

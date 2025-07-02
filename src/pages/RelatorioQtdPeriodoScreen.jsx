@@ -5,14 +5,13 @@ import {
     Divider, Card, Row, Col,
     Button, notification,
     Spin,
-    Input,
     DatePicker
 } from 'antd'
 import ptbr from 'antd/es/date-picker/locale/pt_BR'
 import axios from 'axios'
 import moment from 'moment'
 
-import TableCollapseParaLocais from '@/components/TableCollapseParaLocais'
+import TableCollapseParaGeneros from '@/components/TableCollapseParaGeneros'
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import { LoadingOutlined } from '@ant-design/icons'
@@ -28,7 +27,7 @@ const dateLocale = {
     }
 }
 
-class RelatorioInventarioEspeciesScreen extends Component {
+class RelatorioQuantidadeScreen extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -37,7 +36,6 @@ class RelatorioInventarioEspeciesScreen extends Component {
             pagina: 1,
             loading: false,
             loadingExport: false,
-            loadingExport2: false,
             dataInicio: moment().startOf('month')
                 .toISOString(),
             dataFim: moment().endOf('day')
@@ -92,7 +90,7 @@ class RelatorioInventarioEspeciesScreen extends Component {
                     .toISOString()
             }
         }
-        axios.get('/relatorio/coleta-por-local-intervalo-de-data', { params })
+        axios.get('/relatorio/quantidade-por-familia', { params })
             .then(response => {
                 this.setState({
                     loading: false
@@ -123,16 +121,10 @@ class RelatorioInventarioEspeciesScreen extends Component {
             .catch(this.catchRequestError)
     }
 
-    requisitaExportarPDF = async sintetico => {
-        if (sintetico) {
-            this.setState({
-                loadingExport: true
-            })
-        } else {
-            this.setState({
-                loadingExport2: true
-            })
-        }
+    requisitaExportarPDF = async () => {
+        this.setState({
+            loadingExport: true
+        })
         const params = {}
 
         if (this.state.local !== undefined || this.state.local !== null) {
@@ -157,13 +149,7 @@ class RelatorioInventarioEspeciesScreen extends Component {
             }
         }
 
-        if (sintetico) {
-            params.variante = 'sintetico'
-        } else {
-            params.variante = 'analitico'
-        }
-
-        await axios.post('/relatorio/coleta-por-local-intervalo-de-data', null, {
+        await axios.post('/relatorio/quantidade-por-familia', null, {
             params,
             responseType: 'arraybuffer'
         }).then(response => {
@@ -176,7 +162,7 @@ class RelatorioInventarioEspeciesScreen extends Component {
                 const formattedDate = new Date().toISOString()
                     .substring(0, 19)
                     .replace(/\D/g, '')
-                anchor.download = `coleta-local-periodo-${formattedDate}.pdf`
+                anchor.download = `coleta-intervalo-data-${formattedDate}.pdf`
                 anchor.click()
                 URL.revokeObjectURL(fileUrl)
             } else if (response.status === 400) {
@@ -195,15 +181,9 @@ class RelatorioInventarioEspeciesScreen extends Component {
             })
             .catch(this.catchRequestError)
             .finally(() => {
-                if (sintetico) {
-                    this.setState({
-                        loadingExport: false
-                    })
-                } else {
-                    this.setState({
-                        loadingExport2: false
-                    })
-                }
+                this.setState({
+                    loadingExport: false
+                })
             })
     }
 
@@ -223,23 +203,18 @@ class RelatorioInventarioEspeciesScreen extends Component {
         form.validateFields(this.handleSubmit)
     }
 
-    renderBotaoPDF(sintetico) {
+    renderBotaoPDF() {
         return (
             <Button
                 type="primary"
                 className="login-form-button"
-                onClick={() => this.requisitaExportarPDF(sintetico)}
-                disabled={sintetico ? this.state.loadingExport : this.state.loadingExport2}
+                onClick={() => this.requisitaExportarPDF()}
+                disabled={this.state.loadingExport}
             >
-                {sintetico && this.state.loadingExport
-                    ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ marginRight: 8 }} />
-                    : ''}
-                {!sintetico && this.state.loadingExport2
+                {this.state.loadingExport
                     ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ marginRight: 8 }} />
                     : ''}
                 Gerar PDF
-                {' '}
-                {sintetico ? 'Sintético' : 'Analítico'}
             </Button>
         )
     }
@@ -250,20 +225,6 @@ class RelatorioInventarioEspeciesScreen extends Component {
         return (
             <Card title="Filtros do relatório">
                 <Form onSubmit={this.onSubmit}>
-                    <Row gutter={8}>
-                        <Col span={24}>
-                            <span>Local:</span>
-                        </Col>
-                    </Row>
-                    <Row gutter={8}>
-                        <Col span={24}>
-                            <FormItem>
-                                {getFieldDecorator('local')(
-                                    <Input placeholder="RPPN Moreira Sales" type="text" />
-                                )}
-                            </FormItem>
-                        </Col>
-                    </Row>
 
                     <Row gutter={8}>
                         <Col span={24}>
@@ -354,12 +315,11 @@ class RelatorioInventarioEspeciesScreen extends Component {
                     }}
                 >
                     <Col xs={24} sm={14} md={18} lg={20} xl={20}>
-                        <h2 style={{ fontWeight: 200 }}>Relatório de Coleta por Local e Intervalo de Data</h2>
+                        <h2 style={{ fontWeight: 200 }}>Relatório de Quantidade por Família e Gênero</h2>
                     </Col>
                     <Col xs={24} sm={10} md={6} lg={4} xl={4} style={{ display: 'flex', justifyContent: 'flex-end' }}>
                         <div style={{ display: 'flex', gap: '10px' }}>
                             {this.renderBotaoPDF()}
-                            {this.renderBotaoPDF(true)}
                         </div>
                     </Col>
                 </Row>
@@ -368,7 +328,7 @@ class RelatorioInventarioEspeciesScreen extends Component {
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
 
-                <TableCollapseParaLocais data={this.state.dados} loading={this.state.loading} />
+                <TableCollapseParaGeneros data={this.state.dados} loading={this.state.loading} modelo={2} />
                 <Divider dashed />
             </div>
         )
@@ -380,4 +340,4 @@ class RelatorioInventarioEspeciesScreen extends Component {
         )
     }
 }
-export default Form.create()(RelatorioInventarioEspeciesScreen)
+export default Form.create()(RelatorioQuantidadeScreen)
