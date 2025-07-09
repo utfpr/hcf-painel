@@ -276,68 +276,8 @@ export default class MainLayout extends Component {
                         ) : null}
                         {isCuradorOuOperador() ? (
                             <Menu.Item key="16">
-                                <a
-                                    href="#"
-                                    onClick={e => {
-                                        e.preventDefault()
-                                        const token = getTokenUsuario()
-                                        axios.get(`${baseUrl}/darwincore`, {
-                                            headers: {
-                                                token
-                                            },
-                                            responseType: 'blob'
-                                        })
-                                            .then(response => {
-                                                const url = window.URL.createObjectURL(new Blob([response.data]))
-                                                const link = document.createElement('a')
-                                                link.href = url
-                                                link.setAttribute('download', 'hcf_darwincore.csv')
-                                                document.body.appendChild(link)
-                                                link.click()
-                                                link.remove()
-                                            })
-                                            .catch(err => {
-                                                console.error('Erro ao acessar Darwin Core:', err)
-                                                alert('Erro ao acessar Darwin Core. Verifique suas permissões.')
-                                            })
-                                    }}
-                                >
-                                    <DesktopOutlined />
-                                    <span>Darwin Core</span>
-                                </a>
-                            </Menu.Item>
-                        ) : null}
-                        {isCuradorOuOperador() ? (
-                            <Menu.Item key="17">
-                                <a
-                                    href="#"
-                                    onClick={e => {
-                                        e.preventDefault()
-                                        const token = getTokenUsuario()
-                                        axios.get(`${baseUrl}/splinker`, {
-                                            headers: {
-                                                token
-                                            },
-                                            responseType: 'blob'
-                                        })
-                                            .then(response => {
-                                                const url = window.URL.createObjectURL(new Blob([response.data]))
-                                                const link = document.createElement('a')
-                                                link.href = url
-                                                link.setAttribute('download', 'hcf_splinker.txt')
-                                                document.body.appendChild(link)
-                                                link.click()
-                                                link.remove()
-                                            })
-                                            .catch(err => {
-                                                console.error('Erro ao acessar SPlinker:', err)
-                                                alert('Erro ao acessar SPlinker. Verifique suas permissões.')
-                                            })
-                                    }}
-                                >
-                                    <DesktopOutlined />
-                                    <span>SPlinker</span>
-                                </a>
+                                <DesktopOutlined />
+                                <Link to="/exportacao">Exportação</Link>
                             </Menu.Item>
                         ) : null}
                         {isCurador() ? (

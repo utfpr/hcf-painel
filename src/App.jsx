@@ -57,6 +57,7 @@ import './assets/css/FormEnterSystem.css'
 import './assets/css/Main.css'
 import './assets/css/Search.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
+import ExportaçãoScreen from './pages/ExportaçãoScreen'
 
 const PrivateRoute = ({ component: Component, authed, ...rest }) => {
     return (
@@ -127,6 +128,8 @@ export default class App extends Component {
                 <PrivateRoute authed={isLogado()} path="/fichas/tombos" component={FichaTomboScreen} />
                 <PrivateRoute authed={isCurador()} path="/reflora" component={ServicosRefloraScreen} />
                 <PrivateRoute authed={isCurador()} path="/specieslink" component={ServicosSpeciesLinkScreen} />
+
+                <PrivateRoute authed={isCurador()} path="/exportacao" component={ExportaçãoScreen} />
 
                 <Route path="/livro-tombo" component={LivroTomboScreen} />
                 <Route path="/especies" component={ListaTaxonomiaEspecie} />
