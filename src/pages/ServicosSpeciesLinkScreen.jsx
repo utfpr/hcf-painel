@@ -12,6 +12,8 @@ import { Form } from '@ant-design/compatible'
 import HeaderServicesComponent from '../components/HeaderServicesComponent'
 import { getTokenUsuario } from '../helpers/usuarios'
 
+import { baseUrl } from '../config/api'
+
 const FormItem = Form.Item
 const { Option } = Select
 const { Panel } = Collapse
@@ -21,9 +23,9 @@ const { Panel } = Collapse
  * um parâmetro no cabeçalho que será utilizado na requisição.
  */
 const AXIOS = axios.create({
-    baseURL: 'http://localhost:3003/api',
+    baseURL,
     headers: {
-        'Access-Control-Allow-Origin': 'http://localhost:3003/api',
+        'Access-Control-Allow-Origin': `${baseUrl}`,
         token: localStorage.getItem('token') || getTokenUsuario()
     }
 })
