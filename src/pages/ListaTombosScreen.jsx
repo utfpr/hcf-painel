@@ -19,15 +19,13 @@ import {
 
 import HeaderListComponent from '../components/HeaderListComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
-import { baseUrl } from '../config/api'
+import { baseUrl, recaptchaKey } from '../config/api'
 import { isCuradorOuOperador, isIdentificador } from '../helpers/usuarios'
 
 const { confirm } = Modal
 const FormItem = Form.Item
 const { Option } = Select
 const { Panel } = Collapse
-
-const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY
 
 const columns = [
     {
@@ -224,7 +222,7 @@ class ListaTombosScreen extends Component {
         try {
             await new Promise(resolve => window.grecaptcha.ready(resolve))
     
-            const token = await window.grecaptcha.execute(SITE_KEY, { action: 'tombos' })
+            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'tombos' })
     
             const params = {
                 pagina: pg,

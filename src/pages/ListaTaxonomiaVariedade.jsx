@@ -13,12 +13,11 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
 import { isCuradorOuOperador } from '../helpers/usuarios'
+import { recaptchaKey } from '@/config/api'
 
 const { confirm } = Modal
 const FormItem = Form.Item
 const { Option } = Select
-
-const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY
 
 const columns = [
     {
@@ -199,7 +198,7 @@ class ListaTaxonomiaVariedade extends Component {
         try {
             await new Promise(resolve => window.grecaptcha.ready(resolve))
     
-            const token = await window.grecaptcha.execute(SITE_KEY, { action: 'variedades' })
+            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'variedades' })
     
             const campo = sorter && sorter.field ? sorter.field : 'variedade'
             const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
@@ -263,7 +262,7 @@ class ListaTaxonomiaVariedade extends Component {
         try {
             await new Promise(resolve => window.grecaptcha.ready(resolve))
     
-            const token = await window.grecaptcha.execute(SITE_KEY, { action: 'autores' })
+            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'autores' })
     
             const params = {
                 limite: 9999999,
@@ -404,7 +403,7 @@ class ListaTaxonomiaVariedade extends Component {
         try {
             await new Promise(resolve => window.grecaptcha.ready(resolve))
     
-            const token = await window.grecaptcha.execute(SITE_KEY, { action: 'especies' })
+            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'especies' })
     
             const params = {
                 limite: 9999999,

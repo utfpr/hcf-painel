@@ -14,9 +14,7 @@ import { EditOutlined, PlusOutlined } from '@ant-design/icons'
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
 import { isCuradorOuOperador } from '../helpers/usuarios'
-
-
-const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY
+import { recaptchaKey } from '@/config/api'
 
 const { confirm } = Modal
 const FormItem = Form.Item
@@ -311,7 +309,7 @@ class ListaTaxonomiaReino extends Component {
       
         await new Promise(resolve => window.grecaptcha.ready(resolve))
       
-        const token = await window.grecaptcha.execute(SITE_KEY, { action: 'reinos' })
+        const token = await window.grecaptcha.execute(recaptchaKey, { action: 'reinos' })
       
         const campo = sorter && sorter.field ? sorter.field : 'reino'
         const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
@@ -326,7 +324,7 @@ class ListaTaxonomiaReino extends Component {
          const isLogged = Boolean(localStorage.getItem('token'))
          if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
            await new Promise(resolve => window.grecaptcha.ready(resolve))
-           const token = await window.grecaptcha.execute(SITE_KEY, { action: 'reinos' })
+           const token = await window.grecaptcha.execute(recaptchaKey, { action: 'reinos' })
            params.recaptchaToken = token
         }
       

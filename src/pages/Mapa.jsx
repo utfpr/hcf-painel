@@ -19,12 +19,11 @@ import pinVerde from '../assets/img/pin-verde.svg'
 import pin from '../assets/img/pin.svg'
 import PopupContentCity from '../components/PopupContentCity'
 import PopupContentGreen from '../components/PopupContentGreen'
+import { recaptchaKey } from '../config/api'
 import '../assets/css/MarkerClusterStyles.css'
 import '../assets/css/Map.css'
 
 const MapControls = lazy(() => import('../components/MapControls'))
-
-const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY
 
 const icon = new L.Icon({
     iconUrl: pinVerde,
@@ -70,7 +69,7 @@ function MapLogic({ setLoading }) {
     useEffect(() => {
         setLoading(true)
         window.grecaptcha.ready(() => {
-            window.grecaptcha.execute(SITE_KEY, { action: 'pontos' })
+            window.grecaptcha.execute(recaptchaKey, { action: 'pontos' })
                 .then(token => {
                     const params = {
                         recaptchaToken: token

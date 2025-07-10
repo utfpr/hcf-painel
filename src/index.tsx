@@ -1,30 +1,29 @@
 import './setup'
 import { useEffect } from 'react'
+import { recaptchaKey } from './config/api';
 import ReactDOM from 'react-dom/client'
 import App from './App'
 
 declare global {
   interface Window {
-    grecaptcha?: any
+    grecaptcha?: any;
   }
 }
-
-const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY as string
 
 function Root() {
   useEffect(() => {
     if (!window.grecaptcha) {
-      const script = document.createElement('script')
-      script.src = `https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`
-      script.async = true
-      script.defer = true
-      document.head.appendChild(script)
+      const script = document.createElement('script');
+      script.src = `https://www.google.com/recaptcha/api.js?render=${
+        recaptchaKey as string
+      }`;
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
     }
-  }, [])
+  }, []);
 
-  return <App />
+  return <App />;
 }
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <Root />
-)
+ReactDOM.createRoot(document.getElementById("root")!).render(<Root />);

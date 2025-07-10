@@ -11,6 +11,7 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
+import { recaptchaKey } from '@/config/api'
 import {
     isCuradorOuOperador
 } from '../helpers/usuarios'
@@ -18,8 +19,6 @@ import {
 const { confirm } = Modal
 const FormItem = Form.Item
 const { Option } = Select
-
-const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY
 
 const columns = [
     {
@@ -166,7 +165,7 @@ class ListaTaxonomiaAutores extends Component {
         try {
             await new Promise(resolve => window.grecaptcha.ready(resolve))
     
-            const token = await window.grecaptcha.execute(SITE_KEY, { action: 'autores' })
+            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'autores' })
     
             const campo = sorter && sorter.field ? sorter.field : 'autor'
             const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
