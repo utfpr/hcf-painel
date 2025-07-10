@@ -13,10 +13,12 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
 import { isCuradorOuOperador } from '../helpers/usuarios'
+import { recaptchaKey } from '@/config/api'
 
 const { confirm } = Modal
 const FormItem = Form.Item
 const { Option } = Select
+
 
 const columns = [
     {
@@ -184,55 +186,51 @@ class ListaTaxonomiaGenero extends Component {
         return undefined
     }
 
-    requisitaListaGenero = (valores, pg, pageSize, sorter) => {
-        const campo = sorter && sorter.field ? sorter.field : 'genero'
-        const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
-
-        const params = {
-            pagina: pg,
-            limite: pageSize || 20,
-            order: `${campo}:${ordem}`
-        }
-
-        if (valores !== undefined) {
-            const { genero, familia } = valores
-
-            if (genero) {
-                params.genero = genero
+    requisitaListaGenero = async (valores, pg, pageSize, sorter) => {
+        this.setState({ loading: true })
+    
+        try {
+            await new Promise(resolve => window.grecaptcha.ready(resolve))
+    
+            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'generos' })
+    
+            const campo = sorter && sorter.field ? sorter.field : 'genero'
+            const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
+    
+            const params = {
+                pagina: pg,
+                limite: pageSize || 20,
+                order: `${campo}:${ordem}`,
+                recaptchaToken: token,
+                ...(valores && valores.genero ? { genero: valores.genero } : {}),
+                ...(valores && valores.familia ? { familia_nome: valores.familia } : {})
             }
-
-            if (familia) {
-                params.familia_nome = familia
-            }
-        }
-        axios.get('/generos', { params })
-            .then(response => {
+    
+            const response = await axios.get('/generos', { params })
+    
+            if (response.status === 200) {
+                const { data } = response
                 this.setState({
+                    generos: this.formataDadosGenero(data.resultado),
+                    metadados: data.metadados,
                     loading: false
                 })
-                if (response.status === 200) {
-                    const { data } = response
-                    this.setState({
-                        generos: this.formataDadosGenero(data.resultado),
-                        metadados: data.metadados
-                    })
-                } else if (response.status === 400) {
-                    this.notificacao('warning', 'Buscar gênero', 'Erro ao buscar os gêneros.')
-                } else {
-                    this.notificacao('error', 'Error', 'Erro de servidor ao buscar os gêneros.')
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    console.error(error.message)
-                }
-            })
-            .catch(this.catchRequestError)
+            } else if (response.status === 400) {
+                this.notificacao('warning', 'Buscar gênero', 'Erro ao buscar os gêneros.')
+                this.setState({ loading: false })
+            } else {
+                this.notificacao('error', 'Erro', 'Erro do servidor ao buscar os gêneros.')
+                this.setState({ loading: false })
+            }
+        } catch (err) {
+            this.setState({ loading: false })
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                console.error(error.message)
+            }
+            this.notificacao('error', 'Erro', 'Falha ao buscar gêneros.')
+        }
     }
 
     handleSubmit = (err, valores) => {

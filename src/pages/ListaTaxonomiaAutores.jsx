@@ -11,6 +11,7 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
+import { recaptchaKey } from '@/config/api'
 import {
     isCuradorOuOperador
 } from '../helpers/usuarios'
@@ -158,51 +159,50 @@ class ListaTaxonomiaAutores extends Component {
         iniciais: item.iniciais
     }))
 
-    requisitaListaAutores = (valores, pg, pageSize, sorter) => {
-        const campo = sorter && sorter.field ? sorter.field : 'autor'
-        const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
-
-        const params = {
-            pagina: pg,
-            limite: pageSize || 20,
-            order: `${campo}:${ordem}`
-        }
-
-        if (valores !== undefined) {
-            const { autor } = valores
-
-            if (autor) {
-                params.autor = autor
+    requisitaListaAutores = async (valores, pg, pageSize, sorter) => {
+        this.setState({ loading: true })
+    
+        try {
+            await new Promise(resolve => window.grecaptcha.ready(resolve))
+    
+            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'autores' })
+    
+            const campo = sorter && sorter.field ? sorter.field : 'autor'
+            const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
+    
+            const params = {
+                pagina: pg,
+                limite: pageSize || 20,
+                order: `${campo}:${ordem}`,
+                recaptchaToken: token,
+                ...(valores && valores.autor ? { autor: valores.autor } : {})
             }
+    
+            const response = await axios.get('/autores', { params })
+    
+            if (response.status === 200) {
+                const { data } = response
+                this.setState({
+                    autores: this.formataDadosAutores(data.resultado),
+                    metadados: data.metadados,
+                    loading: false
+                })
+            } else if (response.status === 400) {
+                this.notificacao('warning', 'Buscar autores', 'Erro ao buscar os autores.')
+                this.setState({ loading: false })
+            } else {
+                this.notificacao('error', 'Erro', 'Erro do servidor ao buscar os autores.')
+                this.setState({ loading: false })
+            }
+        } catch (err) {
+            this.setState({ loading: false })
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                console.error(error.message)
+            }
+            this.notificacao('error', 'Erro', 'Falha ao buscar autores.')
         }
-        axios.get('/autores', { params })
-            .then(response => {
-                this.setState({
-                    loading: false
-                })
-                if (response.status === 200) {
-                    const { data } = response
-                    this.setState({
-                        autores: this.formataDadosAutores(data.resultado),
-                        metadados: data.metadados
-                    })
-                } else if (response.status === 400) {
-                    this.notificacao('warning', 'Buscar', 'Erro ao buscar os autores.')
-                } else {
-                    this.notificacao('error', 'Error', 'Erro do servidor ao buscar os autores.')
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    console.error(error.message)
-                }
-            })
-            .catch(this.catchRequestError)
     }
 
     handleSubmit = (err, valores) => {

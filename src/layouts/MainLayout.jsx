@@ -20,7 +20,7 @@ import {
     isCuradorOuOperador,
     isLogado,
     isCuradorOuOperadorOuIdentificador,
-    setTokenUsuario, setUsuario
+    setTokenUsuario, setUsuario, getTokenUsuario
 } from '../helpers/usuarios'
 
 const { Header, Content, Sider } = Layout
@@ -285,18 +285,10 @@ export default class MainLayout extends Component {
                         ) : null}
                         {isCuradorOuOperador() ? (
                             <Menu.Item key="16">
-                                <a href={`${baseUrl}/darwincore`} target="_blank" rel="noreferrer">
+                                <Link to="/exportacao">
                                     <DesktopOutlined />
-                                    <span>Darwin Core</span>
-                                </a>
-                            </Menu.Item>
-                        ) : null}
-                        {isCuradorOuOperador() ? (
-                            <Menu.Item key="17">
-                                <a href={`${baseUrl}/splinker`} target="_blank" rel="noreferrer">
-                                    <DesktopOutlined />
-                                    <span>SPlinker</span>
-                                </a>
+                                    <span>Exportação</span>
+                                </Link>
                             </Menu.Item>
                         ) : null}
                         {isCurador() ? (
@@ -312,16 +304,16 @@ export default class MainLayout extends Component {
                                     </span>
                                 )}
                             >
-                                <Menu.Item key="17">
+                                <Menu.Item key="18">
                                     <Link to="/reflora">Reflora</Link>
                                 </Menu.Item>
-                                <Menu.Item key="18">
+                                <Menu.Item key="19">
                                     <Link to="/specieslink">speciesLink</Link>
                                 </Menu.Item>
                             </SubMenu>
                         ) : null}
                         {isLogado() ? (
-                            <Menu.Item key="19">
+                            <Menu.Item key="20">
                                 <Link
                                     to="/inicio"
                                     onClick={this.fazLogout}

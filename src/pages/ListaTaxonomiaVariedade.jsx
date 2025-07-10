@@ -13,6 +13,7 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
 import { isCuradorOuOperador } from '../helpers/usuarios'
+import { recaptchaKey } from '@/config/api'
 
 const { confirm } = Modal
 const FormItem = Form.Item
@@ -191,67 +192,53 @@ class ListaTaxonomiaVariedade extends Component {
         autor: item.autor?.nome
     }))
 
-    requisitaListaVariedade = (valores, pg, pageSize, sorter) => {
-        const campo = sorter && sorter.field ? sorter.field : 'variedade'
-        const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
-
-        const params = {
-            pagina: pg,
-            limite: pageSize || 20,
-            order: `${campo}:${ordem}`
-        }
-
-        if (valores !== undefined) {
-            const {
-                variedade, familia, genero, especie
-            } = valores
-
-            if (variedade) {
-                params.variedade = variedade
+    requisitaListaVariedade = async (valores, pg, pageSize, sorter) => {
+        this.setState({ loading: true })
+    
+        try {
+            await new Promise(resolve => window.grecaptcha.ready(resolve))
+    
+            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'variedades' })
+    
+            const campo = sorter && sorter.field ? sorter.field : 'variedade'
+            const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
+    
+            const params = {
+                pagina: pg,
+                limite: pageSize || 20,
+                order: `${campo}:${ordem}`,
+                recaptchaToken: token,
+                ...(valores && valores.variedade ? { variedade: valores.variedade } : {}),
+                ...(valores && valores.familia ? { familia_nome: valores.familia } : {}),
+                ...(valores && valores.genero ? { genero_nome: valores.genero } : {}),
+                ...(valores && valores.especie ? { especie_nome: valores.especie } : {})
             }
-
-            if (familia) {
-                params.familia_nome = familia
-            }
-
-            if (genero) {
-                params.genero_nome = genero
-            }
-
-            if (especie) {
-                params.especie_nome = especie
-            }
-        }
-        axios.get('/variedades', { params })
-            .then(response => {
+    
+            const response = await axios.get('/variedades', { params })
+    
+            if (response.status === 200) {
+                const { data } = response
                 this.setState({
+                    variedades: this.formataDadosVariedade(data.resultado),
+                    metadados: data.metadados,
                     loading: false
                 })
-                if (response.status === 200) {
-                    const { data } = response
-                    this.setState({
-                        variedades: this.formataDadosVariedade(data.resultado),
-                        metadados: data.metadados
-                    })
-                } else if (response.status === 400) {
-                    this.notificacao('warning', 'Buscar', 'Erro ao buscar as variedades.')
-                } else {
-                    this.notificacao('error', 'Error', 'Erro do servidor ao buscar as variedades.')
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
+            } else if (response.status === 400) {
+                this.notificacao('warning', 'Buscar variedade', 'Erro ao buscar as variedades.')
+                this.setState({ loading: false })
+            } else {
+                this.notificacao('error', 'Erro', 'Erro do servidor ao buscar as variedades.')
+                this.setState({ loading: false })
+            }
+        } catch (err) {
+            this.setState({ loading: false })
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                console.error(error.message)
+            }
+            this.notificacao('error', 'Erro', 'Falha ao buscar variedades.')
+        }
     }
 
     handleSubmit = (err, valores) => {
@@ -269,31 +256,39 @@ class ListaTaxonomiaVariedade extends Component {
         this.props.form.validateFields(this.handleSubmit)
     }
 
-    requisitaAutores = () => {
-        axios.get('/autores', {
-            params: {
-                limite: 9999999
+    requisitaAutores = async () => {
+        this.setState({ loading: true })
+    
+        try {
+            await new Promise(resolve => window.grecaptcha.ready(resolve))
+    
+            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'autores' })
+    
+            const params = {
+                limite: 9999999,
+                recaptchaToken: token
             }
-        })
-            .then(response => {
-                if (response.status === 200) {
-                    this.setState({
-                        autores: response.data.resultado
-                    })
-                } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar os autores, tente novamente.')
-                }
-            })
-            .catch(err => {
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
+    
+            const response = await axios.get('/autores', { params })
+    
+            if (response.status === 200) {
+                this.setState({
+                    autores: response.data.resultado,
+                    loading: false
+                })
+            } else {
+                this.notificacao('warning', 'Buscar autores', 'Erro ao buscar os autores.')
+                this.setState({ loading: false })
+            }
+        } catch (err) {
+            this.setState({ loading: false })
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                console.error(error.message)
+            }
+            this.notificacao('error', 'Erro', 'Falha ao buscar autores.')
+        }
     }
 
     renderAdd = () => {
@@ -402,31 +397,39 @@ class ListaTaxonomiaVariedade extends Component {
             .catch(this.catchRequestError)
     }
 
-    requisitaEspecies = () => {
-        axios.get('/especies', {
-            params: {
-                limite: 9999999
+    requisitaEspecies = async () => {
+        this.setState({ loading: true })
+    
+        try {
+            await new Promise(resolve => window.grecaptcha.ready(resolve))
+    
+            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'especies' })
+    
+            const params = {
+                limite: 9999999,
+                recaptchaToken: token
             }
-        })
-            .then(response => {
-                if (response.status === 200) {
-                    this.setState({
-                        especies: response.data.resultado
-                    })
-                } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar as espécies, tente novamente.')
-                }
-            })
-            .catch(err => {
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
+    
+            const response = await axios.get('/especies', { params })
+    
+            if (response.status === 200) {
+                this.setState({
+                    especies: response.data.resultado,
+                    loading: false
+                })
+            } else {
+                this.notificacao('warning', 'Buscar espécies', 'Erro ao buscar as espécies.')
+                this.setState({ loading: false })
+            }
+        } catch (err) {
+            this.setState({ loading: false })
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                console.error(error.message)
+            }
+            this.notificacao('error', 'Erro', 'Falha ao buscar espécies.')
+        }
     }
 
     renderPainelBusca(getFieldDecorator) {

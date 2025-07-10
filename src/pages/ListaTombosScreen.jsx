@@ -19,7 +19,7 @@ import {
 
 import HeaderListComponent from '../components/HeaderListComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
-import { baseUrl } from '../config/api'
+import { baseUrl, recaptchaKey } from '../config/api'
 import { isCuradorOuOperador, isIdentificador } from '../helpers/usuarios'
 
 const { confirm } = Modal
@@ -196,13 +196,13 @@ class ListaTombosScreen extends Component {
         } if (dia == null && mes == null && ano != null) {
             return ano
         } if (dia != null && mes != null && ano == null) {
-            return `${dia}/${mes}`
+            return `${dia}/${mes}`;
         } if (dia != null && mes == null && ano != null) {
-            return `${dia}/${ano}`
+            return `${dia}/${ano}`;
         } if (dia == null && mes != null && ano != null) {
-            return `${mes}/${ano}`
+            return `${mes}/${ano}`;
         } if (dia != null && mes != null && ano != null) {
-            return `${dia}/${mes}/${ano}`
+            return `${dia}/${mes}/${ano}`;
         }
     }
 
@@ -216,65 +216,64 @@ class ListaTombosScreen extends Component {
         acao: <div style={{ display: 'flex' }}>{this.gerarAcao(item.hcf)}</div>
     }))
 
-    requisitaListaTombos = (valores, pg, pageSize) => {
-        this.setState({
-            loading: true
-        })
-        const params = {
-            pagina: pg,
-            limite: pageSize || 20
-        }
-
-        if (valores !== undefined) {
-            const {
-                nomeCientifico, numeroHcf, tipo, nomePopular, situacao
-            } = valores
-
-            if (nomeCientifico) {
-                params.nome_cientifico = nomeCientifico
+    requisitaListaTombos = async (valores, pg, pageSize) => {
+        this.setState({ loading: true })
+    
+        try {
+            await new Promise(resolve => window.grecaptcha.ready(resolve))
+    
+            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'tombos' })
+    
+            const params = {
+                pagina: pg,
+                limite: pageSize || 20,
+                recaptchaToken: token
             }
-            if (numeroHcf) {
-                params.hcf = numeroHcf
+    
+            if (valores !== undefined) {
+                const {
+                    nomeCientifico, numeroHcf, tipo, nomePopular, situacao
+                } = valores
+    
+                if (nomeCientifico) {
+                    params.nome_cientifico = nomeCientifico
+                }
+                if (numeroHcf) {
+                    params.hcf = numeroHcf
+                }
+                if (tipo && tipo !== -1) {
+                    params.tipo = tipo
+                }
+                if (nomePopular) {
+                    params.nome_popular = nomePopular
+                }
+                if (situacao && situacao !== -1) {
+                    params.situacao = situacao
+                }
             }
-            if (tipo && tipo !== -1) {
-                params.tipo = tipo
-            }
-            if (nomePopular) {
-                params.nome_popular = nomePopular
-            }
-            if (situacao && situacao !== -1) {
-                params.situacao = situacao
-            }
-        }
-        axios.get('/tombos', { params })
-            .then(response => {
+    
+            const response = await axios.get('/tombos', { params })
+    
+            if (response.status === 200) {
+                const { data } = response
                 this.setState({
+                    tombos: this.formataDadosTombo(data.tombos),
+                    metadados: data.metadados,
                     loading: false
                 })
-                if (response.status === 200) {
-                    const { data } = response
-                    this.setState({
-                        tombos: this.formataDadosTombo(data.tombos),
-                        metadados: data.metadados
-                    })
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
-                    } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar os tombos, tente novamente.')
-                    }
-                    const { error } = response.data
-                    console.error(error.message)
-                }
-            })
-            .catch(this.catchRequestError)
+            } else {
+                this.notificacao('warning', 'Buscar tombos', 'Erro ao buscar os tombos.')
+                this.setState({ loading: false })
+            }
+        } catch (err) {
+            this.setState({ loading: false })
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                console.error(error.message)
+            }
+            this.notificacao('error', 'Erro', 'Falha ao buscar tombos.')
+        }
     }
 
     handleSubmit = (err, valores) => {
