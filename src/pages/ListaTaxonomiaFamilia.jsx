@@ -14,11 +14,13 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
 import { isCuradorOuOperador } from '../helpers/usuarios'
+import { recaptchaKey } from '@/config/api'
 
 const { confirm } = Modal
 const FormItem = Form.Item
 
 const { Option } = Select
+
 
 const columns = [
     {
@@ -158,28 +160,27 @@ class ListaTaxonomiaFamilia extends Component {
         acao: this.gerarAcao(item)
     }))
 
-    requisitaListaFamilia = (valores, pg, pageSize, sorter) => {
+    requisitaListaFamilia = async (valores, pg, pageSize, sorter) => {
+        this.setState({ loading: true })
+    
+        await new Promise(resolve => window.grecaptcha.ready(resolve))
+    
+        const token = await window.grecaptcha.execute(recaptchaKey, { action: 'familias' })
+    
         const campo = sorter && sorter.field ? sorter.field : 'familia'
         const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
-
+    
         const params = {
             pagina: pg,
             limite: pageSize || 20,
-            order: `${campo}:${ordem}`
+            order: `${campo}:${ordem}`,
+            recaptchaToken: token,
+            ...(valores && valores.familia ? { familia: valores.familia } : {})
         }
-
-        if (valores !== undefined) {
-            const { familia } = valores
-
-            if (familia) {
-                params.familia = familia
-            }
-        }
+    
         axios.get('/familias', { params })
             .then(response => {
-                this.setState({
-                    loading: false
-                })
+                this.setState({ loading: false })
                 if (response.status === 200) {
                     const { data } = response
                     this.setState({
@@ -193,16 +194,13 @@ class ListaTaxonomiaFamilia extends Component {
                 }
             })
             .catch(err => {
-                this.setState({
-                    loading: false
-                })
+                this.setState({ loading: false })
                 const { response } = err
                 if (response && response.data) {
                     const { error } = response.data
                     console.error(error.message)
                 }
             })
-            .catch(this.catchRequestError)
     }
 
     handleSubmit = (err, valores) => {

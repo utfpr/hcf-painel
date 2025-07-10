@@ -6,4 +6,6 @@ export const relatoriosBaseUrl = import.meta.env.VITE_REPORT_BASE_URL
 
 export const fichaTomboUrl = import.meta.env.VITE_API_URL
 
+export const recaptchaKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY
+
 export default {}

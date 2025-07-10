@@ -14,6 +14,7 @@ import { EditOutlined, PlusOutlined } from '@ant-design/icons'
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
 import { isCuradorOuOperador } from '../helpers/usuarios'
+import { recaptchaKey } from '@/config/api'
 
 const { confirm } = Modal
 const FormItem = Form.Item
@@ -55,7 +56,7 @@ class ListaTaxonomiaReino extends Component {
     //     this.setState({
     //         loading: true
     //     })
-    //     axios.delete(`/familias/${id}`)
+    //     axios.delete(/familias/${id})
     //         .then(response => {
     //             this.setState({
     //                 loading: false
@@ -303,50 +304,47 @@ class ListaTaxonomiaReino extends Component {
         )
     }
 
-    requisitaReinos = (valores, pg, pageSize, sorter) => {
+    requisitaReinos = async (valores, pg, pageSize, sorter) => {
+        this.setState({ loading: true })
+      
+        await new Promise(resolve => window.grecaptcha.ready(resolve))
+      
+        const token = await window.grecaptcha.execute(recaptchaKey, { action: 'reinos' })
+      
         const campo = sorter && sorter.field ? sorter.field : 'reino'
         const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
-
-        console.log('requisitaReinos', valores, pg, pageSize, sorter)
-
         const params = {
-            pagina: pg,
-            limite: pageSize || 20,
-            order: `${campo}:${ordem}`
+          pagina: pg,
+          limite: pageSize || 20,
+          order: `${campo}:${ordem}`,
+          recaptchaToken: token,
+          ...(valores && valores.reino ? { reino: valores.reino } : {})
         }
 
-        if (valores !== undefined) {
-            const { reino } = valores
-
-            if (reino) {
-                params.reino = reino
-            }
+         const isLogged = Boolean(localStorage.getItem('token'))
+         if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
+           await new Promise(resolve => window.grecaptcha.ready(resolve))
+           const token = await window.grecaptcha.execute(recaptchaKey, { action: 'reinos' })
+           params.recaptchaToken = token
         }
-
-        axios.get('/reinos', {
-            params: {
-                ...params
+      
+        axios.get('/reinos', { params })
+          .then(response => {
+            this.setState({ loading: false })
+            if (response.status === 200) {
+              this.setState({
+                reinos: this.formataDadosReino(response.data.resultado),
+                metadados: response.data.metadados
+              })
             }
-        })
-            .then(response => {
-                this.setState({
-                    loading: false
-                })
-                if (response.status === 200) {
-                    this.setState({
-                        reinos: this.formataDadosReino(response.data.resultado),
-                        metadados: response.data.metadados
-                    })
-                }
-            })
-            .catch(err => {
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    console.error(error.message)
-                }
-            })
-    }
+          })
+          .catch(err => {
+            this.setState({ loading: false })
+            console.error(err.response?.data?.error?.message)
+            this.notificacao('error', 'Erro', 'Falha ao buscar reinos.')
+          })
+    }      
+      
 
     renderAdd = () => {
         if (isCuradorOuOperador()) {

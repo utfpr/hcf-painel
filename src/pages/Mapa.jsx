@@ -19,6 +19,7 @@ import pinVerde from '../assets/img/pin-verde.svg'
 import pin from '../assets/img/pin.svg'
 import PopupContentCity from '../components/PopupContentCity'
 import PopupContentGreen from '../components/PopupContentGreen'
+import { recaptchaKey } from '../config/api'
 import '../assets/css/MarkerClusterStyles.css'
 import '../assets/css/Map.css'
 
@@ -67,20 +68,34 @@ function MapLogic({ setLoading }) {
 
     useEffect(() => {
         setLoading(true)
-        axios.get('/pontos')
-            .then(response => {
-                setPontos(Object.values(response.data).map(ponto => ({
-                    ...ponto
-                })))
-                setLoading(false)
-                setTimeout(() => {
-                    map.invalidateSize()
-                }, 0)
-            })
-            .catch(error => {
-                console.error('Erro ao buscar os pontos: ', error)
-                setLoading(false)
-            })
+        window.grecaptcha.ready(() => {
+            window.grecaptcha.execute(recaptchaKey, { action: 'pontos' })
+                .then(token => {
+                    const params = {
+                        recaptchaToken: token
+                    }
+    
+                    axios.get('/pontos', { params })
+                        .then(response => {
+                            setPontos(Object.values(response.data).map(ponto => ({
+                                ...ponto
+                            })))
+                            setLoading(false)
+                            setTimeout(() => {
+                                map.invalidateSize()
+                            }, 0)
+                        })
+                        .catch(error => {
+                            console.error('Erro ao buscar os pontos: ', error)
+                            setLoading(false)
+                        })
+                })
+                .catch(error => {
+                    console.error('Erro ao executar reCAPTCHA: ', error)
+                    this.notificacao('warning', 'Buscar Pontos Mapa', 'Erro ao executar reCAPTCHA')
+                    setLoading(false)
+                })
+        })
     }, [setLoading, map])
 
     useEffect(() => {
