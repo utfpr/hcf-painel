@@ -276,8 +276,10 @@ export default class MainLayout extends Component {
                         ) : null}
                         {isCuradorOuOperador() ? (
                             <Menu.Item key="16">
-                                <DesktopOutlined />
-                                <Link to="/exportacao">Exportação</Link>
+                                <Link to="/exportacao">
+                                    <DesktopOutlined />
+                                    <span>Exportação</span>
+                                </Link>
                             </Menu.Item>
                         ) : null}
                         {isCurador() ? (

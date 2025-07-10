@@ -12,19 +12,9 @@ import { Form } from '@ant-design/compatible'
 import HeaderServicesComponent from '../components/HeaderServicesComponent'
 import { getTokenUsuario } from '../helpers/usuarios'
 
-import { baseUrl } from '../config/api'
-
 const FormItem = Form.Item
 const { Option } = Select
 const { Panel } = Collapse
-
-const AXIOS = axios.create({
-    baseURL,
-    headers: {
-        'Access-Control-Allow-Origin': `${baseUrl}`,
-        token: localStorage.getItem('token') || getTokenUsuario()
-    }
-})
 
 class ExportaçãoScreen extends Component {
     constructor(props) {
@@ -33,7 +23,7 @@ class ExportaçãoScreen extends Component {
             estaMontado: false,
             executandoDarwinCore: false,
             executandoSplinker: false,
-            cancelTokenSource: null,
+            cancelTokenSource: null
         }
     }
 
@@ -52,7 +42,7 @@ class ExportaçãoScreen extends Component {
         const cancelTokenSource = axios.CancelToken.source()
         this.setState({ cancelTokenSource, executandoDarwinCore: true })
 
-        AXIOS.get('/darwincore', {
+        axios.get('/darwincore', {
             responseType: 'blob',
             cancelToken: cancelTokenSource.token
         }).then(response => {
@@ -63,22 +53,20 @@ class ExportaçãoScreen extends Component {
             document.body.appendChild(link)
             link.click()
             link.remove()
-        }).finally(() => {
-            this.setState({ executandoDarwinCore: false, cancelTokenSource: null })
-        }).catch(err => {
-            console.error('Erro ao acessar Darwin Core:', err)
-            notification.error({
-                message: 'Erro',
-                description: 'Não foi possível acessar o Darwin Core.'
-            })
         })
+            .finally(() => {
+                this.setState({ executandoDarwinCore: false, cancelTokenSource: null })
+            })
+            .catch(err => {
+                console.error('Erro ao acessar Darwin Core:', err)
+            })
     }
 
     exportaSplinker = () => {
         const cancelTokenSource = axios.CancelToken.source()
         this.setState({ cancelTokenSource, executandoSplinker: true })
 
-        AXIOS.get('/splinker', {
+        axios.get('/splinker', {
             responseType: 'blob',
             cancelToken: cancelTokenSource.token
         }).then(response => {
@@ -89,20 +77,18 @@ class ExportaçãoScreen extends Component {
             document.body.appendChild(link)
             link.click()
             link.remove()
-        }).finally(() => {
-            this.setState({ executandoSplinker: false, cancelTokenSource: null })
-        }).catch(err => {
-            console.error('Erro ao acessar SPlinker:', err)
-            notification.error({
-                message: 'Erro',
-                description: 'Não foi possível acessar o SPlinker.'
-            })
         })
+            .finally(() => {
+                this.setState({ executandoSplinker: false, cancelTokenSource: null })
+            })
+            .catch(err => {
+                console.error('Erro ao acessar SPlinker:', err)
+            })
     }
 
     renderPainel() {
         return (
-            <Card title="Exportar Dados">
+            <Card title="Opções de Exportação">
                 <Row gutter={6}>
                     <Col span={6} style={{ textAlign: 'center' }}>
                         {!this.state.executandoDarwinCore ? <Button type="primary" htmlType="submit" className="login-form-button" onClick={this.exportaDarwinCore}> Darwin Core </Button> : <span style={{ fontWeight: 'bold' }}>EXPORTANDO!!! AGUARDE...</span>}

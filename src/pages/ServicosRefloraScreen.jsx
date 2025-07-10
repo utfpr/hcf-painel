@@ -12,23 +12,9 @@ import { Form } from '@ant-design/compatible'
 import HeaderServicesComponent from '../components/HeaderServicesComponent'
 import { getTokenUsuario } from '../helpers/usuarios'
 
-import { baseUrl } from '../config/api'
-
 const FormItem = Form.Item
 const { Option } = Select
 const { Panel } = Collapse
-/**
- * Instanciamos o axios dessa forma diferente, para evitar problemas no back end.
- * Esse problema no back end, está relacionado ao CORS, então por isso adicionamos
- * um parâmetro no cabeçalho que será utilizado na requisição.
- */
-const AXIOS = axios.create({
-    baseURL,
-    headers: {
-        'Access-Control-Allow-Origin': `${baseUrl}`,
-        token: localStorage.getItem('token') || getTokenUsuario()
-    }
-})
 
 class ServicosRefloraScreen extends Component {
     /**
@@ -96,7 +82,7 @@ class ServicosRefloraScreen extends Component {
      */
     statusExecucao = () => {
         this.timerStatusExecucao = setInterval(() => {
-            AXIOS.get('/reflora-executando').then(response => {
+            axios.get('/reflora-executando').then(response => {
                 if (response.status === 200) {
                     if (!response.data.executando) {
                         if (this.state.estaMontado) {
@@ -168,7 +154,7 @@ class ServicosRefloraScreen extends Component {
         const params = {
             herbarioVirtual: 'reflora'
         }
-        AXIOS.get('/reflora-todoslogs', { params }).then(response => {
+        axios.get('/reflora-todoslogs', { params }).then(response => {
             if (response.status === 200) {
                 const logs = response.data.logs.sort()
                 const { duracao } = response.data
@@ -193,7 +179,7 @@ class ServicosRefloraScreen extends Component {
             herbarioVirtual: 'reflora',
             nomeLog: log
         }
-        AXIOS.get('/reflora-log', { params }).then(response => {
+        axios.get('/reflora-log', { params }).then(response => {
             if (this.state.estaMontado) {
                 const saidaLogSplit = response.data.split('\n')
                 this.setState({ saidaLOG: saidaLogSplit })
@@ -324,7 +310,7 @@ class ServicosRefloraScreen extends Component {
             periodicidade: this.retornaValorPeriodicidade(),
             data_proxima_atualizacao: this.retornaDataProximaAtualizacao()
         }
-        AXIOS.get('/reflora', { params }).then(response => {
+        axios.get('/reflora', { params }).then(response => {
             if (response.status === 200) {
                 if (response.data.result === 'failed') {
                     this.exibeNotificacao('error', 'Falha', 'Não foi possível agendar o novo horário de atualização.')
@@ -354,7 +340,7 @@ class ServicosRefloraScreen extends Component {
             periodicidade: 1,
             data_proxima_atualizacao: null
         }
-        AXIOS.get('/reflora', { params }).then(response => {
+        axios.get('/reflora', { params }).then(response => {
             if (response.status === 200) {
                 if (response.data.result === 'failed') {
                     this.exibeNotificacao('error', 'Falha', 'O processo de atualização está sendo executado no momento.')
