@@ -341,8 +341,7 @@ class NovoTomboScreen extends Component {
         this.requisitaNumeroHcf()
         this.setState({
             ...this.state,
-            ...dados,
-            familias: []
+            ...dados
         })
 
         if (match.params.tombo_id) {
@@ -1377,10 +1376,10 @@ class NovoTomboScreen extends Component {
         })
             .then(response => {
                 this.setState({
+                    loading: false,
                     search: {
                         variedade: ''
                     }
-                    //  loading: false
                 })
                 if (response.status === 200) {
                     this.setState({
