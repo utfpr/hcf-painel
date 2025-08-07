@@ -2648,6 +2648,22 @@ class NovoTomboScreen extends Component {
         } = this.state
         return (
             <div>
+                {this.props.match.params.tombo_id && ( 
+                    <Row gutter={8} style={{ fontSize: 16, marginLeft: 5 }}>
+                        Editar dados Tombo
+                    </Row>
+                )}
+                <Row justify="end" gutter={8}>
+                    <Button
+                        type="secondary"
+                    >
+                        <Link
+                            to="/tombos"
+                        >
+                            Sair/Cancelar
+                        </Link>
+                    </Button>
+                </Row>
                 <Row gutter={8}>
                     <InputFormField
                         name="numeroTombo"
@@ -3113,125 +3129,118 @@ class NovoTomboScreen extends Component {
                     <br />
                     {' '}
                     <br />
-                    {!this.props.match.params.tombo_id ? (
-                        <>
-                            <Row gutter={8}>
-                                <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                                    <Col span={24}>
-                                        <span> Fotos da exsicata: </span>
-                                    </Col>
-                                    <Col span={24}>
-                                        <FormItem>
-                                            {getFieldDecorator('fotosExsicata')(
-                                                <UploadPicturesComponent
-                                                    fileList={this.state.fotosExsicata}
-                                                    beforeUpload={foto => {
-                                                        this.setState(({ fotosExsicata }) => ({
-                                                            fotosExsicata: [
-                                                                ...fotosExsicata,
-                                                                foto
-                                                            ]
-                                                        }))
+                    <Row gutter={8}>
+                        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+                            <Col span={24}>
+                                <span> Fotos da exsicata: </span>
+                            </Col>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('fotosExsicata')(
+                                        <UploadPicturesComponent
+                                            fileList={this.state.fotosExsicata}
+                                            beforeUpload={foto => {
+                                                this.setState(({ fotosExsicata }) => ({
+                                                    fotosExsicata: [
+                                                        ...fotosExsicata,
+                                                        foto
+                                                    ]
+                                                }))
 
-                                                        return false
-                                                    }}
-                                                    onRemove={foto => {
-                                                        this.setState(({ fotosExsicata: listaAntiga }) => {
-                                                            const index = listaAntiga.indexOf(foto)
+                                                return false
+                                            }}
+                                            onRemove={foto => {
+                                                this.setState(({ fotosExsicata: listaAntiga }) => {
+                                                    const index = listaAntiga.indexOf(foto)
 
-                                                            const fotosExsicata = listaAntiga
-                                                                .filter((item, i) => i !== index)
+                                                    const fotosExsicata = listaAntiga
+                                                        .filter((item, i) => i !== index)
 
-                                                            return { fotosExsicata }
-                                                        })
-                                                    }}
-                                                />
-                                            )}
-                                        </FormItem>
-                                    </Col>
-                                </Col>
-                                <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                                    <Col span={24}>
-                                        <span> Fotos em vivo: </span>
-                                    </Col>
-                                    <Col span={24}>
-                                        <FormItem>
-                                            {getFieldDecorator('fotosVivo')(
-                                                <UploadPicturesComponent
-                                                    fileList={this.state.fotosEmVivo}
-                                                    beforeUpload={foto => {
-                                                        this.setState(({ fotosEmVivo }) => ({
-                                                            fotosEmVivo: [
-                                                                ...fotosEmVivo,
-                                                                foto
-                                                            ]
-                                                        }))
+                                                    return { fotosExsicata }
+                                                })
+                                            }}
+                                        />
+                                    )}
+                                </FormItem>
+                            </Col>
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+                            <Col span={24}>
+                                <span> Fotos em vivo: </span>
+                            </Col>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('fotosVivo')(
+                                        <UploadPicturesComponent
+                                            fileList={this.state.fotosEmVivo}
+                                            beforeUpload={foto => {
+                                                this.setState(({ fotosEmVivo }) => ({
+                                                    fotosEmVivo: [
+                                                        ...fotosEmVivo,
+                                                        foto
+                                                    ]
+                                                }))
 
-                                                        return false
-                                                    }}
-                                                    onRemove={foto => {
-                                                        this.setState(({ fotosEmVivo: listaAntiga }) => {
-                                                            const index = listaAntiga.indexOf(foto)
+                                                return false
+                                            }}
+                                            onRemove={foto => {
+                                                this.setState(({ fotosEmVivo: listaAntiga }) => {
+                                                    const index = listaAntiga.indexOf(foto)
 
-                                                            const fotosEmVivo = listaAntiga
-                                                                .filter((item, i) => i !== index)
+                                                    const fotosEmVivo = listaAntiga
+                                                        .filter((item, i) => i !== index)
 
-                                                            return { fotosEmVivo }
-                                                        })
-                                                    }}
-                                                />
-                                            )}
-                                        </FormItem>
-                                    </Col>
-                                </Col>
-                            </Row>
-                            <br />
-                            <br />
-                            <Row gutter={8}>
-                                <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                                    <Col span={24}>
-                                        <span> Exsicata sem foto: </span>
-                                    </Col>
-                                    <Col span={8}>
-                                        <Button onClick={() => this.criaCodigoBarrasSemFotos(false)}>
-                                            <UploadOutlined />
-                                            {' '}
-                                            Enviar
-                                        </Button>
-                                    </Col>
-                                </Col>
-                                <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                                    <Col span={24}>
-                                        <span> Em vivo sem foto: </span>
-                                    </Col>
-                                    <Col span={8}>
-                                        <Button onClick={() => this.criaCodigoBarrasSemFotos(true)}>
-                                            <UploadOutlined />
-                                            {' '}
-                                            Enviar
-                                        </Button>
-                                    </Col>
-                                </Col>
-                                {/* </div> */}
-                                {/* // : <div></div>} */}
-                            </Row>
-                        </>
-                    ) : (
-                        <>
-                            <Divider dashed />
-                            {this.state.showTable && (
-                                <Row gutter={8}>
-                                    <Table
-                                        columns={this.tabelaFotosColunas}
-                                        dataSource={this.state.fotos}
-                                        loading={this.state.loading}
-                                        rowKey="id"
-                                    />
-                                </Row>
-                            )}
-                        </>
+                                                    return { fotosEmVivo }
+                                                })
+                                            }}
+                                        />
+                                    )}
+                                </FormItem>
+                            </Col>
+                        </Col>
+                    </Row>
+                    <br />
+                    <br />
+                    <Row gutter={8}>
+                        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+                            <Col span={24}>
+                                <span> Exsicata sem foto: </span>
+                            </Col>
+                            <Col span={8}>
+                                <Button onClick={() => this.criaCodigoBarrasSemFotos(false)}>
+                                    <UploadOutlined />
+                                    {' '}
+                                    Enviar
+                                </Button>
+                            </Col>
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+                            <Col span={24}>
+                                <span> Em vivo sem foto: </span>
+                            </Col>
+                            <Col span={8}>
+                                <Button onClick={() => this.criaCodigoBarrasSemFotos(true)}>
+                                    <UploadOutlined />
+                                    {' '}
+                                    Enviar
+                                </Button>
+                            </Col>
+                        </Col>
+                        {/* </div> */}
+                        {/* // : <div></div>} */}
+                    </Row>
+                    <Divider dashed />
+                    {this.state.showTable && this.props.match.params.tombo_id && (
+                        <Row gutter={8}>
+                            <Table
+                                columns={this.tabelaFotosColunas}
+                                dataSource={this.state.fotos}
+                                loading={this.state.loading}
+                                rowKey="id"
+                            />
+                        </Row>
                     )}
-                    <Row type="flex" justify="end" gutter={8}>
+                    <Row type="flex" justify="start" gutter={8}>
                         <Col>
                             <Button
                                 disabled={!this.props.match.params.tombo_id}
@@ -3280,7 +3289,7 @@ class NovoTomboScreen extends Component {
                                 </Link>
                             </Button>
                         </Col>
-                        <Col xs={24} sm={8} md={3} lg={3} xl={3}>
+                        <Col style={{ marginLeft: 'auto' }} xs={24} sm={8} md={3} lg={3} xl={3}>
                             <ButtonComponent titleButton="Salvar" />
                         </Col>
                     </Row>
