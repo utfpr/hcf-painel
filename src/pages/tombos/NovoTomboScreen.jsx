@@ -1890,6 +1890,7 @@ class NovoTomboScreen extends Component {
             tomboId,
             json
         )
+        this.props.history.push('/tombos')
     }
 
     requisitaCadastroTombo = json => {
