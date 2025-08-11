@@ -2,7 +2,7 @@ import { Component } from 'react'
 
 import {
     Row, Col, Divider,
-    Input, Button
+    Input, Button, Modal, InputNumber
 } from 'antd'
 import axios from 'axios'
 
@@ -11,7 +11,7 @@ import { Form } from '@ant-design/compatible'
 import { PrinterOutlined, SearchOutlined } from '@ant-design/icons'
 
 import SimpleTableComponent from '../components/SimpleTableComponent'
-import { baseUrl, fichaTomboUrl } from '../config/api'
+import { fichaTomboUrl } from '../config/api'
 
 const FormItem = Form.Item
 
@@ -43,12 +43,16 @@ class FichaTomboScreen extends Component {
         super(props)
         this.state = {
             tombos: [],
-            metadados: {}
+            metadados: {},
+            modalVisible: false,
+            copiaComCodigo: true,
+            tomboSelecionado: null,
+            quantidadeCopias: 1
         }
     }
 
     componentDidMount() {
-        axios.get('/tombos', { })
+        axios.get('/tombos', {})
             .then(response => {
                 const { data } = response
                 const { metadados, tombos } = data
@@ -73,15 +77,37 @@ class FichaTomboScreen extends Component {
         this.props.form.validateFields(this.validaCamposFormulario)
     }
 
+    abrirModalImpressao = (tombo, comCodigo) => {
+        this.setState({
+            modalVisible: true,
+            tomboSelecionado: tombo,
+            copiaComCodigo: comCodigo,
+            quantidadeCopias: 1
+        })
+    }
+
+    confirmarImpressao = () => {
+        const { tomboSelecionado, copiaComCodigo, quantidadeCopias } = this.state
+        const url = `${fichaTomboUrl}/fichas/tombos/${tomboSelecionado.hcf}/${copiaComCodigo ? 1 : 0}?qtd=${quantidadeCopias}`
+        window.open(url, '_blank')
+        this.setState({ modalVisible: false })
+    }
+
     geraColunaAcao = tombo => (
         <div>
-            <a target="_blank" rel="noreferrer" href={`${fichaTomboUrl}/fichas/tombos/${tombo.hcf}/1`} title="Imprimir ficha com código de barras">
-                <PrinterOutlined style={{ color: '#277a01' }} />
-            </a>
+            <Button
+                type="link"
+                icon={<PrinterOutlined style={{ color: '#277a01' }} />}
+                onClick={() => this.abrirModalImpressao(tombo, true)}
+                title="Imprimir ficha com código de barras"
+            />
             <Divider type="vertical" />
-            <a target="_blank" rel="noreferrer" href={`${fichaTomboUrl}/fichas/tombos/${tombo.hcf}/0`} title="Imprimir ficha sem código de barras">
-                <PrinterOutlined style={{ color: '#0066ff' }} />
-            </a>
+            <Button
+                type="link"
+                icon={<PrinterOutlined style={{ color: '#0066ff' }} />}
+                onClick={() => this.abrirModalImpressao(tombo, false)}
+                title="Imprimir ficha sem código de barras"
+            />
         </div>
     )
 
@@ -198,6 +224,23 @@ class FichaTomboScreen extends Component {
                         this.obtemTombos(null, { pagina: page, limite: pageSize })
                     }}
                 />
+
+                <Modal
+                    title="Impressão de ficha"
+                    visible={this.state.modalVisible}
+                    onOk={this.confirmarImpressao}
+                    onCancel={() => this.setState({ modalVisible: false })}
+                    okText="Imprimir"
+                    cancelText="Cancelar"
+                >
+                    <p>Informe o número de cópias:</p>
+                    <InputNumber
+                        min={1}
+                        max={50}
+                        value={this.state.quantidadeCopias}
+                        onChange={value => this.setState({ quantidadeCopias: value })}
+                    />
+                </Modal>
             </Form>
         )
     }
