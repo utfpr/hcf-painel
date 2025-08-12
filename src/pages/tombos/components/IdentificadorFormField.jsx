@@ -8,7 +8,7 @@ const { Option } = Select
 
 const IdentificadorFormField = ({
     initialValue, identificadores, getFieldDecorator,
-    onClickAddMore, onChange, validateStatus, getFieldError
+    onClickAddMore, onChange, validateStatus, getFieldError, onSearch
 }) => {
     const optionIdentificadores = () => identificadores.map(item => (
         <Option value={`${item.id}`}>{item.nome}</Option>
@@ -29,6 +29,7 @@ const IdentificadorFormField = ({
             onChange={onChange}
             validateStatus={validateStatus}
             getFieldError={getFieldError}
+            onSearch={onSearch}
             rules={[{
                 required: true,
                 message: 'Selecione ao menos um identificador'

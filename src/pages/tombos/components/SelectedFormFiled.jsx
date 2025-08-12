@@ -15,7 +15,7 @@ const SelectedFormFiled = ({
     title, validateStatus, initialValue, rules,
     placeholder, children, fieldName, onClickAddMore,
     getFieldDecorator, getFieldError, onChange, autor,
-    xs, sm, md, lg, xl, others
+    xs, sm, md, lg, xl, onSearch, others
 }) => {
     return (
         <Col xs={xs} sm={sm} md={md} lg={lg} xl={xl}>
@@ -36,6 +36,7 @@ const SelectedFormFiled = ({
                             optionFilterProp="children"
                             status={getFieldError && getFieldError(fieldName) ? 'error' : ''}
                             onChange={onChange}
+                            onSearch={onSearch}
                             {...others}
                         >
                             {children}
