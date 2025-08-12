@@ -3004,7 +3004,6 @@ class NovoTomboScreen extends Component {
                         placeholder="Selecione o idenficador"
                         getFieldError={getFieldError}
                         onSearch={value => {
-                            console.log('value', value)
                             this.requisitaIdentificadores(value)
                         }}
                         filterOption={false}
