@@ -2648,7 +2648,7 @@ class NovoTomboScreen extends Component {
         } = this.state
         return (
             <div>
-                {this.props.match.params.tombo_id && ( 
+                {this.props.match.params.tombo_id && (
                     <Row gutter={8} style={{ fontSize: 16, marginLeft: 5 }}>
                         Editar dados Tombo
                     </Row>
