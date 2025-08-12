@@ -2648,7 +2648,7 @@ class NovoTomboScreen extends Component {
         } = this.state
         return (
             <div>
-                {this.props.match.params.tombo_id && ( 
+                {this.props.match.params.tombo_id && (
                     <Row gutter={8} style={{ fontSize: 16, marginLeft: 5 }}>
                         Editar dados Tombo
                     </Row>
@@ -3004,6 +3004,7 @@ class NovoTomboScreen extends Component {
                         placeholder="Selecione o idenficador"
                         getFieldError={getFieldError}
                         onSearch={value => {
+                            console.log('value', value)
                             this.requisitaIdentificadores(value)
                         }}
                         filterOption={false}
