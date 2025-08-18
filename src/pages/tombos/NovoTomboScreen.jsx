@@ -40,6 +40,7 @@ import SubespecieFormField from './components/SubespecieFormField'
 import SubfamiliaFormField from './components/SubfamiliaFormField'
 import VariedadeFormField from './components/VariedadeFormField'
 import VegetacaoFormField from './components/VegetacaoFormField'
+import LocalColetaFormField from './components/LocalColetaFormField'
 import {
     excluirFotoTomboService, atualizarFotoTomboService, criaCodigoBarrasSemFotosService,
     requisitaDadosEdicaoService, requisitaDadosFormularioService, requisitaIdentificadoresPredicaoService,
@@ -133,6 +134,7 @@ class NovoTomboScreen extends Component {
                 desc: ''
             },
             formComAutor: false,
+            formLocalColeta: false,
             loading: false,
             herbarios: [],
             tipos: [],
@@ -153,6 +155,7 @@ class NovoTomboScreen extends Component {
             fases: [],
             identificadores: [],
             coletores: [],
+            locaisColeta: [],
             fotosExsicata: [],
             fotosEmVivo: [],
             numeroHcf: 0,
@@ -1847,6 +1850,81 @@ class NovoTomboScreen extends Component {
             .catch(this.catchRequestError)
     }
 
+    cadastraNovoLocalColeta = () => {
+        this.setState({ loading: true })
+        const { form } = this.props
+        const { getFieldsValue, getFieldValue } = form
+        const { descricaoLocalColeta } = getFieldsValue()
+        const cidadeId = getFieldValue('cidade')
+        const faseSucessionalId = getFieldValue('fases')
+
+        if (!cidadeId) {
+            this.openNotificationWithIcon('warning', 'Atenção', 'Selecione uma cidade para cadastrar um local de coleta.')
+            this.setState({ loading: false })
+            return
+        }
+
+        const payload = {
+            descricao: descricaoLocalColeta,
+            cidade_id: cidadeId
+        }
+
+        if (faseSucessionalId) {
+            payload.fase_sucessional_id = faseSucessionalId
+        }
+
+        axios.post('/locais-coleta', payload)
+            .then(response => {
+                if (response.status === 201) {
+                    this.requisitaLocaisColeta('')
+                    this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                }
+                form.setFields({
+                    descricaoLocalColeta: { value: '' }
+                })
+            })
+            .catch(err => {
+                const { response } = err
+                if (response && response.data) {
+                    this.openNotificationWithIcon('error', 'Falha', response.data.error?.message || 'Houve um problema ao cadastrar o novo local de coleta.')
+                } else {
+                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar o novo local de coleta, tente novamente.')
+                }
+            })
+            .finally(() => {
+                this.setState({ loading: false })
+            })
+    }
+
+    requisitaLocaisColeta = id => {
+        const cidadeId = id || this.props.form.getFieldValue('cidade')
+        if (!cidadeId) {
+            this.openNotificationWithIcon('warning', 'Atenção', 'Por favor, selecione uma cidade primeiro.')
+            return
+        }
+
+        this.setState({
+            locaisColeta: [],
+            fetchingLocaisColeta: true
+        })
+        axios.get(`/locais-coleta`, { params: { cidadeId: cidadeId } })
+            .then(response => {
+                if (response.status === 200) {
+                    this.setState({
+                        locaisColeta: response.data.locaisColeta
+                    })
+                }
+                this.setState({ fetchingLocaisColeta: false })
+            })
+            .catch(err => {
+                this.setState({ fetchingLocaisColeta: false })
+                const { response } = err
+                if (response && response.data) {
+                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao requisitar os locais de coleta, tente novamente.')
+                }
+            })
+    }
+
     requisitaIdentificadores = nome => {
         this.setState({
             identificadores: [],
@@ -2016,14 +2094,6 @@ class NovoTomboScreen extends Component {
             ...insereState
         })
 
-        // if (dados.local_coleta.fase_sucessional) {
-        //     this.setState({
-        //         fases: {
-        //             ...dados.local_coleta.fase_sucessional
-        //         }
-        //     })
-        // }
-
         if (dados.retorno.identificadores) {
             this.setState({
                 insereState,
@@ -2073,10 +2143,11 @@ class NovoTomboScreen extends Component {
                 value: dados.observacao
             },
             relevoDescricao: {
-                value: dados.local_coleta.descricao
+                value: dados.descricao_local_coleta
             },
             complemento: {
-                value: dados.localizacao.complemento
+                key: dados.local_coleta.id,
+                value: dados.local_coleta.descricao
             },
             autorEspecie: {
                 value: dados.complemento
@@ -2107,8 +2178,8 @@ class NovoTomboScreen extends Component {
         const { form } = this.props
         form.validateFields((err, values) => {
             if (!(form.getFieldsValue().dataColetaDia
-            || form.getFieldsValue().dataColetaMes
-            || form.getFieldsValue().dataColetaAno)) {
+                || form.getFieldsValue().dataColetaMes
+                || form.getFieldsValue().dataColetaAno)) {
                 this.openNotificationWithIcon(
                     'warning',
                     'Falha',
@@ -2159,7 +2230,7 @@ class NovoTomboScreen extends Component {
         if (altitude) json.localidade = { ...json.localidade, altitude }
         json.localidade = { ...json.localidade, cidade_id: parseInt(cidade) }
         if (complemento) {
-            json.localidade = { ...json.localidade, complemento }
+            json.localidade = { ...json.localidade, complemento: parseInt(complemento.value) }
         }
         if (solo) json.paisagem = { ...json.paisagem, solo_id: solo }
         if (relevoDescricao) json.paisagem = { ...json.paisagem, descricao: relevoDescricao }
@@ -2298,6 +2369,13 @@ class NovoTomboScreen extends Component {
             }
             return true
         }
+        if (this.state.formLocalColeta) {
+            if (!this.props.form.getFieldsValue().descricaoLocalColeta) {
+                this.openNotificationWithIcon('warning', 'Falha', 'A descrição do local de coleta é obrigatória.')
+                return false
+            }
+            return true
+        }
         if (!this.props.form.getFieldsValue().campo) {
             this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome para o cadastro.')
             return false
@@ -2411,7 +2489,21 @@ class NovoTomboScreen extends Component {
                     </Row>
                 </div>
             )
-        } if (this.state.formComAutor) {
+        }
+        if (this.state.formLocalColeta) {
+            return (
+                <div>
+                    <Row gutter={8}>
+                        <InputFormField
+                            name="descricaoLocalColeta"
+                            title="Descrição:"
+                            getFieldDecorator={getFieldDecorator}
+                        />
+                    </Row>
+                </div>
+            )
+        }
+        if (this.state.formComAutor) {
             return (
                 <div>
                     <Row gutter={8}>
@@ -2495,7 +2587,7 @@ class NovoTomboScreen extends Component {
                                 this.setState({
                                     visibleModal: false,
                                     formColetor: 0,
-                                    formComAutor: false
+                                    formComAutor: false,
                                 })
                             }
                         }
@@ -2565,7 +2657,7 @@ class NovoTomboScreen extends Component {
     renderLocalTombo = (getFieldDecorator, getFieldError) => {
         const {
             paisInicial, estadoInicial, cidadeInicial,
-            paises, estados, cidades, complementoInicial
+            paises, estados, cidades
         } = this.state
         return (
             <div>
@@ -2604,6 +2696,10 @@ class NovoTomboScreen extends Component {
                         initialValue={String(cidadeInicial)}
                         cidades={cidades}
                         getFieldDecorator={getFieldDecorator}
+                        onChange={value => {
+                            this.props.form.setFieldsValue({ complemento: undefined })
+                            this.requisitaLocaisColeta(value)
+                        }}
                         rules={[{
                             required: true,
                             message: 'Escolha uma cidade'
@@ -2613,18 +2709,23 @@ class NovoTomboScreen extends Component {
                 </Row>
                 <br />
                 <Row gutter={8}>
-                    <Col xs={24} sm={24} md={16} lg={8} xl={8}>
-                        <Col span={24}>
-                            <span>Local de coleta:</span>
-                        </Col>
-                        <Col span={24}>
-                            {getFieldDecorator('complemento', {
-                                initialValue: String(complementoInicial)
-                            })(
-                                <TextArea rows={4} />
-                            )}
-                        </Col>
-                    </Col>
+                    <LocalColetaFormField
+                        getFieldDecorator={getFieldDecorator}
+                        initialValue={this.state.complementoInicial}
+                        locaisColeta={this.state.locaisColeta}
+                        fetchingLocaisColeta={this.state.fetchingLocaisColeta}
+                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                        onClickAddMore={() => {
+                            this.setState({
+                                formulario: {
+                                    desc: ' do novo local de coleta',
+                                    tipo: 13
+                                },
+                                formLocalColeta: true,
+                                visibleModal: true
+                            })
+                        }}
+                    />
                     <Col xs={24} sm={24} md={16} lg={8} xl={8}>
                         <Col span={24}>
                             <span>Descrição:</span>
@@ -3029,7 +3130,8 @@ class NovoTomboScreen extends Component {
                                 this.setState({
                                     visibleModal: false,
                                     formColetor: 0,
-                                    formComAutor: false
+                                    formComAutor: false,
+                                    formLocalColeta: false
                                 })
                             }
                         }
@@ -3075,6 +3177,9 @@ class NovoTomboScreen extends Component {
                                     case 12:
                                         this.cadastraNovoReino()
                                         break
+                                    case 13:
+                                        this.cadastraNovoLocalColeta()
+                                        break
                                     default:
                                         break
                                 }
@@ -3083,7 +3188,8 @@ class NovoTomboScreen extends Component {
                             this.setState({
                                 visibleModal: false,
                                 formComAutor: false,
-                                formColetor: 0
+                                formColetor: 0,
+                                formLocalColeta: false
                             })
                         }}
                     >
