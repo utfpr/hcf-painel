@@ -26,6 +26,7 @@ import ColetorFormField from './components/ColetorFormField'
 import DataIdentificacaoFormField from './components/DataIdentificacaoFormField'
 import EspecieFormField from './components/EspecieFormField'
 import EstadoFormField from './components/EstadoFormField'
+import ExsicataTipoFormField from './components/ExsicataTipoField'
 import FamiliaFormField from './components/FamiliaFormField'
 import FaseFormField from './components/FaseFormField'
 import GeneroFormField from './components/GeneroFormField'
@@ -2075,6 +2076,9 @@ class NovoTomboScreen extends Component {
             relevoDescricao: {
                 value: dados.local_coleta.descricao
             },
+            exsicataTipo: {
+                value: dados.exsicataTipo
+            },
             complemento: {
                 value: dados.localizacao.complemento
             },
@@ -2135,7 +2139,7 @@ class NovoTomboScreen extends Component {
             dataColetaAno, dataColetaDia, dataColetaMes, dataIdentAno, dataIdentDia, dataIdentMes,
             especie, reino, familia, fases, genero, identificador, latitude, localidadeCor, longitude,
             nomePopular, numColeta, observacoesColecaoAnexa, observacoesTombo, relevo, solo,
-            subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao
+            subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao, exsicataTipo
         } = values
         const json = {}
 
@@ -2163,6 +2167,7 @@ class NovoTomboScreen extends Component {
         }
         if (solo) json.paisagem = { ...json.paisagem, solo_id: solo }
         if (relevoDescricao) json.paisagem = { ...json.paisagem, descricao: relevoDescricao }
+        if (exsicataTipo) json.exsicataTipo = exsicataTipo
         if (relevo) json.paisagem = { ...json.paisagem, relevo_id: relevo }
         if (vegetacao) json.paisagem = { ...json.paisagem, vegetacao_id: vegetacao }
         if (fases) json.paisagem = { ...json.paisagem, fase_sucessional_id: fases }
@@ -2202,6 +2207,7 @@ class NovoTomboScreen extends Component {
         if (autorEspecie) json.autores = { especie: autorEspecie }
         if (autoresSubespecie) json.autores = { ...json.autores, subespecie: autoresSubespecie }
         if (autorVariedade) json.autores = { ...json.autores, variedade: autorVariedade }
+        console.log('JSON do formulário: ', json)
         return json
     }
 
@@ -2380,6 +2386,21 @@ class NovoTomboScreen extends Component {
                     <ColecoesAnexasFormField
                         getFieldDecorator={getFieldDecorator}
                         colecaoInicial={colecaoInicial}
+                        value={value}
+                        onChange={this.onChange}
+                    />
+                </Row>
+            </div>
+        )
+    }
+
+    renderExsicataTipo = getFieldDecorator => {
+        const { value } = this.state
+        return (
+            <div>
+                <Row gutter={8}>
+                    <ExsicataTipoFormField
+                        getFieldDecorator={getFieldDecorator}
                         value={value}
                         onChange={this.onChange}
                     />
@@ -3127,8 +3148,11 @@ class NovoTomboScreen extends Component {
                         </Col>
                     </Row>
                     <br />
+                    <Divider />
                     {' '}
+                    {this.renderExsicataTipo(getFieldDecorator)}
                     <br />
+                    <Divider />
                     <Row gutter={8}>
                         <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                             <Col span={24}>

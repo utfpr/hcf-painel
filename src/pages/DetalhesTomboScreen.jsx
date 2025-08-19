@@ -237,9 +237,36 @@ export default class DetalhesTomboScreen extends Component {
                                 </span>
                             </Col>
                         </Col>
+                        <Col xs={24} sm={8} md={6} lg={6} xl={6}>
+                            <Col span={24}>
+                                <h4>Tipo da exsicata:</h4>
+                            </Col>
+                            <Col span={24}>
+                                <span>
+                                    {' '}
+                                    {this.getExsicataTipo()}
+                                    {' '}
+                                </span>
+                            </Col>
+                        </Col>
                     </Row>
                 </div>
             )
+        }
+    }
+
+    getExsicataTipo = () => {
+        const { tombo } = this.state
+
+        console.log(tombo.exsicataTipo)
+
+        switch (tombo.exsicataTipo) {
+            case 'UNICATA':
+                return 'Unicata'
+            case 'DUPLICATA':
+                return 'Duplicata'
+            default:
+                return 'Não especificado'
         }
     }
 
