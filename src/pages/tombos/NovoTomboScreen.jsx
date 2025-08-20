@@ -176,6 +176,10 @@ class NovoTomboScreen extends Component {
             relevoInicial: '',
             vegetacaoInicial: '',
             faseInicial: '',
+            idSoloInicial: '',
+            idRelevoInicial: '',
+            idVegetacaoInicial: '',
+            idFaseInicial: '',
             identificadorInicial: '',
             coletoresInicial: '',
             colecaoInicial: '',
@@ -504,29 +508,29 @@ class NovoTomboScreen extends Component {
 
     onRequisitaEdicaoTomboComSucesso = async (response, params) => {
         const tombo = response.data
-        const criaRequisicaoFoto = (hcf, emVivo, foto) => {
-            const form = new FormData()
-            form.append('imagem', foto)
-            form.append('tombo_hcf', hcf)
-            form.append('em_vivo', emVivo)
+        // const criaRequisicaoFoto = (hcf, emVivo, foto) => {
+        //     const form = new FormData()
+        //     form.append('imagem', foto)
+        //     form.append('tombo_hcf', hcf)
+        //     form.append('em_vivo', emVivo)
 
-            return axios.post('/uploads', form, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            })
-        }
+        //     return axios.post('/uploads', form, {
+        //         headers: {
+        //             'Content-Type': 'multipart/form-data'
+        //         }
+        //     })
+        // }
 
-        const criaFuncaoMap = (hcf, emVivo) => foto => criaRequisicaoFoto(hcf, emVivo, foto)
+        // const criaFuncaoMap = (hcf, emVivo) => foto => criaRequisicaoFoto(hcf, emVivo, foto)
 
-        const { fotosEmVivo, fotosExsicata } = this.state
+        // const { fotosEmVivo, fotosExsicata } = this.state
 
-        const promises = [
-            ...fotosEmVivo.map(criaFuncaoMap(tombo.hcf, true)),
-            ...fotosExsicata.map(criaFuncaoMap(tombo.hcf, false))
-        ]
+        // const promises = [
+        //     ...fotosEmVivo.map(criaFuncaoMap(tombo.hcf, true)),
+        //     ...fotosExsicata.map(criaFuncaoMap(tombo.hcf, false))
+        // ]
 
-        Promise.all(promises)
+        //Promise.all(promises)
 
         await axios.put(`/tombos/${this.props.match.params.tombo_id}`, {
             ...params[1]
@@ -2070,7 +2074,6 @@ class NovoTomboScreen extends Component {
                     value: {
                         key: dados.coletor.id,
                         label: dados.coletor.nome
-
                     }
                 }
             })
@@ -2102,7 +2105,6 @@ class NovoTomboScreen extends Component {
         }
 
         form.setFields({
-
             altitude: {
                 value: dados.localizacao.altitude
             },
@@ -2146,8 +2148,10 @@ class NovoTomboScreen extends Component {
                 value: dados.descricao_local_coleta
             },
             complemento: {
-                key: dados.local_coleta.id,
-                value: dados.local_coleta.descricao
+                value: {
+                    key: dados.local_coleta.id,
+                    label: dados.local_coleta.descricao
+                }
             },
             autorEspecie: {
                 value: dados.complemento
@@ -3025,13 +3029,16 @@ class NovoTomboScreen extends Component {
     renderTipoSoloTombo = getFieldDecorator => {
         const {
             soloInicial, search, solos, relevos, faseInicial,
-            relevoInicial, vegetacaoInicial, vegetacoes, fases
+            relevoInicial, vegetacaoInicial, vegetacoes, fases, idSoloInicial, idRelevoInicial, idVegetacaoInicial, idFaseInicial
         } = this.state
         return (
             <div>
                 <Row gutter={8}>
                     <SoloFormField
-                        initialValue={String(soloInicial)}
+                        initialValue={idSoloInicial ? { 
+                            key: idSoloInicial, 
+                            label: soloInicial 
+                        } : undefined}
                         solos={solos}
                         validateStatus={search.solo}
                         getFieldDecorator={getFieldDecorator}
@@ -3046,7 +3053,10 @@ class NovoTomboScreen extends Component {
                         }}
                     />
                     <RelevoFormField
-                        initialValue={String(relevoInicial)}
+                        initialValue={idRelevoInicial ? { 
+                            key: idRelevoInicial, 
+                            label: relevoInicial 
+                        } : undefined}
                         relevos={relevos}
                         validateStatus={search.relevo}
                         getFieldDecorator={getFieldDecorator}
@@ -3064,7 +3074,10 @@ class NovoTomboScreen extends Component {
                 <br />
                 <Row gutter={8}>
                     <VegetacaoFormField
-                        initialValue={String(vegetacaoInicial)}
+                        initialValue={idVegetacaoInicial ? { 
+                            key: idVegetacaoInicial, 
+                            label: vegetacaoInicial 
+                        } : undefined}
                         vegetacoes={vegetacoes}
                         validateStatus={search.vegetacao}
                         getFieldDecorator={getFieldDecorator}
@@ -3079,7 +3092,10 @@ class NovoTomboScreen extends Component {
                         }}
                     />
                     <FaseFormField
-                        initialValue={String(faseInicial)}
+                        initialValue={idFaseInicial ? { 
+                            key: idFaseInicial, 
+                            label: faseInicial 
+                        } : undefined}
                         fases={fases}
                         validateStatus={search.fase}
                         getFieldDecorator={getFieldDecorator}
