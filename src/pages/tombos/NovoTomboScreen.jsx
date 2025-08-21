@@ -231,7 +231,8 @@ class NovoTomboScreen extends Component {
 
         if (data.identificacao && data.identificacao.usuario_id) {
             this.setState({
-                identificadorInicial: data.identificacao.usuario_id
+                identificadorInicial: data.identificacao.usuario_id,
+                identificadorNome: data.identificador_nome
             })
         }
     }
@@ -2107,8 +2108,8 @@ class NovoTomboScreen extends Component {
         const { form } = this.props
         form.validateFields((err, values) => {
             if (!(form.getFieldsValue().dataColetaDia
-            || form.getFieldsValue().dataColetaMes
-            || form.getFieldsValue().dataColetaAno)) {
+                || form.getFieldsValue().dataColetaMes
+                || form.getFieldsValue().dataColetaAno)) {
                 this.openNotificationWithIcon(
                     'warning',
                     'Falha',
@@ -2194,7 +2195,7 @@ class NovoTomboScreen extends Component {
             }
         }
 
-        json.coletores = coletores.key
+        json.coletor = coletores.key
         if (coletoresComplementares) json.coletor_complementar = { complementares: coletoresComplementares }
         if (tipoColecaoAnexa) json.colecoes_anexas = { tipo: tipoColecaoAnexa }
         if (observacoesColecaoAnexa) json.colecoes_anexas = { ...json.colecoes_anexas, observacoes: observacoesColecaoAnexa }
@@ -2989,12 +2990,13 @@ class NovoTomboScreen extends Component {
     }
 
     renderIdentificador = (getFieldDecorator, getFieldError) => {
-        const { identificadores, identificadorInicial } = this.state
+        const { identificadores, identificadorInicial, identificadorNome } = this.state
+        const initialValue = identificadorInicial ? { key: String(identificadorInicial), label: identificadorNome } : undefined
         return (
             <div>
                 <Row gutter={8}>
                     <IdentificadorFormField
-                        initialValue={String(identificadorInicial)}
+                        initialValue={initialValue}
                         identificadores={identificadores}
                         getFieldDecorator={getFieldDecorator}
                         showSearch

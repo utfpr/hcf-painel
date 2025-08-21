@@ -21,9 +21,10 @@ const IdentificadorFormField = ({
             lg={12}
             xl={12}
             title="Identificador:"
-            initialValue={initialValue || undefined}
+            initialValue={initialValue}
             placeholder="Selecione um identificador"
             fieldName="identificador"
+            labelInValue
             getFieldDecorator={getFieldDecorator}
             onClickAddMore={onClickAddMore}
             onChange={onChange}
