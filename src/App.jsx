@@ -34,6 +34,7 @@ import ListaTaxonomiaSubfamilia from './pages/ListaTaxonomiaSubfamilia'
 import ListaTaxonomiaVariedade from './pages/ListaTaxonomiaVariedade'
 import ListaTombosScreen from './pages/ListaTombosScreen'
 import ListaUsuariosScreen from './pages/ListaUsuariosScreen'
+import ListaLocalColetaScreen from './pages/ListaLocalColetaScreen'
 import LivroTomboScreen from './pages/LivroTomboScreen'
 import Mapa from './pages/Mapa'
 import NovaRemessaScreen from './pages/NovaRemessaScreen'
@@ -129,6 +130,7 @@ export default class App extends Component {
 
                 <PrivateRoute authed={isLogado()} path="/herbarios" component={ListaHerbariosScreen} />
                 <PrivateRoute authed={isLogado()} path="/fichas/tombos" component={FichaTomboScreen} />
+                <PrivateRoute authed={isLogado()} path="/locais-coleta" component={ListaLocaisColeta} />
                 <PrivateRoute authed={isCurador()} path="/reflora" component={ServicosRefloraScreen} />
                 <PrivateRoute authed={isCurador()} path="/specieslink" component={ServicosSpeciesLinkScreen} />
 
