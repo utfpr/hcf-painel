@@ -2230,7 +2230,7 @@ class NovoTomboScreen extends Component {
         if (altitude) json.localidade = { ...json.localidade, altitude }
         json.localidade = { ...json.localidade, cidade_id: parseInt(cidade) }
         if (complemento) {
-            json.localidade = { ...json.localidade, complemento: parseInt(complemento.value) }
+            json.localidade = { ...json.localidade, local_coleta_id: parseInt(complemento.value) }
         }
         if (solo) json.paisagem = { ...json.paisagem, solo_id: solo }
         if (relevoDescricao) json.paisagem = { ...json.paisagem, descricao: relevoDescricao }
