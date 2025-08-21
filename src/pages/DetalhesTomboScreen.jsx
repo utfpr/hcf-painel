@@ -548,7 +548,7 @@ export default class DetalhesTomboScreen extends Component {
                             <Col span={24}>
                                 <span>
                                     {' '}
-                                    {tombo.descricao_local_coleta}
+                                    {tombo.descricao}
                                     {' '}
                                 </span>
                             </Col>

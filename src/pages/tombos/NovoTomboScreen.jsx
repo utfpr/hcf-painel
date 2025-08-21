@@ -2143,7 +2143,7 @@ class NovoTomboScreen extends Component {
                 value: dados.observacao
             },
             relevoDescricao: {
-                value: dados.descricao_local_coleta
+                value: dados.descricao
             },
             complemento: {
                 key: dados.local_coleta.id,
