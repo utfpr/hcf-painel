@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import {
-    Card, Col, Row, Form, Input, Button, Divider, notification, Modal, Select
+    Card, Col, Row, Input, Button, Divider, notification, Modal, Select
 } from 'antd'
+import { Form } from '@ant-design/compatible'
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
@@ -9,7 +10,7 @@ import SimpleTableComponent from '../components/SimpleTableComponent'
 import { isCuradorOuOperador } from '../helpers/usuarios'
 import HeaderListComponent from '../components/HeaderListComponent'
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
-import TotalRecordFound from '../components/TotalRecordFound'
+import TotalRecordsFound from '@/components/TotalRecordsFound'
 
 const { confirm } = Modal
 const { Option } = Select
@@ -141,8 +142,8 @@ class ListaLocaisColeta extends Component {
 
     formataDadosLocais = locais => locais.map(item => ({
         key: item.id,
-        nome: item.nome,
-        pais: item.cidade?.estado?.pais?.nome || '',
+        nome: item.descricao, 
+        pais: item.cidade?.estado?.paise?.nome || '', 
         estado: item.cidade?.estado?.nome || '',
         cidade: item.cidade?.nome || '',
         acao: this.gerarAcao(item.id)
@@ -172,24 +173,24 @@ class ListaLocaisColeta extends Component {
             if (response.status === 200) {
                 const local = response.data
                 
-                await this.requisitaEstados(local.cidade.estado.pais.id)
+                await this.requisitaEstados(local.cidade.estado.paise.id) 
                 await this.requisitaCidades(local.cidade.estado.id)
                 
                 this.setState({
                     visibleModal: true,
                     titulo: 'Atualizar',
                     id: local.id,
-                    nomeLocal: local.nome,
-                    paisSelecionado: local.cidade.estado.pais.id,
+                    nomeLocal: local.descricao, 
+                    paisSelecionado: local.cidade.estado.paise.id,
                     estadoSelecionado: local.cidade.estado.id,
                     cidadeSelecionada: local.cidade.id
                 })
                 
                 this.props.form.setFields({
-                    nomeLocal: { value: local.nome },
-                    pais: { value: local.cidade.estado.pais.id },
-                    estado: { value: local.cidade.estado.id },
-                    cidade: { value: local.cidade.id }
+                    nomeLocalModal: { value: local.descricao }, 
+                    paisModal: { value: local.cidade.estado.paise.id },
+                    estadoModal: { value: local.cidade.estado.id },
+                    cidadeModal: { value: local.cidade.id }
                 })
             }
         } catch (err) {
@@ -206,14 +207,14 @@ class ListaLocaisColeta extends Component {
         }
 
         if (valores !== undefined) {
-            const { pais, estado, cidade } = valores
+            const { cidade } = valores
 
-            if (pais && estado && cidade) {
+            if (cidade) {
                 params.cidade_id = cidade
             }
         }
 
-        const campo = sorter && sorter.field ? sorter.field : 'nome'
+        const campo = sorter && sorter.field ? sorter.field : 'descricao'
         const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
         params.order = `${campo}:${ordem}`
 
@@ -221,10 +222,10 @@ class ListaLocaisColeta extends Component {
             const response = await axios.get('/locais-coleta', { params })
 
             if (response.status === 200) {
-                const { data } = response
+                // Mudança: acessar diretamente response.data em vez de const { data } = response
                 this.setState({
-                    locais: this.formataDadosLocais(data.resultado),
-                    metadados: data.metadados,
+                    locais: this.formataDadosLocais(response.data.resultado),
+                    metadados: response.data.metadados,
                     loading: false
                 })
             } else if (response.status === 400) {
@@ -242,15 +243,11 @@ class ListaLocaisColeta extends Component {
 
     handleSubmit = (err, valores) => {
         if (!err) {
-            if (valores.pais && valores.estado && valores.cidade) {
-                this.setState({
-                    valores,
-                    loading: true
-                })
-                this.requisitaListaLocais(valores, this.state.pagina)
-            } else {
-                this.notificacao('warning', 'Filtros', 'É necessário preencher País, Estado e Cidade para filtrar.')
-            }
+            this.setState({
+                valores,
+                loading: true
+            })
+            this.requisitaListaLocais(valores, 1)
         }
     }
 
@@ -266,7 +263,7 @@ class ListaLocaisColeta extends Component {
 
         try {
             const response = await axios.post('/locais-coleta', {
-                nome: nomeLocal,
+                descricao: nomeLocal,
                 cidade_id: cidadeSelecionada
             })
 
@@ -289,7 +286,7 @@ class ListaLocaisColeta extends Component {
 
         try {
             const response = await axios.put(`/locais-coleta/${id}`, {
-                nome: nomeLocal,
+                descricao: nomeLocal,
                 cidade_id: cidadeSelecionada
             })
 
@@ -386,6 +383,8 @@ class ListaLocaisColeta extends Component {
                                         <Select 
                                             placeholder="Selecione um país"
                                             allowClear
+                                            showSearch
+                                            optionFilterProp="children"
                                             onChange={value => {
                                                 if (value) {
                                                     this.requisitaEstados(value)
@@ -418,6 +417,8 @@ class ListaLocaisColeta extends Component {
                                         <Select 
                                             placeholder="Selecione um estado"
                                             allowClear
+                                            showSearch
+                                            optionFilterProp="children"
                                             onChange={value => {
                                                 if (value) {
                                                     this.requisitaCidades(value)
@@ -446,6 +447,8 @@ class ListaLocaisColeta extends Component {
                                         <Select 
                                             placeholder="Selecione uma cidade"
                                             allowClear
+                                            showSearch
+                                            optionFilterProp="children"
                                         >
                                             {this.formataDadosCidades()}
                                         </Select>
@@ -459,7 +462,7 @@ class ListaLocaisColeta extends Component {
                         <Col span={24}>
                             <Row align="middle" type="flex" justify="end" gutter={16}>
                                 <Col xs={24} sm={8} md={12} lg={16} xl={16}>
-                                    <TotalRecordFound
+                                    <TotalRecordsFound
                                         total={this.state.metadados?.total}
                                     />
                                 </Col>
@@ -502,123 +505,6 @@ class ListaLocaisColeta extends Component {
         )
     }
 
-    renderModalConteudo = () => {
-        const { getFieldDecorator } = this.props.form
-        
-        return (
-            <div>
-                <Row gutter={8}>
-                    <Col span={24}>
-                        <span>Nome do Local de Coleta:</span>
-                    </Col>
-                    <Col span={24}>
-                        <FormItem>
-                            {getFieldDecorator('nomeLocalModal', {
-                                initialValue: this.state.nomeLocal,
-                                rules: [{
-                                    required: true,
-                                    message: 'Informe o nome do local de coleta'
-                                }]
-                            })(
-                                <Input 
-                                    placeholder="RPPN Moreira Sales" 
-                                    onChange={e => this.setState({ nomeLocal: e.target.value })}
-                                />
-                            )}
-                        </FormItem>
-                    </Col>
-                </Row>
-
-                <Row gutter={8}>
-                    <Col span={24}>
-                        <span>País:</span>
-                    </Col>
-                    <Col span={24}>
-                        <FormItem>
-                            {getFieldDecorator('paisModal', {
-                                initialValue: this.state.paisSelecionado,
-                                rules: [{
-                                    required: true,
-                                    message: 'Selecione um país'
-                                }]
-                            })(
-                                <Select 
-                                    placeholder="Selecione um país"
-                                    onChange={async value => {
-                                        this.setState({ paisSelecionado: value })
-                                        await this.requisitaEstados(value)
-                                        this.props.form.setFields({
-                                            estadoModal: { value: undefined },
-                                            cidadeModal: { value: undefined }
-                                        })
-                                    }}
-                                >
-                                    {this.formataDadosPaises()}
-                                </Select>
-                            )}
-                        </FormItem>
-                    </Col>
-                </Row>
-
-                <Row gutter={8}>
-                    <Col span={24}>
-                        <span>Estado:</span>
-                    </Col>
-                    <Col span={24}>
-                        <FormItem>
-                            {getFieldDecorator('estadoModal', {
-                                initialValue: this.state.estadoSelecionado,
-                                rules: [{
-                                    required: true,
-                                    message: 'Selecione um estado'
-                                }]
-                            })(
-                                <Select 
-                                    placeholder="Selecione um estado"
-                                    onChange={async value => {
-                                        this.setState({ estadoSelecionado: value })
-                                        await this.requisitaCidades(value)
-                                        this.props.form.setFields({
-                                            cidadeModal: { value: undefined }
-                                        })
-                                    }}
-                                >
-                                    {this.formataDadosEstados()}
-                                </Select>
-                            )}
-                        </FormItem>
-                    </Col>
-                </Row>
-
-                <Row gutter={8}>
-                    <Col span={24}>
-                        <span>Cidade:</span>
-                    </Col>
-                    <Col span={24}>
-                        <FormItem>
-                            {getFieldDecorator('cidadeModal', {
-                                initialValue: this.state.cidadeSelecionada,
-                                rules: [{
-                                    required: true,
-                                    message: 'Selecione uma cidade'
-                                }]
-                            })(
-                                <Select 
-                                    placeholder="Selecione uma cidade"
-                                    onChange={value => {
-                                        this.setState({ cidadeSelecionada: value })
-                                    }}
-                                >
-                                    {this.formataDadosCidades()}
-                                </Select>
-                            )}
-                        </FormItem>
-                    </Col>
-                </Row>
-            </div>
-        )
-    }
-
     renderFormulario = () => {
         const { getFieldDecorator } = this.props.form
         
@@ -629,28 +515,40 @@ class ListaLocaisColeta extends Component {
                     visibleModal={this.state.visibleModal}
                     loadingModal={this.state.loadingModal}
                     onCancel={() => {
-                        this.setState({ visibleModal: false })
+                        this.setState({
+                            visibleModal: false
+                        })
                         this.limparCamposModal()
                     }}
                     onOk={() => {
-                        this.props.form.validateFields(['nomeLocalModal', 'paisModal', 'estadoModal', 'cidadeModal'], (err) => {
-                            if (!err) {
-                                if (this.state.id === -1) {
-                                    this.cadastraNovoLocal()
-                                } else {
-                                    this.atualizaLocal()
-                                }
-                                this.setState({ visibleModal: false })
+                        if (this.state.id === -1) {
+                            if (this.state.nomeLocal && this.state.nomeLocal.trim() !== '' && this.state.cidadeSelecionada) {
+                                this.cadastraNovoLocal()
+                            } else {
+                                this.notificacao('warning', 'Falha', 'Informe o nome do local de coleta e selecione país, estado e cidade.')
                             }
+                        } else if (this.state.nomeLocal && this.state.nomeLocal.trim() !== '' && this.state.cidadeSelecionada) {
+                            this.atualizaLocal()
+                        } else {
+                            this.notificacao('warning', 'Falha', 'Informe o nome do local de coleta e selecione país, estado e cidade.')
+                        }
+                        this.setState({
+                            visibleModal: false
                         })
                     }}
                 >
                     {this.renderModalConteudo()}
                 </ModalCadastroComponent>
 
-                <HeaderListComponent title="Listagem de locais de coleta" />
-                <Divider dashed />
-                {this.renderAdd()}
+                <Row gutter={24} style={{ marginBottom: '20px' }}>
+                    <Col xs={24} sm={14} md={18} lg={20} xl={20}>
+                        <h2 style={{ fontWeight: 200 }}>Listagem de locais de coleta</h2>
+                    </Col>
+                    <Col xs={24} sm={10} md={6} lg={4} xl={4}>
+                        {this.renderAdd()}
+                    </Col>
+                </Row>
+
                 <Divider dashed />
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
@@ -668,6 +566,95 @@ class ListaLocaisColeta extends Component {
                     }}
                 />
                 <Divider dashed />
+            </div>
+        )
+    }
+
+    renderModalConteudo = () => {
+        return (
+            <div>
+                <Row gutter={8} style={{ marginTop: 16 }}>
+                    <Col span={24}>
+                        <span>Nome do Local de Coleta:</span>
+                    </Col>
+                </Row>
+                <Row gutter={8}>
+                    <Col span={24}>
+                        <Input 
+                            placeholder="RPPN Moreira Sales"
+                            value={this.state.nomeLocal}
+                            onChange={e => this.setState({ nomeLocal: e.target.value })}
+                        />
+                    </Col>
+                </Row>
+
+                <Row gutter={8} style={{ marginTop: 16 }}>
+                    <Col span={24}>
+                        <span>País:</span>
+                    </Col>
+                </Row>
+                <Row gutter={8}>
+                    <Col span={24}>
+                        <Select 
+                            placeholder="Selecione um país"
+                            showSearch
+                            optionFilterProp="children"
+                            value={this.state.paisSelecionado}
+                            style={{ width: '100%' }}
+                            onChange={async value => {
+                                this.setState({ paisSelecionado: value })
+                                await this.requisitaEstados(value)
+                            }}
+                        >
+                            {this.formataDadosPaises()}
+                        </Select>
+                    </Col>
+                </Row>
+
+                <Row gutter={8} style={{ marginTop: 16 }}>
+                    <Col span={24}>
+                        <span>Estado:</span>
+                    </Col>
+                </Row>
+                <Row gutter={8}>
+                    <Col span={24}>
+                        <Select 
+                            placeholder="Selecione um estado"
+                            showSearch
+                            optionFilterProp="children"
+                            value={this.state.estadoSelecionado}
+                            style={{ width: '100%' }}
+                            onChange={async value => {
+                                this.setState({ estadoSelecionado: value })
+                                await this.requisitaCidades(value)
+                            }}
+                        >
+                            {this.formataDadosEstados()}
+                        </Select>
+                    </Col>
+                </Row>
+
+                <Row gutter={8} style={{ marginTop: 16 }}>
+                    <Col span={24}>
+                        <span>Cidade:</span>
+                    </Col>
+                </Row>
+                <Row gutter={8}>
+                    <Col span={24}>
+                        <Select 
+                            placeholder="Selecione uma cidade"
+                            showSearch
+                            optionFilterProp="children"
+                            value={this.state.cidadeSelecionada}
+                            style={{ width: '100%' }}
+                            onChange={value => {
+                                this.setState({ cidadeSelecionada: value })
+                            }}
+                        >
+                            {this.formataDadosCidades()}
+                        </Select>
+                    </Col>
+                </Row>
             </div>
         )
     }
