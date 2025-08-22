@@ -2167,7 +2167,7 @@ class NovoTomboScreen extends Component {
         }
         if (solo) json.paisagem = { ...json.paisagem, solo_id: solo }
         if (relevoDescricao) json.paisagem = { ...json.paisagem, descricao: relevoDescricao }
-        if (exsicataTipo) json.exsicataTipo = exsicataTipo
+        if (exsicataTipo) json.exsicata_tipo = exsicataTipo
         if (relevo) json.paisagem = { ...json.paisagem, relevo_id: relevo }
         if (vegetacao) json.paisagem = { ...json.paisagem, vegetacao_id: vegetacao }
         if (fases) json.paisagem = { ...json.paisagem, fase_sucessional_id: fases }
