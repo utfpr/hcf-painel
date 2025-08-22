@@ -350,13 +350,28 @@ class NovoTomboScreen extends Component {
             this.requisitaDadosEdicao(match.params.tombo_id)
         } else {
             const hcfHerbario = dados.herbarios.find(herbario => herbario.sigla === 'HCF')
+            const paisBrasil = dados.paises.find(p => p.nome === 'BRASIL')
 
             this.setState({
                 loading: false,
                 herbarioInicial: {
                     value: hcfHerbario?.id
-                }
+                },
+                paisInicial: paisBrasil ? String(paisBrasil.id) : ''
             })
+
+            if (paisBrasil) {
+                axios.get('/estados', { params: { id: paisBrasil.id } })
+                    .then(estadosResponse => {
+                        if (estadosResponse.data && estadosResponse.status === 200) {
+                            const estadoParana = estadosResponse.data.find(e => e.nome === 'Paraná')
+                            this.setState({
+                                estados: estadosResponse.data,
+                                estadoInicial: estadoParana ? String(estadoParana.id) : ''
+                            })
+                        }
+                    })
+            }
         }
         this.requisitaIdentificadoresPredicao()
     }
