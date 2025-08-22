@@ -2207,7 +2207,6 @@ class NovoTomboScreen extends Component {
         if (autorEspecie) json.autores = { especie: autorEspecie }
         if (autoresSubespecie) json.autores = { ...json.autores, subespecie: autoresSubespecie }
         if (autorVariedade) json.autores = { ...json.autores, variedade: autorVariedade }
-        console.log('JSON do formulário: ', json)
         return json
     }
 

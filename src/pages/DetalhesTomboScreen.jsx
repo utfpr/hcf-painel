@@ -26,7 +26,7 @@ export default class DetalhesTomboScreen extends Component {
             loading: false,
             nomesColetores: ''
         }
-        this.reinosRef = { current: { promise: null, data: null, error: null } };
+        this.reinosRef = { current: { promise: null, data: null, error: null } }
     }
 
     componentDidMount() {
@@ -83,34 +83,34 @@ export default class DetalhesTomboScreen extends Component {
 
     requisitaReinos = () => {
         if (!this.reinosRef) {
-          this.reinosRef = { current: { promise: null, data: null, error: null } };
+            this.reinosRef = { current: { promise: null, data: null, error: null } }
         }
         if (this.reinosRef.current.promise) {
-          return this.reinosRef.current.promise;
+            return this.reinosRef.current.promise
         }
-      
+
         const promise = axios
-          .get('/reinos')
-          .then(({ status, data }) => {
-            if (status !== 200) throw new Error('Falha ao buscar reinos');
-      
-            const reinos = data?.resultado ?? [];
-            this.reinosRef.current.data = reinos;
-      
-            return reinos;
-          })
-          .catch(err => {
-            this.reinosRef.current.promise = null;
-            this.reinosRef.current.data = null;
-            this.reinosRef.current.error = err;
-      
-            this.openNotificationWithIcon('error', 'Erro', 'Falha ao buscar reinos.');
-            throw err;
-          });
-      
-        this.reinosRef.current.promise = promise;
-        return promise;
-    };           
+            .get('/reinos')
+            .then(({ status, data }) => {
+                if (status !== 200) throw new Error('Falha ao buscar reinos')
+
+                const reinos = data?.resultado ?? []
+                this.reinosRef.current.data = reinos
+
+                return reinos
+            })
+            .catch(err => {
+                this.reinosRef.current.promise = null
+                this.reinosRef.current.data = null
+                this.reinosRef.current.error = err
+
+                this.openNotificationWithIcon('error', 'Erro', 'Falha ao buscar reinos.')
+                throw err
+            })
+
+        this.reinosRef.current.promise = promise
+        return promise
+    }
 
     handleSubmit = e => {
         e.preventDefault()
@@ -258,8 +258,6 @@ export default class DetalhesTomboScreen extends Component {
     getExsicataTipo = () => {
         const { tombo } = this.state
 
-        console.log(tombo.exsicataTipo)
-
         switch (tombo.exsicataTipo) {
             case 'UNICATA':
                 return 'Unicata'
@@ -272,10 +270,10 @@ export default class DetalhesTomboScreen extends Component {
 
     renderFamily() {
         const { tombo } = this.state
-        const reinoIdTombo = tombo.familias?.[0]?.reino_id;
+        const reinoIdTombo = tombo.familias?.[0]?.reino_id
         const reinoEncontrado = this.reinosRef.current.data.find(
-        reino => reino.id === reinoIdTombo
-        );
+            reino => reino.id === reinoIdTombo
+        )
 
         if (tombo) {
             return (
