@@ -350,13 +350,28 @@ class NovoTomboScreen extends Component {
             this.requisitaDadosEdicao(match.params.tombo_id)
         } else {
             const hcfHerbario = dados.herbarios.find(herbario => herbario.sigla === 'HCF')
+            const paisBrasil = dados.paises.find(p => p.nome === 'BRASIL')
 
             this.setState({
                 loading: false,
                 herbarioInicial: {
                     value: hcfHerbario?.id
-                }
+                },
+                paisInicial: paisBrasil ? String(paisBrasil.id) : ''
             })
+
+            if (paisBrasil) {
+                axios.get('/estados', { params: { id: paisBrasil.id } })
+                    .then(estadosResponse => {
+                        if (estadosResponse.data && estadosResponse.status === 200) {
+                            const estadoParana = estadosResponse.data.find(e => e.nome === 'Paraná')
+                            this.setState({
+                                estados: estadosResponse.data,
+                                estadoInicial: estadoParana ? String(estadoParana.id) : ''
+                            })
+                        }
+                    })
+            }
         }
         this.requisitaIdentificadoresPredicao()
     }
@@ -2267,7 +2282,7 @@ class NovoTomboScreen extends Component {
             }
         }
 
-        json.coletores = coletores.key
+        json.coletor = coletores.key
         if (coletoresComplementares) json.coletor_complementar = { complementares: coletoresComplementares }
         if (tipoColecaoAnexa) json.colecoes_anexas = { tipo: tipoColecaoAnexa }
         if (observacoesColecaoAnexa) json.colecoes_anexas = { ...json.colecoes_anexas, observacoes: observacoesColecaoAnexa }
@@ -3104,12 +3119,13 @@ class NovoTomboScreen extends Component {
     }
 
     renderIdentificador = (getFieldDecorator, getFieldError) => {
-        const { identificadores, identificadorInicial } = this.state
+        const { identificadores, identificadorInicial, identificadorNome } = this.state
+        const initialValue = identificadorInicial ? { key: String(identificadorInicial), label: identificadorNome } : undefined
         return (
             <div>
                 <Row gutter={8}>
                     <IdentificadorFormField
-                        initialValue={String(identificadorInicial)}
+                        initialValue={initialValue}
                         identificadores={identificadores}
                         getFieldDecorator={getFieldDecorator}
                         showSearch
