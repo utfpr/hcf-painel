@@ -235,12 +235,6 @@ class NovoTomboScreen extends Component {
             ...data
         }))
         this.insereDadosFormulario(data)
-
-        if (data.identificacao && data.identificacao.usuario_id) {
-            this.setState({
-                identificadorInicial: data.identificacao.usuario_id
-            })
-        }
     }
 
     encontraAutor = (lista, valorSelecionado, campoTaxonomiaAutor) => {
@@ -508,29 +502,6 @@ class NovoTomboScreen extends Component {
 
     onRequisitaEdicaoTomboComSucesso = async (response, params) => {
         const tombo = response.data
-        // const criaRequisicaoFoto = (hcf, emVivo, foto) => {
-        //     const form = new FormData()
-        //     form.append('imagem', foto)
-        //     form.append('tombo_hcf', hcf)
-        //     form.append('em_vivo', emVivo)
-
-        //     return axios.post('/uploads', form, {
-        //         headers: {
-        //             'Content-Type': 'multipart/form-data'
-        //         }
-        //     })
-        // }
-
-        // const criaFuncaoMap = (hcf, emVivo) => foto => criaRequisicaoFoto(hcf, emVivo, foto)
-
-        // const { fotosEmVivo, fotosExsicata } = this.state
-
-        // const promises = [
-        //     ...fotosEmVivo.map(criaFuncaoMap(tombo.hcf, true)),
-        //     ...fotosExsicata.map(criaFuncaoMap(tombo.hcf, false))
-        // ]
-
-        //Promise.all(promises)
 
         await axios.put(`/tombos/${this.props.match.params.tombo_id}`, {
             ...params[1]
@@ -1915,7 +1886,7 @@ class NovoTomboScreen extends Component {
             .then(response => {
                 if (response.status === 200) {
                     this.setState({
-                        locaisColeta: response.data.locaisColeta
+                        locaisColeta: response.data.resultado
                     })
                 }
                 this.setState({ fetchingLocaisColeta: false })
@@ -2097,10 +2068,18 @@ class NovoTomboScreen extends Component {
             ...insereState
         })
 
-        if (dados.retorno.identificadores) {
-            this.setState({
-                insereState,
-                identificadorInicial: dados.retorno.identificadores.map(item => item.id)
+        if (dados.retorno && dados.retorno.identificadores && dados.retorno.identificadores.length > 0) {
+            const identificadoresParaFormulario = dados.retorno.identificadores
+                .sort((a, b) => a.tombos_identificadores.ordem - b.tombos_identificadores.ordem)
+                .map(identificador => ({
+                    key: identificador.id,
+                    label: identificador.nome
+                }))
+            
+            form.setFields({
+                identificador: {
+                    value: identificadoresParaFormulario
+                }
             })
         }
 
@@ -2214,6 +2193,25 @@ class NovoTomboScreen extends Component {
         } = values
         const json = {}
 
+        const extrairId = (valor) => {
+            if (typeof valor === 'object' && valor.key) {
+                return parseInt(valor.key)
+            }
+            if (typeof valor === 'string' && valor.trim() !== '') {
+                return parseInt(valor)
+            }
+            if (typeof valor === 'number') {
+                return valor
+            }
+            return null
+        }
+
+        const soloId = extrairId(solo)
+        const relevoId = extrairId(relevo)
+        const vegetacaoId = extrairId(vegetacao)
+
+        console.log(soloId, relevoId, vegetacaoId)
+
         if (nomePopular) json.principal = { nome_popular: nomePopular }
         json.principal = { ...json.principal, entidade_id: parseInt(entidade) }
         json.principal.numero_coleta = parseInt(numColeta)
@@ -2236,10 +2234,10 @@ class NovoTomboScreen extends Component {
         if (complemento) {
             json.localidade = { ...json.localidade, local_coleta_id: parseInt(complemento.value) }
         }
-        if (solo) json.paisagem = { ...json.paisagem, solo_id: solo }
+        if (solo) json.paisagem = { ...json.paisagem, solo_id: soloId }
         if (relevoDescricao) json.paisagem = { ...json.paisagem, descricao: relevoDescricao }
-        if (relevo) json.paisagem = { ...json.paisagem, relevo_id: relevo }
-        if (vegetacao) json.paisagem = { ...json.paisagem, vegetacao_id: vegetacao }
+        if (relevo) json.paisagem = { ...json.paisagem, relevo_id: relevoId }
+        if (vegetacao) json.paisagem = { ...json.paisagem, vegetacao_id: vegetacaoId }
         if (fases) json.paisagem = { ...json.paisagem, fase_sucessional_id: fases }
         if (identificador) json.identificacao = { identificadores: identificador }
         if (dataIdentDia) {
