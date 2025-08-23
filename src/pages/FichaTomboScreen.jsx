@@ -236,7 +236,7 @@ class FichaTomboScreen extends Component {
                     <p>Informe o número de cópias:</p>
                     <InputNumber
                         min={1}
-                        max={50}
+                        max={3}
                         value={this.state.quantidadeCopias}
                         onChange={value => this.setState({ quantidadeCopias: value })}
                     />
