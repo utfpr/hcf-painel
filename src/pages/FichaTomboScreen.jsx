@@ -12,6 +12,7 @@ import { PrinterOutlined, SearchOutlined } from '@ant-design/icons'
 
 import SimpleTableComponent from '../components/SimpleTableComponent'
 import { fichaTomboUrl } from '../config/api'
+import FichaTomboActions from './tombos/components/FichaTomboActions'
 
 const FormItem = Form.Item
 
@@ -93,24 +94,6 @@ class FichaTomboScreen extends Component {
         this.setState({ modalVisible: false })
     }
 
-    geraColunaAcao = tombo => (
-        <div>
-            <Button
-                type="link"
-                icon={<PrinterOutlined style={{ color: '#277a01' }} />}
-                onClick={() => this.abrirModalImpressao(tombo, true)}
-                title="Imprimir ficha com código de barras"
-            />
-            <Divider type="vertical" />
-            <Button
-                type="link"
-                icon={<PrinterOutlined style={{ color: '#0066ff' }} />}
-                onClick={() => this.abrirModalImpressao(tombo, false)}
-                title="Imprimir ficha sem código de barras"
-            />
-        </div>
-    )
-
     geraColunaDataColeta = (...args) => {
         const saida = args.reduce((saida, arg) => {
             if (arg) {
@@ -125,7 +108,7 @@ class FichaTomboScreen extends Component {
 
     formataTomboItem = tombo => ({
         ...tombo,
-        acao: this.geraColunaAcao(tombo),
+        acao: <FichaTomboActions hcf={tombo.hcf} />,
         data_coleta: this.geraColunaDataColeta(tombo.data_coleta_dia, tombo.data_coleta_mes, tombo.data_coleta_ano)
     })
 
