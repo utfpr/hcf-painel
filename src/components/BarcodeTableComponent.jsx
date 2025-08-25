@@ -4,7 +4,6 @@ import { Table, Button, message, Modal, Input, Image, Tooltip } from "antd";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import UploadPicturesComponent from "@/components/UploadPicturesComponent";
 
-// Colunas (mantidas)
 export const BarcodeColumns = [
   {
     title: "Código de Barras",
@@ -297,25 +296,28 @@ export default class BarcodeTableComponent extends Component {
     );
   };
 
+  emitDeleted = (row) => {
+    if (typeof this.props.onDeletedBarcode === "function") {
+      this.props.onDeletedBarcode(row);
+    }
+  };
+
   handleDeleteRow = (record, index) => {
     Modal.confirm({
       title: "Excluir código",
       content: (
         <div>
-          Tem certeza que deseja excluir permanentemente o código:{" "}
-          <b>{record?.codigo_barra}</b>?
+          Tem certeza que deseja excluir permanentemente o código: <b>{record?.codigo_barra}</b>?
           <br />
-          <span style={{ color: "#cf1322" }}>
-            O código será permanentemente perdido!
-          </span>
+          <span style={{ color: "#cf1322" }}>O código será permanentemente perdido!</span>
         </div>
       ),
       okText: "Sim, quero excluir",
       okType: "danger",
       cancelText: "Cancelar",
       onOk: () => {
-        const formatted = record?.codigo_barra;
-        const number = record?.num_barra;
+        const codigoFormatado = record?.codigo_barra;
+        const numeroCodigo = record?.num_barra;
 
         // snapshots para rollback
         const prevRows = [...this.state.barcodeRows];
@@ -326,26 +328,28 @@ export default class BarcodeTableComponent extends Component {
           (prev) => {
             const rowsCopy = [...prev.barcodeRows];
             rowsCopy.splice(index, 1);
-
             const photosCopy = { ...prev.photosByCode };
-            delete photosCopy[formatted];
-
+            delete photosCopy[codigoFormatado];
             return {
               barcodeRows: rowsCopy,
               photosByCode: photosCopy,
-              expandedCodes: prev.expandedCodes.filter((k) => k !== formatted),
+              expandedCodes: prev.expandedCodes.filter((k) => k !== codigoFormatado),
             };
           },
           async () => {
             try {
-              await this.deleteBarcodeOnServer(number);
-              message.success(`Código removido: ${formatted}`);
+              await this.deleteBarcodeOnServer(numeroCodigo);
+              message.success(`Código removido: ${codigoFormatado}`);
               this.emitChangeData();
+
+              this.emitDeleted({
+                codigo_barra: codigoFormatado,
+                num_barra: numeroCodigo,
+                id: record?.id,
+              });
             } catch (err) {
               console.error("Erro ao excluir no servidor:", err);
-              message.error(
-                "Falha ao excluir no servidor. Desfazendo alteração…"
-              );
+              message.error("Falha ao excluir no servidor. Desfazendo alteração…");
               this.setState(
                 {
                   barcodeRows: prevRows,

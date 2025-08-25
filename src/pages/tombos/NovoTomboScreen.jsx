@@ -239,7 +239,7 @@ class NovoTomboScreen extends Component {
             console.log("Loaded barcodes:", barcodeEditList);
 
             this.setState({ codigosBarrasForm: barcodeEditList });
-            this.setState({ barcodeEditListInicial: barcodeEditList });
+            this.setState({ codigosBarrasInicial : barcodeEditList });
           })
           .catch(this.catchRequestError);
     };     
@@ -254,13 +254,31 @@ class NovoTomboScreen extends Component {
         if (previousSignature !== nextSignature) {
           this.setState({ codigosBarrasForm: updatedList });
         }
-    };  
+    };
+
+    handleDeletedBarcode = ({ codigo_barra, num_barra }) => {
+        const toInt = (v) => {
+          const n = parseInt(String(v ?? '').split('.')[0], 10);
+          return Number.isFinite(n) ? n : NaN;
+        };
+        const deletedNum = toInt(num_barra);
+        const deletedCode = String(codigo_barra || '');
+      
+        this.setState((prev) => ({
+          codigosBarrasInicial: (prev.codigosBarrasInicial || []).filter((item) => {
+            const itemNum = toInt(item?.num_barra);
+            const itemCode = String(item?.codigo_barra || '');
+            return !(itemNum === deletedNum || itemCode === deletedCode);
+          }),
+        }));
+    };
+      
 
     editarCodigosBarras = async (tomboHcf, currentList) => {
         try {
           const initialList = this.state.codigosBarrasInicial || [];
           const currentBarcodes = currentList || [];
-      
+
           const initialSet = new Set(initialList.map(item => item.codigo_barra));
           const currentSet = new Set(currentBarcodes.map(item => item.codigo_barra));
       
@@ -3280,6 +3298,7 @@ class NovoTomboScreen extends Component {
                     <Row gutter={8}>
                         <BarcodeTableComponent
                             barcodeEditList={this.state.codigosBarrasForm}
+                            onDeletedBarcode={this.handleDeletedBarcode}
                             onChangeBarcodeList={this.handleChangeBarcodeList}
                         />
                     </Row> 
