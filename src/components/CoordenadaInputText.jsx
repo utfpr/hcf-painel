@@ -18,7 +18,7 @@ class CoordenadaInputText extends Component {
             graus: '',
             minutos: '',
             segundos: '',
-            pontoCardeal: ''
+            pontoCardeal: props.longitude ? 'W' : 'S'
         }
     }
 
