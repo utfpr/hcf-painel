@@ -369,6 +369,10 @@ class NovoTomboScreen extends Component {
                                 estados: estadosResponse.data,
                                 estadoInicial: estadoParana ? String(estadoParana.id) : ''
                             })
+                            
+                            if (estadoParana) {
+                                this.requisitaCidades(estadoParana.id)
+                            }
                         }
                     })
             }
@@ -2154,6 +2158,10 @@ class NovoTomboScreen extends Component {
                 value: dados.retorno.coletor_complementar?.complementares
             }
         })
+
+        if (dados.cidadeInicial) {
+            this.requisitaLocaisColeta(dados.cidadeInicial)
+        }
     }
 
     mostraMensagemVerificaPendencia = () => {
@@ -2221,11 +2229,24 @@ class NovoTomboScreen extends Component {
             return null
         }
 
+        const normalizarIdentificadores = (identificadores) => {
+            if (!identificadores || !Array.isArray(identificadores)) {
+                return identificadores
+            }
+            
+            return identificadores.map(item => {
+                // Se é objeto com key e label, extrair apenas o key
+                if (typeof item === 'object' && item.key) {
+                    return parseInt(item.key)
+                }
+                // Se já é um valor simples, retornar como está
+                return item
+            })
+        }
+
         const soloId = extrairId(solo)
         const relevoId = extrairId(relevo)
         const vegetacaoId = extrairId(vegetacao)
-
-        console.log(soloId, relevoId, vegetacaoId)
 
         if (nomePopular) json.principal = { nome_popular: nomePopular }
         json.principal = { ...json.principal, entidade_id: parseInt(entidade) }
@@ -2247,14 +2268,14 @@ class NovoTomboScreen extends Component {
         if (altitude) json.localidade = { ...json.localidade, altitude }
         json.localidade = { ...json.localidade, cidade_id: parseInt(cidade) }
         if (complemento) {
-            json.localidade = { ...json.localidade, local_coleta_id: parseInt(complemento.value) }
+            json.localidade = { ...json.localidade, local_coleta_id: parseInt(complemento.key) }
         }
         if (solo) json.paisagem = { ...json.paisagem, solo_id: soloId }
         if (relevoDescricao) json.paisagem = { ...json.paisagem, descricao: relevoDescricao }
         if (relevo) json.paisagem = { ...json.paisagem, relevo_id: relevoId }
         if (vegetacao) json.paisagem = { ...json.paisagem, vegetacao_id: vegetacaoId }
         if (fases) json.paisagem = { ...json.paisagem, fase_sucessional_id: fases }
-        if (identificador) json.identificacao = { identificadores: identificador }
+        if (identificador) json.identificacao = { identificadores: normalizarIdentificadores(identificador) }
         if (dataIdentDia) {
             json.identificacao = {
                 ...json.identificacao,
