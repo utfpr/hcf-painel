@@ -21,6 +21,7 @@ import HeaderListComponent from '../components/HeaderListComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
 import { baseUrl, recaptchaKey } from '../config/api'
 import { isCuradorOuOperador, isIdentificador } from '../helpers/usuarios'
+import FichaTomboActions from './tombos/components/FichaTomboActions'
 
 const { confirm } = Modal
 const FormItem = Form.Item
@@ -172,8 +173,11 @@ class ListaTombosScreen extends Component {
     gerarAcao(id) {
         if (isCuradorOuOperador()) {
             return [
-                this.renderDetalhes(id),
-                this.renderEditar(id)
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <FichaTomboActions hcf={id} />
+                    {this.renderDetalhes(id)}
+                    {this.renderEditar(id)}
+                </div>
                 // this.renderExcluir(id)
             ]
         }
