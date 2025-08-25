@@ -1897,7 +1897,7 @@ class NovoTomboScreen extends Component {
             locaisColeta: [],
             fetchingLocaisColeta: true
         })
-        axios.get(`/locais-coleta`, { params: { cidadeId: cidadeId } })
+        axios.get(`/locais-coleta`, { params: { cidade_id: cidadeId } })
             .then(response => {
                 if (response.status === 200) {
                     this.setState({
@@ -2082,7 +2082,7 @@ class NovoTomboScreen extends Component {
         this.setState({
             ...insereState
         })
-
+        
         if (dados.retorno && dados.retorno.identificadores && dados.retorno.identificadores.length > 0) {
             const identificadoresParaFormulario = dados.retorno.identificadores
                 .sort((a, b) => a.tombos_identificadores.ordem - b.tombos_identificadores.ordem)
