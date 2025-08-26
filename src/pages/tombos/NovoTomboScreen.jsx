@@ -212,11 +212,12 @@ class NovoTomboScreen extends Component {
     }
 
     handleRequisicao = values => {
-        const json = this.montaFormularioJson(values)
         const { match } = this.props
         if (match.params.tombo_id) {
+            const json = this.montaFormularioJsonEdicao(values)
             this.requisitaEdicaoTombo(json)
         } else {
+            const json = this.montaFormularioJsonCadastro(values)
             this.requisitaCadastroTombo(json)
         }
     }
@@ -369,7 +370,7 @@ class NovoTomboScreen extends Component {
                                 estados: estadosResponse.data,
                                 estadoInicial: estadoParana ? String(estadoParana.id) : ''
                             })
-                            
+
                             if (estadoParana) {
                                 this.requisitaCidades(estadoParana.id)
                             }
@@ -2086,7 +2087,7 @@ class NovoTomboScreen extends Component {
         this.setState({
             ...insereState
         })
-        
+
         if (dados.retorno && dados.retorno.identificadores && dados.retorno.identificadores.length > 0) {
             const identificadoresParaFormulario = dados.retorno.identificadores
                 .sort((a, b) => a.tombos_identificadores.ordem - b.tombos_identificadores.ordem)
@@ -2094,7 +2095,7 @@ class NovoTomboScreen extends Component {
                     key: identificador.id,
                     label: identificador.nome
                 }))
-            
+
             form.setFields({
                 identificador: {
                     value: identificadoresParaFormulario
@@ -2206,7 +2207,143 @@ class NovoTomboScreen extends Component {
         })
     }
 
-    montaFormularioJson = values => {
+    montaFormularioJsonEdicao = values => {
+        const {
+            altitude, autorEspecie, autorVariedade, autoresSubespecie, cidade, coletores, coletoresComplementares, complemento,
+            dataColetaAno, dataColetaDia, dataColetaMes, dataIdentAno, dataIdentDia, dataIdentMes,
+            especie, reino, familia, fases, genero, identificador, latitude, localidadeCor, longitude,
+            nomePopular, numColeta, observacoesColecaoAnexa, observacoesTombo, relevo, solo,
+            subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao
+        } = values
+
+        const isUserIdentificador = isIdentificador()
+
+        const json = {}
+
+        const extrairId = (valor) => {
+            if (typeof valor === 'object' && valor.key) {
+                return parseInt(valor.key)
+            }
+            if (typeof valor === 'string' && valor.trim() !== '') {
+                return parseInt(valor)
+            }
+            if (typeof valor === 'number') {
+                return valor
+            }
+            return null
+        }
+
+        const normalizarIdentificadores = (identificadores) => {
+            if (!identificadores || !Array.isArray(identificadores)) {
+                return null
+            }
+
+            return identificadores.map(item => {
+                if (typeof item === 'object' && item.key) {
+                    return parseInt(item.key)
+                }
+                return item
+            })
+        }
+
+        if (isUserIdentificador) {
+            json.taxonomia = {
+                reino_id: reino ? parseInt(reino) : null,
+                familia_id: familia ? parseInt(familia) : null,
+                sub_familia_id: subfamilia ? parseInt(subfamilia) : null,
+                genero_id: genero ? parseInt(genero) : null,
+                especie_id: especie ? parseInt(especie) : null,
+                sub_especie_id: subespecie ? parseInt(subespecie) : null,
+                variedade_id: variedade ? parseInt(variedade) : null
+            }
+
+            return json
+        }
+
+        const soloId = extrairId(solo)
+        const relevoId = extrairId(relevo)
+        const vegetacaoId = extrairId(vegetacao)
+
+        json.principal = {
+            entidade_id: parseInt(entidade),
+            numero_coleta: parseInt(numColeta)
+        }
+
+        json.principal.nome_popular = nomePopular || null
+        json.principal.tipo_id = tipo ? parseInt(tipo) : null
+        json.principal.cor = localidadeCor || null
+
+        if (dataColetaDia || dataColetaMes || dataColetaAno) {
+            json.principal.data_coleta = {
+                dia: dataColetaDia || null,
+                mes: dataColetaMes || null,
+                ano: dataColetaAno || null
+            }
+        }
+
+        json.taxonomia = {
+            reino_id: reino ? parseInt(reino) : null,
+            familia_id: familia ? parseInt(familia) : null,
+            sub_familia_id: subfamilia ? parseInt(subfamilia) : null,
+            genero_id: genero ? parseInt(genero) : null,
+            especie_id: especie ? parseInt(especie) : null,
+            sub_especie_id: subespecie ? parseInt(subespecie) : null,
+            variedade_id: variedade ? parseInt(variedade) : null
+        }
+
+        json.localidade = {
+            cidade_id: parseInt(cidade),
+            latitude: latitude ? converteDecimalParaGrausMinutosSegundos(latitude, false, true) : null,
+            longitude: longitude ? converteDecimalParaGrausMinutosSegundos(longitude, true, true) : null,
+            altitude: altitude ? parseInt(altitude) : null,
+            local_coleta_id: complemento ? parseInt(complemento.key) : null
+        }
+
+        json.paisagem = {
+            solo_id: soloId,
+            relevo_id: relevoId,
+            vegetacao_id: vegetacaoId,
+            fase_sucessional_id: fases ? parseInt(fases) : null,
+            descricao: relevoDescricao || null
+        }
+
+        json.identificacao = {
+            identificadores: normalizarIdentificadores(identificador)
+        }
+
+        if (dataIdentDia || dataIdentMes || dataIdentAno) {
+            json.identificacao.data_identificacao = {
+                dia: dataIdentDia || null,
+                mes: dataIdentMes || null,
+                ano: dataIdentAno || null
+            }
+        } else {
+            json.identificacao.data_identificacao = null
+        }
+
+        json.coletor = coletores.key
+
+        json.coletor_complementar = {
+            complementares: coletoresComplementares || null
+        }
+
+        json.colecoes_anexas = {
+            tipo: tipoColecaoAnexa || null,
+            observacoes: observacoesColecaoAnexa || null
+        }
+
+        json.observacoes = observacoesTombo || null
+
+        json.autores = {
+            especie: autorEspecie || null,
+            subespecie: autoresSubespecie || null,
+            variedade: autorVariedade || null
+        }
+
+        return json
+    }
+
+    montaFormularioJsonCadastro = values => {
         const {
             altitude, autorEspecie, autorVariedade, autoresSubespecie, cidade, coletores, coletoresComplementares, complemento,
             dataColetaAno, dataColetaDia, dataColetaMes, dataIdentAno, dataIdentDia, dataIdentMes,
@@ -2233,13 +2370,11 @@ class NovoTomboScreen extends Component {
             if (!identificadores || !Array.isArray(identificadores)) {
                 return identificadores
             }
-            
+
             return identificadores.map(item => {
-                // Se é objeto com key e label, extrair apenas o key
                 if (typeof item === 'object' && item.key) {
                     return parseInt(item.key)
                 }
-                // Se já é um valor simples, retornar como está
                 return item
             })
         }
@@ -3069,9 +3204,9 @@ class NovoTomboScreen extends Component {
             <div>
                 <Row gutter={8}>
                     <SoloFormField
-                        initialValue={idSoloInicial ? { 
-                            key: idSoloInicial, 
-                            label: soloInicial 
+                        initialValue={idSoloInicial ? {
+                            key: idSoloInicial,
+                            label: soloInicial
                         } : undefined}
                         solos={solos}
                         validateStatus={search.solo}
@@ -3087,9 +3222,9 @@ class NovoTomboScreen extends Component {
                         }}
                     />
                     <RelevoFormField
-                        initialValue={idRelevoInicial ? { 
-                            key: idRelevoInicial, 
-                            label: relevoInicial 
+                        initialValue={idRelevoInicial ? {
+                            key: idRelevoInicial,
+                            label: relevoInicial
                         } : undefined}
                         relevos={relevos}
                         validateStatus={search.relevo}
@@ -3108,9 +3243,9 @@ class NovoTomboScreen extends Component {
                 <br />
                 <Row gutter={8}>
                     <VegetacaoFormField
-                        initialValue={idVegetacaoInicial ? { 
-                            key: idVegetacaoInicial, 
-                            label: vegetacaoInicial 
+                        initialValue={idVegetacaoInicial ? {
+                            key: idVegetacaoInicial,
+                            label: vegetacaoInicial
                         } : undefined}
                         vegetacoes={vegetacoes}
                         validateStatus={search.vegetacao}
@@ -3126,9 +3261,9 @@ class NovoTomboScreen extends Component {
                         }}
                     />
                     <FaseFormField
-                        initialValue={idFaseInicial ? { 
-                            key: idFaseInicial, 
-                            label: faseInicial 
+                        initialValue={idFaseInicial ? {
+                            key: idFaseInicial,
+                            label: faseInicial
                         } : undefined}
                         fases={fases}
                         validateStatus={search.fase}
