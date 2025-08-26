@@ -195,6 +195,7 @@ class NovoTomboScreen extends Component {
             autorVariedade: '',
             codigosBarrasForm: [],
             codigosBarrasInicial: [],
+            isEditing: false
         }
     }
 
@@ -511,6 +512,7 @@ class NovoTomboScreen extends Component {
         })
 
         if (match.params.tombo_id) {
+            this.setState({ isEditing: true })
             this.setState({ showTable: true })
             this.requisitaDadosEdicao(match.params.tombo_id)
             this.getCodigosTombo(match.params.tombo_id)
@@ -3300,6 +3302,7 @@ class NovoTomboScreen extends Component {
                             barcodeEditList={this.state.codigosBarrasForm}
                             onDeletedBarcode={this.handleDeletedBarcode}
                             onChangeBarcodeList={this.handleChangeBarcodeList}
+                            isEditing={this.state.isEditing}
                         />
                     </Row> 
                     <br />
