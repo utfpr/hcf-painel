@@ -189,8 +189,16 @@ export default class MainLayout extends Component {
                                 </Link>
                             </Menu.Item>
                         ) : null}
-                        {isCurador() ? (
+                        {isLogado() ? (
                             <Menu.Item key="12">
+                                <Link to="/locais-coleta">
+                                    <EnvironmentOutlined />
+                                    <span>Local de Coleta</span>
+                                </Link>
+                            </Menu.Item>
+                        ) : null}
+                        {isCurador() ? (
+                            <Menu.Item key="13">
                                 <Link to="/identificadores">
                                     <TeamOutlined />
                                     <span>Identificadores</span>
@@ -198,7 +206,7 @@ export default class MainLayout extends Component {
                             </Menu.Item>
                         ) : null}
                         {isCurador() ? (
-                            <Menu.Item key="13">
+                            <Menu.Item key="14">
                                 <Link to="/coletores">
                                     <TeamOutlined />
                                     <span>Coletores</span>
@@ -206,7 +214,7 @@ export default class MainLayout extends Component {
                             </Menu.Item>
                         ) : null}
                         {isLogado() ? (
-                            <Menu.Item key="14">
+                            <Menu.Item key="15">
                                 <Link to="/herbarios">
                                     <FlagOutlined />
                                     <span>Herbários</span>
@@ -223,7 +231,7 @@ export default class MainLayout extends Component {
                                     </span>
                                 )}
                             >
-                                <Menu.Item key="15">
+                                <Menu.Item key="16">
                                     {' '}
                                     <Link to="/fichas/tombos">Ficha tombo</Link>
                                     {' '}
@@ -240,10 +248,10 @@ export default class MainLayout extends Component {
                                 </span>
                             )}
                         >
-                            <Menu.Item key="18">
+                            <Menu.Item key="17">
                                 <Link to="/mapa">Mapa Completo</Link>
                             </Menu.Item>
-                            <Menu.Item key="19">
+                            <Menu.Item key="18">
                                 <Link to="/filtros">Filtros Avançados</Link>
                             </Menu.Item>
                         </SubMenu>
@@ -284,7 +292,7 @@ export default class MainLayout extends Component {
                             </SubMenu>
                         ) : null}
                         {isCuradorOuOperador() ? (
-                            <Menu.Item key="16">
+                            <Menu.Item key="19">
                                 <Link to="/exportacao">
                                     <DesktopOutlined />
                                     <span>Exportação</span>
@@ -304,16 +312,16 @@ export default class MainLayout extends Component {
                                     </span>
                                 )}
                             >
-                                <Menu.Item key="18">
+                                <Menu.Item key="20">
                                     <Link to="/reflora">Reflora</Link>
                                 </Menu.Item>
-                                <Menu.Item key="19">
+                                <Menu.Item key="21">
                                     <Link to="/specieslink">speciesLink</Link>
                                 </Menu.Item>
                             </SubMenu>
                         ) : null}
                         {isLogado() ? (
-                            <Menu.Item key="20">
+                            <Menu.Item key="22">
                                 <Link
                                     to="/inicio"
                                     onClick={this.fazLogout}

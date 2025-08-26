@@ -556,12 +556,24 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Descrição:</h4>
+                                <h4>Local de Coleta:</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
                                     {' '}
                                     {tombo.local_coleta.descricao}
+                                    {' '}
+                                </span>
+                            </Col>
+                        </Col>
+                        <Col xs={24} sm={12} md={6} lg={6} xl={6}>
+                            <Col span={24}>
+                                <h4>Descrição:</h4>
+                            </Col>
+                            <Col span={24}>
+                                <span>
+                                    {' '}
+                                    {tombo.descricao}
                                     {' '}
                                 </span>
                             </Col>
