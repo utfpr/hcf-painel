@@ -212,7 +212,6 @@ class NovoTomboScreen extends Component {
     }
 
     handleRequisicao = values => {
-        const json = this.montaFormularioJson(values)
         const { match } = this.props
         if (match.params.tombo_id) {
             const json = this.montaFormularioJsonEdicao(values)
@@ -2217,7 +2216,7 @@ class NovoTomboScreen extends Component {
             dataColetaAno, dataColetaDia, dataColetaMes, dataIdentAno, dataIdentDia, dataIdentMes,
             especie, reino, familia, fases, genero, identificador, latitude, localidadeCor, longitude,
             nomePopular, numColeta, observacoesColecaoAnexa, observacoesTombo, relevo, solo,
-            subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao
+            subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao, unicata
         } = values
 
         const isUserIdentificador = isIdentificador()
@@ -2344,6 +2343,8 @@ class NovoTomboScreen extends Component {
             variedade: autorVariedade || null
         }
 
+        json.unicata = unicata
+
         return json
     }
 
@@ -2450,7 +2451,7 @@ class NovoTomboScreen extends Component {
         if (autorEspecie) json.autores = { especie: autorEspecie }
         if (autoresSubespecie) json.autores = { ...json.autores, subespecie: autoresSubespecie }
         if (autorVariedade) json.autores = { ...json.autores, variedade: autorVariedade }
-        if (unicata) json.unicata = unicata
+        if (unicata !== undefined) json.unicata = unicata
         return json
     }
 
