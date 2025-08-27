@@ -258,10 +258,10 @@ export default class DetalhesTomboScreen extends Component {
     getExsicataTipo = () => {
         const { tombo } = this.state
 
-        switch (tombo.exsicataTipo) {
-            case 'UNICATA':
+        switch (tombo.unicata) {
+            case true:
                 return 'Unicata'
-            case 'DUPLICATA':
+            case false:
                 return 'Duplicata'
             default:
                 return 'Não especificado'

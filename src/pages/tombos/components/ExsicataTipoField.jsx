@@ -20,12 +20,12 @@ const ExsicataTipoFormField = ({
             </Col>
             <Col span={24}>
                 <FormItem>
-                    {getFieldDecorator('exsicataTipo', {
-                        initialValue: 'UNICATA'
+                    {getFieldDecorator('unicata', {
+                        initialValue: true
                     })(
                         <RadioGroup onChange={onChange} value={value}>
-                            <Radio value="UNICATA"><Tag color="cyan">Unicata</Tag></Radio>
-                            <Radio value="DUPLICATA"><Tag color="pink">Duplicata</Tag></Radio>
+                            <Radio value><Tag color="cyan">Unicata</Tag></Radio>
+                            <Radio value={false}><Tag color="pink">Duplicata</Tag></Radio>
                         </RadioGroup>
                     )}
                 </FormItem>

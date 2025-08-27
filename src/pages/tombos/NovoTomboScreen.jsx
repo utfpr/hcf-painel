@@ -9,7 +9,6 @@ import axios from 'axios'
 import { Link } from 'react-router-dom'
 
 import converteDecimalParaGrausMinutosSegundos from '@/helpers/conversoes/Coordenadas'
-import fotosTomboMap from '@/helpers/fotos-tombo-map'
 import { Form } from '@ant-design/compatible'
 import {
     DeleteOutlined, EditOutlined, PlusOutlined, UploadOutlined
@@ -214,6 +213,7 @@ class NovoTomboScreen extends Component {
 
     handleRequisicao = values => {
         const json = this.montaFormularioJson(values)
+        console.log('json', json)
         const { match } = this.props
         if (match.params.tombo_id) {
             this.requisitaEdicaoTombo(json)
@@ -2146,8 +2146,8 @@ class NovoTomboScreen extends Component {
             relevoDescricao: {
                 value: dados.descricao
             },
-            exsicataTipo: {
-                value: dados.exsicataTipo
+            unicata: {
+                value: dados.unicata
             },
             complemento: {
                 value: {
@@ -2216,7 +2216,7 @@ class NovoTomboScreen extends Component {
             dataColetaAno, dataColetaDia, dataColetaMes, dataIdentAno, dataIdentDia, dataIdentMes,
             especie, reino, familia, fases, genero, identificador, latitude, localidadeCor, longitude,
             nomePopular, numColeta, observacoesColecaoAnexa, observacoesTombo, relevo, solo,
-            subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao, exsicataTipo
+            subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao, unicata
         } = values
         const json = {}
 
@@ -2315,6 +2315,7 @@ class NovoTomboScreen extends Component {
         if (autorEspecie) json.autores = { especie: autorEspecie }
         if (autoresSubespecie) json.autores = { ...json.autores, subespecie: autoresSubespecie }
         if (autorVariedade) json.autores = { ...json.autores, variedade: autorVariedade }
+        if (unicata) json.unicata = unicata
         return json
     }
 
