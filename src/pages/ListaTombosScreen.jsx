@@ -21,6 +21,7 @@ import HeaderListComponent from '../components/HeaderListComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
 import { baseUrl, recaptchaKey } from '../config/api'
 import { isCuradorOuOperador, isIdentificador } from '../helpers/usuarios'
+import FichaTomboActions from './tombos/components/FichaTomboActions'
 
 const { confirm } = Modal
 const FormItem = Form.Item
@@ -172,9 +173,12 @@ class ListaTombosScreen extends Component {
     gerarAcao(id) {
         if (isCuradorOuOperador()) {
             return [
-                this.renderDetalhes(id),
-                this.renderEditar(id),
-                this.renderExcluir(id)
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <FichaTomboActions hcf={id} />
+                    {this.renderDetalhes(id)}
+                    {this.renderEditar(id)}
+                </div>
+                // this.renderExcluir(id)
             ]
         }
         if (isIdentificador()) {
@@ -196,13 +200,13 @@ class ListaTombosScreen extends Component {
         } if (dia == null && mes == null && ano != null) {
             return ano
         } if (dia != null && mes != null && ano == null) {
-            return `${dia}/${mes}`;
+            return `${dia}/${mes}`
         } if (dia != null && mes == null && ano != null) {
-            return `${dia}/${ano}`;
+            return `${dia}/${ano}`
         } if (dia == null && mes != null && ano != null) {
-            return `${mes}/${ano}`;
+            return `${mes}/${ano}`
         } if (dia != null && mes != null && ano != null) {
-            return `${dia}/${mes}/${ano}`;
+            return `${dia}/${mes}/${ano}`
         }
     }
 
@@ -218,23 +222,23 @@ class ListaTombosScreen extends Component {
 
     requisitaListaTombos = async (valores, pg, pageSize) => {
         this.setState({ loading: true })
-    
+
         try {
             await new Promise(resolve => window.grecaptcha.ready(resolve))
-    
+
             const token = await window.grecaptcha.execute(recaptchaKey, { action: 'tombos' })
-    
+
             const params = {
                 pagina: pg,
                 limite: pageSize || 20,
                 recaptchaToken: token
             }
-    
+
             if (valores !== undefined) {
                 const {
                     nomeCientifico, numeroHcf, tipo, nomePopular, situacao
                 } = valores
-    
+
                 if (nomeCientifico) {
                     params.nome_cientifico = nomeCientifico
                 }
@@ -251,9 +255,9 @@ class ListaTombosScreen extends Component {
                     params.situacao = situacao
                 }
             }
-    
+
             const response = await axios.get('/tombos', { params })
-    
+
             if (response.status === 200) {
                 const { data } = response
                 this.setState({

@@ -41,6 +41,7 @@ import SubespecieFormField from './components/SubespecieFormField'
 import SubfamiliaFormField from './components/SubfamiliaFormField'
 import VariedadeFormField from './components/VariedadeFormField'
 import VegetacaoFormField from './components/VegetacaoFormField'
+import LocalColetaFormField from './components/LocalColetaFormField'
 import {
     excluirFotoTomboService, atualizarFotoTomboService, criaCodigoBarrasSemFotosService,
     requisitaDadosEdicaoService, requisitaDadosFormularioService, requisitaIdentificadoresPredicaoService,
@@ -134,6 +135,7 @@ class NovoTomboScreen extends Component {
                 desc: ''
             },
             formComAutor: false,
+            formLocalColeta: false,
             loading: false,
             herbarios: [],
             tipos: [],
@@ -154,6 +156,7 @@ class NovoTomboScreen extends Component {
             fases: [],
             identificadores: [],
             coletores: [],
+            locaisColeta: [],
             fotosExsicata: [],
             fotosEmVivo: [],
             numeroHcf: 0,
@@ -174,6 +177,10 @@ class NovoTomboScreen extends Component {
             relevoInicial: '',
             vegetacaoInicial: '',
             faseInicial: '',
+            idSoloInicial: '',
+            idRelevoInicial: '',
+            idVegetacaoInicial: '',
+            idFaseInicial: '',
             identificadorInicial: '',
             coletoresInicial: '',
             colecaoInicial: '',
@@ -370,12 +377,13 @@ class NovoTomboScreen extends Component {
       
 
     handleRequisicao = values => {
-        const json = this.montaFormularioJson(values)
         const { match } = this.props
         if (match.params.tombo_id) {
             this.editarCodigosBarras(match.params.tombo_id, this.state.codigosBarrasForm)
+            const json = this.montaFormularioJsonEdicao(values)
             this.requisitaEdicaoTombo(json)
         } else {
+            const json = this.montaFormularioJsonCadastro(values)
             this.requisitaCadastroTombo(json)
             this.props.history.push('/tombos')
         }
@@ -395,12 +403,6 @@ class NovoTomboScreen extends Component {
             ...data
         }))
         this.insereDadosFormulario(data)
-
-        if (data.identificacao && data.identificacao.usuario_id) {
-            this.setState({
-                identificadorInicial: data.identificacao.usuario_id
-            })
-        }
     }
 
     encontraAutor = (lista, valorSelecionado, campoTaxonomiaAutor) => {
@@ -518,13 +520,32 @@ class NovoTomboScreen extends Component {
             this.getCodigosTombo(match.params.tombo_id)
         } else {
             const hcfHerbario = dados.herbarios.find(herbario => herbario.sigla === 'HCF')
+            const paisBrasil = dados.paises.find(p => p.nome === 'BRASIL')
 
             this.setState({
                 loading: false,
                 herbarioInicial: {
                     value: hcfHerbario?.id
-                }
+                },
+                paisInicial: paisBrasil ? String(paisBrasil.id) : ''
             })
+
+            if (paisBrasil) {
+                axios.get('/estados', { params: { id: paisBrasil.id } })
+                    .then(estadosResponse => {
+                        if (estadosResponse.data && estadosResponse.status === 200) {
+                            const estadoParana = estadosResponse.data.find(e => e.nome === 'Paraná')
+                            this.setState({
+                                estados: estadosResponse.data,
+                                estadoInicial: estadoParana ? String(estadoParana.id) : ''
+                            })
+
+                            if (estadoParana) {
+                                this.requisitaCidades(estadoParana.id)
+                            }
+                        }
+                    })
+            }
         }
         this.requisitaIdentificadoresPredicao()
     }
@@ -670,29 +691,6 @@ class NovoTomboScreen extends Component {
 
     onRequisitaEdicaoTomboComSucesso = async (response, params) => {
         const tombo = response.data
-        const criaRequisicaoFoto = (hcf, emVivo, foto) => {
-            const form = new FormData()
-            form.append('imagem', foto)
-            form.append('tombo_hcf', hcf)
-            form.append('em_vivo', emVivo)
-
-            return axios.post('/uploads', form, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            })
-        }
-
-        const criaFuncaoMap = (hcf, emVivo) => foto => criaRequisicaoFoto(hcf, emVivo, foto)
-
-        const { fotosEmVivo, fotosExsicata } = this.state
-
-        const promises = [
-            ...fotosEmVivo.map(criaFuncaoMap(tombo.hcf, true)),
-            ...fotosExsicata.map(criaFuncaoMap(tombo.hcf, false))
-        ]
-
-        Promise.all(promises)
 
         await axios.put(`/tombos/${this.props.match.params.tombo_id}`, {
             ...params[1]
@@ -2014,6 +2012,81 @@ class NovoTomboScreen extends Component {
             .catch(this.catchRequestError)
     }
 
+    cadastraNovoLocalColeta = () => {
+        this.setState({ loading: true })
+        const { form } = this.props
+        const { getFieldsValue, getFieldValue } = form
+        const { descricaoLocalColeta } = getFieldsValue()
+        const cidadeId = getFieldValue('cidade')
+        const faseSucessionalId = getFieldValue('fases')
+
+        if (!cidadeId) {
+            this.openNotificationWithIcon('warning', 'Atenção', 'Selecione uma cidade para cadastrar um local de coleta.')
+            this.setState({ loading: false })
+            return
+        }
+
+        const payload = {
+            descricao: descricaoLocalColeta,
+            cidade_id: cidadeId
+        }
+
+        if (faseSucessionalId) {
+            payload.fase_sucessional_id = faseSucessionalId
+        }
+
+        axios.post('/locais-coleta', payload)
+            .then(response => {
+                if (response.status === 201) {
+                    this.requisitaLocaisColeta('')
+                    this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                }
+                form.setFields({
+                    descricaoLocalColeta: { value: '' }
+                })
+            })
+            .catch(err => {
+                const { response } = err
+                if (response && response.data) {
+                    this.openNotificationWithIcon('error', 'Falha', response.data.error?.message || 'Houve um problema ao cadastrar o novo local de coleta.')
+                } else {
+                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar o novo local de coleta, tente novamente.')
+                }
+            })
+            .finally(() => {
+                this.setState({ loading: false })
+            })
+    }
+
+    requisitaLocaisColeta = id => {
+        const cidadeId = id || this.props.form.getFieldValue('cidade')
+        if (!cidadeId) {
+            this.openNotificationWithIcon('warning', 'Atenção', 'Por favor, selecione uma cidade primeiro.')
+            return
+        }
+
+        this.setState({
+            locaisColeta: [],
+            fetchingLocaisColeta: true
+        })
+        axios.get(`/locais-coleta`, { params: { cidade_id: cidadeId } })
+            .then(response => {
+                if (response.status === 200) {
+                    this.setState({
+                        locaisColeta: response.data.resultado
+                    })
+                }
+                this.setState({ fetchingLocaisColeta: false })
+            })
+            .catch(err => {
+                this.setState({ fetchingLocaisColeta: false })
+                const { response } = err
+                if (response && response.data) {
+                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao requisitar os locais de coleta, tente novamente.')
+                }
+            })
+    }
+
     requisitaIdentificadores = nome => {
         this.setState({
             identificadores: [],
@@ -2160,7 +2233,6 @@ class NovoTomboScreen extends Component {
                     value: {
                         key: dados.coletor.id,
                         label: dados.coletor.nome
-
                     }
                 }
             })
@@ -2184,23 +2256,22 @@ class NovoTomboScreen extends Component {
             ...insereState
         })
 
-        // if (dados.local_coleta.fase_sucessional) {
-        //     this.setState({
-        //         fases: {
-        //             ...dados.local_coleta.fase_sucessional
-        //         }
-        //     })
-        // }
+        if (dados.retorno && dados.retorno.identificadores && dados.retorno.identificadores.length > 0) {
+            const identificadoresParaFormulario = dados.retorno.identificadores
+                .sort((a, b) => a.tombos_identificadores.ordem - b.tombos_identificadores.ordem)
+                .map(identificador => ({
+                    key: identificador.id,
+                    label: identificador.nome
+                }))
 
-        if (dados.retorno.identificadores) {
-            this.setState({
-                insereState,
-                identificadorInicial: dados.retorno.identificadores.map(item => item.id)
+            form.setFields({
+                identificador: {
+                    value: identificadoresParaFormulario
+                }
             })
         }
 
         form.setFields({
-
             altitude: {
                 value: dados.localizacao.altitude
             },
@@ -2241,10 +2312,13 @@ class NovoTomboScreen extends Component {
                 value: dados.observacao
             },
             relevoDescricao: {
-                value: dados.local_coleta.descricao
+                value: dados.descricao
             },
             complemento: {
-                value: dados.localizacao.complemento
+                value: {
+                    key: dados.local_coleta.id,
+                    label: dados.local_coleta.descricao
+                }
             },
             autorEspecie: {
                 value: dados.complemento
@@ -2253,6 +2327,10 @@ class NovoTomboScreen extends Component {
                 value: dados.retorno.coletor_complementar?.complementares
             }
         })
+
+        if (dados.cidadeInicial) {
+            this.requisitaLocaisColeta(dados.cidadeInicial)
+        }
     }
 
     mostraMensagemVerificaPendencia = () => {
@@ -2275,8 +2353,8 @@ class NovoTomboScreen extends Component {
         const { form } = this.props
         form.validateFields((err, values) => {
             if (!(form.getFieldsValue().dataColetaDia
-            || form.getFieldsValue().dataColetaMes
-            || form.getFieldsValue().dataColetaAno)) {
+                || form.getFieldsValue().dataColetaMes
+                || form.getFieldsValue().dataColetaAno)) {
                 this.openNotificationWithIcon(
                     'warning',
                     'Falha',
@@ -2297,7 +2375,143 @@ class NovoTomboScreen extends Component {
         })
     }
 
-    montaFormularioJson = values => {
+    montaFormularioJsonEdicao = values => {
+        const {
+            altitude, autorEspecie, autorVariedade, autoresSubespecie, cidade, coletores, coletoresComplementares, complemento,
+            dataColetaAno, dataColetaDia, dataColetaMes, dataIdentAno, dataIdentDia, dataIdentMes,
+            especie, reino, familia, fases, genero, identificador, latitude, localidadeCor, longitude,
+            nomePopular, numColeta, observacoesColecaoAnexa, observacoesTombo, relevo, solo,
+            subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao
+        } = values
+
+        const isUserIdentificador = isIdentificador()
+
+        const json = {}
+
+        const extrairId = (valor) => {
+            if (typeof valor === 'object' && valor.key) {
+                return parseInt(valor.key)
+            }
+            if (typeof valor === 'string' && valor.trim() !== '') {
+                return parseInt(valor)
+            }
+            if (typeof valor === 'number') {
+                return valor
+            }
+            return null
+        }
+
+        const normalizarIdentificadores = (identificadores) => {
+            if (!identificadores || !Array.isArray(identificadores)) {
+                return null
+            }
+
+            return identificadores.map(item => {
+                if (typeof item === 'object' && item.key) {
+                    return parseInt(item.key)
+                }
+                return item
+            })
+        }
+
+        if (isUserIdentificador) {
+            json.taxonomia = {
+                reino_id: reino ? parseInt(reino) : null,
+                familia_id: familia ? parseInt(familia) : null,
+                sub_familia_id: subfamilia ? parseInt(subfamilia) : null,
+                genero_id: genero ? parseInt(genero) : null,
+                especie_id: especie ? parseInt(especie) : null,
+                sub_especie_id: subespecie ? parseInt(subespecie) : null,
+                variedade_id: variedade ? parseInt(variedade) : null
+            }
+
+            return json
+        }
+
+        const soloId = extrairId(solo)
+        const relevoId = extrairId(relevo)
+        const vegetacaoId = extrairId(vegetacao)
+
+        json.principal = {
+            entidade_id: parseInt(entidade),
+            numero_coleta: parseInt(numColeta)
+        }
+
+        json.principal.nome_popular = nomePopular || null
+        json.principal.tipo_id = tipo ? parseInt(tipo) : null
+        json.principal.cor = localidadeCor || null
+
+        if (dataColetaDia || dataColetaMes || dataColetaAno) {
+            json.principal.data_coleta = {
+                dia: dataColetaDia || null,
+                mes: dataColetaMes || null,
+                ano: dataColetaAno || null
+            }
+        }
+
+        json.taxonomia = {
+            reino_id: reino ? parseInt(reino) : null,
+            familia_id: familia ? parseInt(familia) : null,
+            sub_familia_id: subfamilia ? parseInt(subfamilia) : null,
+            genero_id: genero ? parseInt(genero) : null,
+            especie_id: especie ? parseInt(especie) : null,
+            sub_especie_id: subespecie ? parseInt(subespecie) : null,
+            variedade_id: variedade ? parseInt(variedade) : null
+        }
+
+        json.localidade = {
+            cidade_id: parseInt(cidade),
+            latitude: latitude ? converteDecimalParaGrausMinutosSegundos(latitude, false, true) : null,
+            longitude: longitude ? converteDecimalParaGrausMinutosSegundos(longitude, true, true) : null,
+            altitude: altitude ? parseInt(altitude) : null,
+            local_coleta_id: complemento ? parseInt(complemento.key) : null
+        }
+
+        json.paisagem = {
+            solo_id: soloId,
+            relevo_id: relevoId,
+            vegetacao_id: vegetacaoId,
+            fase_sucessional_id: fases ? parseInt(fases) : null,
+            descricao: relevoDescricao || null
+        }
+
+        json.identificacao = {
+            identificadores: normalizarIdentificadores(identificador)
+        }
+
+        if (dataIdentDia || dataIdentMes || dataIdentAno) {
+            json.identificacao.data_identificacao = {
+                dia: dataIdentDia || null,
+                mes: dataIdentMes || null,
+                ano: dataIdentAno || null
+            }
+        } else {
+            json.identificacao.data_identificacao = null
+        }
+
+        json.coletor = coletores.key
+
+        json.coletor_complementar = {
+            complementares: coletoresComplementares || null
+        }
+
+        json.colecoes_anexas = {
+            tipo: tipoColecaoAnexa || null,
+            observacoes: observacoesColecaoAnexa || null
+        }
+
+        json.observacoes = observacoesTombo || null
+
+        json.autores = {
+            especie: autorEspecie || null,
+            subespecie: autoresSubespecie || null,
+            variedade: autorVariedade || null
+        }
+
+        return json
+    }
+
+    montaFormularioJsonCadastro = values => {
         const {
             altitude, autorEspecie, autorVariedade, autoresSubespecie, cidade, coletores, coletoresComplementares, complemento,
             dataColetaAno, dataColetaDia, dataColetaMes, dataIdentAno, dataIdentDia, dataIdentMes,
@@ -2306,6 +2520,36 @@ class NovoTomboScreen extends Component {
             subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao
         } = values
         const json = {}
+
+        const extrairId = (valor) => {
+            if (typeof valor === 'object' && valor.key) {
+                return parseInt(valor.key)
+            }
+            if (typeof valor === 'string' && valor.trim() !== '') {
+                return parseInt(valor)
+            }
+            if (typeof valor === 'number') {
+                return valor
+            }
+            return null
+        }
+
+        const normalizarIdentificadores = (identificadores) => {
+            if (!identificadores || !Array.isArray(identificadores)) {
+                return identificadores
+            }
+
+            return identificadores.map(item => {
+                if (typeof item === 'object' && item.key) {
+                    return parseInt(item.key)
+                }
+                return item
+            })
+        }
+
+        const soloId = extrairId(solo)
+        const relevoId = extrairId(relevo)
+        const vegetacaoId = extrairId(vegetacao)
 
         if (nomePopular) json.principal = { nome_popular: nomePopular }
         json.principal = { ...json.principal, entidade_id: parseInt(entidade) }
@@ -2327,14 +2571,14 @@ class NovoTomboScreen extends Component {
         if (altitude) json.localidade = { ...json.localidade, altitude }
         json.localidade = { ...json.localidade, cidade_id: parseInt(cidade) }
         if (complemento) {
-            json.localidade = { ...json.localidade, complemento }
+            json.localidade = { ...json.localidade, local_coleta_id: parseInt(complemento.key) }
         }
-        if (solo) json.paisagem = { ...json.paisagem, solo_id: solo }
+        if (solo) json.paisagem = { ...json.paisagem, solo_id: soloId }
         if (relevoDescricao) json.paisagem = { ...json.paisagem, descricao: relevoDescricao }
-        if (relevo) json.paisagem = { ...json.paisagem, relevo_id: relevo }
-        if (vegetacao) json.paisagem = { ...json.paisagem, vegetacao_id: vegetacao }
+        if (relevo) json.paisagem = { ...json.paisagem, relevo_id: relevoId }
+        if (vegetacao) json.paisagem = { ...json.paisagem, vegetacao_id: vegetacaoId }
         if (fases) json.paisagem = { ...json.paisagem, fase_sucessional_id: fases }
-        if (identificador) json.identificacao = { identificadores: identificador }
+        if (identificador) json.identificacao = { identificadores: normalizarIdentificadores(identificador) }
         if (dataIdentDia) {
             json.identificacao = {
                 ...json.identificacao,
@@ -2362,7 +2606,7 @@ class NovoTomboScreen extends Component {
             }
         }
 
-        json.coletores = coletores.key
+        json.coletor = coletores.key
         if (coletoresComplementares) json.coletor_complementar = { complementares: coletoresComplementares }
         if (tipoColecaoAnexa) json.colecoes_anexas = { tipo: tipoColecaoAnexa }
         if (observacoesColecaoAnexa) json.colecoes_anexas = { ...json.colecoes_anexas, observacoes: observacoesColecaoAnexa }
@@ -2462,6 +2706,13 @@ class NovoTomboScreen extends Component {
         if (this.state.formColetor) {
             if (!this.props.form.getFieldsValue().nomeColetor || !this.props.form.getFieldsValue().numeroColetor) {
                 this.openNotificationWithIcon('warning', 'Falha', 'O nome e o número do coletor são obrigatórios.')
+                return false
+            }
+            return true
+        }
+        if (this.state.formLocalColeta) {
+            if (!this.props.form.getFieldsValue().descricaoLocalColeta) {
+                this.openNotificationWithIcon('warning', 'Falha', 'A descrição do local de coleta é obrigatória.')
                 return false
             }
             return true
@@ -2579,7 +2830,21 @@ class NovoTomboScreen extends Component {
                     </Row>
                 </div>
             )
-        } if (this.state.formComAutor) {
+        }
+        if (this.state.formLocalColeta) {
+            return (
+                <div>
+                    <Row gutter={8}>
+                        <InputFormField
+                            name="descricaoLocalColeta"
+                            title="Descrição:"
+                            getFieldDecorator={getFieldDecorator}
+                        />
+                    </Row>
+                </div>
+            )
+        }
+        if (this.state.formComAutor) {
             return (
                 <div>
                     <Row gutter={8}>
@@ -2663,7 +2928,7 @@ class NovoTomboScreen extends Component {
                                 this.setState({
                                     visibleModal: false,
                                     formColetor: 0,
-                                    formComAutor: false
+                                    formComAutor: false,
                                 })
                             }
                         }
@@ -2733,7 +2998,7 @@ class NovoTomboScreen extends Component {
     renderLocalTombo = (getFieldDecorator, getFieldError) => {
         const {
             paisInicial, estadoInicial, cidadeInicial,
-            paises, estados, cidades, complementoInicial
+            paises, estados, cidades
         } = this.state
         return (
             <div>
@@ -2772,6 +3037,10 @@ class NovoTomboScreen extends Component {
                         initialValue={String(cidadeInicial)}
                         cidades={cidades}
                         getFieldDecorator={getFieldDecorator}
+                        onChange={value => {
+                            this.props.form.setFieldsValue({ complemento: undefined })
+                            this.requisitaLocaisColeta(value)
+                        }}
                         rules={[{
                             required: true,
                             message: 'Escolha uma cidade'
@@ -2781,18 +3050,23 @@ class NovoTomboScreen extends Component {
                 </Row>
                 <br />
                 <Row gutter={8}>
-                    <Col xs={24} sm={24} md={16} lg={8} xl={8}>
-                        <Col span={24}>
-                            <span>Local de coleta:</span>
-                        </Col>
-                        <Col span={24}>
-                            {getFieldDecorator('complemento', {
-                                initialValue: String(complementoInicial)
-                            })(
-                                <TextArea rows={4} />
-                            )}
-                        </Col>
-                    </Col>
+                    <LocalColetaFormField
+                        getFieldDecorator={getFieldDecorator}
+                        initialValue={this.state.complementoInicial}
+                        locaisColeta={this.state.locaisColeta}
+                        fetchingLocaisColeta={this.state.fetchingLocaisColeta}
+                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                        onClickAddMore={() => {
+                            this.setState({
+                                formulario: {
+                                    desc: ' do novo local de coleta',
+                                    tipo: 13
+                                },
+                                formLocalColeta: true,
+                                visibleModal: true
+                            })
+                        }}
+                    />
                     <Col xs={24} sm={24} md={16} lg={8} xl={8}>
                         <Col span={24}>
                             <span>Descrição:</span>
@@ -3092,13 +3366,16 @@ class NovoTomboScreen extends Component {
     renderTipoSoloTombo = getFieldDecorator => {
         const {
             soloInicial, search, solos, relevos, faseInicial,
-            relevoInicial, vegetacaoInicial, vegetacoes, fases
+            relevoInicial, vegetacaoInicial, vegetacoes, fases, idSoloInicial, idRelevoInicial, idVegetacaoInicial, idFaseInicial
         } = this.state
         return (
             <div>
                 <Row gutter={8}>
                     <SoloFormField
-                        initialValue={String(soloInicial)}
+                        initialValue={idSoloInicial ? {
+                            key: idSoloInicial,
+                            label: soloInicial
+                        } : undefined}
                         solos={solos}
                         validateStatus={search.solo}
                         getFieldDecorator={getFieldDecorator}
@@ -3113,7 +3390,10 @@ class NovoTomboScreen extends Component {
                         }}
                     />
                     <RelevoFormField
-                        initialValue={String(relevoInicial)}
+                        initialValue={idRelevoInicial ? {
+                            key: idRelevoInicial,
+                            label: relevoInicial
+                        } : undefined}
                         relevos={relevos}
                         validateStatus={search.relevo}
                         getFieldDecorator={getFieldDecorator}
@@ -3131,7 +3411,10 @@ class NovoTomboScreen extends Component {
                 <br />
                 <Row gutter={8}>
                     <VegetacaoFormField
-                        initialValue={String(vegetacaoInicial)}
+                        initialValue={idVegetacaoInicial ? {
+                            key: idVegetacaoInicial,
+                            label: vegetacaoInicial
+                        } : undefined}
                         vegetacoes={vegetacoes}
                         validateStatus={search.vegetacao}
                         getFieldDecorator={getFieldDecorator}
@@ -3146,7 +3429,10 @@ class NovoTomboScreen extends Component {
                         }}
                     />
                     <FaseFormField
-                        initialValue={String(faseInicial)}
+                        initialValue={idFaseInicial ? {
+                            key: idFaseInicial,
+                            label: faseInicial
+                        } : undefined}
                         fases={fases}
                         validateStatus={search.fase}
                         getFieldDecorator={getFieldDecorator}
@@ -3157,12 +3443,13 @@ class NovoTomboScreen extends Component {
     }
 
     renderIdentificador = (getFieldDecorator, getFieldError) => {
-        const { identificadores, identificadorInicial } = this.state
+        const { identificadores, identificadorInicial, identificadorNome } = this.state
+        const initialValue = identificadorInicial ? { key: String(identificadorInicial), label: identificadorNome } : undefined
         return (
             <div>
                 <Row gutter={8}>
                     <IdentificadorFormField
-                        initialValue={String(identificadorInicial)}
+                        initialValue={initialValue}
                         identificadores={identificadores}
                         getFieldDecorator={getFieldDecorator}
                         showSearch
@@ -3197,7 +3484,8 @@ class NovoTomboScreen extends Component {
                                 this.setState({
                                     visibleModal: false,
                                     formColetor: 0,
-                                    formComAutor: false
+                                    formComAutor: false,
+                                    formLocalColeta: false
                                 })
                             }
                         }
@@ -3243,6 +3531,9 @@ class NovoTomboScreen extends Component {
                                     case 12:
                                         this.cadastraNovoReino()
                                         break
+                                    case 13:
+                                        this.cadastraNovoLocalColeta()
+                                        break
                                     default:
                                         break
                                 }
@@ -3251,7 +3542,8 @@ class NovoTomboScreen extends Component {
                             this.setState({
                                 visibleModal: false,
                                 formComAutor: false,
-                                formColetor: 0
+                                formColetor: 0,
+                                formLocalColeta: false
                             })
                         }}
                     >
