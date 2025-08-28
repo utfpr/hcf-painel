@@ -2648,15 +2648,11 @@ class NovoTomboScreen extends Component {
     renderExsicataTipo = getFieldDecorator => {
         const { value } = this.state
         return (
-            <div>
-                <Row gutter={8}>
-                    <ExsicataTipoFormField
-                        getFieldDecorator={getFieldDecorator}
-                        value={value}
-                        onChange={this.onChange}
-                    />
-                </Row>
-            </div>
+                <ExsicataTipoFormField
+                    getFieldDecorator={getFieldDecorator}
+                    value={value}
+                    onChange={this.onChange}
+                />
         )
     }
 
@@ -3431,18 +3427,17 @@ class NovoTomboScreen extends Component {
                         </Col>
                     </Row>
                     <Row gutter={8}>
-                        <Col span={24}>
+                        <Col span={20}>
                             <FormItem>
                                 {getFieldDecorator('observacoesTombo')(
                                     <TextArea rows={4} />
                                 )}
                             </FormItem>
                         </Col>
+                        <Col span={4}>
+                            {this.renderExsicataTipo(getFieldDecorator)}
+                        </Col>
                     </Row>
-                    <br />
-                    <Divider />
-                    {' '}
-                    {this.renderExsicataTipo(getFieldDecorator)}
                     <br />
                     <Divider />
                     <Row gutter={8}>
