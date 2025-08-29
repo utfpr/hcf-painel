@@ -9,7 +9,6 @@ import axios from 'axios'
 import { Link } from 'react-router-dom'
 
 import converteDecimalParaGrausMinutosSegundos from '@/helpers/conversoes/Coordenadas'
-import fotosTomboMap from '@/helpers/fotos-tombo-map'
 import { Form } from '@ant-design/compatible'
 import {
     DeleteOutlined, EditOutlined, PlusOutlined, UploadOutlined
@@ -27,12 +26,14 @@ import ColetorFormField from './components/ColetorFormField'
 import DataIdentificacaoFormField from './components/DataIdentificacaoFormField'
 import EspecieFormField from './components/EspecieFormField'
 import EstadoFormField from './components/EstadoFormField'
+import ExsicataTipoFormField from './components/ExsicataTipoField'
 import FamiliaFormField from './components/FamiliaFormField'
 import FaseFormField from './components/FaseFormField'
 import GeneroFormField from './components/GeneroFormField'
 import IdentificadorFormField from './components/IdentificadorFormField'
 import InputFormField from './components/InputFormField'
 import LatLongFormField from './components/LatLongFormField'
+import LocalColetaFormField from './components/LocalColetaFormField'
 import PaisFormField from './components/PaisFormField'
 import ReinoFormField from './components/ReinoFormField'
 import RelevoFormField from './components/RelevoFormField'
@@ -41,7 +42,6 @@ import SubespecieFormField from './components/SubespecieFormField'
 import SubfamiliaFormField from './components/SubfamiliaFormField'
 import VariedadeFormField from './components/VariedadeFormField'
 import VegetacaoFormField from './components/VegetacaoFormField'
-import LocalColetaFormField from './components/LocalColetaFormField'
 import {
     excluirFotoTomboService, atualizarFotoTomboService, criaCodigoBarrasSemFotosService,
     requisitaDadosEdicaoService, requisitaDadosFormularioService, requisitaIdentificadoresPredicaoService,
@@ -2069,7 +2069,7 @@ class NovoTomboScreen extends Component {
             locaisColeta: [],
             fetchingLocaisColeta: true
         })
-        axios.get(`/locais-coleta`, { params: { cidade_id: cidadeId } })
+        axios.get('/locais-coleta', { params: { cidade_id: cidadeId } })
             .then(response => {
                 if (response.status === 200) {
                     this.setState({
@@ -2314,6 +2314,9 @@ class NovoTomboScreen extends Component {
             relevoDescricao: {
                 value: dados.descricao
             },
+            unicata: {
+                value: dados.unicata
+            },
             complemento: {
                 value: {
                     key: dados.local_coleta.id,
@@ -2381,14 +2384,14 @@ class NovoTomboScreen extends Component {
             dataColetaAno, dataColetaDia, dataColetaMes, dataIdentAno, dataIdentDia, dataIdentMes,
             especie, reino, familia, fases, genero, identificador, latitude, localidadeCor, longitude,
             nomePopular, numColeta, observacoesColecaoAnexa, observacoesTombo, relevo, solo,
-            subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao
+            subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao, unicata
         } = values
 
         const isUserIdentificador = isIdentificador()
 
         const json = {}
 
-        const extrairId = (valor) => {
+        const extrairId = valor => {
             if (typeof valor === 'object' && valor.key) {
                 return parseInt(valor.key)
             }
@@ -2401,7 +2404,7 @@ class NovoTomboScreen extends Component {
             return null
         }
 
-        const normalizarIdentificadores = (identificadores) => {
+        const normalizarIdentificadores = identificadores => {
             if (!identificadores || !Array.isArray(identificadores)) {
                 return null
             }
@@ -2508,6 +2511,8 @@ class NovoTomboScreen extends Component {
             variedade: autorVariedade || null
         }
 
+        json.unicata = unicata
+
         return json
     }
 
@@ -2517,11 +2522,11 @@ class NovoTomboScreen extends Component {
             dataColetaAno, dataColetaDia, dataColetaMes, dataIdentAno, dataIdentDia, dataIdentMes,
             especie, reino, familia, fases, genero, identificador, latitude, localidadeCor, longitude,
             nomePopular, numColeta, observacoesColecaoAnexa, observacoesTombo, relevo, solo,
-            subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao
+            subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao, unicata
         } = values
         const json = {}
 
-        const extrairId = (valor) => {
+        const extrairId = valor => {
             if (typeof valor === 'object' && valor.key) {
                 return parseInt(valor.key)
             }
@@ -2534,7 +2539,7 @@ class NovoTomboScreen extends Component {
             return null
         }
 
-        const normalizarIdentificadores = (identificadores) => {
+        const normalizarIdentificadores = identificadores => {
             if (!identificadores || !Array.isArray(identificadores)) {
                 return identificadores
             }
@@ -2614,6 +2619,7 @@ class NovoTomboScreen extends Component {
         if (autorEspecie) json.autores = { especie: autorEspecie }
         if (autoresSubespecie) json.autores = { ...json.autores, subespecie: autoresSubespecie }
         if (autorVariedade) json.autores = { ...json.autores, variedade: autorVariedade }
+        if (unicata !== undefined) json.unicata = unicata
         return json
     }
 
@@ -2807,6 +2813,17 @@ class NovoTomboScreen extends Component {
         )
     }
 
+    renderExsicataTipo = getFieldDecorator => {
+        const { value } = this.state
+        return (
+                <ExsicataTipoFormField
+                    getFieldDecorator={getFieldDecorator}
+                    value={value}
+                    onChange={this.onChange}
+                />
+        )
+    }
+
     renderFormulario = getFieldDecorator => {
         if (this.state.formColetor) {
             return (
@@ -2928,7 +2945,7 @@ class NovoTomboScreen extends Component {
                                 this.setState({
                                     visibleModal: false,
                                     formColetor: 0,
-                                    formComAutor: false,
+                                    formComAutor: false
                                 })
                             }
                         }
@@ -3578,17 +3595,19 @@ class NovoTomboScreen extends Component {
                         </Col>
                     </Row>
                     <Row gutter={8}>
-                        <Col span={24}>
+                        <Col span={20}>
                             <FormItem>
                                 {getFieldDecorator('observacoesTombo')(
                                     <TextArea rows={4} />
                                 )}
                             </FormItem>
                         </Col>
+                        <Col span={4}>
+                            {this.renderExsicataTipo(getFieldDecorator)}
+                        </Col>
                     </Row>
                     <br />
-                    {' '}
-                    <br />
+                    <Divider />
                     <Row gutter={8}>
                         <BarcodeTableComponent
                             barcodeEditList={this.state.codigosBarrasForm}
