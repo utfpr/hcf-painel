@@ -17,6 +17,7 @@ import {
 
 import ButtonComponent from '../../components/ButtonComponent'
 import ModalCadastroComponent from '../../components/ModalCadastroComponent'
+import BarcodeTableComponent from '../../components/BarcodeTableComponent'
 import UploadPicturesComponent from '../../components/UploadPicturesComponent'
 import { fotosBaseUrl, baseUrl } from '../../config/api'
 import { isIdentificador } from '../../helpers/usuarios'
@@ -198,7 +199,10 @@ class NovoTomboScreen extends Component {
             autorSubfamilia: '',
             autorEspecie: '',
             autorSubespecie: '',
-            autorVariedade: ''
+            autorVariedade: '',
+            codigosBarrasForm: [],
+            codigosBarrasInicial: [],
+            isEditing: false
         }
     }
 
@@ -211,14 +215,177 @@ class NovoTomboScreen extends Component {
         this.requisitaFamilias(this.state.reinoInicial)
     }
 
+    getCodigosTombo = (hcf) => {
+        axios
+          .get(`/tombos/codigo_barras/${hcf}`)
+          .then(({ status, data }) => {
+            if (status !== 200 || !Array.isArray(data)) return;
+      
+            const parseNumero = (numBarra, codigoBarra) => {
+              const inteiro = parseInt(String(numBarra ?? "").split(".")[0], 10);
+              if (Number.isFinite(inteiro)) return inteiro;
+              return parseInt(String(codigoBarra || "").replace(/\D/g, ""), 10);
+            };
+      
+            const normalize = (items) =>
+              items.map((item) => ({
+                id: item.id,
+                codigo_barra: String(item.codigo_barra || ""),
+                num_barra: parseNumero(item.num_barra, item.codigo_barra),
+              }));
+      
+            const dedupeByCodigo = (rows) =>
+              rows
+                .filter((row) => row.codigo_barra)
+                .reduce((acc, cur) => {
+                  if (!acc.some((x) => x.codigo_barra === cur.codigo_barra)) acc.push(cur);
+                  return acc;
+                }, []);
+      
+            const barcodeEditList = dedupeByCodigo(normalize(data));
+      
+            console.log("Loaded barcodes:", barcodeEditList);
+
+            this.setState({ codigosBarrasForm: barcodeEditList });
+            this.setState({ codigosBarrasInicial : barcodeEditList });
+          })
+          .catch(this.catchRequestError);
+    };     
+
+    handleChangeBarcodeList = (updatedList) => {
+        const serialize = (list = []) =>
+          list.map(({ codigo_barra, num_barra }) => `${codigo_barra}:${num_barra}`).join("|");
+      
+        const previousSignature = serialize(this.state.codigosBarrasForm);
+        const nextSignature = serialize(updatedList);
+      
+        if (previousSignature !== nextSignature) {
+          this.setState({ codigosBarrasForm: updatedList });
+        }
+    };
+
+    handleDeletedBarcode = ({ codigo_barra, num_barra }) => {
+        const toInt = (v) => {
+          const n = parseInt(String(v ?? '').split('.')[0], 10);
+          return Number.isFinite(n) ? n : NaN;
+        };
+        const deletedNum = toInt(num_barra);
+        const deletedCode = String(codigo_barra || '');
+      
+        this.setState((prev) => ({
+          codigosBarrasInicial: (prev.codigosBarrasInicial || []).filter((item) => {
+            const itemNum = toInt(item?.num_barra);
+            const itemCode = String(item?.codigo_barra || '');
+            return !(itemNum === deletedNum || itemCode === deletedCode);
+          }),
+        }));
+    };
+      
+
+    editarCodigosBarras = async (tomboHcf, currentList) => {
+        try {
+          const initialList = this.state.codigosBarrasInicial || [];
+          const currentBarcodes = currentList || [];
+
+          const initialSet = new Set(initialList.map(item => item.codigo_barra));
+          const currentSet = new Set(currentBarcodes.map(item => item.codigo_barra));
+      
+          const newBarcodes = currentBarcodes.filter(item => !initialSet.has(item.codigo_barra));
+      
+          if (newBarcodes.length > 0) {
+            await this.criarCodigoBarras(tomboHcf, newBarcodes);
+          }
+      
+          if (newBarcodes.length > 0) {
+            message.success("Códigos de barra atualizados com sucesso");
+          }
+        } catch (error) {
+          console.error("Erro ao atualizar códigos de barras:", error);
+          message.error("Erro ao atualizar os códigos de barras. Tente novamente.");
+        }
+    };
+
+    normalizeBarcodes = (barcodeList = []) => {
+        const asArray = Array.isArray(barcodeList) ? barcodeList : [barcodeList];
+      
+        const integerPart = (val) => {
+          const [int] = String(val).split(".");
+          const n = parseInt(int, 10);
+          return Number.isFinite(n) ? n : NaN;
+        };
+      
+        const extractNumber = (item) => {
+          if (item == null) return NaN;
+      
+          // 1) Objeto com num_barra (ex.: "41806.0")
+          if (typeof item === "object" && "num_barra" in item) {
+            return integerPart(item.num_barra);
+          }
+      
+          // 2) Objeto com codigo_barra OU string tipo "HCF000041890"
+          if ((typeof item === "object" && "codigo_barra" in item) || typeof item === "string") {
+            const raw = typeof item === "string" ? item : String(item.codigo_barra || "");
+            const n = parseInt(raw.replace(/\D/g, ""), 10);
+            return Number.isFinite(n) ? n : NaN;
+          }
+      
+          // 3) Número puro
+          if (typeof item === "number" && Number.isFinite(item)) {
+            return Math.trunc(item);
+          }
+      
+          // 4) Fallback: extrai dígitos de qualquer coisa
+          const n = parseInt(String(item).replace(/\D/g, ""), 10);
+          return Number.isFinite(n) ? n : NaN;
+        };
+
+        const seen = new Set();
+        return asArray
+          .map(extractNumber)
+          .filter((n) => Number.isFinite(n) && n > 0)
+          .filter((n) => (seen.has(n) ? false : (seen.add(n), true)));
+    };
+
+    criarCodigoBarras = async (id_tombo, barcodeList = []) => {
+        const hcf = Number(id_tombo);
+        if (!Number.isFinite(hcf)) {
+          message.error("Tombo (HCF) inválido.");
+          return;
+        }
+      
+        const numeros = this.normalizeBarcodes(barcodeList);
+        if (!numeros.length) {
+          message.warning("Nenhum código válido para enviar.");
+          return;
+        }
+      
+        const key = "post-codigos";
+      
+        const results = await Promise.allSettled(
+          numeros.map((n) => axios.post("/tombos/codigo_barras", { hcf, codigo_barra: n }))
+        );
+      
+        const ok = results.filter((r) => r.status === "fulfilled").length;
+        const fail = results.length - ok;
+      
+        if (ok) {
+          message.success({ key, content: `Códigos criados: ${ok}${fail ? ` • Falharam: ${fail}` : ""}` });
+        } else {
+          message.error({ key, content: "Nenhum código foi criado." });
+        }
+    };
+      
+
     handleRequisicao = values => {
         const { match } = this.props
         if (match.params.tombo_id) {
+            this.editarCodigosBarras(match.params.tombo_id, this.state.codigosBarrasForm)
             const json = this.montaFormularioJsonEdicao(values)
             this.requisitaEdicaoTombo(json)
         } else {
             const json = this.montaFormularioJsonCadastro(values)
             this.requisitaCadastroTombo(json)
+            this.props.history.push('/tombos')
         }
     }
 
@@ -347,8 +514,10 @@ class NovoTomboScreen extends Component {
         })
 
         if (match.params.tombo_id) {
+            this.setState({ isEditing: true })
             this.setState({ showTable: true })
             this.requisitaDadosEdicao(match.params.tombo_id)
+            this.getCodigosTombo(match.params.tombo_id)
         } else {
             const hcfHerbario = dados.herbarios.find(herbario => herbario.sigla === 'HCF')
             const paisBrasil = dados.paises.find(p => p.nome === 'BRASIL')
@@ -868,8 +1037,6 @@ class NovoTomboScreen extends Component {
                     this.setState({
                         familias: response.data.resultado
                     })
-
-                    console.log('familias', this.state.familias)
                 } else {
                     this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar famílias, tente novamente.')
                 }
@@ -1970,7 +2137,9 @@ class NovoTomboScreen extends Component {
             .then(response => {
                 if (response.status === 201) {
                     const tombo = response.data
-                    const criaRequisicaoFoto = (hcf, emVivo, foto) => {
+                    this.criarCodigoBarras(tombo.hcf, this.state.codigosBarrasForm)
+
+                    /*const criaRequisicaoFoto = (hcf, emVivo, foto) => {
                         const form = new FormData()
                         form.append('imagem', foto)
                         form.append('tombo_hcf', hcf)
@@ -1990,8 +2159,7 @@ class NovoTomboScreen extends Component {
                     const promises = [
                         ...fotosEmVivo.map(criaFuncaoMap(tombo.hcf, true)),
                         ...fotosExsicata.map(criaFuncaoMap(tombo.hcf, false))
-                    ]
-
+                    ]*/
                     return Promise.all(promises)
                 }
             })
@@ -3422,7 +3590,18 @@ class NovoTomboScreen extends Component {
                     {' '}
                     <br />
                     <Row gutter={8}>
-                        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+                        <BarcodeTableComponent
+                            barcodeEditList={this.state.codigosBarrasForm}
+                            onDeletedBarcode={this.handleDeletedBarcode}
+                            onChangeBarcodeList={this.handleChangeBarcodeList}
+                            isEditing={this.state.isEditing}
+                        />
+                    </Row> 
+                    <br />
+                    {' '}
+                    <br />
+                    <Row gutter={8}>
+                        {/* <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                             <Col span={24}>
                                 <span> Fotos da exsicata: </span>
                             </Col>
@@ -3517,12 +3696,10 @@ class NovoTomboScreen extends Component {
                                     Enviar
                                 </Button>
                             </Col>
-                        </Col>
-                        {/* </div> */}
-                        {/* // : <div></div>} */}
+                        </Col>*/}
                     </Row>
                     <Divider dashed />
-                    {this.state.showTable && this.props.match.params.tombo_id && (
+                    {/* {this.state.showTable && this.props.match.params.tombo_id && (
                         <Row gutter={8}>
                             <Table
                                 columns={this.tabelaFotosColunas}
@@ -3531,9 +3708,9 @@ class NovoTomboScreen extends Component {
                                 rowKey="id"
                             />
                         </Row>
-                    )}
+                    )} */}
                     <Row type="flex" justify="start" gutter={8}>
-                        <Col>
+                        {/* <Col>
                             <Button
                                 disabled={!this.props.match.params.tombo_id}
                                 type="primary"
@@ -3580,7 +3757,7 @@ class NovoTomboScreen extends Component {
                                     ver pendencias
                                 </Link>
                             </Button>
-                        </Col>
+                        </Col> */}
                         <Col style={{ marginLeft: 'auto' }} xs={24} sm={8} md={3} lg={3} xl={3}>
                             <ButtonComponent titleButton="Salvar" />
                         </Col>
