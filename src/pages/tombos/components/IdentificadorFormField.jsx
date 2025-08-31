@@ -31,10 +31,6 @@ const IdentificadorFormField = ({
             validateStatus={validateStatus}
             getFieldError={getFieldError}
             onSearch={onSearch}
-            rules={[{
-                required: true,
-                message: 'Selecione ao menos um identificador'
-            }]}
         >
             {optionIdentificadores()}
         </SelectedFormFiled>
