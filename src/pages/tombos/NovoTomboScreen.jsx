@@ -2216,7 +2216,7 @@ class NovoTomboScreen extends Component {
 
     insereDadosFormulario = dados => {
         const { form } = this.props
-        this.setState({ dadosFormulario: dados })
+        this.setState({ dadosFormulario: dados })        
         let insereState = {
             estados: dados.estados,
             cidades: dados.cidades,
@@ -2225,6 +2225,22 @@ class NovoTomboScreen extends Component {
             especies: dados.especies,
             subespecies: dados.subespecies,
             variedades: dados.variedades
+        }
+
+        this.requisitaFamilias()
+
+        if (dados.familiaInicial) {
+            this.requisitaSubfamilias(dados.familiaInicial)
+            this.requisitaGeneros(dados.familiaInicial)
+        }
+
+        if (dados.generoInicial) {
+            this.requisitaEspecies(dados.generoInicial)
+        }
+
+        if (dados.especieInicial) {
+            this.requisitaSubespecies(dados.especieInicial)
+            this.requisitaVariedades(dados.especieInicial)
         }
 
         if (dados.coletor) {
