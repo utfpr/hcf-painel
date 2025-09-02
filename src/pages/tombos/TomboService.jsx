@@ -113,7 +113,7 @@ export const requisitaNumeroColetorService = getResponse => {
 }
 
 export const requisitaCodigoBarrasService = (getResponse, tomboId) => {
-    return axios.get(`/tombos/codBarras/${tomboId}`)
+    return axios.get(`/tombos/codigo_barras/${tomboId}`)
         .then(response => {
             getResponse(response)
         })
