@@ -385,7 +385,6 @@ class NovoTomboScreen extends Component {
         } else {
             const json = this.montaFormularioJsonCadastro(values)
             this.requisitaCadastroTombo(json)
-            this.props.history.push('/tombos')
         }
     }
 
@@ -2138,38 +2137,14 @@ class NovoTomboScreen extends Component {
                 if (response.status === 201) {
                     const tombo = response.data
                     this.criarCodigoBarras(tombo.hcf, this.state.codigosBarrasForm)
-
-                    /*const criaRequisicaoFoto = (hcf, emVivo, foto) => {
-                        const form = new FormData()
-                        form.append('imagem', foto)
-                        form.append('tombo_hcf', hcf)
-                        form.append('em_vivo', emVivo)
-
-                        return axios.post('/uploads', form, {
-                            headers: {
-                                'Content-Type': 'multipart/form-data'
-                            }
-                        })
-                    }
-
-                    const criaFuncaoMap = (hcf, emVivo) => foto => criaRequisicaoFoto(hcf, emVivo, foto)
-
-                    const { fotosEmVivo, fotosExsicata } = this.state
-
-                    const promises = [
-                        ...fotosEmVivo.map(criaFuncaoMap(tombo.hcf, true)),
-                        ...fotosExsicata.map(criaFuncaoMap(tombo.hcf, false))
-                    ]*/
-                    return Promise.all(promises)
                 }
             })
             .then(response => {
                 this.setState({
                     loading: false
                 })
-
                 this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
-                this.props.history.goBack()
+                this.props.history.push('/tombos')
             })
             .catch(err => {
                 this.setState({
