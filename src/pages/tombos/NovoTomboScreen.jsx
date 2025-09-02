@@ -2400,7 +2400,7 @@ class NovoTomboScreen extends Component {
             dataColetaAno, dataColetaDia, dataColetaMes, dataIdentAno, dataIdentDia, dataIdentMes,
             especie, reino, familia, fases, genero, identificador, latitude, localidadeCor, longitude,
             nomePopular, numColeta, observacoesColecaoAnexa, observacoesTombo, relevo, solo,
-            subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao, unicata
+            subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao, unicata, dataTombo
         } = values
 
         const isUserIdentificador = isIdentificador()
@@ -2459,6 +2459,7 @@ class NovoTomboScreen extends Component {
         json.principal.nome_popular = nomePopular || null
         json.principal.tipo_id = tipo ? parseInt(tipo) : null
         json.principal.cor = localidadeCor || null
+        json.principal.data_tombo = dataTombo || null
 
         if (dataColetaDia || dataColetaMes || dataColetaAno) {
             json.principal.data_coleta = {
@@ -2538,7 +2539,7 @@ class NovoTomboScreen extends Component {
             dataColetaAno, dataColetaDia, dataColetaMes, dataIdentAno, dataIdentDia, dataIdentMes,
             especie, reino, familia, fases, genero, identificador, latitude, localidadeCor, longitude,
             nomePopular, numColeta, observacoesColecaoAnexa, observacoesTombo, relevo, solo,
-            subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao, unicata
+            subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao, unicata, dataTombo
         } = values
         const json = {}
 
@@ -2573,6 +2574,7 @@ class NovoTomboScreen extends Component {
         const vegetacaoId = extrairId(vegetacao)
 
         if (nomePopular) json.principal = { nome_popular: nomePopular }
+        json.principal = { ...json.principal, data_tombo: dataTombo || null }
         json.principal = { ...json.principal, entidade_id: parseInt(entidade) }
         json.principal.numero_coleta = parseInt(numColeta)
         if (dataColetaDia) json.principal.data_coleta = { dia: dataColetaDia }
@@ -3149,7 +3151,6 @@ class NovoTomboScreen extends Component {
                     <InputFormField
                         name="dataTombo"
                         title="Data do Tombo:"
-                        disabled
                         getFieldDecorator={getFieldDecorator}
                     />
                 </Row>
