@@ -3074,11 +3074,7 @@ class NovoTomboScreen extends Component {
                             this.props.form.setFieldsValue({ complemento: undefined })
                             this.requisitaLocaisColeta(value)
                         }}
-                        rules={[{
-                            required: true,
-                            message: 'Escolha uma cidade'
-                        }]}
-                        status={getFieldError('cidade') ? 'error' : ''}
+                        getFieldError={getFieldError}
                     />
                 </Row>
                 <br />
@@ -3099,6 +3095,7 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true
                             })
                         }}
+                        getFieldError={getFieldError}
                     />
                     <Col xs={24} sm={24} md={16} lg={8} xl={8}>
                         <Col span={24}>
