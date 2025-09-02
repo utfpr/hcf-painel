@@ -72,8 +72,9 @@ const FichaTomboActions = ({ hcf }) => {
             const valores = await form.validateFields()
 
             message.success('Impressão iniciada!')
-            const url = `${fichaTomboUrl}/fichas/tombos/${hcf}/${state.comCodigo ? 1 : 0}`
+            const url = state.comCodigo ? `${fichaTomboUrl}/fichas/tombos/${hcf}/1`
                 + `?qtd=${valores.copias}&code=${valores.codigoSelecionado}`
+                : `${fichaTomboUrl}/fichas/tombos/${hcf}/0?qtd=${valores.copias}`
             window.open(url, '_blank')
             fechar()
         } catch (e) {
@@ -81,6 +82,71 @@ const FichaTomboActions = ({ hcf }) => {
         } finally {
             setPrinting(false)
         }
+    }
+
+    const modalContent = () => {
+        return (
+            <div style={{ display: 'grid', gap: 12 }}>
+                <div>
+                    <strong>Tombo:</strong>
+                    {' '}
+                    {hcf ?? '-'}
+                </div>
+
+                <Form
+                    form={form}
+                    layout="vertical"
+                    initialValues={{ copias: 1 }}
+                >
+                    <Form.Item
+                        name="copias"
+                        label="Quantidade de cópias"
+                        rules={[
+                            { required: true, message: 'Informe a quantidade de cópias' },
+                            {
+                                validator: (_, v) => (v >= 1 && v <= 3
+                                    ? Promise.resolve()
+                                    : Promise.reject(new Error('Permitido entre 1 e 3')))
+                            }
+                        ]}
+                    >
+                        <InputNumber
+                            min={1}
+                            max={3}
+                            style={{ width: '100%' }}
+                            disabled={printing || (state.comCodigo && (!codigos || codigos.length === 0))}
+                        />
+                    </Form.Item>
+
+                    {state.comCodigo && loadingCodigos && (
+                        <Spin tip="Carregando códigos de barras..." />
+                    )}
+                    {state.comCodigo && !loadingCodigos && codigos.length === 0 && (
+                        <Alert
+                            type="warning"
+                            showIcon
+                            message="Nenhum código de barras disponível para este tombo."
+                        />
+                    )}
+                    {state.comCodigo && !loadingCodigos && codigos.length > 0 && (
+                        <Form.Item
+                            name="codigoSelecionado"
+                            label="Código de barras"
+                            rules={[{ required: true, message: 'Selecione um código de barras' }]}
+                        >
+                            <Select
+                                options={codigos.map(c => ({ value: c, label: c }))}
+                                placeholder="Selecione o código"
+                                showSearch
+                                filterOption={(input, option) => {
+                                    return option?.label.toLowerCase().includes(input.toLowerCase())
+                                }}
+                            />
+                        </Form.Item>
+                    )}
+                </Form>
+            </div>
+        )
     }
 
     return (
@@ -102,77 +168,42 @@ const FichaTomboActions = ({ hcf }) => {
             />
             <Divider type="vertical" />
 
-            <Modal
-                title={
-                    state.comCodigo
-                        ? 'Imprimir Ficha Tombo (com código de barras)'
-                        : 'Imprimir Ficha Tombo (sem código de barras)'
-                }
-                open={state.open}
-                onOk={confirmarImpressao}
-                onCancel={fechar}
-                okText="Imprimir"
-                cancelText="Cancelar"
-                confirmLoading={printing}
-                destroyOnClose
-                maskClosable={false}
-            >
-                <div style={{ display: 'grid', gap: 12 }}>
-                    <div>
-                        <strong>Tombo:</strong>
-                        {' '}
-                        {hcf ?? '-'}
-                    </div>
-
-                    <Form
-                        form={form}
-                        layout="vertical"
-                        initialValues={{ copias: 1 }}
-                    >
-                        <Form.Item
-                            name="copias"
-                            label="Quantidade de cópias"
-                            rules={[
-                                { required: true, message: 'Informe a quantidade de cópias' },
-                                {
-                                    validator: (_, v) => (v >= 1 && v <= 3
-                                        ? Promise.resolve()
-                                        : Promise.reject(new Error('Permitido entre 1 e 3')))
-                                }
-                            ]}
-                        >
-                            <InputNumber min={1} max={3} style={{ width: '100%' }} />
-                        </Form.Item>
-
-                        {state.comCodigo && loadingCodigos && (
-                            <Spin tip="Carregando códigos de barras..." />
-                        )}
-                        {state.comCodigo && !loadingCodigos && codigos.length === 0 && (
-                            <Alert
-                                type="warning"
-                                showIcon
-                                message="Nenhum código de barras disponível para este tombo."
-                            />
-                        )}
-                        {state.comCodigo && !loadingCodigos && codigos.length > 0 && (
-                            <Form.Item
-                                name="codigoSelecionado"
-                                label="Código de barras"
-                                rules={[{ required: true, message: 'Selecione um código de barras' }]}
-                            >
-                                <Select
-                                    options={codigos.map(c => ({ value: c, label: c }))}
-                                    placeholder="Selecione o código"
-                                    showSearch
-                                    filterOption={(input, option) => {
-                                        return option?.label.toLowerCase().includes(input.toLowerCase())
-                                    }}
-                                />
-                            </Form.Item>
-                        )}
-                    </Form>
-                </div>
-            </Modal>
+            {state.comCodigo && (!codigos || !codigos.length) ? (
+                <Modal
+                    title={
+                        state.comCodigo
+                            ? 'Imprimir Ficha Tombo (com código de barras)'
+                            : 'Imprimir Ficha Tombo (sem código de barras)'
+                    }
+                    open={state.open}
+                    onOk={fechar}
+                    onCancel={fechar}
+                    okText="Cancelar"
+                    destroyOnClose
+                    maskClosable={false}
+                    cancelButtonProps={{ style: { display: 'none' } }}
+                >
+                    {modalContent()}
+                </Modal>
+            ) : (
+                <Modal
+                    title={
+                        state.comCodigo
+                            ? 'Imprimir Ficha Tombo (com código de barras)'
+                            : 'Imprimir Ficha Tombo (sem código de barras)'
+                    }
+                    open={state.open}
+                    onOk={confirmarImpressao}
+                    onCancel={fechar}
+                    okText="Imprimir"
+                    cancelText="Cancelar"
+                    confirmLoading={printing}
+                    destroyOnClose
+                    maskClosable={false}
+                >
+                    {modalContent()}
+                </Modal>
+            )}
         </div>
     )
 }
