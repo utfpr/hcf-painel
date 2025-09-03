@@ -10,7 +10,8 @@ const LocalColetaFormField = ({
     locaisColeta,
     fetchingLocaisColeta,
     onSearch,
-    onClickAddMore
+    onClickAddMore,
+    getFieldError
 }) => {
     const optionLocalColeta = () => locaisColeta.map(d => <Option key={d.id}>{d.descricao}</Option>)
 
@@ -26,12 +27,17 @@ const LocalColetaFormField = ({
             placeholder="Busque pelo local de coleta"
             fieldName="complemento"
             getFieldDecorator={getFieldDecorator}
+            getFieldError={getFieldError}
             onClickAddMore={onClickAddMore}
             onSearch={onSearch}
             others={{
                 labelInValue: true,
                 filterOption: true,            
             }}
+            rules={[{
+                required: true,
+                message: 'Escolha um local de coleta'
+            }]}
         >
             {optionLocalColeta()}
         </SelectedFormFiled>

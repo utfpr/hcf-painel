@@ -385,7 +385,6 @@ class NovoTomboScreen extends Component {
         } else {
             const json = this.montaFormularioJsonCadastro(values)
             this.requisitaCadastroTombo(json)
-            this.props.history.push('/tombos')
         }
     }
 
@@ -2138,38 +2137,14 @@ class NovoTomboScreen extends Component {
                 if (response.status === 201) {
                     const tombo = response.data
                     this.criarCodigoBarras(tombo.hcf, this.state.codigosBarrasForm)
-
-                    /*const criaRequisicaoFoto = (hcf, emVivo, foto) => {
-                        const form = new FormData()
-                        form.append('imagem', foto)
-                        form.append('tombo_hcf', hcf)
-                        form.append('em_vivo', emVivo)
-
-                        return axios.post('/uploads', form, {
-                            headers: {
-                                'Content-Type': 'multipart/form-data'
-                            }
-                        })
-                    }
-
-                    const criaFuncaoMap = (hcf, emVivo) => foto => criaRequisicaoFoto(hcf, emVivo, foto)
-
-                    const { fotosEmVivo, fotosExsicata } = this.state
-
-                    const promises = [
-                        ...fotosEmVivo.map(criaFuncaoMap(tombo.hcf, true)),
-                        ...fotosExsicata.map(criaFuncaoMap(tombo.hcf, false))
-                    ]*/
-                    return Promise.all(promises)
                 }
             })
             .then(response => {
                 this.setState({
                     loading: false
                 })
-
                 this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
-                this.props.history.goBack()
+                this.props.history.push('/tombos')
             })
             .catch(err => {
                 this.setState({
@@ -3074,11 +3049,7 @@ class NovoTomboScreen extends Component {
                             this.props.form.setFieldsValue({ complemento: undefined })
                             this.requisitaLocaisColeta(value)
                         }}
-                        rules={[{
-                            required: true,
-                            message: 'Escolha uma cidade'
-                        }]}
-                        status={getFieldError('cidade') ? 'error' : ''}
+                        getFieldError={getFieldError}
                     />
                 </Row>
                 <br />
@@ -3099,6 +3070,7 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true
                             })
                         }}
+                        getFieldError={getFieldError}
                     />
                     <Col xs={24} sm={24} md={16} lg={8} xl={8}>
                         <Col span={24}>
