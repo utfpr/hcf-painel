@@ -48,6 +48,7 @@ import {
     verificaPendenciasService, requisitaNumeroColetorService, requisitaCodigoBarrasService,
     handleSubmitIdentificadorService
 } from './TomboService'
+import { formatarDataBRtoEN } from '@/helpers/conversoes/ConversoesData'
 
 const { confirm } = Modal
 const FormItem = Form.Item
@@ -2394,6 +2395,13 @@ class NovoTomboScreen extends Component {
         })
     }
 
+    normalizaDataTombo = valor => {
+        if (!valor) return null
+        if (/^\d{4}-\d{2}-\d{2}$/.test(valor)) return valor
+        const convertido = formatarDataBRtoEN(valor)
+        return convertido || null
+    }
+
     montaFormularioJsonEdicao = values => {
         const {
             altitude, autorEspecie, autorVariedade, autoresSubespecie, cidade, coletores, coletoresComplementares, complemento,
@@ -2459,7 +2467,7 @@ class NovoTomboScreen extends Component {
         json.principal.nome_popular = nomePopular || null
         json.principal.tipo_id = tipo ? parseInt(tipo) : null
         json.principal.cor = localidadeCor || null
-        json.principal.data_tombo = dataTombo || null
+        json.principal.data_tombo = this.normalizaDataTombo(dataTombo)
 
         if (dataColetaDia || dataColetaMes || dataColetaAno) {
             json.principal.data_coleta = {
@@ -2574,7 +2582,7 @@ class NovoTomboScreen extends Component {
         const vegetacaoId = extrairId(vegetacao)
 
         if (nomePopular) json.principal = { nome_popular: nomePopular }
-        json.principal = { ...json.principal, data_tombo: dataTombo || null }
+        json.principal = { ...json.principal, data_tombo: this.normalizaDataTombo(dataTombo)}
         json.principal = { ...json.principal, entidade_id: parseInt(entidade) }
         json.principal.numero_coleta = parseInt(numColeta)
         if (dataColetaDia) json.principal.data_coleta = { dia: dataColetaDia }
