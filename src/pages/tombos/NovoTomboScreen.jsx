@@ -3786,10 +3786,6 @@ class NovoTomboScreen extends Component {
                             <FormItem>
                                 {getFieldDecorator('numColeta', {
                                     initialValue: String(this.state.numero_coleta),
-                                    rules: [{
-                                        required: true,
-                                        message: 'Insira o numero da coleta'
-                                    }]
                                 })(
                                     <Input
                                         type="text"
