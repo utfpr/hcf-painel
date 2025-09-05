@@ -244,7 +244,7 @@ class NovoTomboScreen extends Component {
       
             const barcodeEditList = dedupeByCodigo(normalize(data));
       
-            console.log("Loaded barcodes:", barcodeEditList);
+            // console.log("Loaded barcodes:", barcodeEditList); // Removed debug log
 
             this.setState({ codigosBarrasForm: barcodeEditList });
             this.setState({ codigosBarrasInicial : barcodeEditList });
@@ -470,7 +470,7 @@ class NovoTomboScreen extends Component {
             })
             .catch(error => {
                 // console.log({ error })
-                console.log(`----- ${error.stack} -----`)
+                // console.log(`----- ${error.stack} -----`) // Removed debug log
                 if (error !== '') {
                     this.openNotificationWithIcon('warning', 'Falha', 'não')
                 } else {
@@ -2357,7 +2357,7 @@ class NovoTomboScreen extends Component {
                 return false
             }
             if (err != null) {
-                console.log(err)
+                // console.log(err) // Removed debug log
                 this.openNotificationWithIcon('warning', 'Falha', 'Preencha todos os dados requiridos.')
             } else {
                 this.handleRequisicao(values)
@@ -2618,7 +2618,7 @@ class NovoTomboScreen extends Component {
         e.preventDefault()
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values)
+                // console.log('Received values of form: ', values) // Removed debug log
             }
         })
     }

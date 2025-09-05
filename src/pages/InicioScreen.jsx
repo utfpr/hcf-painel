@@ -48,12 +48,12 @@ export default class InicioScreen extends Component {
     renderFormulario() {
         return (
             <Layout>
-                <Header>
+                <Header style={{ backgroundColor: '#007A33' }}>
                     <div className="logo" />
                     <Menu
                         theme="dark"
                         mode="horizontal"
-                        style={{ lineHeight: '64px' }}
+                        style={{ lineHeight: '64px', backgroundColor: '#007A33' }}
                     >
                         <Menu.Item key="1">SOBRE O HCF</Menu.Item>
                         <Menu.Item key="2">

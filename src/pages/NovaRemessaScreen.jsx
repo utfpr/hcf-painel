@@ -155,9 +155,9 @@ class NovaRemessaScreen extends Component {
     }
 
     handleSubmit = (err, valores) => {
-        console.log('REMESSASSS')
-        console.log(this.state.data)
-        console.log(this.props.match.params.remessa_id)
+        // console.log('REMESSASSS') // Removed debug log
+        // console.log(this.state.data) // Removed debug log
+        // console.log(this.props.match.params.remessa_id) // Removed debug log
         if (!err) {
             if (this.state.data.length > 0) {
                 if (this.props.match.params.remessa_id !== undefined) {
@@ -550,7 +550,7 @@ class NovaRemessaScreen extends Component {
     }
 
     render() {
-        console.log(this.state)
+        // console.log(this.state) // Removed debug log
         if (this.state.loading) {
             return (
                 <Spin tip="Carregando...">

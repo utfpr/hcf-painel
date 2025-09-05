@@ -222,17 +222,19 @@ class ListaTombosScreen extends Component {
 
     requisitaListaTombos = async (valores, pg, pageSize) => {
         this.setState({ loading: true })
+        console.log('valores: ', valores)
 
         try {
             await new Promise(resolve => window.grecaptcha.ready(resolve))
 
             const token = await window.grecaptcha.execute(recaptchaKey, { action: 'tombos' })
-
+            console.log('token: ', token)
             const params = {
                 pagina: pg,
                 limite: pageSize || 20,
                 recaptchaToken: token
             }
+            console.log('params: ', params)
 
             if (valores !== undefined) {
                 const {
@@ -255,8 +257,9 @@ class ListaTombosScreen extends Component {
                     params.situacao = situacao
                 }
             }
-
+            console.log('chamando a api: tombos ')
             const response = await axios.get('/tombos', { params })
+            console.log('response: ', response)
 
             if (response.status === 200) {
                 const { data } = response
