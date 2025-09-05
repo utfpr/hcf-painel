@@ -295,8 +295,6 @@ class NovoTomboScreen extends Component {
 
             const barcodeEditList = dedupeByCodigo(normalize(data));
 
-            console.log("Loaded barcodes:", barcodeEditList);
-
             this.setState({ codigosBarrasForm: barcodeEditList });
             this.setState({ codigosBarrasInicial : barcodeEditList });
           })
@@ -323,7 +321,7 @@ class NovoTomboScreen extends Component {
 
         const deletedNum = toInt(num_barra);
         const deletedCode = String(codigo_barra || "");
-    
+
         this.setState((prev) => {
             const inicial = prev.codigosBarrasInicial || [];
             const existedInInitial = inicial.some((item) => {
@@ -352,13 +350,13 @@ class NovoTomboScreen extends Component {
                     ];
                 }
             }
-    
+
             return {
                 codigosBarrasInicial: nextInicial,
                 toDeleteBarcodes: nextToDelete,
             };
         });
-    };    
+    };
 
 
     editarCodigosBarras = async (tomboHcf, currentList) => {
@@ -372,24 +370,24 @@ class NovoTomboScreen extends Component {
             const newBarcodes = currentBarcodes.filter(
                 (item) => !initialSet.has(item.codigo_barra)
             );
-    
+
             const ops = [];
-    
+
             if (newBarcodes.length > 0) {
                 ops.push(this.criarCodigoBarras(tomboHcf, newBarcodes));
             }
-    
+
             if (isEditing && deletions.length > 0) {
                 const deleteRequests = deletions.map((b) =>
                     axios.delete(`/tombos/codigo_barras/${encodeURIComponent(b.num_barra)}`)
                 );
                 ops.push(Promise.allSettled(deleteRequests));
             }
-    
+
             if (ops.length > 0) {
                 await Promise.all(ops);
             }
-    
+
             if (newBarcodes.length > 0 || (isEditing && deletions.length > 0)) {
                 message.success("Códigos de barra atualizados com sucesso");
             }
@@ -401,7 +399,7 @@ class NovoTomboScreen extends Component {
             console.error("Erro ao atualizar códigos de barras:", error);
             message.error("Erro ao atualizar os códigos de barras. Tente novamente.");
         }
-    };    
+    };
 
     normalizeBarcodes = (barcodeList = []) => {
         const asArray = Array.isArray(barcodeList) ? barcodeList : [barcodeList];
@@ -569,7 +567,6 @@ class NovoTomboScreen extends Component {
             if (error) {
                 message = `Falha ao carregar os dados do tombo: ${error.message}`
             }
-
             this.openNotificationWithIcon(
                 'warning',
                 'Falha',
@@ -578,6 +575,37 @@ class NovoTomboScreen extends Component {
         } finally {
             this.setState({
                 loading: false
+            })
+        }
+
+        requestService(getResponse, ...params)
+            .then(() => {
+                successCalback(response, params)
+                if (successMessage !== '') {
+                    // this.openNotificationWithIcon('success', 'Sucesso', 'SIM')
+                    this.openNotificationWithIcon('success', 'Sucesso', successMessage)
+                }
+            })
+            .catch(error => {
+                // console.log({ error })
+                // console.log(`----- ${error.stack} -----`) // Removed debug log
+                if (error !== '') {
+                    this.openNotificationWithIcon('warning', 'Falha', 'não')
+                } else {
+                    // this.openNotificationWithIcon(
+                    //     'error',
+                    //     'Falha',
+                    //     errorMessage
+                    // )
+                }
+            })
+            .finally(() => {
+                this.setState({
+                    loading: false
+                })
+                if (onFinish !== null) {
+                    onFinish()
+                }
             })
             if (onFinish !== null) {
                 onFinish()
@@ -2416,7 +2444,7 @@ class NovoTomboScreen extends Component {
                 return false
             }
             if (err != null) {
-                console.log(err)
+                // console.log(err) // Removed debug log
                 this.openNotificationWithIcon('warning', 'Falha', 'Preencha todos os dados requiridos.')
             } else {
                 this.handleRequisicao(values)
@@ -2684,7 +2712,7 @@ class NovoTomboScreen extends Component {
         e.preventDefault()
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values)
+                // console.log('Received values of form: ', values) // Removed debug log
             }
         })
     }

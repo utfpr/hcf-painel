@@ -3,8 +3,9 @@ import { Component } from 'react'
 import { Row, Col, Alert } from 'antd'
 import axios from 'axios'
 
-import logoImage from '../assets/img/leaves.png'
+import logoImage from '../assets/img/logo_colorida.png'
 import { setTokenUsuario, setUsuario } from '../helpers/usuarios'
+import rateLimiter from '../helpers/rateLimiter'
 import LoginForm from './LoginForm'
 import { AnalyticsContext } from '@/components/Analytics/AnalyticsContext'
 
@@ -39,6 +40,19 @@ export default class LoginLayout extends Component {
 
     requisitaLoginUsuario = valores => {
         const { email, senha } = valores
+        
+        // Verifica rate limit para login
+        const rateLimitCheck = rateLimiter.checkLimit('login', email);
+        if (!rateLimitCheck.allowed) {
+            const resetTime = rateLimiter.formatResetTime(rateLimitCheck.resetTime);
+            const value = {
+                mensagem: `Muitas tentativas de login. Tente novamente em ${resetTime}.`,
+                codigo: 429
+            };
+            this.props.requisicao(value);
+            return;
+        }
+        
         this.props.load(true)
         axios.post('/login', { email, senha })
             .then(response => {
@@ -51,6 +65,8 @@ export default class LoginLayout extends Component {
                     this.props.requisicao(value)
                 }
 
+                // Login bem-sucedido - limpa tentativas de rate limit
+                rateLimiter.clearAttempts('login', email);
                 this.salvarCrendenciaisUsuario(response.data)
 
                 const usuario = response.data.usuario;
@@ -62,6 +78,10 @@ export default class LoginLayout extends Component {
             })
             .catch(err => {
                 this.props.load(false)
+                
+                // Registra tentativa falhada no rate limit
+                rateLimiter.recordAttempt('login', email);
+                
                 const { response } = err
                 if (response && response.data) {
                     const value = {
@@ -92,14 +112,15 @@ export default class LoginLayout extends Component {
                         type="flex"
                         justify="center"
                         align="middle"
-                        style={{ marginBottom: '10px' }}
+                        style={{ marginBottom: '10px', textAlign: 'center' }}
                     >
-                        <Col span={6}>
+                        <Col span={24} style={{ display: 'flex', justifyContent: 'center' }}>
                             <img
                                 src={logoImage}
                                 alt="leaves"
-                                height="105"
-                                width="105"
+                                height="160px"
+                                width="160px"
+                                style={{ display: 'block' }}
                             />
                         </Col>
                     </Row>

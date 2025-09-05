@@ -13,7 +13,9 @@
         "build": "tsc && vite build",
         "preview": "vite preview",
         "postinstall": "husky install",
-        "test": "jest"
+        "test": "jest",
+        "audit": "npm audit --audit-level=moderate",
+        "audit:fix": "npm audit fix"
     },
     "dependencies": {
         "@ant-design/compatible": "1.1.2",
@@ -35,7 +37,8 @@
         "react-leaflet": "^4.2.1",
         "react-leaflet-fullscreen": "^4.1.1",
         "react-router-dom": "4.3.1",
-        "vanilla-masker": "1.2.0"
+        "vanilla-masker": "1.2.0",
+        "dompurify": "^3.0.8"
     },
     "devDependencies": {
         "@babel/core": "7.22.1",
@@ -52,6 +55,7 @@
         "@types/react": "18.2.28",
         "@types/react-dom": "18.2.13",
         "@types/react-image-gallery": "^1.2.4",
+        "@types/dompurify": "^3.0.5",
         "@typescript-eslint/eslint-plugin": "6.7.5",
         "@typescript-eslint/parser": "6.7.5",
         "@vitejs/plugin-react": "4.1.0",
