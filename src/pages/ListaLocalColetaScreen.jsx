@@ -219,7 +219,7 @@ class ListaLocaisColeta extends Component {
         params.order = `${campo}:${ordem}`
 
         try {
-            const response = await axios.get('/locais-coleta-paginado', { params })
+            const response = await axios.get('/locais-coleta', { params })
 
             if (response.status === 200) {
                 this.setState({
