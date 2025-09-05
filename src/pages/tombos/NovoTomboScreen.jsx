@@ -2069,7 +2069,7 @@ class NovoTomboScreen extends Component {
             locaisColeta: [],
             fetchingLocaisColeta: true
         })
-        axios.get('/locais-coleta', { params: { cidade_id: cidadeId } })
+        axios.get('/locais-coleta', { params: { cidade_id: cidadeId, getAll: 'true' } })
             .then(response => {
                 if (response.status === 200) {
                     this.setState({
