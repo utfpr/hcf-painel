@@ -2263,7 +2263,12 @@ class NovoTomboScreen extends Component {
             })
         }
 
+        const date = new Date(dados.data_tombo)
+
         form.setFields({
+            dataTombo: {
+                value: `${date.getUTCDate()}/${date.getUTCMonth() + 1}/${date.getUTCFullYear()}`
+            },
             altitude: {
                 value: dados.localizacao.altitude
             },
