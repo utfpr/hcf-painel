@@ -222,7 +222,6 @@ class ListaLocaisColeta extends Component {
             const response = await axios.get('/locais-coleta', { params })
 
             if (response.status === 200) {
-                // Mudança: acessar diretamente response.data em vez de const { data } = response
                 this.setState({
                     locais: this.formataDadosLocais(response.data.resultado),
                     metadados: response.data.metadados,

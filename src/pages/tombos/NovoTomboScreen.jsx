@@ -48,6 +48,7 @@ import {
     verificaPendenciasService, requisitaNumeroColetorService, requisitaCodigoBarrasService,
     handleSubmitIdentificadorService
 } from './TomboService'
+import { formatarDataBRtoEN } from '@/helpers/conversoes/ConversoesData'
 
 const { confirm } = Modal
 const FormItem = Form.Item
@@ -2068,7 +2069,7 @@ class NovoTomboScreen extends Component {
             locaisColeta: [],
             fetchingLocaisColeta: true
         })
-        axios.get('/locais-coleta', { params: { cidade_id: cidadeId } })
+        axios.get('/locais-coleta', { params: { cidade_id: cidadeId, getAll: 'true' } })
             .then(response => {
                 if (response.status === 200) {
                     this.setState({
@@ -2369,13 +2370,20 @@ class NovoTomboScreen extends Component {
         })
     }
 
+    normalizaDataTombo = valor => {
+        if (!valor) return null
+        if (/^\d{4}-\d{2}-\d{2}$/.test(valor)) return valor
+        const convertido = formatarDataBRtoEN(valor)
+        return convertido || null
+    }
+
     montaFormularioJsonEdicao = values => {
         const {
             altitude, autorEspecie, autorVariedade, autoresSubespecie, cidade, coletores, coletoresComplementares, complemento,
             dataColetaAno, dataColetaDia, dataColetaMes, dataIdentAno, dataIdentDia, dataIdentMes,
             especie, reino, familia, fases, genero, identificador, latitude, localidadeCor, longitude,
             nomePopular, numColeta, observacoesColecaoAnexa, observacoesTombo, relevo, solo,
-            subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao, unicata
+            subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao, unicata, dataTombo
         } = values
 
         const isUserIdentificador = isIdentificador()
@@ -2434,6 +2442,7 @@ class NovoTomboScreen extends Component {
         json.principal.nome_popular = nomePopular || null
         json.principal.tipo_id = tipo ? parseInt(tipo) : null
         json.principal.cor = localidadeCor || null
+        json.principal.data_tombo = this.normalizaDataTombo(dataTombo)
 
         if (dataColetaDia || dataColetaMes || dataColetaAno) {
             json.principal.data_coleta = {
@@ -2513,7 +2522,7 @@ class NovoTomboScreen extends Component {
             dataColetaAno, dataColetaDia, dataColetaMes, dataIdentAno, dataIdentDia, dataIdentMes,
             especie, reino, familia, fases, genero, identificador, latitude, localidadeCor, longitude,
             nomePopular, numColeta, observacoesColecaoAnexa, observacoesTombo, relevo, solo,
-            subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao, unicata
+            subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao, unicata, dataTombo
         } = values
         const json = {}
 
@@ -2548,6 +2557,7 @@ class NovoTomboScreen extends Component {
         const vegetacaoId = extrairId(vegetacao)
 
         if (nomePopular) json.principal = { nome_popular: nomePopular }
+        json.principal = { ...json.principal, data_tombo: this.normalizaDataTombo(dataTombo)}
         json.principal = { ...json.principal, entidade_id: parseInt(entidade) }
         json.principal.numero_coleta = parseInt(numColeta)
         if (dataColetaDia) json.principal.data_coleta = { dia: dataColetaDia }
@@ -3121,7 +3131,6 @@ class NovoTomboScreen extends Component {
                     <InputFormField
                         name="dataTombo"
                         title="Data do Tombo:"
-                        disabled
                         getFieldDecorator={getFieldDecorator}
                     />
                 </Row>
@@ -3786,10 +3795,6 @@ class NovoTomboScreen extends Component {
                             <FormItem>
                                 {getFieldDecorator('numColeta', {
                                     initialValue: String(this.state.numero_coleta),
-                                    rules: [{
-                                        required: true,
-                                        message: 'Insira o numero da coleta'
-                                    }]
                                 })(
                                     <Input
                                         type="text"
