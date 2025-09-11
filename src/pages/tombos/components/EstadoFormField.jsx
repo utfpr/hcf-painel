@@ -27,6 +27,7 @@ const EstadoFormField = ({
             onClickAddMore={onClickAddMore}
             onChange={onChange}
             validateStatus={validateStatus}
+            others={{allowClear: true}}
         >
             {optionEstados()}
         </SelectedFormFiled>

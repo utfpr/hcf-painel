@@ -3,6 +3,7 @@ import React from 'react'
 import { Select } from 'antd'
 
 import SelectedFormFiled from './SelectedFormFiled'
+import { all } from 'axios'
 
 const { Option } = Select
 
@@ -27,6 +28,7 @@ const SoloFormField = ({
             onClickAddMore={onClickAddMore}
             onChange={onChange}
             validateStatus={validateStatus}
+            others={{allowClear: true}}
         >
             {optionSolos()}
         </SelectedFormFiled>

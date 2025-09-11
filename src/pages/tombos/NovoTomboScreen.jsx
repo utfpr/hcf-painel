@@ -2762,21 +2762,17 @@ class NovoTomboScreen extends Component {
                                     visibleModal: true
                                 })
                             }}
-                            rules={[{
-                                required: true,
-                                message: 'Insira ao menos um coletor'
-                            }]}
                             style={{ width: '100%' }}
                             notFoundContent={fetchingColetores ? <Spin size="small" /> : null}
                             labelInValue
                             value={valoresColetores}
-                            // onChange={this.handleChangeColetores}
                             placeholder="Selecione os coletores"
                             filterOption={false}
                             onSearch={value => {
                                 this.requisitaColetores(value)
                             }}
                             status={getFieldError('coletores') ? 'error' : ''}
+                            others={{allowClear: true}}
                         />
                     </Col>
 
@@ -3961,6 +3957,7 @@ class NovoTomboScreen extends Component {
                                         showSearch
                                         placeholder="Selecione o tipo"
                                         optionFilterProp="children"
+                                        allowClear
                                     >
                                         {this.optionTipo()}
                                     </Select>

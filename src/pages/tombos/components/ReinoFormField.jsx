@@ -27,6 +27,7 @@ const ReinoFormField = ({
             getFieldDecorator={getFieldDecorator}
             onClickAddMore={onClickAddMore}
             onChange={onChange}
+            others={{allowClear: true}}
         >
             {optionReino()}
         </SelectedFormFiled>
