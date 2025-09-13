@@ -8,15 +8,16 @@ import {
 import axios from 'axios'
 import { Link } from 'react-router-dom'
 
+import { formatarDataBRtoEN } from '@/helpers/conversoes/ConversoesData'
 import converteDecimalParaGrausMinutosSegundos from '@/helpers/conversoes/Coordenadas'
 import { Form } from '@ant-design/compatible'
 import {
     DeleteOutlined, EditOutlined, PlusOutlined, UploadOutlined
 } from '@ant-design/icons'
 
+import BarcodeTableComponent from '../../components/BarcodeTableComponent'
 import ButtonComponent from '../../components/ButtonComponent'
 import ModalCadastroComponent from '../../components/ModalCadastroComponent'
-import BarcodeTableComponent from '../../components/BarcodeTableComponent'
 import UploadPicturesComponent from '../../components/UploadPicturesComponent'
 import { fotosBaseUrl, baseUrl } from '../../config/api'
 import { isIdentificador } from '../../helpers/usuarios'
@@ -48,7 +49,6 @@ import {
     verificaPendenciasService, requisitaNumeroColetorService, requisitaCodigoBarrasService,
     handleSubmitIdentificadorService
 } from './TomboService'
-import { formatarDataBRtoEN } from '@/helpers/conversoes/ConversoesData'
 
 const { confirm } = Modal
 const FormItem = Form.Item
@@ -208,12 +208,27 @@ class NovoTomboScreen extends Component {
     }
 
     componentDidMount() {
-        this.setState({
-            loading: true
-        })
-        this.requisitaDadosFormulario()
-        this.requisitaReinos()
-        this.requisitaFamilias(this.state.reinoInicial)
+        this.carregaInformacoesEdicao()
+    }
+
+    carregaInformacoesEdicao = async () => {
+        try {
+            this.setState({
+                loading: true
+            })
+
+            await Promise.all([
+                this.requisitaDadosFormulario(),
+                this.requisitaReinos(),
+                this.requisitaFamilias(this.state.reinoInicial)
+            ])
+        } catch (error) {
+            console.error(error)
+        } finally {
+            this.setState({
+                loading: false
+            })
+        }
     }
 
     getCodigosTombo = (hcf) => {
@@ -221,20 +236,20 @@ class NovoTomboScreen extends Component {
           .get(`/tombos/codigo_barras/${hcf}`)
           .then(({ status, data }) => {
             if (status !== 200 || !Array.isArray(data)) return;
-      
+
             const parseNumero = (numBarra, codigoBarra) => {
               const inteiro = parseInt(String(numBarra ?? "").split(".")[0], 10);
               if (Number.isFinite(inteiro)) return inteiro;
               return parseInt(String(codigoBarra || "").replace(/\D/g, ""), 10);
             };
-      
+
             const normalize = (items) =>
               items.map((item) => ({
                 id: item.id,
                 codigo_barra: String(item.codigo_barra || ""),
                 num_barra: parseNumero(item.num_barra, item.codigo_barra),
               }));
-      
+
             const dedupeByCodigo = (rows) =>
               rows
                 .filter((row) => row.codigo_barra)
@@ -242,24 +257,24 @@ class NovoTomboScreen extends Component {
                   if (!acc.some((x) => x.codigo_barra === cur.codigo_barra)) acc.push(cur);
                   return acc;
                 }, []);
-      
+
             const barcodeEditList = dedupeByCodigo(normalize(data));
-      
+
             console.log("Loaded barcodes:", barcodeEditList);
 
             this.setState({ codigosBarrasForm: barcodeEditList });
             this.setState({ codigosBarrasInicial : barcodeEditList });
           })
           .catch(this.catchRequestError);
-    };     
+    };
 
     handleChangeBarcodeList = (updatedList) => {
         const serialize = (list = []) =>
           list.map(({ codigo_barra, num_barra }) => `${codigo_barra}:${num_barra}`).join("|");
-      
+
         const previousSignature = serialize(this.state.codigosBarrasForm);
         const nextSignature = serialize(updatedList);
-      
+
         if (previousSignature !== nextSignature) {
           this.setState({ codigosBarrasForm: updatedList });
         }
@@ -272,7 +287,7 @@ class NovoTomboScreen extends Component {
         };
         const deletedNum = toInt(num_barra);
         const deletedCode = String(codigo_barra || '');
-      
+
         this.setState((prev) => ({
           codigosBarrasInicial: (prev.codigosBarrasInicial || []).filter((item) => {
             const itemNum = toInt(item?.num_barra);
@@ -281,7 +296,7 @@ class NovoTomboScreen extends Component {
           }),
         }));
     };
-      
+
 
     editarCodigosBarras = async (tomboHcf, currentList) => {
         try {
@@ -290,13 +305,13 @@ class NovoTomboScreen extends Component {
 
           const initialSet = new Set(initialList.map(item => item.codigo_barra));
           const currentSet = new Set(currentBarcodes.map(item => item.codigo_barra));
-      
+
           const newBarcodes = currentBarcodes.filter(item => !initialSet.has(item.codigo_barra));
-      
+
           if (newBarcodes.length > 0) {
             await this.criarCodigoBarras(tomboHcf, newBarcodes);
           }
-      
+
           if (newBarcodes.length > 0) {
             message.success("Códigos de barra atualizados com sucesso");
           }
@@ -308,33 +323,33 @@ class NovoTomboScreen extends Component {
 
     normalizeBarcodes = (barcodeList = []) => {
         const asArray = Array.isArray(barcodeList) ? barcodeList : [barcodeList];
-      
+
         const integerPart = (val) => {
           const [int] = String(val).split(".");
           const n = parseInt(int, 10);
           return Number.isFinite(n) ? n : NaN;
         };
-      
+
         const extractNumber = (item) => {
           if (item == null) return NaN;
-      
+
           // 1) Objeto com num_barra (ex.: "41806.0")
           if (typeof item === "object" && "num_barra" in item) {
             return integerPart(item.num_barra);
           }
-      
+
           // 2) Objeto com codigo_barra OU string tipo "HCF000041890"
           if ((typeof item === "object" && "codigo_barra" in item) || typeof item === "string") {
             const raw = typeof item === "string" ? item : String(item.codigo_barra || "");
             const n = parseInt(raw.replace(/\D/g, ""), 10);
             return Number.isFinite(n) ? n : NaN;
           }
-      
+
           // 3) Número puro
           if (typeof item === "number" && Number.isFinite(item)) {
             return Math.trunc(item);
           }
-      
+
           // 4) Fallback: extrai dígitos de qualquer coisa
           const n = parseInt(String(item).replace(/\D/g, ""), 10);
           return Number.isFinite(n) ? n : NaN;
@@ -353,29 +368,29 @@ class NovoTomboScreen extends Component {
           message.error("Tombo (HCF) inválido.");
           return;
         }
-      
+
         const numeros = this.normalizeBarcodes(barcodeList);
         if (!numeros.length) {
           message.warning("Nenhum código válido para enviar.");
           return;
         }
-      
+
         const key = "post-codigos";
-      
+
         const results = await Promise.allSettled(
           numeros.map((n) => axios.post("/tombos/codigo_barras", { hcf, codigo_barra: n }))
         );
-      
+
         const ok = results.filter((r) => r.status === "fulfilled").length;
         const fail = results.length - ok;
-      
+
         if (ok) {
           message.success({ key, content: `Códigos criados: ${ok}${fail ? ` • Falharam: ${fail}` : ""}` });
         } else {
           message.error({ key, content: "Nenhum código foi criado." });
         }
     };
-      
+
 
     handleRequisicao = values => {
         const { match } = this.props
@@ -455,41 +470,37 @@ class NovoTomboScreen extends Component {
         )
     }
 
-    defaultRequest = (onFinish, requestService, successMessage, errorMessage, successCalback, ...params) => {
-        let response = null
-        const getResponse = resp => {
-            response = resp
-        }
+    defaultRequest = async (onFinish, requestService, successMessage, errorMessage, successCalback, ...params) => {
+        try {
+            await requestService(
+                response => {
+                    successCalback(response, params)
+                    if (successMessage !== '') {
+                        this.openNotificationWithIcon('success', 'Sucesso', successMessage)
+                    }
+                },
+                ...params
+            )
+        } catch (error) {
+            console.error(error)
+            let message = ''
+            if (error) {
+                message = `Falha ao carregar os dados do tombo: ${error.message}`
+            }
 
-        requestService(getResponse, ...params)
-            .then(() => {
-                successCalback(response, params)
-                if (successMessage !== '') {
-                    // this.openNotificationWithIcon('success', 'Sucesso', 'SIM')
-                    this.openNotificationWithIcon('success', 'Sucesso', successMessage)
-                }
+            this.openNotificationWithIcon(
+                'warning',
+                'Falha',
+                message
+            )
+        } finally {
+            this.setState({
+                loading: false
             })
-            .catch(error => {
-                // console.log({ error })
-                console.log(`----- ${error.stack} -----`)
-                if (error !== '') {
-                    this.openNotificationWithIcon('warning', 'Falha', 'não')
-                } else {
-                    // this.openNotificationWithIcon(
-                    //     'error',
-                    //     'Falha',
-                    //     errorMessage
-                    // )
-                }
-            })
-            .finally(() => {
-                this.setState({
-                    loading: false
-                })
-                if (onFinish !== null) {
-                    onFinish()
-                }
-            })
+            if (onFinish !== null) {
+                onFinish()
+            }
+        }
     }
 
     requisitaDadosEdicao = id => {
@@ -507,7 +518,6 @@ class NovoTomboScreen extends Component {
         const dados = response.data
 
         const { match } = this.props
-        this.requisitaNumeroHcf()
         this.setState({
             ...this.state,
             ...dados
@@ -519,6 +529,7 @@ class NovoTomboScreen extends Component {
             this.requisitaDadosEdicao(match.params.tombo_id)
             this.getCodigosTombo(match.params.tombo_id)
         } else {
+            this.requisitaNumeroHcf()
             const hcfHerbario = dados.herbarios.find(herbario => herbario.sigla === 'HCF')
             const paisBrasil = dados.paises.find(p => p.nome === 'BRASIL')
 
@@ -550,8 +561,8 @@ class NovoTomboScreen extends Component {
         this.requisitaIdentificadoresPredicao()
     }
 
-    requisitaDadosFormulario = () => {
-        this.defaultRequest(
+    requisitaDadosFormulario = async () => {
+        await this.defaultRequest(
             null,
             requisitaDadosFormularioService,
             '',
@@ -907,7 +918,7 @@ class NovoTomboScreen extends Component {
                     this.requisitaReinos()
                     this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
                 }
-                this.props.form.setFields({ campo: { value: '' } }) // eslint-disable-line     
+                this.props.form.setFields({ campo: { value: '' } }) // eslint-disable-line
             })
             .catch(err => {
                 this.setState({
@@ -978,19 +989,13 @@ class NovoTomboScreen extends Component {
             })
     }
 
-    requisitaReinos = () => {
-        this.setState({
-            loading: true
-        })
-        axios.get('/reinos', {
+    requisitaReinos = async () => {
+        return axios.get('/reinos', {
             params: {
                 limite: 9999999999
             }
         })
             .then(response => {
-                this.setState({
-                    loading: false
-                })
                 if (response.status === 200) {
                     this.setState({
                         reinos: response.data.resultado
@@ -1000,9 +1005,6 @@ class NovoTomboScreen extends Component {
                 }
             })
             .catch(err => {
-                this.setState({
-                    loading: false
-                })
                 const { response } = err
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
@@ -1019,20 +1021,14 @@ class NovoTomboScreen extends Component {
             .catch(this.catchRequestError)
     }
 
-    requisitaFamilias = reinoId => {
-        this.setState({
-            loading: true
-        })
-        axios.get('/familias', {
+    requisitaFamilias = reinoId => async () => {
+        return axios.get('/familias', {
             params: {
                 limite: 9999999999,
                 reino_id: reinoId
             }
         })
             .then(response => {
-                this.setState({
-                    loading: false
-                })
                 if (response.status === 200) {
                     this.setState({
                         familias: response.data.resultado
@@ -1042,9 +1038,6 @@ class NovoTomboScreen extends Component {
                 }
             })
             .catch(err => {
-                this.setState({
-                    loading: false
-                })
                 const { response } = err
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
@@ -1065,17 +1058,11 @@ class NovoTomboScreen extends Component {
         if (!this.props.form.getFieldsValue().familia) {
             this.openNotificationWithIcon('warning', 'Falha', 'Selecione uma família para cadastrar uma subfamília.')
         } else {
-            this.setState({
-                loading: true
-            })
             axios.post('/subfamilias', {
                 nome: this.props.form.getFieldsValue().campo,
                 familia_id: this.props.form.getFieldsValue().familia
             })
                 .then(response => {
-                    this.setState({
-                        loading: false
-                    })
                     if (response.status === 204) {
                         this.requisitaSubfamilias(this.props.form.getFieldsValue().familia)
                         this.setState({
@@ -1092,9 +1079,6 @@ class NovoTomboScreen extends Component {
                     })
                 })
                 .catch(err => {
-                    this.setState({
-                        loading: false
-                    })
                     const { response } = err
                     if (response && response.data) {
                         if (response.status === 400 || response.status === 422) {
@@ -2192,7 +2176,7 @@ class NovoTomboScreen extends Component {
 
     insereDadosFormulario = dados => {
         const { form } = this.props
-        this.setState({ dadosFormulario: dados })        
+        this.setState({ dadosFormulario: dados })
         let insereState = {
             estados: dados.estados,
             cidades: dados.cidades,
@@ -2266,6 +2250,9 @@ class NovoTomboScreen extends Component {
         const date = new Date(dados.data_tombo)
 
         form.setFields({
+            numeroTombo: {
+                value: dados.hcf
+            },
             dataTombo: {
                 value: `${date.getUTCDate()}/${date.getUTCMonth() + 1}/${date.getUTCFullYear()}`
             },
@@ -2562,7 +2549,7 @@ class NovoTomboScreen extends Component {
         const vegetacaoId = extrairId(vegetacao)
 
         if (nomePopular) json.principal = { nome_popular: nomePopular }
-        json.principal = { ...json.principal, data_tombo: this.normalizaDataTombo(dataTombo)}
+        json.principal = { ...json.principal, data_tombo: this.normalizaDataTombo(dataTombo) }
         json.principal = { ...json.principal, entidade_id: parseInt(entidade) }
         json.principal.numero_coleta = parseInt(numColeta)
         if (dataColetaDia) json.principal.data_coleta = { dia: dataColetaDia }
@@ -2822,11 +2809,11 @@ class NovoTomboScreen extends Component {
     renderExsicataTipo = getFieldDecorator => {
         const { value } = this.state
         return (
-                <ExsicataTipoFormField
-                    getFieldDecorator={getFieldDecorator}
-                    value={value}
-                    onChange={this.onChange}
-                />
+            <ExsicataTipoFormField
+                getFieldDecorator={getFieldDecorator}
+                value={value}
+                onChange={this.onChange}
+            />
         )
     }
 
@@ -3617,7 +3604,7 @@ class NovoTomboScreen extends Component {
                             onChangeBarcodeList={this.handleChangeBarcodeList}
                             isEditing={this.state.isEditing}
                         />
-                    </Row> 
+                    </Row>
                     <br />
                     {' '}
                     <br />
@@ -3717,7 +3704,7 @@ class NovoTomboScreen extends Component {
                                     Enviar
                                 </Button>
                             </Col>
-                        </Col>*/}
+                        </Col> */}
                     </Row>
                     <Divider dashed />
                     {/* {this.state.showTable && this.props.match.params.tombo_id && (
@@ -3799,7 +3786,7 @@ class NovoTomboScreen extends Component {
                         <Col span={24}>
                             <FormItem>
                                 {getFieldDecorator('numColeta', {
-                                    initialValue: String(this.state.numero_coleta),
+                                    initialValue: String(this.state.numero_coleta)
                                 })(
                                     <Input
                                         type="text"

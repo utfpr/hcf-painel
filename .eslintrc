@@ -137,7 +137,7 @@
         "react/no-unstable-nested-components": "warn",
         "react/no-access-state-in-setstate": "warn",
         "react/no-array-index-key": "warn",
-        "react/destructuring-assignment": "warn",
+        "react/destructuring-assignment": "off",
         "react/prefer-stateless-function": "warn",
         "react/no-unused-class-component-methods": "warn",
         "jsx-a11y/click-events-have-key-events": "warn",
