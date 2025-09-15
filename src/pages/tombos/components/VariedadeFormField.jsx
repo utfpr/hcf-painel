@@ -28,6 +28,7 @@ const VariedadeFormField = ({
             onChange={onChange}
             validateStatus={validateStatus}
             autor={autor}
+            others={{allowClear: true}}
         >
             {optionVariedades()}
         </SelectedFormFiled>

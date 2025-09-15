@@ -32,6 +32,7 @@ const CidadeFormField = ({
                 required: true,
                 message: 'Escolha uma cidade'
             }]}
+            others={{allowClear: true}}
         >
             {optionCidades()}
         </SelectedFormFiled>
