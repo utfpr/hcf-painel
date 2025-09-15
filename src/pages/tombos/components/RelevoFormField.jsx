@@ -27,6 +27,7 @@ const RelevoFormField = ({
             onClickAddMore={onClickAddMore}
             onChange={onChange}
             validateStatus={validateStatus}
+            others={{allowClear: true}}
         >
             {optionRelevos()}
         </SelectedFormFiled>

@@ -26,6 +26,7 @@ const FamiliaFormField = ({
             getFieldDecorator={getFieldDecorator}
             onClickAddMore={onClickAddMore}
             onChange={onChange}
+            others={{allowClear: true}}
         >
             {optionFamilia()}
         </SelectedFormFiled>

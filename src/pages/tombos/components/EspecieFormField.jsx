@@ -28,6 +28,7 @@ const EspecieFormField = ({
             onChange={onChange}
             validateStatus={validateStatus}
             autor={autor}
+            others={{allowClear: true}}
         >
             {optionEspecie()}
         </SelectedFormFiled>

@@ -27,6 +27,7 @@ const VegetacaoFormField = ({
             onClickAddMore={onClickAddMore}
             onChange={onChange}
             validateStatus={validateStatus}
+            others={{allowClear: true}}
         >
             {optionVegetacoes()}
         </SelectedFormFiled>

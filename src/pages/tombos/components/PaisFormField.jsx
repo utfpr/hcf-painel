@@ -27,6 +27,7 @@ const PaisFormField = ({
             onClickAddMore={onClickAddMore}
             onChange={onChange}
             validateStatus={validateStatus}
+            others={{allowClear: true}}
         >
             {optionPaises()}
         </SelectedFormFiled>
