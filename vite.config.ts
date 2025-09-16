@@ -12,7 +12,7 @@ export default defineConfig({
             transformIndexHtml(html) {
                 return html.replace(
                     /%VITE_RECAPTCHA_SITE_KEY%/g,
-                    process.env.VITE_RECAPTCHA_SITE_KEY || 'XXaaxxxxAAAxxxxAAAAAxxd343l'
+                    process.env.VITE_RECAPTCHA_SITE_KEY || ''
                 )
             }
         }
