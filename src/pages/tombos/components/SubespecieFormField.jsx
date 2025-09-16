@@ -28,6 +28,7 @@ const SubespecieFormField = ({
             onChange={onChange}
             validateStatus={validateStatus}
             autor={autor}
+            others={{allowClear: true}}
         >
             {optionSubespecies()}
         </SelectedFormFiled>

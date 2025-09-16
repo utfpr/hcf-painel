@@ -21,7 +21,7 @@ const ExsicataTipoFormField = ({
             <Col span={24}>
                 <FormItem>
                     {getFieldDecorator('unicata', {
-                        initialValue: true
+                        initialValue: false
                     })(
                         <RadioGroup onChange={onChange} value={value}>
                             <Radio value><Tag color="cyan">Unicata</Tag></Radio>

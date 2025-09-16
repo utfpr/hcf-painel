@@ -628,6 +628,7 @@ class ListaTaxonomiaSubespecie extends Component {
                                                 style={{ width: '100%' }}
                                                 placeholder="Selecione um autor"
                                                 optionFilterProp="children"
+                                                allowClear
                                             >
 
                                                 {this.optionAutores()}

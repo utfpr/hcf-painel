@@ -27,6 +27,7 @@ const GeneroFormField = ({
             onClickAddMore={onClickAddMore}
             onChange={onChange}
             validateStatus={validateStatus}
+            others={{allowClear: true}}
         >
             {optionGenero()}
         </SelectedFormFiled>

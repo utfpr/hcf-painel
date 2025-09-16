@@ -28,6 +28,7 @@ const SubfamiliaFormField = ({
             onChange={onChange}
             validateStatus={validateStatus}
             autor={autor}
+            others={{allowClear: true}}
         >
             {optionSubfamilia()}
         </SelectedFormFiled>

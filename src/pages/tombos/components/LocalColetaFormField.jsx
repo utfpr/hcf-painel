@@ -32,12 +32,14 @@ const LocalColetaFormField = ({
             onSearch={onSearch}
             others={{
                 labelInValue: true,
-                filterOption: true,            
+                filterOption: true,    
+                allowClear: true,        
             }}
             rules={[{
                 required: true,
                 message: 'Escolha um local de coleta'
             }]}
+            
         >
             {optionLocalColeta()}
         </SelectedFormFiled>
