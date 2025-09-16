@@ -561,3 +561,221 @@
 .ant-config-provider {
   color: #000000 !important;
 }
+
+/* Botão Pesquisar - Cor Secundária Escura */
+.ant-btn-pesquisar {
+  background-color: #B8860B !important;
+  border-color: #B8860B !important;
+  color: #FFFFFF !important;
+}
+
+.ant-btn-pesquisar:hover,
+.ant-btn-pesquisar:focus {
+  background-color: #DAA520 !important;
+  border-color: #DAA520 !important;
+  color: #FFFFFF !important;
+}
+
+.ant-btn-pesquisar:active {
+  background-color: #9A7209 !important;
+  border-color: #9A7209 !important;
+  color: #FFFFFF !important;
+}
+
+/* Sider - Tema Dark */
+.ant-layout-sider-dark {
+  background-color: #007A33 !important;
+}
+
+.ant-layout-sider-dark .ant-layout-sider-children {
+  background-color: #007A33 !important;
+}
+
+/* Menu - Tema Dark */
+.ant-menu-dark {
+  background-color: #007A33 !important;
+}
+
+.ant-menu-dark .ant-menu-item {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-item a {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-item span {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-item:hover {
+  background-color: #00994A !important;
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-item:hover a {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-item:hover span {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-item-selected {
+  background-color: #00994A !important;
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-item-selected a {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-item-selected span {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-title {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-title span {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-title:hover {
+  background-color: #00994A !important;
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-title:hover span {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-open > .ant-menu-submenu-title {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-open > .ant-menu-submenu-title span {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-selected > .ant-menu-submenu-title {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-selected > .ant-menu-submenu-title span {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-selected > .ant-menu-submenu-title:hover {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-selected > .ant-menu-submenu-title:hover span {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-vertical > .ant-menu-submenu-title:hover {
+  background-color: #00994A !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-vertical > .ant-menu-submenu-title:hover .ant-menu-submenu-arrow {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-vertical > .ant-menu-submenu-title:hover .ant-menu-submenu-arrow::after,
+.ant-menu-dark .ant-menu-submenu-vertical > .ant-menu-submenu-title:hover .ant-menu-submenu-arrow::before {
+  background: #ffffff !important;
+}
+
+/* Submenu - Fundo quando aberto */
+.ant-menu-dark .ant-menu-submenu-popup {
+  background-color: #005A26 !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-popup .ant-menu {
+  background-color: #005A26 !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-popup .ant-menu-item {
+  background-color: #005A26 !important;
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-popup .ant-menu-item a {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-popup .ant-menu-item span {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-popup .ant-menu-item:hover {
+  background-color: #007A33 !important;
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-popup .ant-menu-item:hover a {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-popup .ant-menu-item:hover span {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-popup .ant-menu-item-selected {
+  background-color: #007A33 !important;
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-popup .ant-menu-item-selected a {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-popup .ant-menu-item-selected span {
+  color: #ffffff !important;
+}
+
+/* Submenu inline - Fundo quando aberto */
+.ant-menu-dark .ant-menu-submenu-inline .ant-menu {
+  background-color: #005A26 !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-inline .ant-menu-item {
+  background-color: #005A26 !important;
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-inline .ant-menu-item a {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-inline .ant-menu-item span {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-inline .ant-menu-item:hover {
+  background-color: #007A33 !important;
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-inline .ant-menu-item:hover a {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-inline .ant-menu-item:hover span {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-inline .ant-menu-item-selected {
+  background-color: #007A33 !important;
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-inline .ant-menu-item-selected a {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-inline .ant-menu-item-selected span {
+  color: #ffffff !important;
+}
