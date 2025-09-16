@@ -64,8 +64,150 @@
   background-color: white;
   padding: 32px;
   border-radius: 5px;
-  min-width: 40%;
-  max-width: 400px;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsividade para diferentes tamanhos de tela */
+@media (max-width: 768px) {
+  .contentForm {
+    padding: 24px 20px;
+    margin: 10px;
+    border-radius: 8px;
+  }
+  
+  .divOpaca {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .contentForm {
+    padding: 0 16px 20px 16px;
+    margin: 5px;
+    border-radius: 6px;
+  }
+  
+  .divOpaca {
+    padding: 5px 5px 5px 5px;
+    align-items: flex-start;
+    padding-top: 20px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .contentForm {
+    padding: 40px;
+    max-width: 600px;
+  }
+}
+
+/* Menu Desktop - visível apenas em telas grandes */
+.desktop-menu {
+  display: block;
+}
+
+.mobile-menu-button {
+  display: none;
+}
+
+/* Menu Mobile - visível apenas em telas pequenas */
+@media (max-width: 768px) {
+  .desktop-menu {
+    display: none;
+  }
+  
+  .mobile-menu-button {
+    display: block;
+  }
+}
+
+/* Responsividade do menu desktop */
+.responsive-menu {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+}
+
+.responsive-menu::-webkit-scrollbar {
+  height: 3px;
+}
+
+.responsive-menu::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.responsive-menu::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.menu-item-responsive {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+@media (min-width: 769px) {
+  .ant-menu-horizontal {
+    font-size: 14px;
+  }
+  
+  .ant-menu-horizontal .ant-menu-item {
+    padding: 0 12px;
+    margin: 0 4px;
+  }
+}
+
+/* Estilos do Drawer Mobile */
+.ant-drawer-header {
+  background-color: #007A33 !important;
+  border-bottom: 1px solid #d9d9d9 !important;
+}
+
+.ant-drawer-title {
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+.ant-drawer-close {
+  color: #ffffff !important;
+}
+
+.ant-drawer-close:hover {
+  color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Estilos específicos para itens do menu mobile */
+.ant-drawer-body .ant-menu-vertical .ant-menu-item {
+  height: auto !important;
+  min-height: 56px !important;
+  line-height: 1.5 !important;
+  padding: 20px 24px !important;
+  margin: 0 !important;
+  border-bottom: 1px solid #f0f0f0 !important;
+  display: flex !important;
+  align-items: center !important;
+  overflow: visible !important;
+}
+
+.ant-drawer-body .ant-menu-vertical .ant-menu-item:last-child {
+  border-bottom: none !important;
+}
+
+.ant-drawer-body .ant-menu-vertical .ant-menu-item:hover {
+  background-color: #f5f5f5 !important;
+}
+
+.ant-drawer-body .ant-menu-vertical .ant-menu-item a {
+  color: #000000 !important;
+  text-decoration: none !important;
+  width: 100% !important;
+  display: block !important;
+  line-height: 1.5 !important;
 }
 
 

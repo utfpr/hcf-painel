@@ -22,6 +22,12 @@ axios.interceptors.response.use(
         if (err.error.code === 401) {
             localStorage.removeItem('token')
             localStorage.removeItem('usuario')
+            
+            // Limpa as credenciais salvas do "Lembrar-me"
+            localStorage.removeItem('hcf_saved_email')
+            localStorage.removeItem('hcf_saved_password')
+            localStorage.removeItem('hcf_remember_me')
+            
             window.location.href = '/inicio'
         }
         return Promise.reject(error)

@@ -108,6 +108,11 @@ export default class MainLayout extends Component {
 
         setUsuario('')
         localStorage.setItem('usuario', '')
+        
+        // Limpa as credenciais salvas do "Lembrar-me"
+        localStorage.removeItem('hcf_saved_email')
+        localStorage.removeItem('hcf_saved_password')
+        localStorage.removeItem('hcf_remember_me')
     }
 
     renderFormulario() {
