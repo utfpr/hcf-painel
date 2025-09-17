@@ -56,7 +56,7 @@ class RelatorioLocalColetaScreen extends Component {
         const { pagina } = this.state
         this.requisitaDadosDoRelatorio({}, pagina, null, null, true)
         this.requisitaPaises()
-        this.requisitaListaLocais({}, null)
+        this.requisitaListaLocais({ requisicaoInicial: true }, null)
     }
 
     requisitaPaises = async () => {
@@ -158,12 +158,23 @@ class RelatorioLocalColetaScreen extends Component {
             const response = await axios.get('/locais-coleta', { params })
 
             if (response.status === 200) {
-                const res = this.formataDadosLocais(response.data.resultado)
+                let { pais } = valores
+                let { estado } = valores
+                if (valores.requisicaoInicial) {
+                    const bra = this.state.paises.find(p => p.sigla === 'BRA')
+                    if (bra) {
+                        pais = bra.id
+                    }
+                    const parana = this.state.estados.find(e => e.sigla === 'PR')
+                    if (parana) {
+                        estado = parana.id
+                    }
+                }
+
+                const res = this.formataDadosLocais(response.data.resultado, pais, estado)
                 this.setState({
                     locais: res
                 })
-
-                console.log(res)
             } else if (response.status === 400) {
                 this.notificacao('warning', 'Buscar locais', 'Erro ao buscar os locais de coleta.')
                 this.setState({ loading: false })
@@ -177,13 +188,23 @@ class RelatorioLocalColetaScreen extends Component {
         }
     }
 
-    formataDadosLocais = locais => locais.map(item => ({
+    formataDadosLocais = (locais, pais, estado) => locais.map(item => ({
         key: item.id,
         nome: item.descricao,
         pais: item.cidade?.estado?.paise?.nome || '',
+        paisId: item.cidade?.estado?.paise?.id || null,
         estado: item.cidade?.estado?.nome || '',
+        estadoId: item.cidade?.estado?.id || null,
         cidade: item.cidade?.nome || ''
-    }))
+    })).filter(l => {
+        if (pais && estado) {
+            return l.paisId === pais && l.estadoId === estado
+        } if (pais && !estado) {
+            return l.paisId === pais
+        }
+        return true
+    })
+        .filter(v => v.nome)
 
     notificacao = (type, titulo, descricao) => {
         notification[type]({
@@ -394,6 +415,9 @@ class RelatorioLocalColetaScreen extends Component {
                                             onChange={value => {
                                                 if (value) {
                                                     this.requisitaEstados(value)
+                                                    this.requisitaListaLocais({
+                                                        pais: value
+                                                    }, null)
                                                 } else {
                                                     this.setState({
                                                         estados: [],
@@ -403,6 +427,7 @@ class RelatorioLocalColetaScreen extends Component {
                                                         estado: { value: undefined },
                                                         cidade: { value: undefined }
                                                     })
+                                                    this.requisitaListaLocais({}, null)
                                                 }
                                             }}
                                         >
@@ -428,11 +453,18 @@ class RelatorioLocalColetaScreen extends Component {
                                             onChange={value => {
                                                 if (value) {
                                                     this.requisitaCidades(value)
+                                                    this.requisitaListaLocais({
+                                                        estado: value,
+                                                        pais: this.props.form.getFieldValue('pais')
+                                                    }, null)
                                                 } else {
                                                     this.setState({ cidades: [] })
                                                     this.props.form.setFields({
                                                         cidade: { value: undefined }
                                                     })
+                                                    this.requisitaListaLocais({
+                                                        pais: this.props.form.getFieldValue('pais')
+                                                    }, null)
                                                 }
                                             }}
                                         >
@@ -457,9 +489,16 @@ class RelatorioLocalColetaScreen extends Component {
                                             optionFilterProp="children"
                                             onChange={value => {
                                                 if (value) {
-                                                    this.requisitaListaLocais({ cidade: value }, null)
+                                                    this.requisitaListaLocais({
+                                                        cidade: value,
+                                                        estado: this.props.form.getFieldValue('estado'),
+                                                        pais: this.props.form.getFieldValue('pais')
+                                                    }, null)
                                                 } else {
-                                                    this.requisitaListaLocais({}, null)
+                                                    this.requisitaListaLocais({
+                                                        estado: this.props.form.getFieldValue('estado'),
+                                                        pais: this.props.form.getFieldValue('pais')
+                                                    }, null)
                                                 }
                                             }}
                                         >
