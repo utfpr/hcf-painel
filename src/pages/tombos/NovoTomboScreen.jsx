@@ -46,7 +46,7 @@ import VegetacaoFormField from './components/VegetacaoFormField'
 import {
     excluirFotoTomboService, atualizarFotoTomboService, criaCodigoBarrasSemFotosService,
     requisitaDadosEdicaoService, requisitaDadosFormularioService, requisitaIdentificadoresPredicaoService,
-    verificaPendenciasService, requisitaNumeroColetorService, requisitaCodigoBarrasService,
+    verificaPendenciasService, requisitaCodigoBarrasService, requisitaNumeroHcfService,
     handleSubmitIdentificadorService
 } from './TomboService'
 
@@ -617,16 +617,6 @@ class NovoTomboScreen extends Component {
                 value: response.data.numero
             }
         })
-    }
-
-    requisitaNumeroColetor = () => {
-        this.defaultRequest(
-            null,
-            requisitaNumeroColetorService,
-            '',
-            'Houve um problema ao buscar o numero de coletor sugerido, tente novamente.',
-            this.onVerificaPendenciasComSucesso
-        )
     }
 
     onRequisitaCodigoBarrasComSucesso = response => {
@@ -2106,7 +2096,7 @@ class NovoTomboScreen extends Component {
         const tomboId = this.props.match.params.tombo_id
         this.defaultRequest(
             null,
-            requisitaNumeroColetorService,
+            requisitaNumeroHcfService,
             'A alteração foi realizada com sucesso.',
             'Houve um problema ao alterar o tombo, tente novamente.',
             this.onRequisitaEdicaoTomboComSucesso,
@@ -2740,7 +2730,6 @@ class NovoTomboScreen extends Component {
                                 this.ajustaColetores(value)
                             }}
                             onClickAddMore={() => {
-                                this.requisitaNumeroColetor()
                                 this.setState({
                                     formulario: {
                                         tipo: 11
