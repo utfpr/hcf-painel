@@ -6,7 +6,8 @@ import {
     Button, notification,
     Spin,
     Input,
-    DatePicker
+    DatePicker,
+    Select
 } from 'antd'
 import ptbr from 'antd/es/date-picker/locale/pt_BR'
 import axios from 'axios'
@@ -19,6 +20,7 @@ import { LoadingOutlined } from '@ant-design/icons'
 
 const FormItem = Form.Item
 const { RangePicker } = DatePicker
+const { Option } = Select
 
 const dateFormat = 'DD/MM/YYYY'
 const dateLocale = {
@@ -42,14 +44,167 @@ class RelatorioLocalColetaScreen extends Component {
                 .toISOString(),
             dataFim: moment().endOf('day')
                 .toISOString(),
-            local: null
+            local: null,
+            estados: [],
+            cidades: [],
+            paises: [],
+            locais: []
         }
     }
 
     componentDidMount() {
         const { pagina } = this.state
         this.requisitaDadosDoRelatorio({}, pagina, null, null, true)
+        this.requisitaPaises()
+        this.requisitaListaLocais({ requisicaoInicial: true }, null)
     }
+
+    requisitaPaises = async () => {
+        try {
+            const response = await axios.get('/paises')
+
+            if (response.status === 200) {
+                const paises = response.data
+                this.setState({
+                    paises
+                })
+
+                const bra = paises.find(p => p.sigla === 'BRA')
+                if (bra) {
+                    this.props.form.setFieldsValue({ pais: bra.id })
+                    this.requisitaEstados(bra.id)
+                }
+            }
+        } catch (err) {
+            this.notificacao('error', 'Erro', 'Falha ao buscar países.')
+        }
+    }
+
+    formataDadosPaises = () => this.state.paises.map(item => (
+        <Option key={item.id} value={item.id}>{item.nome}</Option>
+    ))
+
+    formataDadosEstados = () => this.state.estados.map(item => (
+        <Option key={item.id} value={item.id}>{item.nome}</Option>
+    ))
+
+    formataDadosCidades = () => this.state.cidades.map(item => (
+        <Option key={item.id} value={item.id}>{item.nome}</Option>
+    ))
+
+    formataDadosLocaisOption = () => this.state.locais.map(item => (
+        <Option key={item.key} value={item.nome}>{item.nome}</Option>
+    ))
+
+    requisitaEstados = async paisId => {
+        try {
+            const response = await axios.get('/estados', {
+                params: { id: paisId }
+            })
+
+            if (response.status === 200) {
+                const estados = response.data
+                this.setState({
+                    estados,
+                    cidades: []
+                })
+
+                const parana = estados.find(e => e.sigla === 'PR')
+                if (parana) {
+                    this.props.form.setFieldsValue({ estado: parana.id })
+                    this.requisitaCidades(parana.id)
+                }
+            }
+        } catch (err) {
+            this.notificacao('error', 'Erro', 'Falha ao buscar estados.')
+        }
+    }
+
+    requisitaCidades = async estadoId => {
+        try {
+            const response = await axios.get('/cidades', {
+                params: { id: estadoId }
+            })
+
+            if (response.status === 200) {
+                this.setState({
+                    cidades: response.data
+                })
+            }
+        } catch (err) {
+            this.notificacao('error', 'Erro', 'Falha ao buscar cidades.')
+        }
+    }
+
+    requisitaListaLocais = async (valores, sorter) => {
+        const params = {
+            pagina: 1,
+            limite: 9999
+        }
+
+        if (valores !== undefined) {
+            const { cidade } = valores
+
+            if (cidade) {
+                params.cidade_id = cidade
+            }
+        }
+
+        const campo = sorter && sorter.field ? sorter.field : 'descricao'
+        const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
+        params.order = `${campo}:${ordem}`
+
+        try {
+            const response = await axios.get('/locais-coleta', { params })
+
+            if (response.status === 200) {
+                let { pais } = valores
+                let { estado } = valores
+                if (valores.requisicaoInicial) {
+                    const bra = this.state.paises.find(p => p.sigla === 'BRA')
+                    if (bra) {
+                        pais = bra.id
+                    }
+                    const parana = this.state.estados.find(e => e.sigla === 'PR')
+                    if (parana) {
+                        estado = parana.id
+                    }
+                }
+
+                const res = this.formataDadosLocais(response.data.resultado, pais, estado)
+                this.setState({
+                    locais: res
+                })
+            } else if (response.status === 400) {
+                this.notificacao('warning', 'Buscar locais', 'Erro ao buscar os locais de coleta.')
+                this.setState({ loading: false })
+            } else {
+                this.notificacao('error', 'Erro', 'Erro do servidor ao buscar os locais de coleta.')
+                this.setState({ loading: false })
+            }
+        } catch (err) {
+            this.setState({ loading: false })
+            this.notificacao('error', 'Erro', 'Falha ao buscar locais de coleta.')
+        }
+    }
+
+    formataDadosLocais = (locais, pais, estado) => locais.map(item => ({
+        key: item.id,
+        nome: item.descricao,
+        pais: item.cidade?.estado?.paise?.nome || '',
+        paisId: item.cidade?.estado?.paise?.id || null,
+        estado: item.cidade?.estado?.nome || '',
+        estadoId: item.cidade?.estado?.id || null,
+        cidade: item.cidade?.nome || ''
+    })).filter(l => {
+        if (pais && estado) {
+            return l.paisId === pais && l.estadoId === estado
+        } if (pais && !estado) {
+            return l.paisId === pais
+        }
+        return true
+    })
+        .filter(v => v.nome)
 
     notificacao = (type, titulo, descricao) => {
         notification[type]({
@@ -244,42 +399,169 @@ class RelatorioLocalColetaScreen extends Component {
             <Card title="Filtros do relatório">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
-                        <Col span={24}>
-                            <span>Local:</span>
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                            <Col span={24}>
+                                <span>País:</span>
+                            </Col>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('pais')(
+                                        <Select
+                                            defaultValue={this.state.paises.find(item => item.sigla === 'BRA')?.id}
+                                            placeholder="Selecione um país"
+                                            allowClear
+                                            showSearch
+                                            optionFilterProp="children"
+                                            onChange={value => {
+                                                if (value) {
+                                                    this.requisitaEstados(value)
+                                                    this.requisitaListaLocais({
+                                                        pais: value
+                                                    }, null)
+                                                } else {
+                                                    this.setState({
+                                                        estados: [],
+                                                        cidades: []
+                                                    })
+                                                    this.props.form.setFields({
+                                                        estado: { value: undefined },
+                                                        cidade: { value: undefined }
+                                                    })
+                                                    this.requisitaListaLocais({}, null)
+                                                }
+                                            }}
+                                        >
+                                            {this.formataDadosPaises()}
+                                        </Select>
+                                    )}
+                                </FormItem>
+                            </Col>
                         </Col>
-                    </Row>
-                    <Row gutter={8}>
-                        <Col span={24}>
-                            <FormItem>
-                                {getFieldDecorator('local')(
-                                    <Input placeholder="RPPN Moreira Sales" type="text" />
-                                )}
-                            </FormItem>
+
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                            <Col span={24}>
+                                <span>Estado:</span>
+                            </Col>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('estado')(
+                                        <Select
+                                            placeholder="Selecione um estado"
+                                            allowClear
+                                            showSearch
+                                            optionFilterProp="children"
+                                            onChange={value => {
+                                                if (value) {
+                                                    this.requisitaCidades(value)
+                                                    this.requisitaListaLocais({
+                                                        estado: value,
+                                                        pais: this.props.form.getFieldValue('pais')
+                                                    }, null)
+                                                } else {
+                                                    this.setState({ cidades: [] })
+                                                    this.props.form.setFields({
+                                                        cidade: { value: undefined }
+                                                    })
+                                                    this.requisitaListaLocais({
+                                                        pais: this.props.form.getFieldValue('pais')
+                                                    }, null)
+                                                }
+                                            }}
+                                        >
+                                            {this.formataDadosEstados()}
+                                        </Select>
+                                    )}
+                                </FormItem>
+                            </Col>
+                        </Col>
+
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                            <Col span={24}>
+                                <span>Cidade:</span>
+                            </Col>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('cidade')(
+                                        <Select
+                                            placeholder="Selecione uma cidade"
+                                            allowClear
+                                            showSearch
+                                            optionFilterProp="children"
+                                            onChange={value => {
+                                                if (value) {
+                                                    this.requisitaListaLocais({
+                                                        cidade: value,
+                                                        estado: this.props.form.getFieldValue('estado'),
+                                                        pais: this.props.form.getFieldValue('pais')
+                                                    }, null)
+                                                } else {
+                                                    this.requisitaListaLocais({
+                                                        estado: this.props.form.getFieldValue('estado'),
+                                                        pais: this.props.form.getFieldValue('pais')
+                                                    }, null)
+                                                }
+                                            }}
+                                        >
+                                            {this.formataDadosCidades()}
+                                        </Select>
+                                    )}
+                                </FormItem>
+                            </Col>
                         </Col>
                     </Row>
 
-                    <Row gutter={8}>
-                        <Col span={24}>
-                            <span>Intervalo de data:</span>
+                    <Row gutter={8} style={{ marginTop: 16 }}>
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                            <Col span={24}>
+                                <span>Local:</span>
+                            </Col>
                         </Col>
                     </Row>
                     <Row gutter={8}>
-                        <Col span={24}>
-                            <FormItem>
-                                {getFieldDecorator('intervaloData')(
-                                    <RangePicker
-                                        defaultValue={[moment().startOf('month'), moment().endOf('day')]}
-                                        format={dateFormat}
-                                        locale={dateLocale}
-                                        onChange={a => {
-                                            this.setState({
-                                                dataInicio: a[0].toISOString(),
-                                                dataFim: a[1].toISOString()
-                                            })
-                                        }}
-                                    />
-                                )}
-                            </FormItem>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('local')(
+                                        <Select
+                                            placeholder="Selecione o local de coleta"
+                                            allowClear
+                                            showSearch
+                                            optionFilterProp="children"
+                                        >
+                                            {this.formataDadosLocaisOption()}
+                                        </Select>
+                                    )}
+                                </FormItem>
+                            </Col>
+                        </Col>
+                    </Row>
+
+                    <Row gutter={8} style={{ marginTop: 16 }}>
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                            <Col span={24}>
+                                <span>Intervalo de data:</span>
+                            </Col>
+                        </Col>
+                    </Row>
+                    <Row gutter={8}>
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('intervaloData')(
+                                        <RangePicker
+                                            defaultValue={[moment().startOf('month'), moment().endOf('day')]}
+                                            format={dateFormat}
+                                            locale={dateLocale}
+                                            onChange={a => {
+                                                this.setState({
+                                                    dataInicio: a[0].toISOString(),
+                                                    dataFim: a[1].toISOString()
+                                                })
+                                            }}
+                                        />
+                                    )}
+                                </FormItem>
+                            </Col>
                         </Col>
                     </Row>
 
