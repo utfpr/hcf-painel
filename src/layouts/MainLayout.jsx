@@ -13,7 +13,7 @@ import {
     SnippetsOutlined
 } from '@ant-design/icons'
 
-import logoImage from '../assets/img/logo-hcf-branco.png'
+import logoImage from '../assets/img/logo_branca.png'
 import { baseUrl } from '../config/api'
 import {
     isCurador,
@@ -108,6 +108,11 @@ export default class MainLayout extends Component {
 
         setUsuario('')
         localStorage.setItem('usuario', '')
+        
+        // Limpa as credenciais salvas do "Lembrar-me"
+        localStorage.removeItem('hcf_saved_email')
+        localStorage.removeItem('hcf_saved_password')
+        localStorage.removeItem('hcf_remember_me')
     }
 
     renderFormulario() {
@@ -119,8 +124,8 @@ export default class MainLayout extends Component {
                             <img
                                 src={logoImage}
                                 alt="logo-hcf"
-                                height="87"
-                                width="61"
+                                height={this.state.collapsed ? "70px" : "120px"}
+                                width={this.state.collapsed ? "70px" : "120px"}
                             />
                         </Link>
                     </Col>

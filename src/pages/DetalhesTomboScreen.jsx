@@ -116,7 +116,7 @@ export default class DetalhesTomboScreen extends Component {
         e.preventDefault()
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values)
+                // console.log('Received values of form: ', values) // Removed debug log
             }
         })
     }
@@ -412,8 +412,8 @@ export default class DetalhesTomboScreen extends Component {
     renderLocal() {
         const { tombo } = this.state
         if (tombo) {
-            console.log('kokoko')
-            console.log(tombo.localizacao.longitude_graus)
+                    // console.log('kokoko') // Removed debug log
+        // console.log(tombo.localizacao.longitude_graus) // Removed debug log
             return (
                 <div>
                     <Row gutter={8} style={{ marginBottom: '20px' }}>
