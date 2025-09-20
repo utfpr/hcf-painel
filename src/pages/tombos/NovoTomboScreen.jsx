@@ -203,6 +203,7 @@ class NovoTomboScreen extends Component {
             autorVariedade: '',
             codigosBarrasForm: [],
             codigosBarrasInicial: [],
+            toDeleteBarcodes: [],
             isEditing: false
         }
     }
@@ -280,46 +281,93 @@ class NovoTomboScreen extends Component {
         }
     };
 
-    handleDeletedBarcode = ({ codigo_barra, num_barra }) => {
+    handleDeletedBarcode = ({ codigo_barra, num_barra, id }) => {
         const toInt = (v) => {
-          const n = parseInt(String(v ?? '').split('.')[0], 10);
-          return Number.isFinite(n) ? n : NaN;
+            const n = parseInt(String(v ?? "").split(".")[0], 10);
+            return Number.isFinite(n) ? n : NaN;
         };
-        const deletedNum = toInt(num_barra);
-        const deletedCode = String(codigo_barra || '');
 
-        this.setState((prev) => ({
-          codigosBarrasInicial: (prev.codigosBarrasInicial || []).filter((item) => {
-            const itemNum = toInt(item?.num_barra);
-            const itemCode = String(item?.codigo_barra || '');
-            return !(itemNum === deletedNum || itemCode === deletedCode);
-          }),
-        }));
-    };
+        const deletedNum = toInt(num_barra);
+        const deletedCode = String(codigo_barra || "");
+    
+        this.setState((prev) => {
+            const inicial = prev.codigosBarrasInicial || [];
+            const existedInInitial = inicial.some((item) => {
+                const itemNum = toInt(item?.num_barra);
+                const itemCode = String(item?.codigo_barra || "");
+                return itemNum === deletedNum || itemCode === deletedCode;
+            });
+
+            const nextInicial = inicial.filter((item) => {
+                const itemNum = toInt(item?.num_barra);
+                const itemCode = String(item?.codigo_barra || "");
+                return !(itemNum === deletedNum || itemCode === deletedCode);
+            });
+
+            let nextToDelete = prev.toDeleteBarcodes || [];
+            if (existedInInitial) {
+                const alreadyQueued = nextToDelete.some((x) => {
+                    const n = toInt(x?.num_barra);
+                    const c = String(x?.codigo_barra || "");
+                    return n === deletedNum || c === deletedCode;
+                });
+                if (!alreadyQueued) {
+                    nextToDelete = [
+                        ...nextToDelete,
+                        { codigo_barra, num_barra: deletedNum, id },
+                    ];
+                }
+            }
+    
+            return {
+                codigosBarrasInicial: nextInicial,
+                toDeleteBarcodes: nextToDelete,
+            };
+        });
+    };    
 
 
     editarCodigosBarras = async (tomboHcf, currentList) => {
         try {
-          const initialList = this.state.codigosBarrasInicial || [];
-          const currentBarcodes = currentList || [];
+            const initialList = this.state.codigosBarrasInicial || [];
+            const currentBarcodes = currentList || [];
+            const deletions = this.state.toDeleteBarcodes || [];
+            const isEditing = this.state.isEditing;
 
-          const initialSet = new Set(initialList.map(item => item.codigo_barra));
-          const currentSet = new Set(currentBarcodes.map(item => item.codigo_barra));
+            const initialSet = new Set(initialList.map((item) => item.codigo_barra));
+            const newBarcodes = currentBarcodes.filter(
+                (item) => !initialSet.has(item.codigo_barra)
+            );
+    
+            const ops = [];
+    
+            if (newBarcodes.length > 0) {
+                ops.push(this.criarCodigoBarras(tomboHcf, newBarcodes));
+            }
+    
+            if (isEditing && deletions.length > 0) {
+                const deleteRequests = deletions.map((b) =>
+                    axios.delete(`/tombos/codigo_barras/${encodeURIComponent(b.num_barra)}`)
+                );
+                ops.push(Promise.allSettled(deleteRequests));
+            }
+    
+            if (ops.length > 0) {
+                await Promise.all(ops);
+            }
+    
+            if (newBarcodes.length > 0 || (isEditing && deletions.length > 0)) {
+                message.success("Códigos de barra atualizados com sucesso");
+            }
 
-          const newBarcodes = currentBarcodes.filter(item => !initialSet.has(item.codigo_barra));
-
-          if (newBarcodes.length > 0) {
-            await this.criarCodigoBarras(tomboHcf, newBarcodes);
-          }
-
-          if (newBarcodes.length > 0) {
-            message.success("Códigos de barra atualizados com sucesso");
-          }
+            if (isEditing && deletions.length > 0) {
+                this.setState({ toDeleteBarcodes: [] });
+            }
         } catch (error) {
-          console.error("Erro ao atualizar códigos de barras:", error);
-          message.error("Erro ao atualizar os códigos de barras. Tente novamente.");
+            console.error("Erro ao atualizar códigos de barras:", error);
+            message.error("Erro ao atualizar os códigos de barras. Tente novamente.");
         }
-    };
+    };    
 
     normalizeBarcodes = (barcodeList = []) => {
         const asArray = Array.isArray(barcodeList) ? barcodeList : [barcodeList];
