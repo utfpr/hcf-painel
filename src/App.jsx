@@ -1,5 +1,13 @@
 import { Component } from 'react'
 
+import 'antd/dist/antd.css'
+import './assets/css/antd-theme.css'
+import './assets/css/App.css'
+import './assets/css/FormEnterSystem.css'
+import './assets/css/Main.css'
+import './assets/css/Search.css'
+import 'react-image-gallery/styles/css/image-gallery.css'
+
 import {
     BrowserRouter, Switch, Route,
     Redirect
@@ -16,11 +24,13 @@ import {
 } from './helpers/usuarios'
 import MainLayout from './layouts/MainLayout'
 import DetalhesTomboScreen from './pages/DetalhesTomboScreen'
+import ExportaçãoScreen from './pages/ExportaçãoScreen'
 import FichaTomboScreen from './pages/FichaTomboScreen'
 import filtrosMapa from './pages/FiltrosMapa'
 import ListaColetoresScreen from './pages/ListaColetoresScreen'
 import ListaHerbariosScreen from './pages/ListaHerbariosScreen'
 import ListaIdentificadoresScreen from './pages/ListaIdentificadoresScreen'
+import ListaLocalColetaScreen from './pages/ListaLocalColetaScreen'
 import ListaPendenciasScreen from './pages/ListaPendenciasScreen'
 import ListaRemessasScreen from './pages/ListaRemessasScreen'
 import ListaTaxonomiaAutores from './pages/ListaTaxonomiaAutores'
@@ -42,6 +52,8 @@ import NovoHerbarioScreen from './pages/NovoHerbarioScreen'
 import NovoIdentificadorScreen from './pages/NovoIdentificadorScreen'
 import NovoUsuarioScreen from './pages/NovoUsuarioScreen'
 import PerfilScreen from './pages/PerfilScreen'
+import RecuperarSenhaScreen from './pages/recuperacaoSenha/RecuperarSenhaScreen'
+import ResetSenhaScreen from './pages/recuperacaoSenha/ResetSenhaScreen'
 import RelatorioCodigoBarrasScreen from './pages/RelatorioCodigoBarrasScreen'
 import RelatorioColetaLocalPeriodoScreen from './pages/RelatorioColetaLocalPeriodoScreen'
 import RelatorioColetaPeriodoScreen from './pages/RelatorioColetaPeriodoScreen'
@@ -54,13 +66,6 @@ import ServicosRefloraScreen from './pages/ServicosRefloraScreen'
 import ServicosSpeciesLinkScreen from './pages/ServicosSpeciesLinkScreen'
 import NovoTomboScreen from './pages/tombos/NovoTomboScreen'
 import PendenciaPagina from './pages/VerPendenciaScreen'
-import 'antd/dist/antd.css'
-import './assets/css/antd-theme.css'
-import './assets/css/App.css'
-import './assets/css/FormEnterSystem.css'
-import './assets/css/Main.css'
-import './assets/css/Search.css'
-import 'react-image-gallery/styles/css/image-gallery.css'
 import ExportaçãoScreen from './pages/ExportaçãoScreen'
 import ListaLocalColetaScreen from './pages/ListaLocalColetaScreen'
 import ListaEstadosScreen from './pages/ListaEstadosScreen'
@@ -167,6 +172,8 @@ export default class App extends Component {
         return (
             <BrowserRouter basename={import.meta.env.VITE_BASE_URL}>
                 <Switch>
+                    <Route path="/reset-senha" component={ResetSenhaScreen} />
+                    <Route path="/recuperar-senha" component={RecuperarSenhaScreen} />
                     <Route path="/inicio" component={InicioScreen} />
                     <Route path="/" render={this.renderContent} />
                 </Switch>
