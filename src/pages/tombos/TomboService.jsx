@@ -102,16 +102,6 @@ export const verificaPendenciasService = (getResponse, tomboId) => {
         })
 }
 
-export const requisitaNumeroColetorService = getResponse => {
-    return axios.get('/numero-coletores')
-        .then(response => {
-            getResponse(response)
-        })
-        .catch(error => {
-            catchError(error)
-        })
-}
-
 export const requisitaCodigoBarrasService = (getResponse, tomboId) => {
     return axios.get(`/tombos/codigo_barras/${tomboId}`)
         .then(response => {
