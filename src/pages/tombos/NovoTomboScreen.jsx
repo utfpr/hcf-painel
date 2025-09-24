@@ -3074,7 +3074,7 @@ class NovoTomboScreen extends Component {
         )
     }
 
-    renderFamiliaTombo = getFieldDecorator => {
+    renderFamiliaTombo = (getFieldDecorator, getFieldError) => {
         const {
             reinoInicial, familiaInicial, reinos, familias, generoInicial, generos, search,
             especieInicial, especies, subespecieInicial, subespecies,
@@ -3163,6 +3163,7 @@ class NovoTomboScreen extends Component {
                         initialValue={String(familiaInicial)}
                         familias={familias}
                         getFieldDecorator={getFieldDecorator}
+                        getFieldError={getFieldError}
                         onChange={value => {
                             this.requisitaSubfamilias(value)
                             this.requisitaGeneros(value)
@@ -3549,7 +3550,7 @@ class NovoTomboScreen extends Component {
                             <h2 style={{ fontWeight: 200 }}>Tombo</h2>
                         </Col>
                     </Row>
-                    {this.renderFamiliaTombo(getFieldDecorator)}
+                    {this.renderFamiliaTombo(getFieldDecorator, getFieldError)}
                     <Divider dashed />
                     {this.renderColetores(getFieldDecorator, getFieldError)}
                     <Divider dashed />
@@ -3849,15 +3850,25 @@ class NovoTomboScreen extends Component {
                     <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                         <Col span={24}>
                             <span>Localidade:</span>
+                            <Button 
+                                type="text" 
+                                onClick={() => {
+                                    this.props.form.setFieldsValue({ localidadeCor: undefined })
+                                }}
+                                style={{ 
+                                    color: '#999', 
+                                    fontSize: '12px',
+                                    padding: '0 4px',
+                                    height: 'auto'
+                                }}
+                            >
+                                Limpar
+                            </Button>
                         </Col>
                         <Col span={24}>
                             <FormItem>
                                 {getFieldDecorator('localidadeCor', {
                                     initialValue: String(this.state.localidadeInicial),
-                                    rules: [{
-                                        required: true,
-                                        message: 'Escolha uma localidade'
-                                    }]
                                 })(
                                     <RadioGroup
                                         onChange={this.onChange}
@@ -3900,15 +3911,12 @@ class NovoTomboScreen extends Component {
                             <FormItem>
                                 {getFieldDecorator('entidade', {
                                     initialValue: String(!this.props.match.params.tombo_id ? this.state.herbarioInicial?.value || '' : this.state.herbarioInicial),
-                                    rules: [{
-                                        required: true,
-                                        message: 'Escolha uma entidade'
-                                    }]
                                 })(
                                     <Select
                                         showSearch
                                         placeholder="Selecione uma entidade"
                                         optionFilterProp="children"
+                                        allowClear
                                         status={getFieldError('entidade') ? 'error' : ''}
                                     >
                                         {this.optionEntidades()}
