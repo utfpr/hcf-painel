@@ -1011,37 +1011,31 @@ class NovoTomboScreen extends Component {
             .catch(this.catchRequestError)
     }
 
-    requisitaFamilias = reinoId => async () => {
-        return axios.get('/familias', {
-            params: {
-                limite: 9999999999,
-                reino_id: reinoId
+    requisitaFamilias = async (reinoId) => {
+        try {
+            const params = { limite: 9999999999 }
+            if (reinoId) {
+                params.reino_id = reinoId
             }
-        })
-            .then(response => {
-                if (response.status === 200) {
-                    this.setState({
-                        familias: response.data.resultado
-                    })
-                } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar famílias, tente novamente.')
-                }
-            })
-            .catch(err => {
-                const { response } = err
-                if (response && response.data) {
-                    if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
-                    } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar a listagem das famílias, tente novamente.')
-                    }
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
+
+            const response = await axios.get('/familias', { params })
+
+            if (response.status === 200) {
+                this.setState({
+                    familias: response.data.resultado
+                })
+            } else {
+                this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar famílias, tente novamente.')
+            }
+        } catch (err) {
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                this.openNotificationWithIcon('warning', 'Falha', error.message)
+            } else {
+                throw err
+            }
+        }
     }
 
     cadastraNovaSubfamilia = () => {
