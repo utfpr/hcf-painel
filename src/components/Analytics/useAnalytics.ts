@@ -1,7 +1,6 @@
 import { useContext } from 'react';
 import { AnalyticsContext } from './AnalyticsContext';
 
-
 export function useAnalytics() {
   const analytics = useContext(AnalyticsContext);
   if (!analytics) {
