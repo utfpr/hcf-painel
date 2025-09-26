@@ -3,6 +3,8 @@ import { useEffect } from 'react'
 import { recaptchaKey } from './config/api';
 import ReactDOM from 'react-dom/client'
 import App from './App'
+import { analyticsAppId } from './config/analytics';
+import { AnalyticsProvider } from './components/Analytics/AnalyticsContext';
 
 declare global {
   interface Window {
@@ -23,7 +25,11 @@ function Root() {
     }
   }, []);
 
-  return <App />;
+  return (
+    <AnalyticsProvider appId={analyticsAppId}>
+      <App />
+    </AnalyticsProvider>
+  );
 }
 
 ReactDOM.createRoot(document.getElementById("root")!).render(<Root />);
