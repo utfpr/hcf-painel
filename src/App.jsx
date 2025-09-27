@@ -62,6 +62,8 @@ import './assets/css/Search.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
 import ExportaçãoScreen from './pages/ExportaçãoScreen'
 import ListaLocalColetaScreen from './pages/ListaLocalColetaScreen'
+import ListaEstadosScreen from './pages/ListaEstadosScreen'
+import ListaCidadesScreen from './pages/ListaCidadesScreen'
 
 const PrivateRoute = ({ component: Component, authed, ...rest }) => {
     return (
@@ -127,13 +129,13 @@ export default class App extends Component {
                 <PrivateRoute authed={isCurador()} path="/coletores/novo" component={NovoColetorScreen} />
                 <PrivateRoute authed={isCurador()} path="/coletores/:coletor_id" component={NovoColetorScreen} />
                 <PrivateRoute authed={isCurador()} path="/coletores" component={ListaColetoresScreen} />
-
                 <PrivateRoute authed={isLogado()} path="/herbarios" component={ListaHerbariosScreen} />
                 <PrivateRoute authed={isLogado()} path="/fichas/tombos" component={FichaTomboScreen} />
                 <PrivateRoute authed={isLogado()} path="/locais-coleta" component={ListaLocalColetaScreen} />
+                <PrivateRoute authed={isLogado()} path="/estados" component={ListaEstadosScreen} />
+                <PrivateRoute authed={isLogado()} path="/cidades" component={ListaCidadesScreen} />
                 <PrivateRoute authed={isCurador()} path="/reflora" component={ServicosRefloraScreen} />
                 <PrivateRoute authed={isCurador()} path="/specieslink" component={ServicosSpeciesLinkScreen} />
-
                 <PrivateRoute authed={isCurador()} path="/exportacao" component={ExportaçãoScreen} />
 
                 <Route path="/livro-tombo" component={LivroTomboScreen} />
