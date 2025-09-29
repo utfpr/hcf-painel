@@ -16,6 +16,8 @@ export const BarcodeColumns = [
 ];
 
 export default class BarcodeTableComponent extends Component {
+    baselineFetchedOnce = false;
+
     state = {
         barcodeRows: [],
         lastBaseNumber: null,
@@ -39,14 +41,13 @@ export default class BarcodeTableComponent extends Component {
         this.syncFromProps(this.props.barcodeEditList);
     }
 
-    componentDidUpdate(prevProps) {''
+    componentDidUpdate(prevProps) {
         if (prevProps.barcodeEditList !== this.props.barcodeEditList) {
             this.syncFromProps(this.props.barcodeEditList);
         }
     }
 
-    isEditMode = () => Boolean(this.props.isEditing);
-
+    // ===== Sincronização com props =====
     syncFromProps = (list) => {
         if (!Array.isArray(list) || !list.length) return;
         const normalized = this.normalizeIncomingList(list);
@@ -55,7 +56,7 @@ export default class BarcodeTableComponent extends Component {
         this.setState(
             {
                 barcodeRows: normalized,
-                lastBaseNumber: Number.isFinite(max) ? max : this.state.lastBaseNumber
+                lastBaseNumber: Number.isFinite(max) ? max : this.state.lastBaseNumber,
             },
             this.emitChangeData
         );
@@ -66,30 +67,37 @@ export default class BarcodeTableComponent extends Component {
             .map((item) => {
                 if (typeof item === "string") {
                     const parsed = this.parseNumber(item);
-                    const formatted = item && item.startsWith("HCF")
-                        ? item
-                        : this.formatCodeLabel(parsed || 0);
+                    const formatted =
+                        item && item.startsWith("HCF")
+                            ? item
+                            : this.formatCodeLabel(parsed || 0);
                     return {
                         key: formatted,
                         codigo_barra: formatted,
-                        num_barra: Number.isFinite(parsed) ? parsed : this.parseNumber(formatted),
-                        em_vivo: true
+                        num_barra: Number.isFinite(parsed)
+                            ? parsed
+                            : this.parseNumber(formatted),
+                        em_vivo: true,
                     };
                 }
                 if (item && typeof item === "object") {
-                    const rawCode = item.codigo_barra || item.codigo || item.code || item.label || "";
+                    const rawCode =
+                        item.codigo_barra || item.codigo || item.code || item.label || "";
                     const rawNum = Number.isFinite(item.num_barra)
                         ? Math.trunc(item.num_barra)
                         : this.parseNumber(rawCode);
-                    const formatted = rawCode && rawCode.startsWith("HCF")
-                        ? rawCode
-                        : this.formatCodeLabel(rawNum || 0);
+                    const formatted =
+                        rawCode && rawCode.startsWith("HCF")
+                            ? rawCode
+                            : this.formatCodeLabel(rawNum || 0);
                     return {
                         key: formatted,
                         codigo_barra: formatted,
-                        num_barra: Number.isFinite(rawNum) ? rawNum : this.parseNumber(formatted),
+                        num_barra: Number.isFinite(rawNum)
+                            ? rawNum
+                            : this.parseNumber(formatted),
                         em_vivo: item.em_vivo ?? true,
-                        id: item.id
+                        id: item.id,
                     };
                 }
                 return null;
@@ -97,11 +105,13 @@ export default class BarcodeTableComponent extends Component {
             .filter(Boolean);
 
     emitChangeData = () => {
-        const payload = this.state.barcodeRows.map(({ codigo_barra, num_barra, id }) => ({
-            codigo_barra,
-            num_barra,
-            id
-        }));
+        const payload = this.state.barcodeRows.map(
+            ({ codigo_barra, num_barra, id }) => ({
+                codigo_barra,
+                num_barra,
+                id,
+            })
+        );
         if (typeof this.props.onChangeBarcodeList === "function") {
             this.props.onChangeBarcodeList(payload);
         }
@@ -114,7 +124,7 @@ export default class BarcodeTableComponent extends Component {
     fetchLastBarcodeService = async () => {
         const { data } = await axios.get("/tombos/ultimo_codigo_barra", {
             params: { _cb: Date.now() },
-            headers: { "Cache-Control": "no-cache" }
+            headers: { "Cache-Control": "no-cache" },
         });
         if (data == null || data === "") {
             throw new Error("Resposta vazia ao requisitar último código de barras.");
@@ -162,7 +172,7 @@ export default class BarcodeTableComponent extends Component {
             key: formatted,
             codigo_barra: formatted,
             em_vivo: true,
-            num_barra: nextNumber
+            num_barra: nextNumber,
         };
         this.setState(
             (prev) => ({ barcodeRows: [...prev.barcodeRows, newRow] }),
@@ -181,13 +191,9 @@ export default class BarcodeTableComponent extends Component {
         try {
             let previousNumber;
 
-            if (barcodeRows.length > 0) {
-                const max = this.getMaxNumBarra(barcodeRows);
-                previousNumber = Number.isFinite(max) ? max : null;
-            } else if (Number.isFinite(lastBaseNumber)) {
-                previousNumber = lastBaseNumber;
-            } else {
-                const payload = await this.fetchLastBarcodeService();
+            if (!this.baselineFetchedOnce) {
+                const resp = await this.fetchLastBarcodeService();
+                const payload = resp?.data ?? resp?.body ?? resp;
                 const base = this.extractBaseNumberFromPayload(payload);
                 if (!Number.isFinite(base)) {
                     message.warning(
@@ -198,16 +204,38 @@ export default class BarcodeTableComponent extends Component {
                     previousNumber = base;
                     this.setState({ lastBaseNumber: base });
                 }
+                this.baselineFetchedOnce = true;
+            } else {
+                if (barcodeRows.length > 0) {
+                    const max = this.getMaxNumBarra(barcodeRows);
+                    previousNumber = Number.isFinite(max) ? max : null;
+                } else if (Number.isFinite(lastBaseNumber)) {
+                    previousNumber = lastBaseNumber;
+                } else {
+                    const resp = await this.fetchLastBarcodeService();
+                    const payload = resp?.data ?? resp?.body ?? resp;
+                    const base = this.extractBaseNumberFromPayload(payload);
+                    if (!Number.isFinite(base)) {
+                        message.warning(
+                            "O Último Tombo registrado não possui código registrado. Sugerindo sequência a partir de: 41800"
+                        );
+                        previousNumber = 41800;
+                    } else {
+                        previousNumber = base;
+                        this.setState({ lastBaseNumber: base });
+                    }
+                }
             }
 
-            const nextNumber = (Number.isFinite(previousNumber) ? previousNumber : 0) + 1;
+            const nextNumber =
+                (Number.isFinite(previousNumber) ? previousNumber : 0) + 1;
 
             this.setState({
                 isGenerationModalOpen: true,
                 previousFormattedCode: Number.isFinite(previousNumber)
                     ? this.formatCodeLabel(previousNumber)
                     : "—",
-                newCodeInput: this.formatCodeLabel(nextNumber)
+                newCodeInput: this.formatCodeLabel(nextNumber),
             });
         } catch (e) {
             console.error("Erro ao preparar geração:", e);
@@ -221,7 +249,7 @@ export default class BarcodeTableComponent extends Component {
         this.setState({
             isGenerationModalOpen: false,
             previousFormattedCode: "—",
-            newCodeInput: ""
+            newCodeInput: "",
         });
     };
 
@@ -229,14 +257,16 @@ export default class BarcodeTableComponent extends Component {
         const { newCodeInput } = this.state;
         const newNumber = this.parseNumber(newCodeInput);
         if (!Number.isFinite(newNumber) || newNumber <= 0) {
-            message.warning("Informe um novo código válido (número ou HCF completo).");
+            message.warning(
+                "Informe um novo código válido (número ou HCF completo)."
+            );
             return;
         }
         this.appendRowWithNumber(newNumber);
         this.setState({
             isGenerationModalOpen: false,
             previousFormattedCode: "—",
-            newCodeInput: ""
+            newCodeInput: "",
         });
     };
 
@@ -245,15 +275,15 @@ export default class BarcodeTableComponent extends Component {
 
     setPhotosOfCode = (codigo, list) => {
         this.setState((prev) => ({
-            photosByCode: { ...prev.photosByCode, [codigo]: list }
+            photosByCode: { ...prev.photosByCode, [codigo]: list },
         }));
     };
 
     handleBeforeUploadPhoto = (record) => (file) => {
         const code = record?.codigo_barra;
-        this.setPhotosOfCode(code, [file]); // Máx. 1: substitui
+        this.setPhotosOfCode(code, [file]);
         this.setState((prev) => ({
-            expandedCodes: Array.from(new Set([...prev.expandedCodes, code]))
+            expandedCodes: Array.from(new Set([...prev.expandedCodes, code])),
         }));
         return false;
     };
@@ -266,11 +296,7 @@ export default class BarcodeTableComponent extends Component {
         this.setPhotosOfCode(code, nextList);
     };
 
-    // ===== Exclusão de código =====
-    deleteBarcodeOnServer = async (numeroCodigo) => {
-        return axios.delete(`/tombos/codigo_barras/${encodeURIComponent(numeroCodigo)}`);
-    };
-
+    // ===== Emite item deletado (sem request ao servidor) =====
     emitDeleted = (row) => {
         if (typeof this.props.onDeletedBarcode === "function") {
             this.props.onDeletedBarcode(row);
@@ -291,66 +317,31 @@ export default class BarcodeTableComponent extends Component {
             okType: "danger",
             cancelText: "Cancelar",
             onOk: () => {
-                const codigoFormatado = record?.codigo_barra;
-                const numeroCodigo = record?.num_barra;
-
-                // snapshots para rollback (só usados em modo edição)
-                const prevRows = [...this.state.barcodeRows];
-                const prevPhotos = { ...this.state.photosByCode };
-                const prevExpanded = [...this.state.expandedCodes];
+                const formatted = record?.codigo_barra;
 
                 this.setState(
                     (prev) => {
                         const rowsCopy = [...prev.barcodeRows];
                         rowsCopy.splice(index, 1);
                         const photosCopy = { ...prev.photosByCode };
-                        delete photosCopy[codigoFormatado];
+                        delete photosCopy[formatted];
                         return {
                             barcodeRows: rowsCopy,
                             photosByCode: photosCopy,
-                            expandedCodes: prev.expandedCodes.filter((k) => k !== codigoFormatado)
+                            expandedCodes: prev.expandedCodes.filter((k) => k !== formatted),
                         };
                     },
-                    async () => {
-                        const editing = this.isEditMode();
-                        const canDeleteOnServer =
-                            editing && Number.isFinite(Number(numeroCodigo));
-
-                        if (!canDeleteOnServer) {
-                            message.success(`Código removido: ${codigoFormatado}`);
-                            this.emitChangeData();
-                            this.emitDeleted({
-                                codigo_barra: codigoFormatado,
-                                num_barra: numeroCodigo,
-                                id: record?.id
-                            });
-                            return;
-                        }
-
-                        try {
-                            await this.deleteBarcodeOnServer(numeroCodigo);
-                            message.success(`Código removido: ${codigoFormatado}`);
-                            this.emitChangeData();
-                            this.emitDeleted({
-                                codigo_barra: codigoFormatado,
-                                num_barra: numeroCodigo,
-                                id: record?.id
-                            });
-                        } catch (err) {
-                            console.error("Erro ao excluir no servidor:", err);
-                            message.error("Falha ao excluir no servidor. Desfazendo alteração…");
-                            this.setState(
-                                {
-                                    barcodeRows: prevRows,
-                                    photosByCode: prevPhotos,
-                                    expandedCodes: prevExpanded
-                                },
-                                () => this.emitChangeData()
-                            );
-                        }
+                    () => {
+                        message.success(`Código removido: ${formatted}`);
+                        this.emitChangeData();
+                        this.emitDeleted({
+                            codigo_barra: record?.codigo_barra,
+                            num_barra: record?.num_barra,
+                            id: record?.id,
+                        });
                     }
                 );
-            }
+            },
         });
     };
 
@@ -368,7 +359,7 @@ export default class BarcodeTableComponent extends Component {
                             beforeUpload={this.handleBeforeUploadPhoto(record)}
                             onRemove={this.handleRemovePhoto(record)}
                         />
-                    )
+                    ),
                 };
             }
             if (col.key === "acao") {
@@ -388,7 +379,7 @@ export default class BarcodeTableComponent extends Component {
                                 <DeleteOutlined style={{ color: "#e30613" }} />
                             </a>
                         </div>
-                    )
+                    ),
                 };
             }
             return { ...col, dataIndex: col.key, key: col.key };
@@ -397,20 +388,19 @@ export default class BarcodeTableComponent extends Component {
     // ===== Linha expandida (fotos) =====
     renderExpandedRow = (record) => {
         const list = this.getPhotosOfCode(record?.codigo_barra);
-        if (!list.length) {
+        if (!list.length)
             return (
                 <span style={{ color: "#999" }}>
                     Nenhuma imagem anexada para este código.
                 </span>
             );
-        }
 
         return (
             <div
                 style={{
                     display: "grid",
                     gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
-                    gap: 12
+                    gap: 12,
                 }}
             >
                 {list.map((file, idx) => {
@@ -424,7 +414,7 @@ export default class BarcodeTableComponent extends Component {
                             style={{
                                 border: "1px solid #f0f0f0",
                                 borderRadius: 8,
-                                padding: 8
+                                padding: 8,
                             }}
                         >
                             <div style={{ marginBottom: 8, textAlign: "center" }}>
@@ -470,7 +460,7 @@ export default class BarcodeTableComponent extends Component {
             expandedCodes,
             isGenerationModalOpen,
             previousFormattedCode,
-            newCodeInput
+            newCodeInput,
         } = this.state;
 
         return (
@@ -484,7 +474,7 @@ export default class BarcodeTableComponent extends Component {
                             alignItems: "center",
                             width: "100%",
                             gap: 12,
-                            paddingTop: 4
+                            paddingTop: 4,
                         }}
                     >
                         <Button
@@ -512,7 +502,7 @@ export default class BarcodeTableComponent extends Component {
                                 expandedRowRender: this.renderExpandedRow,
                                 expandedRowKeys: expandedCodes,
                                 onExpandedRowsChange: (keys) =>
-                                    this.setState({ expandedCodes: keys })
+                                    this.setState({ expandedCodes: keys }),
                             }}
                         />
                     )}
