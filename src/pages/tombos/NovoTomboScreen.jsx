@@ -2588,7 +2588,7 @@ class NovoTomboScreen extends Component {
         if (dataColetaMes) json.principal.data_coleta = { ...json.principal.data_coleta, mes: dataColetaMes }
         if (dataColetaAno) json.principal.data_coleta = { ...json.principal.data_coleta, ano: dataColetaAno }
         if (tipo) json.principal.tipo_id = tipo
-        json.principal.cor = localidadeCor
+        if (localidadeCor)json.principal.cor = localidadeCor
         if (reino) json.taxonomia = { reino_id: reino }
         if (familia) json.taxonomia = { ...json.taxonomia, familia_id: familia }
         if (genero) json.taxonomia = { ...json.taxonomia, genero_id: genero }
