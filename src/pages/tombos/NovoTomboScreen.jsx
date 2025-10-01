@@ -2134,19 +2134,22 @@ class NovoTomboScreen extends Component {
             .catch(this.catchRequestError)
     }
 
-    requisitaEdicaoTombo = json => {
-        const tomboId = this.props.match.params.tombo_id
-        this.defaultRequest(
-            null,
-            requisitaNumeroHcfService,
-            'A alteração foi realizada com sucesso.',
-            'Houve um problema ao alterar o tombo, tente novamente.',
-            this.onRequisitaEdicaoTomboComSucesso,
-            tomboId,
-            json
-        )
-        this.props.history.push('/tombos')
-    }
+requisitaEdicaoTombo = json => {
+    const tomboId = this.props.match.params.tombo_id;
+    this.defaultRequest(
+        null,
+        requisitaNumeroHcfService,
+        'A alteração foi realizada com sucesso.',
+        'Houve um problema ao alterar o tombo, tente novamente.',
+        () => {
+            this.onRequisitaEdicaoTomboComSucesso();
+            this.props.history.push('/tombos');
+        },
+        tomboId,
+        json
+    );
+};
+
 
     requisitaCadastroTombo = json => {
         axios.post('/tombos', { json })
