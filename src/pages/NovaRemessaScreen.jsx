@@ -155,7 +155,6 @@ class NovaRemessaScreen extends Component {
     }
 
     handleSubmit = (err, valores) => {
-        console.log('REMESSASSS')
         console.log(this.state.data)
         console.log(this.props.match.params.remessa_id)
         if (!err) {
@@ -203,7 +202,7 @@ class NovaRemessaScreen extends Component {
                         loading: false
                     })
                     this.notificacao('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
-                    this.props.history.goBack()
+                    this.props.history.push('/remessas');
                 }
                 this.props.form.setFields({
                     campo: {
@@ -256,7 +255,7 @@ class NovaRemessaScreen extends Component {
                 if (response.status == 204) {
                     this.props.form.resetFields()
                     this.notificacao('success', 'Edição', 'A remessa foi alterada com sucesso.')
-                    this.props.history.goBack()
+                    this.props.history.push('/remessas');
                 } else {
                     this.notificacao('error', 'Edição', 'Houve um problema ao realizar a edição, verifique os dados e tente novamente.')
                 }
@@ -422,7 +421,7 @@ class NovaRemessaScreen extends Component {
                                 <Col span={12}>
                                     <FormItem>
                                         {getFieldDecorator('dataVencimento')(
-                                            <DatePicker />
+                                            <DatePicker format="DD-MM-YYYY" />
                                         )}
                                     </FormItem>
                                 </Col>
