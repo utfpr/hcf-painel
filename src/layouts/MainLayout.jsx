@@ -165,6 +165,29 @@ export default class MainLayout extends Component {
                                 <Link to="/autores">Autores</Link>
                             </Menu.Item>
                         </SubMenu>
+                        <SubMenu
+                            key="locais"
+                            title={(
+                                <span>
+                                    <EnvironmentOutlined />
+                                    <span>Locais</span>
+                                </span>
+                            )}
+                        >
+                            <Menu.Item key="88">
+                                <Link to="/estados">Estados</Link>
+                            </Menu.Item>
+                            <Menu.Item key="0">
+                                <Link to="/cidades">Cidades</Link>
+                            </Menu.Item>
+                            {isLogado() ? (
+                                <Menu.Item key="12">
+                                    <Link to="/locais-coleta">
+                                        <span>Local de Coleta</span>
+                                    </Link>
+                                </Menu.Item>
+                            ) : null}
+                        </SubMenu>
                         {isCuradorOuOperador() ? (
                             <Menu.Item key="9">
                                 <Link to="/remessas">
@@ -186,14 +209,6 @@ export default class MainLayout extends Component {
                                 <Link to="/usuarios">
                                     <TeamOutlined />
                                     <span>Usuários</span>
-                                </Link>
-                            </Menu.Item>
-                        ) : null}
-                        {isLogado() ? (
-                            <Menu.Item key="12">
-                                <Link to="/locais-coleta">
-                                    <EnvironmentOutlined />
-                                    <span>Local de Coleta</span>
                                 </Link>
                             </Menu.Item>
                         ) : null}
