@@ -2,7 +2,6 @@ import 'moment/locale/pt-br'
 import { Component } from 'react'
 
 import {
-
     Button,
     Select,
     Input,
@@ -228,50 +227,58 @@ class NovaRemessaScreen extends Component {
             .catch(this.catchRequestError)
     }
 
-    requisitaEdicaoRemessa = valores => {
-        this.setState({
-            loading: true
-        })
+ requisitaEdicaoRemessa = valores => {
+    this.setState({ loading: true });
 
-        const {
-            observacoes,
-            dataEnvio,
-            receptor,
-            doador
-        } = valores
-        axios.put(`/remessas/${this.props.match.params.remessa_id}`, {
-            remessa: {
-                observacao: observacoes,
-                data_envio: dataEnvio,
-                entidade_destino_id: receptor,
-                herbario_id: doador
-            },
-            tombos: this.state.data
+    const {
+        observacoes,
+        dataEnvio,
+        receptor,
+        doador
+    } = valores;
+
+    const tombosNormalizados = this.state.data.map(tombo => ({
+        ...tombo,
+        data_vencimento: tombo.data_vencimento
+            ? moment(
+                tombo.data_vencimento,
+                ["DD/MM/YYYY", "DD/MM/YYYY HH:mm", "YYYY-MM-DD"]
+              ).format("YYYY-MM-DD HH:mm:ss")
+            : null
+    }));
+
+    const payload = {
+        remessa: {
+            observacao: observacoes,
+            data_envio: dataEnvio,
+            entidade_destino_id: receptor,
+            herbario_id: doador
+        },
+        tombos: tombosNormalizados
+    };
+
+    axios.put(`/remessas/${this.props.match.params.remessa_id}`, payload)
+        .then(response => {
+            this.setState({ loading: false });
+            if (response.status == 204) {
+                this.props.form.resetFields();
+                this.notificacao('success', 'Edição', 'A remessa foi alterada com sucesso.');
+                this.props.history.push('/remessas');
+            } else {
+                this.notificacao('error', 'Edição', 'Houve um problema ao realizar a edição, verifique os dados e tente novamente.');
+            }
         })
-            .then(response => {
-                this.setState({
-                    loading: false
-                })
-                if (response.status == 204) {
-                    this.props.form.resetFields()
-                    this.notificacao('success', 'Edição', 'A remessa foi alterada com sucesso.')
-                    this.props.history.push('/remessas');
-                } else {
-                    this.notificacao('error', 'Edição', 'Houve um problema ao realizar a edição, verifique os dados e tente novamente.')
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    console.error(error.message)
-                }
-            })
-            .catch(this.catchRequestError)
-    }
+        .catch(err => {
+            this.setState({ loading: false });
+            const { response } = err;
+            if (response && response.data) {
+                const { error } = response.data;
+                console.error(error.message);
+            }
+        })
+        .catch(this.catchRequestError);
+}
+
 
     optionHerbario = () => this.state.herbarios.map(item => (
         <Option value={item.id}>
