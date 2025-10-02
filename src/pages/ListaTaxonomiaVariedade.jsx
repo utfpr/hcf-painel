@@ -153,7 +153,7 @@ class ListaTaxonomiaVariedade extends Component {
                                     value: { key: item.especie.id, label: item.especie.nome }
                                 },
                                 nomeAutor: {
-                                    value: { key: item.autor.id, label: item.autor.nome }
+                                    value: item.autor ? { key: item.autor.id, label: item.autor.nome } : undefined
                                 }
                             })
                             this.setState({
@@ -359,10 +359,22 @@ class ListaTaxonomiaVariedade extends Component {
         this.setState({
             loading: true
         })
+
+        const formValues = this.props.form.getFieldsValue()
+            
+        const extrairId = (valor) => {
+            if (typeof valor === 'object' && valor.key) {
+                return valor.key
+            }
+            return valor
+        }
+
+        const autorId = extrairId(formValues.nomeAutor)
+
         axios.put(`/variedades/${this.state.id}`, {
-            nome: this.props.form.getFieldsValue().nomeVariedade,
-            especie_id: this.props.form.getFieldsValue().nomeEspecie,
-            autor_id: this.props.form.getFieldsValue().nomeAutor
+            nome: formValues.nomeVariedade,
+            especie_id: extrairId(formValues.nomeEspecie),
+            autor_id: autorId || null
         })
             .then(response => {
                 this.setState({

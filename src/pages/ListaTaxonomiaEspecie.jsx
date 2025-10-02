@@ -149,7 +149,7 @@ class ListaTaxonomiaEspecie extends Component {
                                     value: { key: item.genero.id, label: item.genero.nome }
                                 },
                                 nomeAutor: {
-                                    value: { key: item.autor.id, label: item.autor.nome }
+                                    value: item.autor ? { key: item.autor.id, label: item.autor.nome } : undefined
                                 }
                             })
                             this.setState({
@@ -411,10 +411,12 @@ class ListaTaxonomiaEspecie extends Component {
             return valor
         }
 
+        const autorId = extrairId(formValues.nomeAutor)
+
         axios.put(`/especies/${this.state.id}`, {
             nome: formValues.nomeEspecie,
             genero_id: extrairId(formValues.nomeGenero),
-            autor_id: extrairId(formValues.nomeAutor)
+            autor_id: autorId || null
         })
             .then(response => {
                 this.setState({

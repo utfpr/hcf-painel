@@ -291,9 +291,19 @@ class ListaTaxonomiaGenero extends Component {
         this.setState({
             loading: true
         })
+
+        const formValues = this.props.form.getFieldsValue()
+            
+        const extrairId = (valor) => {
+            if (typeof valor === 'object' && valor.key) {
+                return valor.key
+            }
+            return valor
+        }
+
         axios.put(`/generos/${this.state.id}`, {
-            nome: this.props.form.getFieldsValue().nomeGenero,
-            familia_id: this.props.form.getFieldsValue().nomeFamilia
+            nome: formValues.nomeGenero,
+            familia_id: extrairId(formValues.nomeFamilia)
         })
             .then(response => {
                 this.setState({
