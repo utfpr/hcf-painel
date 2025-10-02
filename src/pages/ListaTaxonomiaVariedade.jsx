@@ -81,32 +81,37 @@ class ListaTaxonomiaVariedade extends Component {
     }
 
     requisitaExclusao(id) {
-        this.setState({
-            loading: true
+    this.setState({
+        loading: true
+    })
+    axios.delete(`/variedades/${id}`)
+        .then(response => {
+            this.setState({
+                loading: false
+            })
+            if (response.status === 204) {
+                this.requisitaListaVariedade(this.state.valores, this.state.pagina)
+                this.notificacao('success', 'Excluir', 'A Variedade foi excluída com sucesso.')
+            }
         })
-        axios.delete(`/variedades/${id}`)
-            .then(response => {
-                this.setState({
-                    loading: false
-                })
-                if (response.status === 204) {
-                    this.requisitaListaVariedade(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir', 'A Variedade foi excluída com sucesso.')
-                }
+        .catch(err => {
+            this.setState({
+                loading: false
             })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    throw new Error(error.message)
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                if (error && error.code) {
+                    this.notificacao('error', 'Erro ao excluir variedade', error.code)
                 } else {
-                    throw err
+                    this.notificacao('error', 'Erro ao excluir variedade', 'Ocorreu um erro inesperado ao tentar excluir a variedade.')
                 }
-            })
-    }
+                console.error(error)
+            } else {
+                this.notificacao('error', 'Erro ao excluir variedade', 'Falha na comunicação com o servidor.')
+            }
+        })
+}
 
     notificacao = (type, titulo, descricao) => {
         notification[type]({

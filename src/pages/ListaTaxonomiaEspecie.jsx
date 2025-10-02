@@ -74,34 +74,37 @@ class ListaTaxonomiaEspecie extends Component {
     }
 
     requisitaExclusao(id) {
-        this.setState({
-            loading: true
+    this.setState({
+        loading: true
+    })
+    axios.delete(`/especies/${id}`)
+        .then(response => {
+            this.setState({
+                loading: false
+            })
+            if (response.status === 204) {
+                this.requisitaListaEspecie(this.state.valores, this.state.pagina)
+                this.notificacao('success', 'Excluir', 'A espécie foi excluída com sucesso.')
+            }
         })
-        axios.delete(`/especies/${id}`)
-            .then(response => {
-                this.setState({
-                    loading: false
-                })
-                if (response.status === 204) {
-                    this.requisitaListaEspecie(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir', 'A espécie foi excluída com sucesso.')
-                } else {
-                    this.notificacao('success', 'Excluir', 'Erro ao excluir a espécie com sucesso.')
-                }
+        .catch(err => {
+            this.setState({
+                loading: false
             })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    throw new Error(error.message)
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                if (error && error.code) {
+                    this.notificacao('error', 'Erro ao excluir espécie', error.code)
                 } else {
-                    throw err
+                    this.notificacao('error', 'Erro ao excluir espécie', 'Ocorreu um erro inesperado ao tentar excluir a espécie.')
                 }
-            })
-    }
+                console.error(error)
+            } else {
+                this.notificacao('error', 'Erro ao excluir espécie', 'Falha na comunicação com o servidor.')
+            }
+        })
+}
 
     notificacao = (type, titulo, descricao) => {
         notification[type]({
