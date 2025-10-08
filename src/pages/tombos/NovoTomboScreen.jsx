@@ -2134,19 +2134,22 @@ class NovoTomboScreen extends Component {
             .catch(this.catchRequestError)
     }
 
-    requisitaEdicaoTombo = json => {
-        const tomboId = this.props.match.params.tombo_id
-        this.defaultRequest(
-            null,
-            requisitaNumeroHcfService,
-            'A alteração foi realizada com sucesso.',
-            'Houve um problema ao alterar o tombo, tente novamente.',
-            this.onRequisitaEdicaoTomboComSucesso,
-            tomboId,
-            json
-        )
-        this.props.history.push('/tombos')
-    }
+requisitaEdicaoTombo = json => {
+    const tomboId = this.props.match.params.tombo_id;
+    this.defaultRequest(
+        null,
+        requisitaNumeroHcfService,
+        'A alteração foi realizada com sucesso.',
+        'Houve um problema ao alterar o tombo, tente novamente.',
+        () => {
+            this.onRequisitaEdicaoTomboComSucesso();
+            this.props.history.push('/tombos');
+        },
+        tomboId,
+        json
+    );
+};
+
 
     requisitaCadastroTombo = json => {
         axios.post('/tombos', { json })
@@ -2588,7 +2591,7 @@ class NovoTomboScreen extends Component {
         if (dataColetaMes) json.principal.data_coleta = { ...json.principal.data_coleta, mes: dataColetaMes }
         if (dataColetaAno) json.principal.data_coleta = { ...json.principal.data_coleta, ano: dataColetaAno }
         if (tipo) json.principal.tipo_id = tipo
-        json.principal.cor = localidadeCor
+        if (localidadeCor)json.principal.cor = localidadeCor
         if (reino) json.taxonomia = { reino_id: reino }
         if (familia) json.taxonomia = { ...json.taxonomia, familia_id: familia }
         if (genero) json.taxonomia = { ...json.taxonomia, genero_id: genero }
