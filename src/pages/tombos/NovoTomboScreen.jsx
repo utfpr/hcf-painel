@@ -203,6 +203,7 @@ class NovoTomboScreen extends Component {
             autorVariedade: '',
             codigosBarrasForm: [],
             codigosBarrasInicial: [],
+            toDeleteBarcodes: [],
             isEditing: false
         }
     }
@@ -280,46 +281,93 @@ class NovoTomboScreen extends Component {
         }
     };
 
-    handleDeletedBarcode = ({ codigo_barra, num_barra }) => {
+    handleDeletedBarcode = ({ codigo_barra, num_barra, id }) => {
         const toInt = (v) => {
-          const n = parseInt(String(v ?? '').split('.')[0], 10);
-          return Number.isFinite(n) ? n : NaN;
+            const n = parseInt(String(v ?? "").split(".")[0], 10);
+            return Number.isFinite(n) ? n : NaN;
         };
-        const deletedNum = toInt(num_barra);
-        const deletedCode = String(codigo_barra || '');
 
-        this.setState((prev) => ({
-          codigosBarrasInicial: (prev.codigosBarrasInicial || []).filter((item) => {
-            const itemNum = toInt(item?.num_barra);
-            const itemCode = String(item?.codigo_barra || '');
-            return !(itemNum === deletedNum || itemCode === deletedCode);
-          }),
-        }));
-    };
+        const deletedNum = toInt(num_barra);
+        const deletedCode = String(codigo_barra || "");
+    
+        this.setState((prev) => {
+            const inicial = prev.codigosBarrasInicial || [];
+            const existedInInitial = inicial.some((item) => {
+                const itemNum = toInt(item?.num_barra);
+                const itemCode = String(item?.codigo_barra || "");
+                return itemNum === deletedNum || itemCode === deletedCode;
+            });
+
+            const nextInicial = inicial.filter((item) => {
+                const itemNum = toInt(item?.num_barra);
+                const itemCode = String(item?.codigo_barra || "");
+                return !(itemNum === deletedNum || itemCode === deletedCode);
+            });
+
+            let nextToDelete = prev.toDeleteBarcodes || [];
+            if (existedInInitial) {
+                const alreadyQueued = nextToDelete.some((x) => {
+                    const n = toInt(x?.num_barra);
+                    const c = String(x?.codigo_barra || "");
+                    return n === deletedNum || c === deletedCode;
+                });
+                if (!alreadyQueued) {
+                    nextToDelete = [
+                        ...nextToDelete,
+                        { codigo_barra, num_barra: deletedNum, id },
+                    ];
+                }
+            }
+    
+            return {
+                codigosBarrasInicial: nextInicial,
+                toDeleteBarcodes: nextToDelete,
+            };
+        });
+    };    
 
 
     editarCodigosBarras = async (tomboHcf, currentList) => {
         try {
-          const initialList = this.state.codigosBarrasInicial || [];
-          const currentBarcodes = currentList || [];
+            const initialList = this.state.codigosBarrasInicial || [];
+            const currentBarcodes = currentList || [];
+            const deletions = this.state.toDeleteBarcodes || [];
+            const isEditing = this.state.isEditing;
 
-          const initialSet = new Set(initialList.map(item => item.codigo_barra));
-          const currentSet = new Set(currentBarcodes.map(item => item.codigo_barra));
+            const initialSet = new Set(initialList.map((item) => item.codigo_barra));
+            const newBarcodes = currentBarcodes.filter(
+                (item) => !initialSet.has(item.codigo_barra)
+            );
+    
+            const ops = [];
+    
+            if (newBarcodes.length > 0) {
+                ops.push(this.criarCodigoBarras(tomboHcf, newBarcodes));
+            }
+    
+            if (isEditing && deletions.length > 0) {
+                const deleteRequests = deletions.map((b) =>
+                    axios.delete(`/tombos/codigo_barras/${encodeURIComponent(b.num_barra)}`)
+                );
+                ops.push(Promise.allSettled(deleteRequests));
+            }
+    
+            if (ops.length > 0) {
+                await Promise.all(ops);
+            }
+    
+            if (newBarcodes.length > 0 || (isEditing && deletions.length > 0)) {
+                message.success("Códigos de barra atualizados com sucesso");
+            }
 
-          const newBarcodes = currentBarcodes.filter(item => !initialSet.has(item.codigo_barra));
-
-          if (newBarcodes.length > 0) {
-            await this.criarCodigoBarras(tomboHcf, newBarcodes);
-          }
-
-          if (newBarcodes.length > 0) {
-            message.success("Códigos de barra atualizados com sucesso");
-          }
+            if (isEditing && deletions.length > 0) {
+                this.setState({ toDeleteBarcodes: [] });
+            }
         } catch (error) {
-          console.error("Erro ao atualizar códigos de barras:", error);
-          message.error("Erro ao atualizar os códigos de barras. Tente novamente.");
+            console.error("Erro ao atualizar códigos de barras:", error);
+            message.error("Erro ao atualizar os códigos de barras. Tente novamente.");
         }
-    };
+    };    
 
     normalizeBarcodes = (barcodeList = []) => {
         const asArray = Array.isArray(barcodeList) ? barcodeList : [barcodeList];
@@ -1011,37 +1059,31 @@ class NovoTomboScreen extends Component {
             .catch(this.catchRequestError)
     }
 
-    requisitaFamilias = reinoId => async () => {
-        return axios.get('/familias', {
-            params: {
-                limite: 9999999999,
-                reino_id: reinoId
+    requisitaFamilias = async (reinoId) => {
+        try {
+            const params = { limite: 9999999999 }
+            if (reinoId) {
+                params.reino_id = reinoId
             }
-        })
-            .then(response => {
-                if (response.status === 200) {
-                    this.setState({
-                        familias: response.data.resultado
-                    })
-                } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar famílias, tente novamente.')
-                }
-            })
-            .catch(err => {
-                const { response } = err
-                if (response && response.data) {
-                    if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
-                    } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar a listagem das famílias, tente novamente.')
-                    }
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
+
+            const response = await axios.get('/familias', { params })
+
+            if (response.status === 200) {
+                this.setState({
+                    familias: response.data.resultado
+                })
+            } else {
+                this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar famílias, tente novamente.')
+            }
+        } catch (err) {
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                this.openNotificationWithIcon('warning', 'Falha', error.message)
+            } else {
+                throw err
+            }
+        }
     }
 
     cadastraNovaSubfamilia = () => {
@@ -2092,19 +2134,22 @@ class NovoTomboScreen extends Component {
             .catch(this.catchRequestError)
     }
 
-    requisitaEdicaoTombo = json => {
-        const tomboId = this.props.match.params.tombo_id
-        this.defaultRequest(
-            null,
-            requisitaNumeroHcfService,
-            'A alteração foi realizada com sucesso.',
-            'Houve um problema ao alterar o tombo, tente novamente.',
-            this.onRequisitaEdicaoTomboComSucesso,
-            tomboId,
-            json
-        )
-        this.props.history.push('/tombos')
-    }
+requisitaEdicaoTombo = json => {
+    const tomboId = this.props.match.params.tombo_id;
+    this.defaultRequest(
+        null,
+        requisitaNumeroHcfService,
+        'A alteração foi realizada com sucesso.',
+        'Houve um problema ao alterar o tombo, tente novamente.',
+        () => {
+            this.onRequisitaEdicaoTomboComSucesso();
+            this.props.history.push('/tombos');
+        },
+        tomboId,
+        json
+    );
+};
+
 
     requisitaCadastroTombo = json => {
         axios.post('/tombos', { json })
@@ -2546,7 +2591,7 @@ class NovoTomboScreen extends Component {
         if (dataColetaMes) json.principal.data_coleta = { ...json.principal.data_coleta, mes: dataColetaMes }
         if (dataColetaAno) json.principal.data_coleta = { ...json.principal.data_coleta, ano: dataColetaAno }
         if (tipo) json.principal.tipo_id = tipo
-        json.principal.cor = localidadeCor
+        if (localidadeCor)json.principal.cor = localidadeCor
         if (reino) json.taxonomia = { reino_id: reino }
         if (familia) json.taxonomia = { ...json.taxonomia, familia_id: familia }
         if (genero) json.taxonomia = { ...json.taxonomia, genero_id: genero }
@@ -3074,7 +3119,7 @@ class NovoTomboScreen extends Component {
         )
     }
 
-    renderFamiliaTombo = getFieldDecorator => {
+    renderFamiliaTombo = (getFieldDecorator, getFieldError) => {
         const {
             reinoInicial, familiaInicial, reinos, familias, generoInicial, generos, search,
             especieInicial, especies, subespecieInicial, subespecies,
@@ -3163,6 +3208,7 @@ class NovoTomboScreen extends Component {
                         initialValue={String(familiaInicial)}
                         familias={familias}
                         getFieldDecorator={getFieldDecorator}
+                        getFieldError={getFieldError}
                         onChange={value => {
                             this.requisitaSubfamilias(value)
                             this.requisitaGeneros(value)
@@ -3549,7 +3595,7 @@ class NovoTomboScreen extends Component {
                             <h2 style={{ fontWeight: 200 }}>Tombo</h2>
                         </Col>
                     </Row>
-                    {this.renderFamiliaTombo(getFieldDecorator)}
+                    {this.renderFamiliaTombo(getFieldDecorator, getFieldError)}
                     <Divider dashed />
                     {this.renderColetores(getFieldDecorator, getFieldError)}
                     <Divider dashed />
@@ -3849,15 +3895,25 @@ class NovoTomboScreen extends Component {
                     <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                         <Col span={24}>
                             <span>Localidade:</span>
+                            <Button 
+                                type="text" 
+                                onClick={() => {
+                                    this.props.form.setFieldsValue({ localidadeCor: undefined })
+                                }}
+                                style={{ 
+                                    color: '#999', 
+                                    fontSize: '12px',
+                                    padding: '0 4px',
+                                    height: 'auto'
+                                }}
+                            >
+                                Limpar
+                            </Button>
                         </Col>
                         <Col span={24}>
                             <FormItem>
                                 {getFieldDecorator('localidadeCor', {
                                     initialValue: String(this.state.localidadeInicial),
-                                    rules: [{
-                                        required: true,
-                                        message: 'Escolha uma localidade'
-                                    }]
                                 })(
                                     <RadioGroup
                                         onChange={this.onChange}
@@ -3900,15 +3956,12 @@ class NovoTomboScreen extends Component {
                             <FormItem>
                                 {getFieldDecorator('entidade', {
                                     initialValue: String(!this.props.match.params.tombo_id ? this.state.herbarioInicial?.value || '' : this.state.herbarioInicial),
-                                    rules: [{
-                                        required: true,
-                                        message: 'Escolha uma entidade'
-                                    }]
                                 })(
                                     <Select
                                         showSearch
                                         placeholder="Selecione uma entidade"
                                         optionFilterProp="children"
+                                        allowClear
                                         status={getFieldError('entidade') ? 'error' : ''}
                                     >
                                         {this.optionEntidades()}

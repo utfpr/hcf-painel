@@ -25,6 +25,7 @@
         "leaflet.fullscreen": "^3.0.1",
         "leaflet.markercluster": "^1.5.3",
         "lodash.debounce": "4.0.8",
+        "logrocket": "10.1.0",
         "moment": "2.29.4",
         "react": "18.2.0",
         "react-barcode": "^1.6.1",

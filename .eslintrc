@@ -247,6 +247,7 @@
         },
         {
             "files": [
+                "*.ts",
                 "*.tsx"
             ],
             "rules": {
@@ -264,7 +265,11 @@
                 "import/no-extraneous-dependencies": "off",
                 "react/react-in-jsx-scope": "off",
                 "@typescript-eslint/no-magic-numbers": "off",
-                "@typescript-eslint/no-unsafe-assignment": "off"
+                "@typescript-eslint/no-unsafe-assignment": "off",
+                "@typescript-eslint/quotes": ["error", "single"],
+                "@typescript-eslint/comma-dangle": ["error", "never"],
+                "@typescript-eslint/semi": ["error", "never"],
+                "@typescript-eslint/indent": ["error", 2]
             }
         },
         {

@@ -6,8 +6,11 @@ import axios from 'axios'
 import logoImage from '../assets/img/leaves.png'
 import { setTokenUsuario, setUsuario } from '../helpers/usuarios'
 import LoginForm from './LoginForm'
+import { AnalyticsContext } from '@/components/Analytics/AnalyticsContext'
 
 export default class LoginLayout extends Component {
+    static contextType = AnalyticsContext;
+
     constructor(props) {
         super(props)
         this.state = {
@@ -49,6 +52,13 @@ export default class LoginLayout extends Component {
                 }
 
                 this.salvarCrendenciaisUsuario(response.data)
+
+                const usuario = response.data.usuario;
+                this.context?.analytics?.identify({
+                    id: usuario.id,
+                    name: usuario.nome,
+                    email: usuario.email
+                })
             })
             .catch(err => {
                 this.props.load(false)

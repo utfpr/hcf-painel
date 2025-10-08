@@ -7,7 +7,7 @@ import SelectedFormFiled from './SelectedFormFiled'
 const { Option } = Select
 
 const FamiliaFormField = ({
-    initialValue, familias, getFieldDecorator, onClickAddMore, onChange
+    initialValue, familias, getFieldDecorator, onClickAddMore, onChange, getFieldError
 }) => {
     const optionFamilia = () => familias?.map(item => (
         <Option value={`${item.id}`}>{item.nome}</Option>
@@ -24,9 +24,11 @@ const FamiliaFormField = ({
             placeholder="Selecione uma família"
             fieldName="familia"
             getFieldDecorator={getFieldDecorator}
+            getFieldError={getFieldError}
             onClickAddMore={onClickAddMore}
             onChange={onChange}
             others={{allowClear: true}}
+            rules={[{ required: true, message: 'Escolha uma família' }]}
         >
             {optionFamilia()}
         </SelectedFormFiled>

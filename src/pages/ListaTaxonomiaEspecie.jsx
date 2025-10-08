@@ -401,10 +401,20 @@ class ListaTaxonomiaEspecie extends Component {
         this.setState({
             loading: true
         })
+
+        const formValues = this.props.form.getFieldsValue()
+    
+        const extrairId = (valor) => {
+            if (typeof valor === 'object' && valor.key) {
+                return valor.key
+            }
+            return valor
+        }
+
         axios.put(`/especies/${this.state.id}`, {
-            nome: this.props.form.getFieldsValue().nomeEspecie,
-            genero_id: this.props.form.getFieldsValue().nomeGenero,
-            autor_id: this.props.form.getFieldsValue().nomeAutor
+            nome: formValues.nomeEspecie,
+            genero_id: extrairId(formValues.nomeGenero),
+            autor_id: extrairId(formValues.nomeAutor)
         })
             .then(response => {
                 this.setState({
