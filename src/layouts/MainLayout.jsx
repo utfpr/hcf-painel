@@ -113,7 +113,7 @@ export default class MainLayout extends Component {
     renderFormulario() {
         return (
             <Layout style={{ minHeight: '100vh' }}>
-                <Sider trigger={null} collapsible collapsed={this.state.collapsed}>
+                <Sider trigger={null} collapsible collapsed={this.state.collapsed} width={350}>
                     <Col align="center" style={{ marginTop: 20, marginBottom: 20 }}>
                         <Link to="/">
                             <img
