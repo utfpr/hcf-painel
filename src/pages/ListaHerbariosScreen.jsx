@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom'
 
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
-import { EditOutlined } from '@ant-design/icons'
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 
 import HeaderListComponent from '../components/HeaderListComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
@@ -75,7 +75,7 @@ class ListaHerbariosScreen extends Component {
                     </Link>
                     <Divider type="vertical" />
                     <a href="#" onClick={() => this.mostraMensagemDelete(id)}>
-                        <deleteOutlined style={{ color: '#e30613' }} />
+                        <DeleteOutlined style={{ color: '#e30613' }} />
                     </a>
                 </span>
             )
@@ -90,27 +90,35 @@ class ListaHerbariosScreen extends Component {
     }
 
     requisitaExclusao(id) {
+        this.setState({
+            loading: true
+        })
         axios.delete(`/herbarios/${id}`)
             .then(response => {
+                this.setState({
+                    loading: false
+                })
                 if (response.status === 204) {
                     this.requisitaListaHerbarios(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir herbário', 'O herbário foi excluído com sucesso.')
+                    this.notificacao('success', 'Excluir', 'O herbário foi excluído com sucesso.')
                 }
             })
             .catch(err => {
+                this.setState({
+                    loading: false
+                })
                 const { response } = err
                 if (response && response.data) {
-                    if (response.status === 400 || response.status === 422) {
-                        this.notificacao('warning', 'Falha', response.data.error.message)
-                    } else {
-                        this.notificacao('error', 'Falha', 'Houve um problema ao excluir o herbários, tente novamente.')
-                    }
                     const { error } = response.data
-                    console.error(error.message)
+                    if (error && error.code) {
+                        this.notificacao('error', 'Erro ao excluir herbário', error.code)
+                    } else {
+                        this.notificacao('error', 'Erro ao excluir herbário', 'Ocorreu um erro inesperado ao tentar excluir o herbário.')
+                    }
+                    console.error(error)
+                } else {
+                    this.notificacao('error', 'Erro ao excluir herbário', 'Falha na comunicação com o servidor.')
                 }
-            })
-            .catch(() => {
-                this.notificacao('error', 'Falha', 'Houve um problema ao excluir o herbário, tente novamente.')
             })
     }
 

@@ -66,30 +66,37 @@ class ListaTaxonomiaSubfamilia extends Component {
     }
 
     requisitaExclusao(id) {
-        this.setState({
-            loading: true
+    this.setState({
+        loading: true
+    })
+    axios.delete(`/subfamilias/${id}`)
+        .then(response => {
+            this.setState({
+                loading: false
+            })
+            if (response.status === 204) {
+                this.requisitaListaSubfamilia(this.state.valores, this.state.pagina)
+                this.notificacao('success', 'Excluir', 'A subfamília foi excluída com sucesso.')
+            }
         })
-        axios.delete(`/subfamilias/${id}`)
-            .then(response => {
-                this.setState({
-                    loading: false
-                })
-                if (response.status === 204) {
-                    this.requisitaListaSubfamilia(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir', 'A subfamília foi excluída com sucesso.')
-                }
+        .catch(err => {
+            this.setState({
+                loading: false
             })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    console.error(error.message)
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                if (error && error.code) {
+                    this.notificacao('error', 'Erro ao excluir subfamília', error.code)
+                } else {
+                    this.notificacao('error', 'Erro ao excluir subfamília', 'Ocorreu um erro inesperado ao tentar excluir a subfamília.')
                 }
-            })
-    }
+                console.error(error)
+            } else {
+                this.notificacao('error', 'Erro ao excluir subfamília', 'Falha na comunicação com o servidor.')
+            }
+        })
+}
 
     notificacao = (type, titulo, descricao) => {
         notification[type]({
@@ -274,9 +281,19 @@ class ListaTaxonomiaSubfamilia extends Component {
         this.setState({
             loading: true
         })
+
+        const formValues = this.props.form.getFieldsValue()
+            
+        const extrairId = (valor) => {
+            if (typeof valor === 'object' && valor.key) {
+                return valor.key
+            }
+            return valor
+        }
+
         axios.put(`/subfamilias/${this.state.id}`, {
-            nome: this.props.form.getFieldsValue().nomeSubfamilia,
-            familia_id: this.props.form.getFieldsValue().nomeFamilia
+            nome: formValues.nomeSubfamilia,
+            familia_id: extrairId(formValues.nomeFamilia)
         })
             .then(response => {
                 this.setState({

@@ -63,30 +63,37 @@ class ListaTaxonomiaFamilia extends Component {
     }
 
     requisitaExclusao(id) {
-        this.setState({
-            loading: true
+    this.setState({
+        loading: true
+    })
+    axios.delete(`/familias/${id}`)
+        .then(response => {
+            this.setState({
+                loading: false
+            })
+            if (response.status === 204) {
+                this.requisitaListaFamilia(this.state.valores, this.state.pagina)
+                this.notificacao('success', 'Excluir família', 'A família foi excluída com sucesso.')
+            }
         })
-        axios.delete(`/familias/${id}`)
-            .then(response => {
-                this.setState({
-                    loading: false
-                })
-                if (response.status === 204) {
-                    this.requisitaListaFamilia(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir família', 'A família foi excluída com sucesso.')
-                }
+        .catch(err => {
+            this.setState({
+                loading: false
             })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    console.error(error.message)
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                if (error && error.code) {
+                    this.notificacao('error', 'Erro ao excluir família', error.code)
+                } else {
+                    this.notificacao('error', 'Erro ao excluir família', 'Ocorreu um erro inesperado ao tentar excluir a família.')
                 }
-            })
-    }
+                console.error(error)
+            } else {
+                this.notificacao('error', 'Erro ao excluir família', 'Falha na comunicação com o servidor.')
+            }
+        })
+}
 
     notificacao = (type, titulo, descricao) => {
         notification[type]({

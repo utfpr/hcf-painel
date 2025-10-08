@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom'
 
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
-import { EditOutlined } from '@ant-design/icons'
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 
 import HeaderListComponent from '../components/HeaderListComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
@@ -54,9 +54,62 @@ class ListaIdentificadoresScreen extends Component {
                     <Link to={`/identificadores/${id}`}>
                         <EditOutlined style={{ color: '#FFCC00' }} />
                     </Link>
+                    <Divider type="vertical" />
+                    <a href="#" onClick={() => this.mostraMensagemDelete(id)}>
+                        <DeleteOutlined style={{ color: '#e30613' }} />
+                    </a>
                 </span>
             )
         }
+    }
+
+    requisitaExclusao(id) {
+        this.setState({
+            loading: true
+        })
+        axios.delete(`/identificadores/${id}`)
+            .then(response => {
+                this.setState({
+                    loading: false
+                })
+                if (response.status === 204) {
+                    this.requisitaListaIdentificadores(this.state.valores, this.state.pagina)
+                    this.notificacao('success', 'Excluir', 'O identificador foi excluído com sucesso.')
+                }
+            })
+            .catch(err => {
+                this.setState({
+                    loading: false
+                })
+                const { response } = err
+                if (response && response.data) {
+                    const { error } = response.data
+                    if (error && error.code) {
+                        this.notificacao('error', 'Erro ao excluir identificador', error.code)
+                    } else {
+                        this.notificacao('error', 'Erro ao excluir identificador', 'Ocorreu um erro inesperado ao tentar excluir o identificador.')
+                    }
+                    console.error(error)
+                } else {
+                    this.notificacao('error', 'Erro ao excluir identificador', 'Falha na comunicação com o servidor.')
+                }
+            })
+    }
+
+    mostraMensagemDelete(id) {
+        const self = this
+        confirm({
+            title: 'Você tem certeza que deseja excluir este identificador?',
+            content: 'Ao clicar em SIM, o identificador será excluído.',
+            okText: 'SIM',
+            okType: 'danger',
+            cancelText: 'NÃO',
+            onOk() {
+                self.requisitaExclusao(id)
+            },
+            onCancel() {
+            }
+        })
     }
 
     notificacao = (type, titulo, descricao) => {
@@ -71,22 +124,6 @@ class ListaIdentificadoresScreen extends Component {
         nome: item.nome,
         acao: this.gerarAcao(item.id)
     }))
-
-    mostraMensagemDelete(id) {
-        const self = this
-        confirm({
-            title: 'Você tem certeza que deseja excluir este herbário?',
-            content: 'Ao clicar em SIM, o herbário será excluído.',
-            okText: 'SIM',
-            okType: 'danger',
-            cancelText: 'NÃO',
-            onOk() {
-                self.requisitaExclusao(id)
-            },
-            onCancel() {
-            }
-        })
-    }
 
     requisitaListaIdentificadores = async (valores, pg, pageSize) => {
         const params = {
