@@ -212,6 +212,41 @@ class NovoTomboScreen extends Component {
         this.carregaInformacoesEdicao()
     }
 
+    validateAnoNaoFuturo = (_rule, value, callback) => {
+        if (value == null || value === '') return callback()
+        const anoAtual = new Date().getFullYear()
+        if (Number(value) > anoAtual) {
+            return callback('O ano não pode ser no futuro.')
+        }
+        return callback()
+    }
+
+    validateDataTombo = (_rule, value, callback) => {
+        if (!value) return callback()
+
+        const str = String(value).trim()
+
+        const m = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/)
+        if (!m) return callback('Formato inválido. Use DD/MM/AAAA.')
+
+        const d = Number(m[1])
+        const mm = Number(m[2])
+        const y = Number(m[3])
+
+        if (mm < 1 || mm > 12) return callback('Mês inválido.')
+        if (d < 1 || d > 31) return callback('Dia inválido.')
+
+        const dt = new Date(y, mm - 1, d)
+        if (dt.getFullYear() !== y || (dt.getMonth() + 1) !== mm || dt.getDate() !== d) {
+            return callback('Data inválida.')
+        }
+
+        const anoAtual = new Date().getFullYear()
+        if (y > anoAtual) return callback('O ano não pode ser no futuro.')
+
+        return callback()
+    }
+
     carregaInformacoesEdicao = async () => {
         try {
             this.setState({
@@ -3147,11 +3182,24 @@ class NovoTomboScreen extends Component {
                         disabled
                         getFieldDecorator={getFieldDecorator}
                     />
-                    <InputFormField
-                        name="dataTombo"
-                        title="Data do Tombo:"
-                        getFieldDecorator={getFieldDecorator}
-                    />
+                    <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+                        <Col span={24}>
+                            <span>Data do Tombo:</span>
+                        </Col>
+                        <Col span={24}>
+                            <FormItem>
+                                {getFieldDecorator('dataTombo', {
+                                    rules: [{ validator: this.validateDataTombo }]
+                                })(
+                                    <Input
+                                        placeholder="DD/MM/AAAA"
+                                        type="text"
+                                        status={getFieldError && getFieldError('dataTombo') ? 'error' : ''}
+                                    />
+                                )}
+                            </FormItem>
+                        </Col>
+                    </Col>
                 </Row>
                 <br />
                 <Row gutter={8}>
@@ -3497,7 +3545,10 @@ class NovoTomboScreen extends Component {
                         }}
                         filterOption={false}
                     />
-                    <DataIdentificacaoFormField getFieldDecorator={getFieldDecorator} />
+                    <DataIdentificacaoFormField
+                        getFieldDecorator={getFieldDecorator}
+                        getFieldError={getFieldError}
+                    />
                 </Row>
             </div>
         )
@@ -3871,10 +3922,13 @@ class NovoTomboScreen extends Component {
                                 <Col span={8}>
                                     <FormItem>
                                         {getFieldDecorator('dataColetaAno', {
-                                            rules: [{
-                                                required: true,
-                                                message: 'Insira o ano da coleta'
-                                            }]
+                                            rules: [
+                                                {
+                                                    required: true,
+                                                    message: 'Insira o ano da coleta'
+                                                },
+                                                { validator: this.validateAnoNaoFuturo }
+                                            ]
                                         })(
                                             <InputNumber
                                                 min={500}
