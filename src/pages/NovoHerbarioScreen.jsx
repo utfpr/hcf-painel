@@ -83,7 +83,7 @@ class NovoHerbarioScreen extends Component {
         })
         axios.get('/estados', {
             params: {
-                id
+                pais_id: id
             }
         })
             .then(response => {

@@ -95,7 +95,7 @@ class ListaLocaisColeta extends Component {
     requisitaEstados = async (paisId) => {
         try {
             const response = await axios.get('/estados', {
-                params: { id: paisId }
+                params: { pais_id: paisId }
             })
             
             if (response.status === 200) {
@@ -114,7 +114,7 @@ class ListaLocaisColeta extends Component {
     requisitaCidades = async (estadoId) => {
         try {
             const response = await axios.get('/cidades', {
-                params: { id: estadoId }
+                params: { estado_id: estadoId }
             })
             
             if (response.status === 200) {
@@ -207,10 +207,14 @@ class ListaLocaisColeta extends Component {
         }
 
         if (valores !== undefined) {
-            const { cidade } = valores
+            const { pais, estado, cidade } = valores
 
             if (cidade) {
                 params.cidade_id = cidade
+            } else if (estado) {
+                params.estado_id = estado
+            } else if (pais) {
+                params.pais_id = pais
             }
         }
 
