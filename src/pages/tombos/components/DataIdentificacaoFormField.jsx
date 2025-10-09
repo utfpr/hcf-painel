@@ -8,7 +8,16 @@ import { Form } from '@ant-design/compatible'
 
 const FormItem = Form.Item
 
-const DataIdentificacaoFormField = ({ getFieldDecorator }) => {
+const DataIdentificacaoFormField = ({ getFieldDecorator, getFieldError }) => {
+    const validaAnoNaoFuturo = (_rule, value, callback) => {
+        if (value == null || value === '') return callback()
+        const anoAtual = new Date().getFullYear()
+        if (Number(value) > anoAtual) {
+            return callback('O ano não pode ser no futuro.')
+        }
+        return callback()
+    }
+
     return (
         <Col xs={24} sm={24} md={12} lg={12} xl={12}>
             <Col span={24}>
@@ -42,12 +51,15 @@ const DataIdentificacaoFormField = ({ getFieldDecorator }) => {
                     </Col>
                     <Col span={8}>
                         <FormItem>
-                            {getFieldDecorator('dataIdentAno')(
+                            {getFieldDecorator('dataIdentAno', {
+                                rules: [{ validator: validaAnoNaoFuturo }]
+                            })(
                                 <InputNumber
                                     min={500}
                                     max={5000}
                                     initialValue={2018}
                                     style={{ width: '100%' }}
+                                    status={getFieldError && getFieldError('dataIdentAno') ? 'error' : ''}
                                 />
                             )}
                         </FormItem>
