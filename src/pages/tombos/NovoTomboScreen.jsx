@@ -589,7 +589,7 @@ class NovoTomboScreen extends Component {
             })
 
             if (paisBrasil) {
-                axios.get('/estados', { params: { id: paisBrasil.id } })
+                axios.get('/estados', { params: { pais_id: paisBrasil.id } })
                     .then(estadosResponse => {
                         if (estadosResponse.data && estadosResponse.status === 200) {
                             const estadoParana = estadosResponse.data.find(e => e.nome === 'Paraná')
@@ -807,7 +807,7 @@ class NovoTomboScreen extends Component {
     requisitaEstados = id => {
         axios.get('/estados', {
             params: {
-                id
+                pais_id: id
             }
         })
             .then(response => {
