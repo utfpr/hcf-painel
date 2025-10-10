@@ -64,8 +64,6 @@ import './assets/css/FormEnterSystem.css'
 import './assets/css/Main.css'
 import './assets/css/Search.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
-import ExportaçãoScreen from './pages/ExportaçãoScreen'
-import ListaLocalColetaScreen from './pages/ListaLocalColetaScreen'
 import ListaEstadosScreen from './pages/ListaEstadosScreen'
 import ListaCidadesScreen from './pages/ListaCidadesScreen'
 
