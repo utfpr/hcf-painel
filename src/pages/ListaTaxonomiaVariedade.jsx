@@ -81,32 +81,37 @@ class ListaTaxonomiaVariedade extends Component {
     }
 
     requisitaExclusao(id) {
-        this.setState({
-            loading: true
+    this.setState({
+        loading: true
+    })
+    axios.delete(`/variedades/${id}`)
+        .then(response => {
+            this.setState({
+                loading: false
+            })
+            if (response.status === 204) {
+                this.requisitaListaVariedade(this.state.valores, this.state.pagina)
+                this.notificacao('success', 'Excluir', 'A Variedade foi excluída com sucesso.')
+            }
         })
-        axios.delete(`/variedades/${id}`)
-            .then(response => {
-                this.setState({
-                    loading: false
-                })
-                if (response.status === 204) {
-                    this.requisitaListaVariedade(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir', 'A Variedade foi excluída com sucesso.')
-                }
+        .catch(err => {
+            this.setState({
+                loading: false
             })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    throw new Error(error.message)
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                if (error && error.code) {
+                    this.notificacao('error', 'Erro ao excluir variedade', error.code)
                 } else {
-                    throw err
+                    this.notificacao('error', 'Erro ao excluir variedade', 'Ocorreu um erro inesperado ao tentar excluir a variedade.')
                 }
-            })
-    }
+                console.error(error)
+            } else {
+                this.notificacao('error', 'Erro ao excluir variedade', 'Falha na comunicação com o servidor.')
+            }
+        })
+}
 
     notificacao = (type, titulo, descricao) => {
         notification[type]({
@@ -153,7 +158,7 @@ class ListaTaxonomiaVariedade extends Component {
                                     value: { key: item.especie.id, label: item.especie.nome }
                                 },
                                 nomeAutor: {
-                                    value: { key: item.autor.id, label: item.autor.nome }
+                                    value: item.autor ? { key: item.autor.id, label: item.autor.nome } : undefined
                                 }
                             })
                             this.setState({
@@ -359,10 +364,22 @@ class ListaTaxonomiaVariedade extends Component {
         this.setState({
             loading: true
         })
+
+        const formValues = this.props.form.getFieldsValue()
+            
+        const extrairId = (valor) => {
+            if (typeof valor === 'object' && valor.key) {
+                return valor.key
+            }
+            return valor
+        }
+
+        const autorId = extrairId(formValues.nomeAutor)
+
         axios.put(`/variedades/${this.state.id}`, {
-            nome: this.props.form.getFieldsValue().nomeVariedade,
-            especie_id: this.props.form.getFieldsValue().nomeEspecie,
-            autor_id: this.props.form.getFieldsValue().nomeAutor
+            nome: formValues.nomeVariedade,
+            especie_id: extrairId(formValues.nomeEspecie),
+            autor_id: autorId || null
         })
             .then(response => {
                 this.setState({
