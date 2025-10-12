@@ -154,8 +154,6 @@ class NovaRemessaScreen extends Component {
     }
 
     handleSubmit = (err, valores) => {
-        console.log(this.state.data)
-        console.log(this.props.match.params.remessa_id)
         if (!err) {
             if (this.state.data.length > 0) {
                 if (this.props.match.params.remessa_id !== undefined) {
@@ -556,7 +554,6 @@ class NovaRemessaScreen extends Component {
     }
 
     render() {
-        console.log(this.state)
         if (this.state.loading) {
             return (
                 <Spin tip="Carregando...">
