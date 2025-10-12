@@ -577,40 +577,6 @@ class NovoTomboScreen extends Component {
                 loading: false
             })
         }
-
-        requestService(getResponse, ...params)
-            .then(() => {
-                successCalback(response, params)
-                if (successMessage !== '') {
-                    // this.openNotificationWithIcon('success', 'Sucesso', 'SIM')
-                    this.openNotificationWithIcon('success', 'Sucesso', successMessage)
-                }
-            })
-            .catch(error => {
-                // console.log({ error })
-                // console.log(`----- ${error.stack} -----`) // Removed debug log
-                if (error !== '') {
-                    this.openNotificationWithIcon('warning', 'Falha', 'não')
-                } else {
-                    // this.openNotificationWithIcon(
-                    //     'error',
-                    //     'Falha',
-                    //     errorMessage
-                    // )
-                }
-            })
-            .finally(() => {
-                this.setState({
-                    loading: false
-                })
-                if (onFinish !== null) {
-                    onFinish()
-                }
-            })
-            if (onFinish !== null) {
-                onFinish()
-            }
-        }
     }
 
     requisitaDadosEdicao = id => {
@@ -2444,7 +2410,6 @@ class NovoTomboScreen extends Component {
                 return false
             }
             if (err != null) {
-                // console.log(err) // Removed debug log
                 this.openNotificationWithIcon('warning', 'Falha', 'Preencha todos os dados requiridos.')
             } else {
                 this.handleRequisicao(values)
@@ -2710,11 +2675,7 @@ class NovoTomboScreen extends Component {
 
     handleSubmitForm = e => {
         e.preventDefault()
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                // console.log('Received values of form: ', values) // Removed debug log
-            }
-        })
+        this.props.form.validateFields((err, values) => {})
     }
 
     optionEntidades = () => this.state.herbarios.map(item => (

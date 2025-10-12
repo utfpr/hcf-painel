@@ -554,7 +554,6 @@ class NovaRemessaScreen extends Component {
     }
 
     render() {
-        // console.log(this.state) // Removed debug log
         if (this.state.loading) {
             return (
                 <Spin tip="Carregando...">
