@@ -1,17 +1,17 @@
 import React from 'react'
-
-import { Select } from 'antd'
-
+import { Select, Spin } from 'antd'
 import SelectedFormFiled from './SelectedFormFiled'
 
 const { Option } = Select
 
 const VariedadeFormField = ({
-    initialValue, variedades, getFieldDecorator, onClickAddMore, onChange, validateStatus, autor
+    initialValue, variedades, getFieldDecorator, onClickAddMore, onChange, validateStatus, autor,
+    onSearch, loading = false, debounceDelay = 600
 }) => {
-    const optionVariedades = () => variedades.map(item => (
-        <Option value={`${item.id}`}>{item.nome}</Option>
+    const optionVariedades = () => variedades?.map(item => (
+        <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
     ))
+
     return (
         <SelectedFormFiled
             xs={24}
@@ -21,14 +21,21 @@ const VariedadeFormField = ({
             xl={12}
             title="Variedade:"
             initialValue={initialValue}
-            placeholder="Selecione uma variedade"
+            placeholder="Digite para buscar variedades..."
             fieldName="variedade"
             getFieldDecorator={getFieldDecorator}
             onClickAddMore={onClickAddMore}
             onChange={onChange}
             validateStatus={validateStatus}
             autor={autor}
-            others={{allowClear: true}}
+            onSearch={onSearch}
+            debounceDelay={debounceDelay}
+            others={{
+                allowClear: true,
+                loading: loading,
+                notFoundContent: loading ? <Spin size="small" /> : 'Nenhuma variedade encontrada',
+                filterOption: onSearch ? false : undefined
+            }}
         >
             {optionVariedades()}
         </SelectedFormFiled>

@@ -1,17 +1,17 @@
 import React from 'react'
-
-import { Select } from 'antd'
-
+import { Select, Spin } from 'antd'
 import SelectedFormFiled from './SelectedFormFiled'
 
 const { Option } = Select
 
 const FamiliaFormField = ({
-    initialValue, familias, getFieldDecorator, onClickAddMore, onChange, getFieldError
+    initialValue, familias, getFieldDecorator, onClickAddMore, onChange, validateStatus,
+    getFieldError, onSearch, loading = false, debounceDelay = 600
 }) => {
     const optionFamilia = () => familias?.map(item => (
-        <Option value={`${item.id}`}>{item.nome}</Option>
+        <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
     ))
+
     return (
         <SelectedFormFiled
             xs={24}
@@ -21,14 +21,21 @@ const FamiliaFormField = ({
             xl={12}
             title="Família:"
             initialValue={initialValue}
-            placeholder="Selecione uma família"
+            placeholder="Digite para buscar famílias..."
             fieldName="familia"
             getFieldDecorator={getFieldDecorator}
-            getFieldError={getFieldError}
             onClickAddMore={onClickAddMore}
             onChange={onChange}
-            others={{allowClear: true}}
-            rules={[{ required: true, message: 'Escolha uma família' }]}
+            validateStatus={validateStatus}
+            onSearch={onSearch}
+            debounceDelay={debounceDelay}
+            others={{
+                allowClear: true,
+                loading: loading,
+                notFoundContent: loading ? <Spin size="small" /> : 'Nenhuma família encontrada',
+                filterOption: onSearch ? false : undefined,
+                status: getFieldError && getFieldError('familia') ? 'error' : ''
+            }}
         >
             {optionFamilia()}
         </SelectedFormFiled>

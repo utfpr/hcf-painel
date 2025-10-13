@@ -14,6 +14,7 @@ import { Form } from '@ant-design/compatible'
 import {
     DeleteOutlined, EditOutlined, PlusOutlined, UploadOutlined
 } from '@ant-design/icons'
+import debounce from 'lodash.debounce'
 
 import BarcodeTableComponent from '../../components/BarcodeTableComponent'
 import ButtonComponent from '../../components/ButtonComponent'
@@ -203,12 +204,207 @@ class NovoTomboScreen extends Component {
             codigosBarrasForm: [],
             codigosBarrasInicial: [],
             toDeleteBarcodes: [],
-            isEditing: false
+            isEditing: false,
+            fetchingReinos: false,
+            fetchingFamilias: false,
+            fetchingSubfamilias: false,
+            fetchingGeneros: false,
+            fetchingEspecies: false,
+            fetchingSubespecies: false,
+            fetchingVariedades: false,
         }
+
+        this.debouncedRequisitaReinos = debounce(this.requisitaReinosOriginal, 600)
+        this.debouncedRequisitaFamilias = debounce(this.requisitaFamiliasOriginal, 600) 
+        this.debouncedRequisitaSubfamilias = debounce(this.requisitaSubfamiliasOriginal, 600)
+        this.debouncedRequisitaGeneros = debounce(this.requisitaGenerosOriginal, 600)
+        this.debouncedRequisitaEspecies = debounce(this.requisitaEspeciesOriginal, 600)
+        this.debouncedRequisitaSubespecies = debounce(this.requisitaSubespeciesOriginal, 600)
+        this.debouncedRequisitaVariedades = debounce(this.requisitaVariedadesOriginal, 600)
     }
 
     componentDidMount() {
         this.carregaInformacoesEdicao()
+    }
+
+    requisitaReinosOriginal = async (searchText) => {
+        this.setState({ fetchingReinos: true })
+        
+        try {
+            const params = { 
+                limite: 9999999999,
+                reino: searchText
+            }
+
+            const response = await axios.get('/reinos', { params })
+
+            if (response.status === 200) {
+                this.setState({
+                    reinos: response.data.resultado,
+                    fetchingReinos: false
+                })
+            }
+        } catch (err) {
+            this.setState({ fetchingReinos: false })
+            console.error('Erro ao buscar reinos:', err)
+        }
+    }
+
+    requisitaFamiliasOriginal = async (searchText, reinoId) => {
+        this.setState({ fetchingFamilias: true })
+
+        try {
+            const params = { 
+                limite: 9999999999,
+                familia: searchText
+            }
+            if (reinoId) {
+                params.reino_id = reinoId
+            }
+
+            const response = await axios.get('/familias', { params })
+
+            if (response.status === 200) {
+                this.setState({
+                    familias: response.data.resultado,
+                    fetchingFamilias: false
+                })
+            }
+        } catch (err) {
+            this.setState({ fetchingFamilias: false })
+            console.error('Erro ao buscar famílias:', err)
+        }
+    }
+
+    requisitaSubfamiliasOriginal = async (searchText, familiaId) => {
+        this.setState({ fetchingSubfamilias: true })
+
+        try {
+            const params = {
+                limite: 999999999,
+                subfamilia: searchText
+            }
+            if (familiaId) {
+                params.familia_id = familiaId
+            }
+
+            const response = await axios.get('/subfamilias', { params })
+
+            if (response.status === 200) {
+                this.setState({
+                    subfamilias: response.data.resultado,
+                    fetchingSubfamilias: false
+                })
+            }
+        } catch (err) {
+            this.setState({ fetchingSubfamilias: false })
+            console.error('Erro ao buscar subfamílias:', err)
+        }
+    }
+
+    requisitaGenerosOriginal = async (searchText, familiaId) => {
+        this.setState({ fetchingGeneros: true })
+
+        try {
+            const params = {
+                limite: 9999999999,
+                genero: searchText
+            }
+            if (familiaId) {
+                params.familia_id = familiaId
+            }
+
+            const response = await axios.get('/generos', { params })
+
+            if (response.status === 200) {
+                this.setState({
+                    generos: response.data.resultado,
+                    fetchingGeneros: false
+                })
+            }
+        } catch (err) {
+            this.setState({ fetchingGeneros: false })
+            console.error('Erro ao buscar gêneros:', err)
+        }
+    }
+
+    requisitaEspeciesOriginal = async (searchText, generoId) => {
+        this.setState({ fetchingEspecies: true })
+
+        try {
+            const params = {
+                limite: 9999999999,
+                especie: searchText
+            }
+            if (generoId) {
+                params.genero_id = generoId
+            }
+
+            const response = await axios.get('/especies', { params })
+
+            if (response.status === 200) {
+                this.setState({
+                    especies: response.data.resultado,
+                    fetchingEspecies: false
+                })
+            }
+        } catch (err) {
+            this.setState({ fetchingEspecies: false })
+            console.error('Erro ao buscar espécies:', err)
+        }
+    }
+
+    requisitaSubespeciesOriginal = async (searchText, especieId) => {
+        this.setState({ fetchingSubespecies: true })
+
+        try {
+            const params = {
+                limite: 999999999,
+                subespecie: searchText
+            }
+            if (especieId) {
+                params.especie_id = especieId
+            }
+
+            const response = await axios.get('/subespecies', { params })
+
+            if (response.status === 200) {
+                this.setState({
+                    subespecies: response.data.resultado,
+                    fetchingSubespecies: false
+                })
+            }
+        } catch (err) {
+            this.setState({ fetchingSubespecies: false })
+            console.error('Erro ao buscar subespécies:', err)
+        }
+    }
+
+    requisitaVariedadesOriginal = async (searchText, especieId) => {
+
+        this.setState({ fetchingVariedades: true })
+
+        try {
+            const params = {
+                limite: 999999999,
+                variedade: searchText
+            }
+            if (especieId) {
+                params.especie_id = especieId
+            }
+
+            const response = await axios.get('/variedades', { params })
+
+            if (response.status === 200) {
+                this.setState({
+                    variedades: response.data.resultado,
+                    fetchingVariedades: false
+                })
+            }
+        } catch (err) {
+            this.setState({ fetchingVariedades: false })
+            console.error('Erro ao buscar variedades:', err)
+        }
     }
 
     carregaInformacoesEdicao = async () => {
@@ -2730,6 +2926,34 @@ class NovoTomboScreen extends Component {
         }
     }
 
+    requisitaReinosComBusca = (searchText) => {
+        this.debouncedRequisitaReinos(searchText)
+    }
+
+    requisitaFamiliasComBusca = (searchText, reinoId) => {
+        this.debouncedRequisitaFamilias(searchText, reinoId)
+    }
+
+    requisitaSubfamiliasComBusca = (searchText, familiaId) => {
+        this.debouncedRequisitaSubfamilias(searchText, familiaId)
+    }
+
+    requisitaGenerosComBusca = (searchText, familiaId) => {
+        this.debouncedRequisitaGeneros(searchText, familiaId)
+    }
+
+    requisitaEspeciesComBusca = (searchText, generoId) => {
+        this.debouncedRequisitaEspecies(searchText, generoId)
+    }
+
+    requisitaSubespeciesComBusca = (searchText, especieId) => {
+        this.debouncedRequisitaSubespecies(searchText, especieId)
+    }
+
+    requisitaVariedadesComBusca = (searchText, especieId) => {
+        this.debouncedRequisitaVariedades(searchText, especieId)
+    }
+
     validacaoModal = () => {
         if (this.state.formColetor) {
             if (!this.props.form.getFieldsValue().nomeColetor || !this.props.form.getFieldsValue().numeroColetor) {
@@ -3117,8 +3341,11 @@ class NovoTomboScreen extends Component {
         const {
             reinoInicial, familiaInicial, reinos, familias, generoInicial, generos, search,
             especieInicial, especies, subespecieInicial, subespecies,
-            variedadeInicial, variedades, subfamiliaInicial, subfamilias
+            variedadeInicial, variedades, subfamiliaInicial, subfamilias,
+            fetchingReinos, fetchingFamilias, fetchingSubfamilias, 
+            fetchingGeneros, fetchingEspecies, fetchingSubespecies, fetchingVariedades
         } = this.state
+
         return (
             <div>
                 {this.props.match.params.tombo_id && (
@@ -3127,12 +3354,8 @@ class NovoTomboScreen extends Component {
                     </Row>
                 )}
                 <Row justify="end" gutter={8}>
-                    <Button
-                        type="secondary"
-                    >
-                        <Link
-                            to="/tombos"
-                        >
+                    <Button type="secondary">
+                        <Link to="/tombos">
                             Sair/Cancelar
                         </Link>
                     </Button>
@@ -3159,35 +3382,25 @@ class NovoTomboScreen extends Component {
                         onChange={value => {
                             this.requisitaFamilias(value)
                             this.setState({
-                                search: {
-                                    familia: 'validating'
-                                },
+                                search: { familia: 'validating' },
                                 autorSubfamilia: '',
                                 autorEspecie: '',
                                 autorSubespecie: '',
                                 autorVariedade: ''
                             })
                             this.props.form.setFields({
-                                familia: {
-                                    value: ''
-                                },
-                                subfamilia: {
-                                    value: ''
-                                },
-                                genero: {
-                                    value: ''
-                                },
-                                especie: {
-                                    value: ''
-                                },
-                                subespecie: {
-                                    value: ''
-                                },
-                                variedade: {
-                                    value: ''
-                                }
+                                familia: { value: '' },
+                                subfamilia: { value: '' },
+                                genero: { value: '' },
+                                especie: { value: '' },
+                                subespecie: { value: '' },
+                                variedade: { value: '' }
                             })
                         }}
+                        onSearch={searchText => {
+                            this.requisitaReinosComBusca(searchText)
+                        }}
+                        loading={fetchingReinos}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
@@ -3197,6 +3410,7 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true
                             })
                         }}
+                        debounceDelay={600}
                     />
                     <FamiliaFormField
                         initialValue={String(familiaInicial)}
@@ -3217,23 +3431,18 @@ class NovoTomboScreen extends Component {
                                 autorVariedade: ''
                             })
                             this.props.form.setFields({
-                                subfamilia: {
-                                    value: ''
-                                },
-                                genero: {
-                                    value: ''
-                                },
-                                especie: {
-                                    value: ''
-                                },
-                                subespecie: {
-                                    value: ''
-                                },
-                                variedade: {
-                                    value: ''
-                                }
+                                subfamilia: { value: '' },
+                                genero: { value: '' },
+                                especie: { value: '' },
+                                subespecie: { value: '' },
+                                variedade: { value: '' }
                             })
                         }}
+                        onSearch={searchText => {
+                            const reinoSelecionado = this.props.form.getFieldValue('reino')
+                            this.requisitaFamiliasComBusca(searchText, reinoSelecionado)
+                        }}
+                        loading={fetchingFamilias}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
@@ -3243,6 +3452,7 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true
                             })
                         }}
+                        debounceDelay={600}
                     />
                 </Row>
                 <br />
@@ -3254,6 +3464,11 @@ class NovoTomboScreen extends Component {
                         getFieldDecorator={getFieldDecorator}
                         onChange={value => this.encontraAutor(subfamilias, value, 'autorSubfamilia')}
                         autor={this.state.autorSubfamilia}
+                        onSearch={searchText => {
+                            const familiaSelecionada = this.props.form.getFieldValue('familia')
+                            this.requisitaSubfamiliasComBusca(searchText, familiaSelecionada)
+                        }}
+                        loading={fetchingSubfamilias}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
@@ -3263,6 +3478,7 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true
                             })
                         }}
+                        debounceDelay={600}
                     />
                     <GeneroFormField
                         initialValue={String(generoInicial)}
@@ -3272,25 +3488,22 @@ class NovoTomboScreen extends Component {
                         onChange={value => {
                             this.requisitaEspecies(value)
                             this.setState({
-                                search: {
-                                    especie: 'validating'
-                                },
+                                search: { especie: 'validating' },
                                 autorEspecie: '',
                                 autorSubespecie: '',
                                 autorVariedade: ''
                             })
                             this.props.form.setFields({
-                                especie: {
-                                    value: ''
-                                },
-                                subespecie: {
-                                    value: ''
-                                },
-                                variedade: {
-                                    value: ''
-                                }
+                                especie: { value: '' },
+                                subespecie: { value: '' },
+                                variedade: { value: '' }
                             })
                         }}
+                        onSearch={searchText => {
+                            const familiaSelecionada = this.props.form.getFieldValue('familia')
+                            this.requisitaGenerosComBusca(searchText, familiaSelecionada)
+                        }}
+                        loading={fetchingGeneros}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
@@ -3300,6 +3513,7 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true
                             })
                         }}
+                        debounceDelay={600}
                     />
                 </Row>
                 <br />
@@ -3323,16 +3537,16 @@ class NovoTomboScreen extends Component {
                                 autorVariedade: ''
                             })
                             this.props.form.setFields({
-                                subespecie: {
-                                    value: ''
-                                },
-                                variedade: {
-                                    value: ''
-                                }
+                                subespecie: { value: '' },
+                                variedade: { value: '' }
                             })
-
                             this.encontraAutor(especies, value, 'autorEspecie')
                         }}
+                        onSearch={searchText => {
+                            const generoSelecionado = this.props.form.getFieldValue('genero')
+                            this.requisitaEspeciesComBusca(searchText, generoSelecionado)
+                        }}
+                        loading={fetchingEspecies}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
@@ -3343,6 +3557,7 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true
                             })
                         }}
+                        debounceDelay={600}
                     />
                     <SubespecieFormField
                         initialValue={String(subespecieInicial)}
@@ -3352,11 +3567,13 @@ class NovoTomboScreen extends Component {
                         autor={this.state.autorSubespecie}
                         onChange={value => {
                             this.encontraAutor(subespecies, value, 'autorSubespecie')
-
-                            this.setState({
-                                autorVariedade: ''
-                            })
+                            this.setState({ autorVariedade: '' })
                         }}
+                        onSearch={searchText => {
+                            const especieSelecionada = this.props.form.getFieldValue('especie')
+                            this.requisitaSubespeciesComBusca(searchText, especieSelecionada)
+                        }}
+                        loading={fetchingSubespecies}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
@@ -3367,6 +3584,7 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true
                             })
                         }}
+                        debounceDelay={600}
                     />
                 </Row>
                 <br />
@@ -3378,6 +3596,11 @@ class NovoTomboScreen extends Component {
                         getFieldDecorator={getFieldDecorator}
                         autor={this.state.autorVariedade}
                         onChange={value => this.encontraAutor(variedades, value, 'autorVariedade')}
+                        onSearch={searchText => {
+                            const especieSelecionada = this.props.form.getFieldValue('especie')
+                            this.requisitaVariedadesComBusca(searchText, especieSelecionada)
+                        }}
+                        loading={fetchingVariedades}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
@@ -3388,6 +3611,7 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true
                             })
                         }}
+                        debounceDelay={600}
                     />
                 </Row>
             </div>
