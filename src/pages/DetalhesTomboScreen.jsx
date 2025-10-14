@@ -271,8 +271,9 @@ export default class DetalhesTomboScreen extends Component {
     renderFamily() {
         const { tombo } = this.state
         const reinoIdTombo = tombo.familias?.[0]?.reino_id
+        console.log(this.reinosRef.current.data, reinoIdTombo)
         const reinoEncontrado = this.reinosRef.current.data.find(
-            reino => reino.id === reinoIdTombo
+            reino => reino.id === reinoIdTombo.toString()
         )
 
         if (tombo) {
