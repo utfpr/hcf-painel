@@ -60,11 +60,6 @@ const SelectedFormField = ({
         <Col xs={xs} sm={sm} md={md} lg={lg} xl={xl}>
             <Col span={24}>
                 <span>{title}</span>
-                {autor && (
-                    <div style={{ fontSize: '12px', color: '#666', fontStyle: 'italic' }}>
-                        Autor: {autor}
-                    </div>
-                )}
             </Col>
             <Col span={24}>
                 <FormItem validateStatus={validateStatus}>
@@ -92,6 +87,16 @@ const SelectedFormField = ({
                     )}
                 </FormItem>
             </Col>
+            {autor ? (
+                <Col span={24}>
+                    <span>
+                        <b>Autor:</b>
+                        {' '}
+                        {autor}
+                    </span>
+                </Col>
+            )
+                : null}
             {onClickAddMore && !disabled && (
                 <Col span={2}>
                     <Button
