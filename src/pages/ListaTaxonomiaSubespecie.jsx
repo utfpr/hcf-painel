@@ -81,32 +81,37 @@ class ListaTaxonomiaSubespecie extends Component {
     }
 
     requisitaExclusao(id) {
-        this.setState({
-            loading: true
+    this.setState({
+        loading: true
+    })
+    axios.delete(`/subespecies/${id}`)
+        .then(response => {
+            this.setState({
+                loading: false
+            })
+            if (response.status === 204) {
+                this.requisitaListaSubespecie(this.state.valores, this.state.pagina)
+                this.notificacao('success', 'Excluir', 'A Subespécie foi excluída com sucesso.')
+            }
         })
-        axios.delete(`/subespecies/${id}`)
-            .then(response => {
-                this.setState({
-                    loading: false
-                })
-                if (response.status === 204) {
-                    this.requisitaListaSubespecie(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir', 'A Subespécie foi excluída com sucesso.')
-                }
+        .catch(err => {
+            this.setState({
+                loading: false
             })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    throw new Error(error.message)
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                if (error && error.code) {
+                    this.notificacao('error', 'Erro ao excluir subespécie', error.code)
                 } else {
-                    throw err
+                    this.notificacao('error', 'Erro ao excluir subespécie', 'Ocorreu um erro inesperado ao tentar excluir a subespécie.')
                 }
-            })
-    }
+                console.error(error)
+            } else {
+                this.notificacao('error', 'Erro ao excluir subespécie', 'Falha na comunicação com o servidor.')
+            }
+        })
+}
 
     notificacao = (type, titulo, descricao) => {
         notification[type]({
@@ -153,7 +158,7 @@ class ListaTaxonomiaSubespecie extends Component {
                                     value: { key: item.especie.id, label: item.especie.nome }
                                 },
                                 nomeAutor: {
-                                    value: { key: item.autor.id, label: item.autor.nome }
+                                    value: item.autor ? { key: item.autor.id, label: item.autor.nome } : undefined
                                 }
                             })
                             this.setState({
@@ -359,10 +364,22 @@ class ListaTaxonomiaSubespecie extends Component {
         this.setState({
             loading: true
         })
+
+        const formValues = this.props.form.getFieldsValue()
+            
+        const extrairId = (valor) => {
+            if (typeof valor === 'object' && valor.key) {
+                return valor.key
+            }
+            return valor
+        }
+
+        const autorId = extrairId(formValues.nomeAutor);
+
         axios.put(`/subespecies/${this.state.id}`, {
-            nome: this.props.form.getFieldsValue().nomeSubespecie,
-            especie_id: this.props.form.getFieldsValue().nomeEspecie,
-            autor_id: this.props.form.getFieldsValue().nomeAutor
+            nome: formValues.nomeSubespecie,
+            especie_id: extrairId(formValues.nomeEspecie),
+            autor_id: autorId || null
         })
             .then(response => {
                 this.setState({
@@ -628,6 +645,7 @@ class ListaTaxonomiaSubespecie extends Component {
                                                 style={{ width: '100%' }}
                                                 placeholder="Selecione um autor"
                                                 optionFilterProp="children"
+                                                allowClear
                                             >
 
                                                 {this.optionAutores()}

@@ -61,30 +61,37 @@ class ListaTaxonomiaGenero extends Component {
     }
 
     requisitaExclusao(id) {
-        this.setState({
-            loading: true
+    this.setState({
+        loading: true
+    })
+    axios.delete(`/generos/${id}`)
+        .then(response => {
+            this.setState({
+                loading: false
+            })
+            if (response.status === 204) {
+                this.requisitaListaGenero(this.state.valores, this.state.pagina)
+                this.notificacao('success', 'Excluir', 'O gênero foi excluída com sucesso.')
+            }
         })
-        axios.delete(`/generos/${id}`)
-            .then(response => {
-                this.setState({
-                    loading: false
-                })
-                if (response.status === 204) {
-                    this.requisitaListaGenero(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir', 'O gênero foi excluída com sucesso.')
-                }
+        .catch(err => {
+            this.setState({
+                loading: false
             })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    console.error(error.message)
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                if (error && error.code) {
+                    this.notificacao('error', 'Erro ao excluir gênero', error.code)
+                } else {
+                    this.notificacao('error', 'Erro ao excluir gênero', 'Ocorreu um erro inesperado ao tentar excluir o gênero.')
                 }
-            })
-    }
+                console.error(error)
+            } else {
+                this.notificacao('error', 'Erro ao excluir gênero', 'Falha na comunicação com o servidor.')
+            }
+        })
+}
 
     notificacao = (type, titulo, descricao) => {
         notification[type]({
@@ -291,9 +298,19 @@ class ListaTaxonomiaGenero extends Component {
         this.setState({
             loading: true
         })
+
+        const formValues = this.props.form.getFieldsValue()
+            
+        const extrairId = (valor) => {
+            if (typeof valor === 'object' && valor.key) {
+                return valor.key
+            }
+            return valor
+        }
+
         axios.put(`/generos/${this.state.id}`, {
-            nome: this.props.form.getFieldsValue().nomeGenero,
-            familia_id: this.props.form.getFieldsValue().nomeFamilia
+            nome: formValues.nomeGenero,
+            familia_id: extrairId(formValues.nomeFamilia)
         })
             .then(response => {
                 this.setState({

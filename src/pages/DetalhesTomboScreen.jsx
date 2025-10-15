@@ -114,11 +114,7 @@ export default class DetalhesTomboScreen extends Component {
 
     handleSubmit = e => {
         e.preventDefault()
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                console.log('Received values of form: ', values)
-            }
-        })
+        this.props.form.validateFields((err, values) => {})
     }
 
     renderMainCharacteristics() {
@@ -271,9 +267,8 @@ export default class DetalhesTomboScreen extends Component {
     renderFamily() {
         const { tombo } = this.state
         const reinoIdTombo = tombo.familias?.[0]?.reino_id
-        console.log(this.reinosRef.current.data, reinoIdTombo)
         const reinoEncontrado = this.reinosRef.current.data.find(
-            reino => reino.id === reinoIdTombo.toString()
+            reino => reino.id === reinoIdTombo
         )
 
         if (tombo) {
@@ -413,8 +408,6 @@ export default class DetalhesTomboScreen extends Component {
     renderLocal() {
         const { tombo } = this.state
         if (tombo) {
-            console.log('kokoko')
-            console.log(tombo.localizacao.longitude_graus)
             return (
                 <div>
                     <Row gutter={8} style={{ marginBottom: '20px' }}>

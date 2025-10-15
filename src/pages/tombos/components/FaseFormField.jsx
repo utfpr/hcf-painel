@@ -27,6 +27,7 @@ const FaseFormField = ({
             onClickAddMore={onClickAddMore}
             onChange={onChange}
             validateStatus={validateStatus}
+            others={{allowClear: true}}
         >
             {optionFases()}
         </SelectedFormFiled>

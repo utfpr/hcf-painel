@@ -221,7 +221,7 @@ class RelatorioCodigoBarrasScreen extends Component {
                                         <Button
                                             type="primary"
                                             htmlType="submit"
-                                            className="login-form-button"
+                                            className="login-form-button ant-btn-pesquisar"
                                         >
                                             Pesquisar
                                         </Button>
