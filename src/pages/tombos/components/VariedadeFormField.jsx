@@ -6,7 +6,7 @@ const { Option } = Select
 
 const VariedadeFormField = ({
     initialValue, variedades, getFieldDecorator, onClickAddMore, onChange, validateStatus, autor,
-    onSearch, loading = false, debounceDelay = 600
+    onSearch, loading = false, debounceDelay = 600, disabled = false
 }) => {
     const optionVariedades = () => variedades?.map(item => (
         <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
@@ -30,6 +30,7 @@ const VariedadeFormField = ({
             autor={autor}
             onSearch={onSearch}
             debounceDelay={debounceDelay}
+            disabled={disabled}
             others={{
                 allowClear: true,
                 loading: loading,

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import debounce from 'lodash.debounce'
 
 import {
@@ -16,9 +16,10 @@ const SelectedFormField = ({
     title, validateStatus, initialValue, rules,
     placeholder, children, fieldName, onClickAddMore,
     getFieldDecorator, getFieldError, onChange, autor,
-    xs, sm, md, lg, xl, onSearch, others, debounceDelay = 800
+    xs, sm, md, lg, xl, onSearch, others, debounceDelay = 800, disabled = false
 }) => {
     const [searchLoading, setSearchLoading] = useState(false)
+    const [lastSearchValue, setLastSearchValue] = useState('')
 
     const debouncedSearch = useCallback(
         debounce((value) => {
@@ -32,8 +33,26 @@ const SelectedFormField = ({
     )
 
     const handleSearch = (value) => {
-        if (value && value.length > 2) { 
-            debouncedSearch(value)
+        const normalizedValue = value || ''
+        
+        if (normalizedValue !== lastSearchValue) {
+            setLastSearchValue(normalizedValue)
+            debouncedSearch(normalizedValue)
+        }
+    }
+
+    useEffect(() => {
+        if (disabled) {
+            setLastSearchValue('')
+        }
+    }, [disabled])
+
+    const handleClear = () => {
+        setLastSearchValue('')
+        if (onSearch && !disabled) {
+            setSearchLoading(true)
+            onSearch('')
+            setTimeout(() => setSearchLoading(false), 1000)
         }
     }
 
@@ -57,31 +76,32 @@ const SelectedFormField = ({
                             style={{ width: '100%' }}
                             mode={title === 'Identificadores:' ? 'multiple' : ''}
                             showSearch
-                            placeholder={placeholder}
+                            placeholder={disabled ? 'Selecione o nível superior primeiro' : placeholder}
                             optionFilterProp="children"
                             onChange={onChange}
                             onSearch={onSearch ? handleSearch : undefined}
+                            onClear={handleClear}
                             loading={searchLoading || others?.loading}
-                            filterOption={onSearch ? false : undefined} // Se tem onSearch, desabilita filtro local
-                            notFoundContent={searchLoading || others?.loading ? <Spin size="small" /> : 'Nenhum item encontrado'}
+                            filterOption={onSearch ? false : undefined}
+                            disabled={disabled}
+                            notFoundContent={others?.notFoundContent || (searchLoading || others?.loading ? <Spin size="small" /> : 'Nenhum resultado encontrado')}
                             {...others}
                         >
                             {children}
                         </Select>
                     )}
                 </FormItem>
-                {onClickAddMore && (
-                    <Button
-                        type="dashed"
-                        onClick={onClickAddMore}
-                        icon={<PlusOutlined />}
-                        size="small"
-                        style={{ marginTop: 4 }}
-                    >
-                        Adicionar
-                    </Button>
-                )}
             </Col>
+            {onClickAddMore && !disabled && (
+                <Col span={2}>
+                    <Button
+                        shape="dashed"
+                        icon={<PlusOutlined />}
+                        onClick={onClickAddMore}
+                        style={{ marginTop: '5px' }}
+                    />
+                </Col>
+            )}
         </Col>
     )
 }

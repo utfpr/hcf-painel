@@ -6,7 +6,7 @@ const { Option } = Select
 
 const GeneroFormField = ({
     initialValue, generos, getFieldDecorator, onClickAddMore, onChange, validateStatus,
-    onSearch, loading = false, debounceDelay = 600
+    onSearch, loading = false, debounceDelay = 600, disabled = false
 }) => {
     const optionGeneros = () => generos?.map(item => (
         <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
@@ -29,6 +29,7 @@ const GeneroFormField = ({
             validateStatus={validateStatus}
             onSearch={onSearch}
             debounceDelay={debounceDelay}
+            disabled={disabled}
             others={{
                 allowClear: true,
                 loading: loading,

@@ -215,7 +215,7 @@ class NovoTomboScreen extends Component {
         }
 
         this.debouncedRequisitaReinos = debounce(this.requisitaReinosOriginal, 600)
-        this.debouncedRequisitaFamilias = debounce(this.requisitaFamiliasOriginal, 600) 
+        this.debouncedRequisitaFamilias = debounce(this.requisitaFamiliasOriginal, 600)
         this.debouncedRequisitaSubfamilias = debounce(this.requisitaSubfamiliasOriginal, 600)
         this.debouncedRequisitaGeneros = debounce(this.requisitaGenerosOriginal, 600)
         this.debouncedRequisitaEspecies = debounce(this.requisitaEspeciesOriginal, 600)
@@ -264,11 +264,11 @@ class NovoTomboScreen extends Component {
 
     requisitaReinosOriginal = async (searchText) => {
         this.setState({ fetchingReinos: true })
-        
+
         try {
-            const params = { 
+            const params = {
                 limite: 9999999999,
-                reino: searchText
+                ...(searchText ? { reino: searchText } : {})
             }
 
             const response = await axios.get('/reinos', { params })
@@ -289,12 +289,10 @@ class NovoTomboScreen extends Component {
         this.setState({ fetchingFamilias: true })
 
         try {
-            const params = { 
+            const params = {
                 limite: 9999999999,
-                familia: searchText
-            }
-            if (reinoId) {
-                params.reino_id = reinoId
+                ...(searchText ? { familia: searchText } : {}),
+                ...(reinoId ? { reino_id: reinoId } : {})
             }
 
             const response = await axios.get('/familias', { params })
@@ -317,10 +315,8 @@ class NovoTomboScreen extends Component {
         try {
             const params = {
                 limite: 999999999,
-                subfamilia: searchText
-            }
-            if (familiaId) {
-                params.familia_id = familiaId
+                ...(searchText ? { subfamilia: searchText } : {}),
+                ...(familiaId ? { familia_id: familiaId } : {})
             }
 
             const response = await axios.get('/subfamilias', { params })
@@ -343,10 +339,8 @@ class NovoTomboScreen extends Component {
         try {
             const params = {
                 limite: 9999999999,
-                genero: searchText
-            }
-            if (familiaId) {
-                params.familia_id = familiaId
+                ...(searchText ? { genero: searchText } : {}),
+                ...(familiaId ? { familia_id: familiaId } : {})
             }
 
             const response = await axios.get('/generos', { params })
@@ -369,10 +363,8 @@ class NovoTomboScreen extends Component {
         try {
             const params = {
                 limite: 9999999999,
-                especie: searchText
-            }
-            if (generoId) {
-                params.genero_id = generoId
+                ...(searchText ? { especie: searchText } : {}),
+                ...(generoId ? { genero_id: generoId } : {})
             }
 
             const response = await axios.get('/especies', { params })
@@ -395,10 +387,8 @@ class NovoTomboScreen extends Component {
         try {
             const params = {
                 limite: 999999999,
-                subespecie: searchText
-            }
-            if (especieId) {
-                params.especie_id = especieId
+                ...(searchText ? { subespecie: searchText } : {}),
+                ...(especieId ? { especie_id: especieId } : {})
             }
 
             const response = await axios.get('/subespecies', { params })
@@ -416,16 +406,13 @@ class NovoTomboScreen extends Component {
     }
 
     requisitaVariedadesOriginal = async (searchText, especieId) => {
-
         this.setState({ fetchingVariedades: true })
 
         try {
             const params = {
                 limite: 999999999,
-                variedade: searchText
-            }
-            if (especieId) {
-                params.especie_id = especieId
+                ...(searchText ? { variedade: searchText } : {}),
+                ...(especieId ? { especie_id: especieId } : {})
             }
 
             const response = await axios.get('/variedades', { params })
@@ -464,48 +451,48 @@ class NovoTomboScreen extends Component {
 
     getCodigosTombo = (hcf) => {
         axios
-          .get(`/tombos/codigo_barras/${hcf}`)
-          .then(({ status, data }) => {
-            if (status !== 200 || !Array.isArray(data)) return;
+            .get(`/tombos/codigo_barras/${hcf}`)
+            .then(({ status, data }) => {
+                if (status !== 200 || !Array.isArray(data)) return;
 
-            const parseNumero = (numBarra, codigoBarra) => {
-              const inteiro = parseInt(String(numBarra ?? "").split(".")[0], 10);
-              if (Number.isFinite(inteiro)) return inteiro;
-              return parseInt(String(codigoBarra || "").replace(/\D/g, ""), 10);
-            };
+                const parseNumero = (numBarra, codigoBarra) => {
+                    const inteiro = parseInt(String(numBarra ?? "").split(".")[0], 10);
+                    if (Number.isFinite(inteiro)) return inteiro;
+                    return parseInt(String(codigoBarra || "").replace(/\D/g, ""), 10);
+                };
 
-            const normalize = (items) =>
-              items.map((item) => ({
-                id: item.id,
-                codigo_barra: String(item.codigo_barra || ""),
-                num_barra: parseNumero(item.num_barra, item.codigo_barra),
-              }));
+                const normalize = (items) =>
+                    items.map((item) => ({
+                        id: item.id,
+                        codigo_barra: String(item.codigo_barra || ""),
+                        num_barra: parseNumero(item.num_barra, item.codigo_barra),
+                    }));
 
-            const dedupeByCodigo = (rows) =>
-              rows
-                .filter((row) => row.codigo_barra)
-                .reduce((acc, cur) => {
-                  if (!acc.some((x) => x.codigo_barra === cur.codigo_barra)) acc.push(cur);
-                  return acc;
-                }, []);
+                const dedupeByCodigo = (rows) =>
+                    rows
+                        .filter((row) => row.codigo_barra)
+                        .reduce((acc, cur) => {
+                            if (!acc.some((x) => x.codigo_barra === cur.codigo_barra)) acc.push(cur);
+                            return acc;
+                        }, []);
 
-            const barcodeEditList = dedupeByCodigo(normalize(data));
+                const barcodeEditList = dedupeByCodigo(normalize(data));
 
-            this.setState({ codigosBarrasForm: barcodeEditList });
-            this.setState({ codigosBarrasInicial : barcodeEditList });
-          })
-          .catch(this.catchRequestError);
+                this.setState({ codigosBarrasForm: barcodeEditList });
+                this.setState({ codigosBarrasInicial: barcodeEditList });
+            })
+            .catch(this.catchRequestError);
     };
 
     handleChangeBarcodeList = (updatedList) => {
         const serialize = (list = []) =>
-          list.map(({ codigo_barra, num_barra }) => `${codigo_barra}:${num_barra}`).join("|");
+            list.map(({ codigo_barra, num_barra }) => `${codigo_barra}:${num_barra}`).join("|");
 
         const previousSignature = serialize(this.state.codigosBarrasForm);
         const nextSignature = serialize(updatedList);
 
         if (previousSignature !== nextSignature) {
-          this.setState({ codigosBarrasForm: updatedList });
+            this.setState({ codigosBarrasForm: updatedList });
         }
     };
 
@@ -601,69 +588,69 @@ class NovoTomboScreen extends Component {
         const asArray = Array.isArray(barcodeList) ? barcodeList : [barcodeList];
 
         const integerPart = (val) => {
-          const [int] = String(val).split(".");
-          const n = parseInt(int, 10);
-          return Number.isFinite(n) ? n : NaN;
+            const [int] = String(val).split(".");
+            const n = parseInt(int, 10);
+            return Number.isFinite(n) ? n : NaN;
         };
 
         const extractNumber = (item) => {
-          if (item == null) return NaN;
+            if (item == null) return NaN;
 
-          // 1) Objeto com num_barra (ex.: "41806.0")
-          if (typeof item === "object" && "num_barra" in item) {
-            return integerPart(item.num_barra);
-          }
+            // 1) Objeto com num_barra (ex.: "41806.0")
+            if (typeof item === "object" && "num_barra" in item) {
+                return integerPart(item.num_barra);
+            }
 
-          // 2) Objeto com codigo_barra OU string tipo "HCF000041890"
-          if ((typeof item === "object" && "codigo_barra" in item) || typeof item === "string") {
-            const raw = typeof item === "string" ? item : String(item.codigo_barra || "");
-            const n = parseInt(raw.replace(/\D/g, ""), 10);
+            // 2) Objeto com codigo_barra OU string tipo "HCF000041890"
+            if ((typeof item === "object" && "codigo_barra" in item) || typeof item === "string") {
+                const raw = typeof item === "string" ? item : String(item.codigo_barra || "");
+                const n = parseInt(raw.replace(/\D/g, ""), 10);
+                return Number.isFinite(n) ? n : NaN;
+            }
+
+            // 3) Número puro
+            if (typeof item === "number" && Number.isFinite(item)) {
+                return Math.trunc(item);
+            }
+
+            // 4) Fallback: extrai dígitos de qualquer coisa
+            const n = parseInt(String(item).replace(/\D/g, ""), 10);
             return Number.isFinite(n) ? n : NaN;
-          }
-
-          // 3) Número puro
-          if (typeof item === "number" && Number.isFinite(item)) {
-            return Math.trunc(item);
-          }
-
-          // 4) Fallback: extrai dígitos de qualquer coisa
-          const n = parseInt(String(item).replace(/\D/g, ""), 10);
-          return Number.isFinite(n) ? n : NaN;
         };
 
         const seen = new Set();
         return asArray
-          .map(extractNumber)
-          .filter((n) => Number.isFinite(n) && n > 0)
-          .filter((n) => (seen.has(n) ? false : (seen.add(n), true)));
+            .map(extractNumber)
+            .filter((n) => Number.isFinite(n) && n > 0)
+            .filter((n) => (seen.has(n) ? false : (seen.add(n), true)));
     };
 
     criarCodigoBarras = async (id_tombo, barcodeList = []) => {
         const hcf = Number(id_tombo);
         if (!Number.isFinite(hcf)) {
-          message.error("Tombo (HCF) inválido.");
-          return;
+            message.error("Tombo (HCF) inválido.");
+            return;
         }
 
         const numeros = this.normalizeBarcodes(barcodeList);
         if (!numeros.length) {
-          message.warning("Nenhum código válido para enviar.");
-          return;
+            message.warning("Nenhum código válido para enviar.");
+            return;
         }
 
         const key = "post-codigos";
 
         const results = await Promise.allSettled(
-          numeros.map((n) => axios.post("/tombos/codigo_barras", { hcf, codigo_barra: n }))
+            numeros.map((n) => axios.post("/tombos/codigo_barras", { hcf, codigo_barra: n }))
         );
 
         const ok = results.filter((r) => r.status === "fulfilled").length;
         const fail = results.length - ok;
 
         if (ok) {
-          message.success({ key, content: `Códigos criados: ${ok}${fail ? ` • Falharam: ${fail}` : ""}` });
+            message.success({ key, content: `Códigos criados: ${ok}${fail ? ` • Falharam: ${fail}` : ""}` });
         } else {
-          message.error({ key, content: "Nenhum código foi criado." });
+            message.error({ key, content: "Nenhum código foi criado." });
         }
     };
 
@@ -2871,7 +2858,7 @@ class NovoTomboScreen extends Component {
 
     handleSubmitForm = e => {
         e.preventDefault()
-        this.props.form.validateFields((err, values) => {})
+        this.props.form.validateFields((err, values) => { })
     }
 
     optionEntidades = () => this.state.herbarios.map(item => (
@@ -3035,7 +3022,7 @@ class NovoTomboScreen extends Component {
                                 this.requisitaColetores(value)
                             }}
                             status={getFieldError('coletores') ? 'error' : ''}
-                            others={{allowClear: true}}
+                            others={{ allowClear: true }}
                         />
                     </Col>
 
@@ -3362,29 +3349,35 @@ class NovoTomboScreen extends Component {
     }
 
     renderFamiliaTombo = (getFieldDecorator, getFieldError) => {
-        const {
-            reinoInicial, familiaInicial, reinos, familias, generoInicial, generos, search,
-            especieInicial, especies, subespecieInicial, subespecies,
-            variedadeInicial, variedades, subfamiliaInicial, subfamilias,
-            fetchingReinos, fetchingFamilias, fetchingSubfamilias, 
-            fetchingGeneros, fetchingEspecies, fetchingSubespecies, fetchingVariedades
-        } = this.state
+    const {
+        reinoInicial, familiaInicial, reinos, familias, generoInicial, generos, search,
+        especieInicial, especies, subespecieInicial, subespecies,
+        variedadeInicial, variedades, subfamiliaInicial, subfamilias,
+        fetchingReinos, fetchingFamilias, fetchingSubfamilias,
+        fetchingGeneros, fetchingEspecies, fetchingSubespecies, fetchingVariedades
+    } = this.state
 
-        return (
-            <div>
-                {this.props.match.params.tombo_id && (
-                    <Row gutter={8} style={{ fontSize: 16, marginLeft: 5 }}>
-                        Editar dados Tombo
-                    </Row>
-                )}
-                <Row justify="end" gutter={8}>
-                    <Button type="secondary">
-                        <Link to="/tombos">
-                            Sair/Cancelar
-                        </Link>
-                    </Button>
+    const { form } = this.props
+    const reinoSelecionado = form.getFieldValue('reino')
+    const familiaSelecionada = form.getFieldValue('familia')
+    const generoSelecionado = form.getFieldValue('genero')
+    const especieSelecionada = form.getFieldValue('especie')
+
+    return (
+        <div>
+            {this.props.match.params.tombo_id && (
+                <Row gutter={8} style={{ fontSize: 16, marginLeft: 5 }}>
+                    Editar dados Tombo
                 </Row>
-                <Row gutter={8}>
+            )}
+            <Row justify="end" gutter={8}>
+                <Button type="secondary">
+                    <Link to="/tombos">
+                        Sair/Cancelar
+                    </Link>
+                </Button>
+            </Row>
+            <Row gutter={8}>
                     <InputFormField
                         name="numeroTombo"
                         title="Numero de Tombo:"
@@ -3392,7 +3385,7 @@ class NovoTomboScreen extends Component {
                         getFieldDecorator={getFieldDecorator}
                     />
                     <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                        <Col span={24}>
+                <Col span={24}>
                             <span>Data do Tombo:</span>
                         </Col>
                         <Col span={24}>
@@ -3408,252 +3401,311 @@ class NovoTomboScreen extends Component {
                                 )}
                             </FormItem>
                         </Col>
-                    </Col>
-                </Row>
-                <br />
-                <Row gutter={8}>
-                    <ReinoFormField
-                        initialValue={String(reinoInicial)}
-                        reinos={reinos}
-                        getFieldDecorator={getFieldDecorator}
-                        onChange={value => {
+                </Col>
+            </Row>
+            <br />
+            <Row gutter={8}>
+                <ReinoFormField
+                    initialValue={String(reinoInicial)}
+                    reinos={reinos}
+                    getFieldDecorator={getFieldDecorator}
+                    onChange={value => {
+                        if (value) {
                             this.requisitaFamilias(value)
+                        } else {
                             this.setState({
-                                search: { familia: 'validating' },
+                                familias: [],
+                                subfamilias: [],
+                                generos: [],
+                                especies: [],
+                                subespecies: [],
+                                variedades: [],
                                 autorSubfamilia: '',
                                 autorEspecie: '',
                                 autorSubespecie: '',
                                 autorVariedade: ''
                             })
-                            this.props.form.setFields({
-                                familia: { value: '' },
-                                subfamilia: { value: '' },
-                                genero: { value: '' },
-                                especie: { value: '' },
-                                subespecie: { value: '' },
-                                variedade: { value: '' }
-                            })
-                        }}
-                        onSearch={searchText => {
-                            this.requisitaReinosComBusca(searchText)
-                        }}
-                        loading={fetchingReinos}
-                        onClickAddMore={() => {
-                            this.setState({
-                                formulario: {
-                                    desc: ' do novo reino',
-                                    tipo: 12
-                                },
-                                visibleModal: true
-                            })
-                        }}
-                        debounceDelay={600}
-                    />
-                    <FamiliaFormField
-                        initialValue={String(familiaInicial)}
-                        familias={familias}
-                        getFieldDecorator={getFieldDecorator}
-                        getFieldError={getFieldError}
-                        onChange={value => {
+                        }
+
+                        this.props.form.setFields({
+                            familia: { value: undefined },
+                            subfamilia: { value: undefined },
+                            genero: { value: undefined },
+                            especie: { value: undefined },
+                            subespecie: { value: undefined },
+                            variedade: { value: undefined }
+                        })
+                    }}
+                    onSearch={searchText => {
+                        this.requisitaReinosComBusca(searchText || '')
+                    }}
+                    loading={fetchingReinos}
+                    onClickAddMore={() => {
+                        this.setState({
+                            formulario: {
+                                desc: ' do novo reino',
+                                tipo: 12
+                            },
+                            visibleModal: true
+                        })
+                    }}
+                    debounceDelay={600}
+                />
+                <FamiliaFormField
+                    initialValue={String(familiaInicial)}
+                    familias={familias}
+                    getFieldDecorator={getFieldDecorator}
+                    getFieldError={getFieldError}
+                    disabled={!reinoSelecionado}
+                    onChange={value => {
+                        if (value) {
                             this.requisitaSubfamilias(value)
                             this.requisitaGeneros(value)
+                        } else {
                             this.setState({
-                                search: {
-                                    subfamilia: 'validating',
-                                    genero: 'validating'
-                                },
+                                subfamilias: [],
+                                generos: [],
+                                especies: [],
+                                subespecies: [],
+                                variedades: [],
                                 autorSubfamilia: '',
                                 autorEspecie: '',
                                 autorSubespecie: '',
                                 autorVariedade: ''
                             })
-                            this.props.form.setFields({
-                                subfamilia: { value: '' },
-                                genero: { value: '' },
-                                especie: { value: '' },
-                                subespecie: { value: '' },
-                                variedade: { value: '' }
-                            })
-                        }}
-                        onSearch={searchText => {
-                            const reinoSelecionado = this.props.form.getFieldValue('reino')
-                            this.requisitaFamiliasComBusca(searchText, reinoSelecionado)
-                        }}
-                        loading={fetchingFamilias}
-                        onClickAddMore={() => {
-                            this.setState({
-                                formulario: {
-                                    desc: ' da nova família',
-                                    tipo: 1
-                                },
-                                visibleModal: true
-                            })
-                        }}
-                        debounceDelay={600}
-                    />
-                </Row>
-                <br />
-                <Row gutter={8}>
-                    <SubfamiliaFormField
-                        initialValue={String(subfamiliaInicial)}
-                        subfamilias={subfamilias}
-                        validateStatus={search.subfamilia}
-                        getFieldDecorator={getFieldDecorator}
-                        onChange={value => this.encontraAutor(subfamilias, value, 'autorSubfamilia')}
-                        autor={this.state.autorSubfamilia}
-                        onSearch={searchText => {
-                            const familiaSelecionada = this.props.form.getFieldValue('familia')
-                            this.requisitaSubfamiliasComBusca(searchText, familiaSelecionada)
-                        }}
-                        loading={fetchingSubfamilias}
-                        onClickAddMore={() => {
-                            this.setState({
-                                formulario: {
-                                    desc: 'do novo subfamília',
-                                    tipo: 2
-                                },
-                                visibleModal: true
-                            })
-                        }}
-                        debounceDelay={600}
-                    />
-                    <GeneroFormField
-                        initialValue={String(generoInicial)}
-                        generos={generos}
-                        validateStatus={search.genero}
-                        getFieldDecorator={getFieldDecorator}
-                        onChange={value => {
+                        }
+
+                        this.props.form.setFields({
+                            subfamilia: { value: undefined },
+                            genero: { value: undefined },
+                            especie: { value: undefined },
+                            subespecie: { value: undefined },
+                            variedade: { value: undefined }
+                        })
+                    }}
+                    onSearch={searchText => {
+                        const reinoSelecionado = this.props.form.getFieldValue('reino')
+                        if (reinoSelecionado) {
+                            this.requisitaFamiliasComBusca(searchText || '', reinoSelecionado)
+                        }
+                    }}
+                    loading={fetchingFamilias}
+                    onClickAddMore={() => {
+                        this.setState({
+                            formulario: {
+                                desc: ' da nova família',
+                                tipo: 1
+                            },
+                            visibleModal: true
+                        })
+                    }}
+                    debounceDelay={600}
+                />
+            </Row>
+            <br />
+            <Row gutter={8}>
+                <SubfamiliaFormField
+                    initialValue={String(subfamiliaInicial)}
+                    subfamilias={subfamilias}
+                    validateStatus={search.subfamilia}
+                    getFieldDecorator={getFieldDecorator}
+                    disabled={!familiaSelecionada}
+                    onChange={value => {
+                        if (value) {
+                            this.encontraAutor(subfamilias, value, 'autorSubfamilia')
+                        } else {
+                            this.setState({ autorSubfamilia: '' })
+                        }
+                    }}
+                    autor={this.state.autorSubfamilia}
+                    onSearch={searchText => {
+                        const familiaSelecionada = this.props.form.getFieldValue('familia')
+                        if (familiaSelecionada) {
+                            this.requisitaSubfamiliasComBusca(searchText || '', familiaSelecionada)
+                        }
+                    }}
+                    loading={fetchingSubfamilias}
+                    onClickAddMore={() => {
+                        this.setState({
+                            formulario: {
+                                desc: 'do novo subfamília',
+                                tipo: 2
+                            },
+                            visibleModal: true
+                        })
+                    }}
+                    debounceDelay={600}
+                />
+                <GeneroFormField
+                    initialValue={String(generoInicial)}
+                    generos={generos}
+                    validateStatus={search.genero}
+                    getFieldDecorator={getFieldDecorator}
+                    disabled={!familiaSelecionada}
+                    onChange={value => {
+                        if (value) {
                             this.requisitaEspecies(value)
+                        } else {
                             this.setState({
-                                search: { especie: 'validating' },
+                                especies: [],
+                                subespecies: [],
+                                variedades: [],
                                 autorEspecie: '',
                                 autorSubespecie: '',
                                 autorVariedade: ''
                             })
-                            this.props.form.setFields({
-                                especie: { value: '' },
-                                subespecie: { value: '' },
-                                variedade: { value: '' }
-                            })
-                        }}
-                        onSearch={searchText => {
-                            const familiaSelecionada = this.props.form.getFieldValue('familia')
-                            this.requisitaGenerosComBusca(searchText, familiaSelecionada)
-                        }}
-                        loading={fetchingGeneros}
-                        onClickAddMore={() => {
-                            this.setState({
-                                formulario: {
-                                    desc: ' do novo gênero',
-                                    tipo: 3
-                                },
-                                visibleModal: true
-                            })
-                        }}
-                        debounceDelay={600}
-                    />
-                </Row>
-                <br />
-                <Row gutter={8}>
-                    <EspecieFormField
-                        initialValue={String(especieInicial)}
-                        especies={especies}
-                        validateStatus={search.especie}
-                        getFieldDecorator={getFieldDecorator}
-                        autor={this.state.autorEspecie}
-                        onChange={value => {
+                        }
+
+                        this.props.form.setFields({
+                            especie: { value: undefined },
+                            subespecie: { value: undefined },
+                            variedade: { value: undefined }
+                        })
+                    }}
+                    onSearch={searchText => {
+                        const familiaSelecionada = this.props.form.getFieldValue('familia')
+                        if (familiaSelecionada) {
+                            this.requisitaGenerosComBusca(searchText || '', familiaSelecionada)
+                        }
+                    }}
+                    loading={fetchingGeneros}
+                    onClickAddMore={() => {
+                        this.setState({
+                            formulario: {
+                                desc: ' do novo gênero',
+                                tipo: 3
+                            },
+                            visibleModal: true
+                        })
+                    }}
+                    debounceDelay={600}
+                />
+            </Row>
+            <br />
+            <Row gutter={8}>
+                <EspecieFormField
+                    initialValue={String(especieInicial)}
+                    especies={especies}
+                    validateStatus={search.especie}
+                    getFieldDecorator={getFieldDecorator}
+                    disabled={(!generoSelecionado || !familiaSelecionada)}
+                    autor={this.state.autorEspecie}
+                    onChange={value => {
+                        if (value) {
                             this.requisitaSubespecies(value)
                             this.requisitaVariedades(value)
+                            this.encontraAutor(especies, value, 'autorEspecie')
+                            this.setState({ formComAutor: true })
+                        } else {
                             this.setState({
-                                search: {
-                                    subespecie: 'validating',
-                                    variedade: 'validating'
-                                },
-                                formComAutor: true,
+                                subespecies: [],
+                                variedades: [],
+                                autorEspecie: '',
                                 autorSubespecie: '',
                                 autorVariedade: ''
                             })
-                            this.props.form.setFields({
-                                subespecie: { value: '' },
-                                variedade: { value: '' }
-                            })
-                            this.encontraAutor(especies, value, 'autorEspecie')
-                        }}
-                        onSearch={searchText => {
-                            const generoSelecionado = this.props.form.getFieldValue('genero')
-                            this.requisitaEspeciesComBusca(searchText, generoSelecionado)
-                        }}
-                        loading={fetchingEspecies}
-                        onClickAddMore={() => {
-                            this.setState({
-                                formulario: {
-                                    desc: ' da nova espécie',
-                                    tipo: 4
-                                },
-                                formComAutor: true,
-                                visibleModal: true
-                            })
-                        }}
-                        debounceDelay={600}
-                    />
-                    <SubespecieFormField
-                        initialValue={String(subespecieInicial)}
-                        subespecies={subespecies}
-                        validateStatus={search.subespecie}
-                        getFieldDecorator={getFieldDecorator}
-                        autor={this.state.autorSubespecie}
-                        onChange={value => {
+                        }
+
+                        this.props.form.setFields({
+                            subespecie: { value: undefined },
+                            variedade: { value: undefined }
+                        })
+                    }}
+                    onSearch={searchText => {
+                        const generoSelecionado = this.props.form.getFieldValue('genero')
+                        if (generoSelecionado) {
+                            this.requisitaEspeciesComBusca(searchText || '', generoSelecionado)
+                        }
+                    }}
+                    loading={fetchingEspecies}
+                    onClickAddMore={() => {
+                        this.setState({
+                            formulario: {
+                                desc: ' da nova espécie',
+                                tipo: 4
+                            },
+                            formComAutor: true,
+                            visibleModal: true
+                        })
+                    }}
+                    debounceDelay={600}
+                />
+                <SubespecieFormField
+                    initialValue={String(subespecieInicial)}
+                    subespecies={subespecies}
+                    validateStatus={search.subespecie}
+                    getFieldDecorator={getFieldDecorator}
+                    disabled={(!especieSelecionada || !generoSelecionado || !familiaSelecionada)}
+                    autor={this.state.autorSubespecie}
+                    onChange={value => {
+                        if (value) {
                             this.encontraAutor(subespecies, value, 'autorSubespecie')
+                        } else {
+                            this.setState({
+                                autorSubespecie: '',
+                                autorVariedade: ''
+                            })
+                        }
+                    }}
+                    onSearch={searchText => {
+                        const especieSelecionada = this.props.form.getFieldValue('especie')
+                        if (especieSelecionada) {
+                            this.requisitaSubespeciesComBusca(searchText || '', especieSelecionada)
+                        }
+                    }}
+                    loading={fetchingSubespecies}
+                    onClickAddMore={() => {
+                        this.setState({
+                            formulario: {
+                                desc: 'da nova subespécie',
+                                tipo: 5
+                            },
+                            formComAutor: true,
+                            visibleModal: true
+                        })
+                    }}
+                    debounceDelay={600}
+                />
+            </Row>
+            <br />
+            <Row gutter={8}>
+                <VariedadeFormField
+                    initialValue={String(variedadeInicial)}
+                    variedades={variedades}
+                    validateStatus={search.variedade}
+                    getFieldDecorator={getFieldDecorator}
+                    disabled={(!especieSelecionada || !generoSelecionado || !familiaSelecionada)}
+                    autor={this.state.autorVariedade}
+                    onChange={value => {
+                        if (value) {
+                            this.encontraAutor(variedades, value, 'autorVariedade')
+                        } else {
                             this.setState({ autorVariedade: '' })
-                        }}
-                        onSearch={searchText => {
-                            const especieSelecionada = this.props.form.getFieldValue('especie')
-                            this.requisitaSubespeciesComBusca(searchText, especieSelecionada)
-                        }}
-                        loading={fetchingSubespecies}
-                        onClickAddMore={() => {
-                            this.setState({
-                                formulario: {
-                                    desc: 'da nova subespécie',
-                                    tipo: 5
-                                },
-                                formComAutor: true,
-                                visibleModal: true
-                            })
-                        }}
-                        debounceDelay={600}
-                    />
-                </Row>
-                <br />
-                <Row gutter={8}>
-                    <VariedadeFormField
-                        initialValue={String(variedadeInicial)}
-                        variedades={variedades}
-                        validateStatus={search.variedade}
-                        getFieldDecorator={getFieldDecorator}
-                        autor={this.state.autorVariedade}
-                        onChange={value => this.encontraAutor(variedades, value, 'autorVariedade')}
-                        onSearch={searchText => {
-                            const especieSelecionada = this.props.form.getFieldValue('especie')
-                            this.requisitaVariedadesComBusca(searchText, especieSelecionada)
-                        }}
-                        loading={fetchingVariedades}
-                        onClickAddMore={() => {
-                            this.setState({
-                                formulario: {
-                                    desc: 'da nova variedade',
-                                    tipo: 6
-                                },
-                                formComAutor: true,
-                                visibleModal: true
-                            })
-                        }}
-                        debounceDelay={600}
-                    />
-                </Row>
-            </div>
-        )
-    }
+                        }
+                    }}
+                    onSearch={searchText => {
+                        const especieSelecionada = this.props.form.getFieldValue('especie')
+                        if (especieSelecionada) {
+                            this.requisitaVariedadesComBusca(searchText || '', especieSelecionada)
+                        }
+                    }}
+                    loading={fetchingVariedades}
+                    onClickAddMore={() => {
+                        this.setState({
+                            formulario: {
+                                desc: 'da nova variedade',
+                                tipo: 6
+                            },
+                            formComAutor: true,
+                            visibleModal: true
+                        })
+                    }}
+                    debounceDelay={600}
+                />
+            </Row>
+        </div>
+    )
+}
 
     renderTipoSoloTombo = getFieldDecorator => {
         const {
