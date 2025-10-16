@@ -51,6 +51,7 @@ import {
     verificaPendenciasService, requisitaCodigoBarrasService, requisitaNumeroHcfService,
     handleSubmitIdentificadorService
 } from './TomboService'
+import SelectedFormField from './components/SelectedFormFiled'
 
 const { confirm } = Modal
 const FormItem = Form.Item
@@ -133,6 +134,7 @@ class NovoTomboScreen extends Component {
             fetchingRelevos: false,
             fetchingVegetacoes: false,
             fetchingFases: false,
+            fetchingAutores: false,
             valoresColetores: [],
             search: {
                 subfamilia: '',
@@ -1487,47 +1489,27 @@ class NovoTomboScreen extends Component {
             .catch(this.catchRequestError)
     }
 
-    requisitaAutores = id => {
-        this.setState({
-            loading: true
-        })
-        axios.get('/autores')
-            .then(response => {
+    requisitaAutores = async (searchText = '') => {
+        this.setState({ fetchingAutores: true })
+
+        try {
+            const params = {
+                limite: 9999999,
+                ...(searchText ? { autor: searchText } : {})
+            }
+
+            const response = await axios.get('/autores', { params })
+
+            if (response.status === 200) {
                 this.setState({
-                    loading: false
+                    autores: response.data.resultado || response.data,
+                    fetchingAutores: false
                 })
-                if (response.status === 200) {
-                    this.setState({
-                        search: {
-                            autor: ''
-                        }
-                    })
-                    this.setState({
-                        autores: response.data
-                    })
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    search: {
-                        autor: ''
-                    },
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
-                    } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao requisitar os autores, tente novamente.')
-                    }
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
+            }
+        } catch (err) {
+            this.setState({ fetchingAutores: false })
+            console.error('Erro ao buscar autores:', err)
+        }
     }
 
     cadastraNovoSolo = () => {
@@ -2755,6 +2737,7 @@ class NovoTomboScreen extends Component {
             )
         }
         if (this.state.formComAutor) {
+            const { fetchingAutores, autores } = this.state
             return (
                 <div>
                     <Row gutter={8}>
@@ -2782,18 +2765,27 @@ class NovoTomboScreen extends Component {
                     </Row>
                     <Row gutter={8}>
                         <Col span={24}>
-                            <FormItem>
-                                {getFieldDecorator('autor')(
-                                    <Select
-                                        showSearch
-                                        style={{ width: '100%' }}
-                                        placeholder="Selecione um autor"
-                                        optionFilterProp="children"
-                                    >
-                                        {this.optionAutores()}
-                                    </Select>
-                                )}
-                            </FormItem>
+                            <SelectedFormField
+                                title=""
+                                placeholder="Selecione um autor"
+                                fieldName="autor"
+                                getFieldDecorator={getFieldDecorator}
+                                onSearch={searchText => {
+                                    this.requisitaAutores(searchText || '')
+                                }}
+                                others={{
+                                    loading: fetchingAutores,
+                                    notFoundContent: fetchingAutores ? <Spin size="small" /> : 'Nenhum resultado encontrado'
+                                }}
+                                debounceDelay={600}
+                                xs={24}
+                                sm={24}
+                                md={24}
+                                lg={24}
+                                xl={24}
+                            >
+                                {this.optionAutores()}
+                            </SelectedFormField>
                         </Col>
                     </Row>
                 </div>
@@ -3231,7 +3223,7 @@ class NovoTomboScreen extends Component {
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: 'do novo subfamília',
+                                    desc: ' da nova subfamília',
                                     tipo: 2
                                 },
                                 visibleModal: true
@@ -3357,7 +3349,7 @@ class NovoTomboScreen extends Component {
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: 'da nova subespécie',
+                                    desc: ' da nova subespécie',
                                     tipo: 5
                                 },
                                 formComAutor: true,
@@ -3393,7 +3385,7 @@ class NovoTomboScreen extends Component {
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: 'da nova variedade',
+                                    desc: ' da nova variedade',
                                     tipo: 6
                                 },
                                 formComAutor: true,
@@ -3429,7 +3421,7 @@ class NovoTomboScreen extends Component {
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: 'do novo solo',
+                                    desc: ' do novo solo',
                                     tipo: 8
                                 },
                                 visibleModal: true
@@ -3452,7 +3444,7 @@ class NovoTomboScreen extends Component {
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: 'do novo relevo',
+                                    desc: ' do novo relevo',
                                     tipo: 9
                                 },
                                 visibleModal: true
@@ -3478,7 +3470,7 @@ class NovoTomboScreen extends Component {
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: 'da nova vegetação',
+                                    desc: ' da nova vegetação',
                                     tipo: 10
                                 },
                                 visibleModal: true
