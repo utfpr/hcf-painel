@@ -6,6 +6,8 @@ import react from '@vitejs/plugin-react'
 
 const baseUrl = process.env.BASE_URL || '/'
 
+console.log('baseUrl', baseUrl)
+
 export default defineConfig({
   base: baseUrl,
   plugins: [
