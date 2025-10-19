@@ -4,7 +4,7 @@ import { defineConfig } from 'vite'
 
 import react from '@vitejs/plugin-react'
 
-const baseUrl = process.env.BASE_URL || '/'
+const baseUrl = process.env.VITE_BASE_URL || '/'
 
 console.log('baseUrl', baseUrl)
 
