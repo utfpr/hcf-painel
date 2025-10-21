@@ -265,8 +265,6 @@ class NovoTomboScreen extends Component {
 
             const barcodeEditList = dedupeByCodigo(normalize(data));
 
-            console.log("Loaded barcodes:", barcodeEditList);
-
             this.setState({ codigosBarrasForm: barcodeEditList });
             this.setState({ codigosBarrasInicial : barcodeEditList });
           })
@@ -477,6 +475,47 @@ class NovoTomboScreen extends Component {
             console.error("Erro ao atualizar códigos de barras:", error);
             this.openNotificationWithIcon("error", "Erro", "Erro ao atualizar os códigos de barras. Tente novamente.");
         }
+    };
+
+    normalizeBarcodes = (barcodeList = []) => {
+        const asArray = Array.isArray(barcodeList) ? barcodeList : [barcodeList];
+
+        const integerPart = (val) => {
+          const [int] = String(val).split(".");
+          const n = parseInt(int, 10);
+          return Number.isFinite(n) ? n : NaN;
+        };
+
+        const extractNumber = (item) => {
+          if (item == null) return NaN;
+
+          // 1) Objeto com num_barra (ex.: "41806.0")
+          if (typeof item === "object" && "num_barra" in item) {
+            return integerPart(item.num_barra);
+          }
+
+          // 2) Objeto com codigo_barra OU string tipo "HCF000041890"
+          if ((typeof item === "object" && "codigo_barra" in item) || typeof item === "string") {
+            const raw = typeof item === "string" ? item : String(item.codigo_barra || "");
+            const n = parseInt(raw.replace(/\D/g, ""), 10);
+            return Number.isFinite(n) ? n : NaN;
+          }
+
+          // 3) Número puro
+          if (typeof item === "number" && Number.isFinite(item)) {
+            return Math.trunc(item);
+          }
+
+          // 4) Fallback: extrai dígitos de qualquer coisa
+          const n = parseInt(String(item).replace(/\D/g, ""), 10);
+          return Number.isFinite(n) ? n : NaN;
+        };
+
+        const seen = new Set();
+        return asArray
+          .map(extractNumber)
+          .filter((n) => Number.isFinite(n) && n > 0)
+          .filter((n) => (seen.has(n) ? false : (seen.add(n), true)));
     };
 
     criarCodigoBarras = async (id_tombo, barcodeList = [], getFiles) => {
