@@ -3,7 +3,7 @@ import { Component } from 'react'
 import {
     Divider, Modal, Card, Row, Col,
     Input, Button, notification,
-    Select
+    Select, Spin
 } from 'antd'
 import axios from 'axios'
 
@@ -13,6 +13,7 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
+import SelectedFormField from './tombos/components/SelectedFormFiled'
 import { isCuradorOuOperador } from '../helpers/usuarios'
 import { recaptchaKey } from '@/config/api'
 
@@ -57,6 +58,7 @@ class ListaTaxonomiaFamilia extends Component {
             visibleModal: false,
             loadingModal: false,
             loading: false,
+            fetchingReinos: false,
             titulo: 'Cadastrar',
             id: -1
         }
@@ -370,26 +372,37 @@ class ListaTaxonomiaFamilia extends Component {
         )
     }
 
-    requisitaReinos = () => {
-        axios.get('/reinos', {
-            params: {
-                limite: 9999999
+    requisitaReinos = async (searchText = '') => {
+        this.setState({ fetchingReinos: true })
+
+        try {
+
+            await new Promise(resolve => window.grecaptcha.ready(resolve))
+
+            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'reinos' })
+
+            const params = {
+                limite: 9999999,
+                ...(searchText ? { reino: searchText } : {})
             }
-        })
-            .then(response => {
-                if (response.status === 200) {
-                    this.setState({
-                        reinos: response.data.resultado
-                    })
-                }
-            })
-            .catch(err => {
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    console.error(error.message)
-                }
-            })
+
+            const response = await axios.get('/reinos', { params })
+
+            if (response.status === 200) {
+                this.setState({
+                    reinos: response.data.resultado,
+                    fetchingReinos: false
+                })
+            }
+        } catch (err) {
+            this.setState({ fetchingReinos: false })
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                console.error(error.message)
+            }
+            this.notificacao('error', 'Erro', 'Falha ao buscar reinos.')
+        }
     }
 
     renderAdd = () => {
@@ -420,6 +433,7 @@ class ListaTaxonomiaFamilia extends Component {
 
     renderFormulario() {
         const { getFieldDecorator } = this.props.form
+        const { fetchingReinos } = this.state
         return (
             <div>
                 <Form onSubmit={this.handleSubmitForm}>
@@ -454,26 +468,28 @@ class ListaTaxonomiaFamilia extends Component {
 
                         <div>
                             <Row gutter={8}>
-                                <Col span={24}>
-                                    <span>Nome do reino:</span>
-                                </Col>
-                            </Row>
-                            <Row gutter={8}>
-                                <Col span={24}>
-                                    <FormItem>
-                                        {getFieldDecorator('nomeReino')(
-                                            <Select
-                                                showSearch
-                                                style={{ width: '100%' }}
-                                                placeholder="Selecione um reino"
-                                                optionFilterProp="children"
-                                            >
-
-                                                {this.optionReino()}
-                                            </Select>
-                                        )}
-                                    </FormItem>
-                                </Col>
+                                <SelectedFormField
+                                    title="Nome do reino:"
+                                    placeholder="Selecione um reino"
+                                    fieldName="nomeReino"
+                                    getFieldDecorator={getFieldDecorator}
+                                    onSearch={searchText => {
+                                        this.requisitaReinos(searchText || '')
+                                    }}
+                                    others={{
+                                        loading: fetchingReinos,
+                                        notFoundContent: fetchingReinos ? <Spin size="small" /> : 'Nenhum resultado encontrado',
+                                        allowClear: true
+                                    }}
+                                    debounceDelay={600}
+                                    xs={24}
+                                    sm={24}
+                                    md={24}
+                                    lg={24}
+                                    xl={24}
+                                >
+                                    {this.optionReino()}
+                                </SelectedFormField>
                             </Row>
                             <Row gutter={8} style={{ marginTop: 16 }}>
                                 <Col span={24}>
@@ -493,7 +509,6 @@ class ListaTaxonomiaFamilia extends Component {
 
                     </ModalCadastroComponent>
                 </Form>
-
                 <Row gutter={24} style={{ marginBottom: '20px' }}>
                     <Col xs={24} sm={14} md={18} lg={20} xl={20}>
                         <h2 style={{ fontWeight: 200 }}>Famílias</h2>
