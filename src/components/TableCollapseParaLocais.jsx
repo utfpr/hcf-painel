@@ -104,7 +104,7 @@ const TableCollapseParaLocais = ({ data, loading }) => {
                                 latitude: latitude ? latitude.trim() : null,
                                 longitude: longitude ? longitude.trim() : null,
                                 datacoleta: dataColeta,
-                                familia: registro?.especy?.familia?.nome || '-',
+                                familia: registro?.familia?.nome || '-',
                                 especie: registro?.especy?.nome || '-'
                             }
                         })}
