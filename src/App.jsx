@@ -166,7 +166,7 @@ export default class App extends Component {
 
     render() {
         return (
-            <BrowserRouter>
+            <BrowserRouter basename={import.meta.env.VITE_BASE_URL}>
                 <Switch>
                     <Route path="/inicio" component={InicioScreen} />
                     <Route path="/" render={this.renderContent} />
