@@ -382,8 +382,35 @@ export default class BarcodeTableComponent extends Component {
 
     handleBeforeUploadPhoto = (record) => (file) => {
         const code = record?.codigo_barra;
+        const isValidImageType = this.validateImageFileType(file);
+        if (!isValidImageType) {
+            message.error(`${file.name} não é um arquivo de imagem válido. Por favor, selecione apenas arquivos PNG, JPEG, JPG ou WEBP.`);
+            return false;
+        }
+        
         this.setPhotosOfCode(code, [file]);
         return false;
+    };
+
+    validateImageFileType = (file) => {
+        const validImageTypes = [
+            'image/png',
+            'image/jpeg', 
+            'image/jpg',
+            'image/gif',
+            'image/bmp',
+            'image/webp'
+        ];
+
+        if (validImageTypes.includes(file.type)) {
+            return true;
+        }
+
+        const fileName = file.name || '';
+        const fileExtension = fileName.toLowerCase().split('.').pop();
+        const validExtensions = ['png', 'jpeg', 'jpg', 'gif', 'bmp', 'webp'];
+        
+        return validExtensions.includes(fileExtension);
     };
 
     refreshPhotosAfterUpload = async (codigoBarra) => {
@@ -618,15 +645,31 @@ export default class BarcodeTableComponent extends Component {
                     ...col,
                     dataIndex: col.key,
                     key: col.key,
-                    render: (_, record) => (
-                        <UploadPicturesComponent
-                            fileList={this.getPhotosOfCode(
-                                record?.codigo_barra
-                            )}
-                            beforeUpload={this.handleBeforeUploadPhoto(record)}
-                            onRemove={this.handleRemovePhoto(record)}
-                        />
-                    ),
+                    render: (_, record) => {
+                        const photos = this.getPhotosOfCode(record?.codigo_barra);
+                        const hasInvalidFile = photos.some(file => 
+                            file && !this.validateImageFileType(file) && file.status !== 'done'
+                        );
+                        
+                        return (
+                            <div className={hasInvalidFile ? 'upload-error' : ''}>
+                                <UploadPicturesComponent
+                                    fileList={photos}
+                                    beforeUpload={this.handleBeforeUploadPhoto(record)}
+                                    onRemove={this.handleRemovePhoto(record)}
+                                />
+                                <style jsx>{`
+                                    .upload-error .ant-upload {
+                                        border-color: #ff4d4f !important;
+                                        background-color: #fff2f0 !important;
+                                    }
+                                    .upload-error .ant-upload:hover {
+                                        border-color: #ff7875 !important;
+                                    }
+                                `}</style>
+                            </div>
+                        );
+                    },
                 };
             }
             if (col.key === "acao") {
