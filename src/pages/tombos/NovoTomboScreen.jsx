@@ -163,7 +163,6 @@ class NovoTomboScreen extends Component {
             fotosEmVivo: [],
             numeroHcf: 0,
             herbarioInicial: '',
-            localidadeInicial: '',
             tipoInicial: '',
             paisInicial: '',
             estadoInicial: '',
@@ -214,6 +213,41 @@ class NovoTomboScreen extends Component {
 
     componentDidMount() {
         this.carregaInformacoesEdicao()
+    }
+
+    validateAnoNaoFuturo = (_rule, value, callback) => {
+        if (value == null || value === '') return callback()
+        const anoAtual = new Date().getFullYear()
+        if (Number(value) > anoAtual) {
+            return callback('O ano não pode ser no futuro.')
+        }
+        return callback()
+    }
+
+    validateDataTombo = (_rule, value, callback) => {
+        if (!value) return callback()
+
+        const str = String(value).trim()
+
+        const m = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/)
+        if (!m) return callback('Formato inválido. Use DD/MM/AAAA.')
+
+        const d = Number(m[1])
+        const mm = Number(m[2])
+        const y = Number(m[3])
+
+        if (mm < 1 || mm > 12) return callback('Mês inválido.')
+        if (d < 1 || d > 31) return callback('Dia inválido.')
+
+        const dt = new Date(y, mm - 1, d)
+        if (dt.getFullYear() !== y || (dt.getMonth() + 1) !== mm || dt.getDate() !== d) {
+            return callback('Data inválida.')
+        }
+
+        const anoAtual = new Date().getFullYear()
+        if (y > anoAtual) return callback('O ano não pode ser no futuro.')
+
+        return callback()
     }
 
     carregaInformacoesEdicao = async () => {
@@ -291,7 +325,7 @@ class NovoTomboScreen extends Component {
 
         const deletedNum = toInt(num_barra);
         const deletedCode = String(codigo_barra || "");
-    
+
         this.setState((prev) => {
             const inicial = prev.codigosBarrasInicial || [];
             const existedInInitial = inicial.some((item) => {
@@ -320,7 +354,7 @@ class NovoTomboScreen extends Component {
                     ];
                 }
             }
-    
+
             return {
                 codigosBarrasInicial: nextInicial,
                 toDeleteBarcodes: nextToDelete,
@@ -449,14 +483,14 @@ class NovoTomboScreen extends Component {
                     }
                 }
             }
-    
+
             if (isEditing && deletions.length > 0) {
                 const deleteRequests = deletions.map((b) =>
                     axios.delete(`/tombos/codigo_barras/${encodeURIComponent(b.num_barra)}`)
                 );
                 ops.push(Promise.allSettled(deleteRequests));
             }
-    
+
             if (ops.length > 0) {
                 await Promise.all(ops);
             }
@@ -675,7 +709,6 @@ class NovoTomboScreen extends Component {
             if (error) {
                 message = `Falha ao carregar os dados do tombo: ${error.message}`
             }
-
             this.openNotificationWithIcon(
                 'warning',
                 'Falha',
@@ -685,9 +718,6 @@ class NovoTomboScreen extends Component {
             this.setState({
                 loading: false
             })
-            if (onFinish !== null) {
-                onFinish()
-            }
         }
     }
 
@@ -730,7 +760,7 @@ class NovoTomboScreen extends Component {
             })
 
             if (paisBrasil) {
-                axios.get('/estados', { params: { id: paisBrasil.id } })
+                axios.get('/estados', { params: { pais_id: paisBrasil.id } })
                     .then(estadosResponse => {
                         if (estadosResponse.data && estadosResponse.status === 200) {
                             const estadoParana = estadosResponse.data.find(e => e.nome === 'Paraná')
@@ -889,7 +919,7 @@ class NovoTomboScreen extends Component {
             loading: false
         })
 
-        this.props.history.goBack()
+        this.props.history.push('/tombos')
     }
 
     requisitaNumeroHcf = () => {
@@ -948,7 +978,7 @@ class NovoTomboScreen extends Component {
     requisitaEstados = id => {
         axios.get('/estados', {
             params: {
-                id
+                pais_id: id
             }
         })
             .then(response => {
@@ -2285,8 +2315,8 @@ class NovoTomboScreen extends Component {
             tomboId,
             json
         )
-        this.props.history.push('/tombos')
     }
+
 
     requisitaCadastroTombo = json => {
         axios.post('/tombos', { json })
@@ -2524,7 +2554,6 @@ class NovoTomboScreen extends Component {
                 return false
             }
             if (err != null) {
-                console.log(err)
                 this.openNotificationWithIcon('warning', 'Falha', 'Preencha todos os dados requiridos.')
             } else {
                 this.handleRequisicao(values)
@@ -2547,7 +2576,7 @@ class NovoTomboScreen extends Component {
         const {
             altitude, autorEspecie, autorVariedade, autoresSubespecie, cidade, coletores, coletoresComplementares, complemento,
             dataColetaAno, dataColetaDia, dataColetaMes, dataIdentAno, dataIdentDia, dataIdentMes,
-            especie, reino, familia, fases, genero, identificador, latitude, localidadeCor, longitude,
+            especie, reino, familia, fases, genero, identificador, latitude, longitude,
             nomePopular, numColeta, observacoesColecaoAnexa, observacoesTombo, relevo, solo,
             subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao, unicata, dataTombo
         } = values
@@ -2607,7 +2636,6 @@ class NovoTomboScreen extends Component {
 
         json.principal.nome_popular = nomePopular || null
         json.principal.tipo_id = tipo ? parseInt(tipo) : null
-        json.principal.cor = localidadeCor || null
         json.principal.data_tombo = this.normalizaDataTombo(dataTombo)
 
         if (dataColetaDia || dataColetaMes || dataColetaAno) {
@@ -2686,7 +2714,7 @@ class NovoTomboScreen extends Component {
         const {
             altitude, autorEspecie, autorVariedade, autoresSubespecie, cidade, coletores, coletoresComplementares, complemento,
             dataColetaAno, dataColetaDia, dataColetaMes, dataIdentAno, dataIdentDia, dataIdentMes,
-            especie, reino, familia, fases, genero, identificador, latitude, localidadeCor, longitude,
+            especie, reino, familia, fases, genero, identificador, latitude, longitude,
             nomePopular, numColeta, observacoesColecaoAnexa, observacoesTombo, relevo, solo,
             subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao, unicata, dataTombo
         } = values
@@ -2792,11 +2820,7 @@ class NovoTomboScreen extends Component {
 
     handleSubmitForm = e => {
         e.preventDefault()
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                console.log('Received values of form: ', values)
-            }
-        })
+        this.props.form.validateFields((err, values) => {})
     }
 
     optionEntidades = () => this.state.herbarios.map(item => (
@@ -3289,11 +3313,24 @@ class NovoTomboScreen extends Component {
                         disabled
                         getFieldDecorator={getFieldDecorator}
                     />
-                    <InputFormField
-                        name="dataTombo"
-                        title="Data do Tombo:"
-                        getFieldDecorator={getFieldDecorator}
-                    />
+                    <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+                        <Col span={24}>
+                            <span>Data do Tombo:</span>
+                        </Col>
+                        <Col span={24}>
+                            <FormItem>
+                                {getFieldDecorator('dataTombo', {
+                                    rules: [{ validator: this.validateDataTombo }]
+                                })(
+                                    <Input
+                                        placeholder="DD/MM/AAAA"
+                                        type="text"
+                                        status={getFieldError && getFieldError('dataTombo') ? 'error' : ''}
+                                    />
+                                )}
+                            </FormItem>
+                        </Col>
+                    </Col>
                 </Row>
                 <br />
                 <Row gutter={8}>
@@ -3639,7 +3676,10 @@ class NovoTomboScreen extends Component {
                         }}
                         filterOption={false}
                     />
-                    <DataIdentificacaoFormField getFieldDecorator={getFieldDecorator} />
+                    <DataIdentificacaoFormField
+                        getFieldDecorator={getFieldDecorator}
+                        getFieldError={getFieldError}
+                    />
                 </Row>
             </div>
         )
@@ -4017,10 +4057,13 @@ class NovoTomboScreen extends Component {
                                 <Col span={8}>
                                     <FormItem>
                                         {getFieldDecorator('dataColetaAno', {
-                                            rules: [{
-                                                required: true,
-                                                message: 'Insira o ano da coleta'
-                                            }]
+                                            rules: [
+                                                {
+                                                    required: true,
+                                                    message: 'Insira o ano da coleta'
+                                                },
+                                                { validator: this.validateAnoNaoFuturo }
+                                            ]
                                         })(
                                             <InputNumber
                                                 min={500}
@@ -4033,47 +4076,6 @@ class NovoTomboScreen extends Component {
                                     </FormItem>
                                 </Col>
                             </Row>
-                        </Col>
-                    </Col>
-                    <Col xs={24} sm={24} md={8} lg={8} xl={8}>
-                        <Col span={24}>
-                            <span>Localidade:</span>
-                            <Button 
-                                type="text" 
-                                onClick={() => {
-                                    this.props.form.setFieldsValue({ localidadeCor: undefined })
-                                }}
-                                style={{ 
-                                    color: '#999', 
-                                    fontSize: '12px',
-                                    padding: '0 4px',
-                                    height: 'auto'
-                                }}
-                            >
-                                Limpar
-                            </Button>
-                        </Col>
-                        <Col span={24}>
-                            <FormItem>
-                                {getFieldDecorator('localidadeCor', {
-                                    initialValue: String(this.state.localidadeInicial),
-                                })(
-                                    <RadioGroup
-                                        onChange={this.onChange}
-                                        value={this.state.value}
-                                        style={{
-                                            padding: '3px',
-                                            boxShadow: getFieldError('localidadeCor')
-                                                ? '0 0 0 1px #f5222d' : '',
-                                            borderRadius: '1px'
-                                        }}
-                                    >
-                                        <Radio value="VERMELHO"><Tag color="red">Paraná</Tag></Radio>
-                                        <Radio value="VERDE"><Tag color="green">Brasil</Tag></Radio>
-                                        <Radio value="AZUL"><Tag color="blue">Outros países</Tag></Radio>
-                                    </RadioGroup>
-                                )}
-                            </FormItem>
                         </Col>
                     </Col>
                 </Row>

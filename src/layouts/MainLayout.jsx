@@ -13,7 +13,7 @@ import {
     SnippetsOutlined
 } from '@ant-design/icons'
 
-import logoImage from '../assets/img/logo-hcf-branco.png'
+import logoImage from '../assets/img/logo_branca.png'
 import { baseUrl } from '../config/api'
 import {
     isCurador,
@@ -108,6 +108,11 @@ export default class MainLayout extends Component {
 
         setUsuario('')
         localStorage.setItem('usuario', '')
+        
+        // Limpa as credenciais salvas do "Lembrar-me"
+        localStorage.removeItem('hcf_saved_email')
+        localStorage.removeItem('hcf_saved_password')
+        localStorage.removeItem('hcf_remember_me')
     }
 
     renderFormulario() {
@@ -119,8 +124,8 @@ export default class MainLayout extends Component {
                             <img
                                 src={logoImage}
                                 alt="logo-hcf"
-                                height="87"
-                                width="61"
+                                height={this.state.collapsed ? "70px" : "120px"}
+                                width={this.state.collapsed ? "70px" : "120px"}
                             />
                         </Link>
                     </Col>
@@ -165,6 +170,29 @@ export default class MainLayout extends Component {
                                 <Link to="/autores">Autores</Link>
                             </Menu.Item>
                         </SubMenu>
+                        <SubMenu
+                            key="locais"
+                            title={(
+                                <span>
+                                    <EnvironmentOutlined />
+                                    <span>Locais</span>
+                                </span>
+                            )}
+                        >
+                            <Menu.Item key="88">
+                                <Link to="/estados">Estados</Link>
+                            </Menu.Item>
+                            <Menu.Item key="0">
+                                <Link to="/cidades">Cidades</Link>
+                            </Menu.Item>
+                            {isLogado() ? (
+                                <Menu.Item key="12">
+                                    <Link to="/locais-coleta">
+                                        <span>Local de Coleta</span>
+                                    </Link>
+                                </Menu.Item>
+                            ) : null}
+                        </SubMenu>
                         {isCuradorOuOperador() ? (
                             <Menu.Item key="9">
                                 <Link to="/remessas">
@@ -186,14 +214,6 @@ export default class MainLayout extends Component {
                                 <Link to="/usuarios">
                                     <TeamOutlined />
                                     <span>Usuários</span>
-                                </Link>
-                            </Menu.Item>
-                        ) : null}
-                        {isLogado() ? (
-                            <Menu.Item key="12">
-                                <Link to="/locais-coleta">
-                                    <EnvironmentOutlined />
-                                    <span>Local de Coleta</span>
                                 </Link>
                             </Menu.Item>
                         ) : null}
