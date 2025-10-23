@@ -71,37 +71,37 @@ class ListaTaxonomiaSubfamilia extends Component {
     }
 
     requisitaExclusao(id) {
-    this.setState({
-        loading: true
-    })
-    axios.delete(`/subfamilias/${id}`)
-        .then(response => {
-            this.setState({
-                loading: false
-            })
-            if (response.status === 204) {
-                this.requisitaListaSubfamilia(this.state.valores, this.state.pagina)
-                this.notificacao('success', 'Excluir', 'A subfamília foi excluída com sucesso.')
-            }
+        this.setState({
+            loading: true
         })
-        .catch(err => {
-            this.setState({
-                loading: false
-            })
-            const { response } = err
-            if (response && response.data) {
-                const { error } = response.data
-                if (error && error.code) {
-                    this.notificacao('error', 'Erro ao excluir subfamília', error.code)
-                } else {
-                    this.notificacao('error', 'Erro ao excluir subfamília', 'Ocorreu um erro inesperado ao tentar excluir a subfamília.')
+        axios.delete(`/subfamilias/${id}`)
+            .then(response => {
+                this.setState({
+                    loading: false
+                })
+                if (response.status === 204) {
+                    this.requisitaListaSubfamilia(this.state.valores, this.state.pagina)
+                    this.notificacao('success', 'Excluir', 'A subfamília foi excluída com sucesso.')
                 }
-                console.error(error)
-            } else {
-                this.notificacao('error', 'Erro ao excluir subfamília', 'Falha na comunicação com o servidor.')
-            }
-        })
-}
+            })
+            .catch(err => {
+                this.setState({
+                    loading: false
+                })
+                const { response } = err
+                if (response && response.data) {
+                    const { error } = response.data
+                    if (error && error.code) {
+                        this.notificacao('error', 'Erro ao excluir subfamília', error.code)
+                    } else {
+                        this.notificacao('error', 'Erro ao excluir subfamília', 'Ocorreu um erro inesperado ao tentar excluir a subfamília.')
+                    }
+                    console.error(error)
+                } else {
+                    this.notificacao('error', 'Erro ao excluir subfamília', 'Falha na comunicação com o servidor.')
+                }
+            })
+    }
 
     notificacao = (type, titulo, descricao) => {
         notification[type]({
@@ -140,7 +140,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                         href="#"
                         onClick={async () => {
                             const reinoId = item.familia?.reino?.id || null
-                            
+
                             this.setState({
                                 visibleModal: true,
                                 id: item.id,
@@ -190,26 +190,29 @@ class ListaTaxonomiaSubfamilia extends Component {
 
     requisitaListaSubfamilia = async (valores, pg, pageSize, sorter) => {
         this.setState({ loading: true })
-    
-        try {
+
+        const campo = sorter && sorter.field ? sorter.field : 'subfamilia'
+        const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
+
+        const params = {
+            pagina: pg,
+            limite: pageSize || 20,
+            order: `${campo}:${ordem}`,
+            ...(valores && valores.subfamilia ? { subfamilia: valores.subfamilia } : {}),
+            ...(valores && valores.familia ? { familia_nome: valores.familia } : {})
+        }
+
+        const isLogged = Boolean(localStorage.getItem('token'))
+
+        if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
             await new Promise(resolve => window.grecaptcha.ready(resolve))
-    
-            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'subfamilias' })
-    
-            const campo = sorter && sorter.field ? sorter.field : 'subfamilia'
-            const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
-    
-            const params = {
-                pagina: pg,
-                limite: pageSize || 20,
-                order: `${campo}:${ordem}`,
-                recaptchaToken: token,
-                ...(valores && valores.subfamilia ? { subfamilia: valores.subfamilia } : {}),
-                ...(valores && valores.familia ? { familia_nome: valores.familia } : {})
-            }
-    
+            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'generos' })
+            params.recaptchaToken = token
+        }
+
+        try {
             const response = await axios.get('/subfamilias', { params })
-    
+
             if (response.status === 200) {
                 const { data } = response
                 this.setState({
@@ -290,7 +293,7 @@ class ListaTaxonomiaSubfamilia extends Component {
         })
 
         const formValues = this.props.form.getFieldsValue()
-            
+
         const extrairId = (valor) => {
             if (typeof valor === 'object' && valor.key) {
                 return valor.key
@@ -341,9 +344,9 @@ class ListaTaxonomiaSubfamilia extends Component {
                     icon={<PlusOutlined />}
                     onClick={async () => {
                         this.props.form.resetFields()
-                        
+
                         await this.requisitaReinos()
-                        
+
                         this.setState({
                             visibleModal: true,
                             titulo: 'Cadastrar',
@@ -365,17 +368,20 @@ class ListaTaxonomiaSubfamilia extends Component {
     requisitaReinos = async (searchText = '') => {
         this.setState({ fetchingReinos: true })
 
-        try {
+        const params = {
+            limite: 9999999,
+            ...(searchText ? { reino: searchText } : {})
+        }
+
+        const isLogged = Boolean(localStorage.getItem('token'))
+
+        if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
             await new Promise(resolve => window.grecaptcha.ready(resolve))
+            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'generos' })
+            params.recaptchaToken = token
+        }
 
-            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'reinos' })
-
-            const params = {
-                limite: 9999999,
-                recaptchaToken: token,
-                ...(searchText ? { reino: searchText } : {})
-            }
-
+        try {
             const response = await axios.get('/reinos', { params })
 
             if (response.status === 200) {
@@ -399,21 +405,24 @@ class ListaTaxonomiaSubfamilia extends Component {
 
     requisitaFamilias = async (searchText = '', reinoId = null) => {
         this.setState({ fetchingFamilias: true })
-    
-        try {
+
+        const params = {
+            limite: 9999999,
+            ...(searchText ? { familia: searchText } : {}),
+            ...(reinoId ? { reino_id: reinoId } : {})
+        }
+
+        const isLogged = Boolean(localStorage.getItem('token'))
+
+        if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
             await new Promise(resolve => window.grecaptcha.ready(resolve))
-    
-            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'familias' })
-    
-            const params = {
-                limite: 9999999,
-                recaptchaToken: token,
-                ...(searchText ? { familia: searchText } : {}),
-                ...(reinoId ? { reino_id: reinoId } : {})
-            }
-    
+            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'generos' })
+            params.recaptchaToken = token
+        }
+
+        try {
             const response = await axios.get('/familias', { params })
-    
+
             if (response.status === 200) {
                 this.setState({
                     familias: response.data.resultado,
@@ -521,11 +530,11 @@ class ListaTaxonomiaSubfamilia extends Component {
     optionReino = () => this.state.reinos.map(item => (
         <Option value={item.id}>{item.nome}</Option>
     ))
-    
+
     renderFormulario() {
         const { getFieldDecorator } = this.props.form
         const { fetchingFamilias, fetchingReinos, reinoSelecionado } = this.state
-        
+
         return (
             <div>
                 <Form onSubmit={this.handleSubmitForm}>
@@ -555,7 +564,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                             } else {
                                 this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da nova subfamília e da família.')
                             }
-                            
+
                             this.props.form.resetFields()
                             this.setState({
                                 visibleModal: false,
@@ -576,7 +585,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                                         this.requisitaReinos(searchText || '')
                                     }}
                                     onChange={value => {
-                                        this.setState({ 
+                                        this.setState({
                                             reinoSelecionado: value,
                                             familias: []
                                         })

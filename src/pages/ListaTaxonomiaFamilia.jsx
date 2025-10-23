@@ -65,37 +65,37 @@ class ListaTaxonomiaFamilia extends Component {
     }
 
     requisitaExclusao(id) {
-    this.setState({
-        loading: true
-    })
-    axios.delete(`/familias/${id}`)
-        .then(response => {
-            this.setState({
-                loading: false
-            })
-            if (response.status === 204) {
-                this.requisitaListaFamilia(this.state.valores, this.state.pagina)
-                this.notificacao('success', 'Excluir família', 'A família foi excluída com sucesso.')
-            }
+        this.setState({
+            loading: true
         })
-        .catch(err => {
-            this.setState({
-                loading: false
-            })
-            const { response } = err
-            if (response && response.data) {
-                const { error } = response.data
-                if (error && error.code) {
-                    this.notificacao('error', 'Erro ao excluir família', error.code)
-                } else {
-                    this.notificacao('error', 'Erro ao excluir família', 'Ocorreu um erro inesperado ao tentar excluir a família.')
+        axios.delete(`/familias/${id}`)
+            .then(response => {
+                this.setState({
+                    loading: false
+                })
+                if (response.status === 204) {
+                    this.requisitaListaFamilia(this.state.valores, this.state.pagina)
+                    this.notificacao('success', 'Excluir família', 'A família foi excluída com sucesso.')
                 }
-                console.error(error)
-            } else {
-                this.notificacao('error', 'Erro ao excluir família', 'Falha na comunicação com o servidor.')
-            }
-        })
-}
+            })
+            .catch(err => {
+                this.setState({
+                    loading: false
+                })
+                const { response } = err
+                if (response && response.data) {
+                    const { error } = response.data
+                    if (error && error.code) {
+                        this.notificacao('error', 'Erro ao excluir família', error.code)
+                    } else {
+                        this.notificacao('error', 'Erro ao excluir família', 'Ocorreu um erro inesperado ao tentar excluir a família.')
+                    }
+                    console.error(error)
+                } else {
+                    this.notificacao('error', 'Erro ao excluir família', 'Falha na comunicação com o servidor.')
+                }
+            })
+    }
 
     notificacao = (type, titulo, descricao) => {
         notification[type]({
@@ -171,22 +171,32 @@ class ListaTaxonomiaFamilia extends Component {
 
     requisitaListaFamilia = async (valores, pg, pageSize, sorter) => {
         this.setState({ loading: true })
-    
-        await new Promise(resolve => window.grecaptcha.ready(resolve))
-    
-        const token = await window.grecaptcha.execute(recaptchaKey, { action: 'familias' })
-    
+
         const campo = sorter && sorter.field ? sorter.field : 'familia'
         const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
-    
+
         const params = {
             pagina: pg,
             limite: pageSize || 20,
             order: `${campo}:${ordem}`,
-            recaptchaToken: token,
             ...(valores && valores.familia ? { familia: valores.familia } : {})
         }
-    
+
+        const isLogged = Boolean(localStorage.getItem('token'))
+
+        if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
+            try {
+                await new Promise(resolve => window.grecaptcha.ready(resolve))
+                const token = await window.grecaptcha.execute(recaptchaKey, { action: 'familias' })
+                params.recaptchaToken = token
+            } catch (error) {
+                console.error('Erro ao executar reCAPTCHA:', error)
+                this.setState({ loading: false })
+                this.notificacao('error', 'Erro', 'Falha ao validar reCAPTCHA.')
+                return
+            }
+        }
+
         axios.get('/familias', { params })
             .then(response => {
                 this.setState({ loading: false })
@@ -211,7 +221,6 @@ class ListaTaxonomiaFamilia extends Component {
                 }
             })
     }
-
     handleSubmit = (err, valores) => {
         if (!err) {
             this.setState({
@@ -376,14 +385,17 @@ class ListaTaxonomiaFamilia extends Component {
         this.setState({ fetchingReinos: true })
 
         try {
-
-            await new Promise(resolve => window.grecaptcha.ready(resolve))
-
-            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'reinos' })
-
             const params = {
                 limite: 9999999,
                 ...(searchText ? { reino: searchText } : {})
+            }
+
+            const isLogged = Boolean(localStorage.getItem('token'))
+
+            if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
+                await new Promise(resolve => window.grecaptcha.ready(resolve))
+                const token = await window.grecaptcha.execute(recaptchaKey, { action: 'reinos' })
+                params.recaptchaToken = token
             }
 
             const response = await axios.get('/reinos', { params })

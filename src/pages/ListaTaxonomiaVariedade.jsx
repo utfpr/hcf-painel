@@ -93,37 +93,37 @@ class ListaTaxonomiaVariedade extends Component {
     }
 
     requisitaExclusao(id) {
-    this.setState({
-        loading: true
-    })
-    axios.delete(`/variedades/${id}`)
-        .then(response => {
-            this.setState({
-                loading: false
-            })
-            if (response.status === 204) {
-                this.requisitaListaVariedade(this.state.valores, this.state.pagina)
-                this.notificacao('success', 'Excluir', 'A Variedade foi excluída com sucesso.')
-            }
+        this.setState({
+            loading: true
         })
-        .catch(err => {
-            this.setState({
-                loading: false
-            })
-            const { response } = err
-            if (response && response.data) {
-                const { error } = response.data
-                if (error && error.code) {
-                    this.notificacao('error', 'Erro ao excluir variedade', error.code)
-                } else {
-                    this.notificacao('error', 'Erro ao excluir variedade', 'Ocorreu um erro inesperado ao tentar excluir a variedade.')
+        axios.delete(`/variedades/${id}`)
+            .then(response => {
+                this.setState({
+                    loading: false
+                })
+                if (response.status === 204) {
+                    this.requisitaListaVariedade(this.state.valores, this.state.pagina)
+                    this.notificacao('success', 'Excluir', 'A Variedade foi excluída com sucesso.')
                 }
-                console.error(error)
-            } else {
-                this.notificacao('error', 'Erro ao excluir variedade', 'Falha na comunicação com o servidor.')
-            }
-        })
-}
+            })
+            .catch(err => {
+                this.setState({
+                    loading: false
+                })
+                const { response } = err
+                if (response && response.data) {
+                    const { error } = response.data
+                    if (error && error.code) {
+                        this.notificacao('error', 'Erro ao excluir variedade', error.code)
+                    } else {
+                        this.notificacao('error', 'Erro ao excluir variedade', 'Ocorreu um erro inesperado ao tentar excluir a variedade.')
+                    }
+                    console.error(error)
+                } else {
+                    this.notificacao('error', 'Erro ao excluir variedade', 'Falha na comunicação com o servidor.')
+                }
+            })
+    }
 
     notificacao = (type, titulo, descricao) => {
         notification[type]({
@@ -230,30 +230,48 @@ class ListaTaxonomiaVariedade extends Component {
         autor: item.autor?.nome
     }))
 
+    handleSubmit = (err, valores) => {
+        if (!err) {
+            this.setState({
+                valores,
+                loading: true
+            })
+            this.requisitaListaVariedade(valores, this.state.pagina)
+        }
+    }
+
+    onSubmit = event => {
+        event.preventDefault()
+        this.props.form.validateFields(this.handleSubmit)
+    }
+
     requisitaListaVariedade = async (valores, pg, pageSize, sorter) => {
         this.setState({ loading: true })
-    
-        try {
+
+        const campo = sorter && sorter.field ? sorter.field : 'variedade'
+        const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
+
+        const params = {
+            pagina: pg,
+            limite: pageSize || 20,
+            order: `${campo}:${ordem}`,
+            ...(valores && valores.variedade ? { variedade: valores.variedade } : {}),
+            ...(valores && valores.familia ? { familia_nome: valores.familia } : {}),
+            ...(valores && valores.genero ? { genero_nome: valores.genero } : {}),
+            ...(valores && valores.especie ? { especie_nome: valores.especie } : {})
+        }
+
+        const isLogged = Boolean(localStorage.getItem('token'))
+
+        if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
             await new Promise(resolve => window.grecaptcha.ready(resolve))
-    
-            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'variedades' })
-    
-            const campo = sorter && sorter.field ? sorter.field : 'variedade'
-            const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
-    
-            const params = {
-                pagina: pg,
-                limite: pageSize || 20,
-                order: `${campo}:${ordem}`,
-                recaptchaToken: token,
-                ...(valores && valores.variedade ? { variedade: valores.variedade } : {}),
-                ...(valores && valores.familia ? { familia_nome: valores.familia } : {}),
-                ...(valores && valores.genero ? { genero_nome: valores.genero } : {}),
-                ...(valores && valores.especie ? { especie_nome: valores.especie } : {})
-            }
-    
+            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'generos' })
+            params.recaptchaToken = token
+        }
+
+        try {
             const response = await axios.get('/variedades', { params })
-    
+
             if (response.status === 200) {
                 const { data } = response
                 this.setState({
@@ -279,35 +297,23 @@ class ListaTaxonomiaVariedade extends Component {
         }
     }
 
-    handleSubmit = (err, valores) => {
-        if (!err) {
-            this.setState({
-                valores,
-                loading: true
-            })
-            this.requisitaListaVariedade(valores, this.state.pagina)
-        }
-    }
-
-    onSubmit = event => {
-        event.preventDefault()
-        this.props.form.validateFields(this.handleSubmit)
-    }
-
     requisitaReinos = async (searchText = '') => {
         this.setState({ fetchingReinos: true })
 
-        try {
+        const params = {
+            limite: 9999999,
+            ...(searchText ? { reino: searchText } : {})
+        }
+
+        const isLogged = Boolean(localStorage.getItem('token'))
+
+        if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
             await new Promise(resolve => window.grecaptcha.ready(resolve))
+            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'generos' })
+            params.recaptchaToken = token
+        }
 
-            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'reinos' })
-
-            const params = {
-                limite: 9999999,
-                recaptchaToken: token,
-                ...(searchText ? { reino: searchText } : {})
-            }
-
+        try {
             const response = await axios.get('/reinos', { params })
 
             if (response.status === 200) {
@@ -336,18 +342,21 @@ class ListaTaxonomiaVariedade extends Component {
     requisitaFamilias = async (searchText = '', reinoId = null) => {
         this.setState({ fetchingFamilias: true })
 
-        try {
+        const params = {
+            limite: 9999999,
+            ...(searchText ? { familia: searchText } : {}),
+            ...(reinoId ? { reino_id: reinoId } : {})
+        }
+
+        const isLogged = Boolean(localStorage.getItem('token'))
+
+        if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
             await new Promise(resolve => window.grecaptcha.ready(resolve))
+            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'generos' })
+            params.recaptchaToken = token
+        }
 
-            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'familias' })
-
-            const params = {
-                limite: 9999999,
-                recaptchaToken: token,
-                ...(searchText ? { familia: searchText } : {}),
-                ...(reinoId ? { reino_id: reinoId } : {})
-            }
-
+        try {
             const response = await axios.get('/familias', { params })
 
             if (response.status === 200) {
@@ -376,18 +385,21 @@ class ListaTaxonomiaVariedade extends Component {
     requisitaGeneros = async (searchText = '', familiaId = null) => {
         this.setState({ fetchingGeneros: true })
 
-        try {
+        const params = {
+            limite: 9999999,
+            ...(searchText ? { genero: searchText } : {}),
+            ...(familiaId ? { familia_id: familiaId } : {})
+        }
+
+        const isLogged = Boolean(localStorage.getItem('token'))
+
+        if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
             await new Promise(resolve => window.grecaptcha.ready(resolve))
-
             const token = await window.grecaptcha.execute(recaptchaKey, { action: 'generos' })
+            params.recaptchaToken = token
+        }
 
-            const params = {
-                limite: 9999999,
-                recaptchaToken: token,
-                ...(searchText ? { genero: searchText } : {}),
-                ...(familiaId ? { familia_id: familiaId } : {})
-            }
-
+        try {
             const response = await axios.get('/generos', { params })
 
             if (response.status === 200) {
@@ -416,18 +428,21 @@ class ListaTaxonomiaVariedade extends Component {
     requisitaEspecies = async (searchText = '', generoId = null) => {
         this.setState({ fetchingEspecies: true })
 
-        try {
+        const params = {
+            limite: 9999999,
+            ...(searchText ? { especie: searchText } : {}),
+            ...(generoId ? { genero_id: generoId } : {})
+        }
+
+        const isLogged = Boolean(localStorage.getItem('token'))
+
+        if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
             await new Promise(resolve => window.grecaptcha.ready(resolve))
+            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'generos' })
+            params.recaptchaToken = token
+        }
 
-            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'especies' })
-
-            const params = {
-                limite: 9999999,
-                recaptchaToken: token,
-                ...(searchText ? { especie: searchText } : {}),
-                ...(generoId ? { genero_id: generoId } : {})
-            }
-
+        try {
             const response = await axios.get('/especies', { params })
 
             if (response.status === 200) {
@@ -456,17 +471,20 @@ class ListaTaxonomiaVariedade extends Component {
     requisitaAutores = async (searchText = '') => {
         this.setState({ fetchingAutores: true })
 
-        try {
+        const params = {
+            limite: 9999999,
+            ...(searchText ? { autor: searchText } : {})
+        }
+
+        const isLogged = Boolean(localStorage.getItem('token'))
+
+        if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
             await new Promise(resolve => window.grecaptcha.ready(resolve))
+            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'generos' })
+            params.recaptchaToken = token
+        }
 
-            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'autores' })
-
-            const params = {
-                limite: 9999999,
-                recaptchaToken: token,
-                ...(searchText ? { autor: searchText } : {})
-            }
-
+        try {
             const response = await axios.get('/autores', { params })
 
             if (response.status === 200) {
@@ -500,9 +518,9 @@ class ListaTaxonomiaVariedade extends Component {
                     icon={<PlusOutlined />}
                     onClick={async () => {
                         this.props.form.resetFields()
-                        
+
                         await this.requisitaReinos()
-                        
+
                         this.setState({
                             visibleModal: true,
                             titulo: 'Cadastrar',
@@ -572,7 +590,7 @@ class ListaTaxonomiaVariedade extends Component {
         })
 
         const formValues = this.props.form.getFieldsValue()
-            
+
         const extrairId = (valor) => {
             if (typeof valor === 'object' && valor.key) {
                 return valor.key
@@ -745,15 +763,15 @@ class ListaTaxonomiaVariedade extends Component {
 
     renderFormulario() {
         const { getFieldDecorator } = this.props.form
-        const { 
-            fetchingReinos, 
-            fetchingFamilias, 
-            fetchingGeneros, 
-            fetchingEspecies, 
-            fetchingAutores, 
-            reinoSelecionado, 
-            familiaSelecionada, 
-            generoSelecionado 
+        const {
+            fetchingReinos,
+            fetchingFamilias,
+            fetchingGeneros,
+            fetchingEspecies,
+            fetchingAutores,
+            reinoSelecionado,
+            familiaSelecionada,
+            generoSelecionado
         } = this.state
 
         return (
@@ -789,7 +807,7 @@ class ListaTaxonomiaVariedade extends Component {
                             } else {
                                 this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da nova variedade e da espécie.')
                             }
-                            
+
                             this.props.form.resetFields()
                             this.setState({
                                 visibleModal: false,
@@ -864,9 +882,9 @@ class ListaTaxonomiaVariedade extends Component {
                                             generos: [],
                                             especies: []
                                         })
-                                        this.props.form.setFieldsValue({ 
+                                        this.props.form.setFieldsValue({
                                             nomeGenero: undefined,
-                                            nomeEspecie: undefined 
+                                            nomeEspecie: undefined
                                         })
                                         if (value) {
                                             this.requisitaGeneros('', value)

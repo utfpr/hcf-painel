@@ -66,37 +66,37 @@ class ListaTaxonomiaGenero extends Component {
     }
 
     requisitaExclusao(id) {
-    this.setState({
-        loading: true
-    })
-    axios.delete(`/generos/${id}`)
-        .then(response => {
-            this.setState({
-                loading: false
-            })
-            if (response.status === 204) {
-                this.requisitaListaGenero(this.state.valores, this.state.pagina)
-                this.notificacao('success', 'Excluir', 'O gênero foi excluída com sucesso.')
-            }
+        this.setState({
+            loading: true
         })
-        .catch(err => {
-            this.setState({
-                loading: false
-            })
-            const { response } = err
-            if (response && response.data) {
-                const { error } = response.data
-                if (error && error.code) {
-                    this.notificacao('error', 'Erro ao excluir gênero', error.code)
-                } else {
-                    this.notificacao('error', 'Erro ao excluir gênero', 'Ocorreu um erro inesperado ao tentar excluir o gênero.')
+        axios.delete(`/generos/${id}`)
+            .then(response => {
+                this.setState({
+                    loading: false
+                })
+                if (response.status === 204) {
+                    this.requisitaListaGenero(this.state.valores, this.state.pagina)
+                    this.notificacao('success', 'Excluir', 'O gênero foi excluída com sucesso.')
                 }
-                console.error(error)
-            } else {
-                this.notificacao('error', 'Erro ao excluir gênero', 'Falha na comunicação com o servidor.')
-            }
-        })
-}
+            })
+            .catch(err => {
+                this.setState({
+                    loading: false
+                })
+                const { response } = err
+                if (response && response.data) {
+                    const { error } = response.data
+                    if (error && error.code) {
+                        this.notificacao('error', 'Erro ao excluir gênero', error.code)
+                    } else {
+                        this.notificacao('error', 'Erro ao excluir gênero', 'Ocorreu um erro inesperado ao tentar excluir o gênero.')
+                    }
+                    console.error(error)
+                } else {
+                    this.notificacao('error', 'Erro ao excluir gênero', 'Falha na comunicação com o servidor.')
+                }
+            })
+    }
 
     notificacao = (type, titulo, descricao) => {
         notification[type]({
@@ -130,13 +130,17 @@ class ListaTaxonomiaGenero extends Component {
         this.setState({ fetchingReinos: true })
 
         try {
-            await new Promise(resolve => window.grecaptcha.ready(resolve))
-
-            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'reinos' })
-
             const params = {
                 limite: 9999999,
                 ...(searchText ? { reino: searchText } : {})
+            }
+
+            const isLogged = Boolean(localStorage.getItem('token'))
+
+            if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
+                await new Promise(resolve => window.grecaptcha.ready(resolve))
+                const token = await window.grecaptcha.execute(recaptchaKey, { action: 'reinos' })
+                params.recaptchaToken = token
             }
 
             const response = await axios.get('/reinos', { params })
@@ -167,7 +171,7 @@ class ListaTaxonomiaGenero extends Component {
                         href="#"
                         onClick={async () => {
                             const reinoId = item.familia.reino.id || null
-                            
+
                             this.setState({
                                 visibleModal: true,
                                 id: item.id,
@@ -223,7 +227,7 @@ class ListaTaxonomiaGenero extends Component {
                     icon={<PlusOutlined />}
                     onClick={() => {
                         this.props.form.resetFields()
-                        
+
                         this.setState({
                             visibleModal: true,
                             titulo: 'Cadastrar',
@@ -243,26 +247,29 @@ class ListaTaxonomiaGenero extends Component {
 
     requisitaListaGenero = async (valores, pg, pageSize, sorter) => {
         this.setState({ loading: true })
-    
+
         try {
-            await new Promise(resolve => window.grecaptcha.ready(resolve))
-    
-            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'generos' })
-    
             const campo = sorter && sorter.field ? sorter.field : 'genero'
             const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
-    
+
             const params = {
                 pagina: pg,
                 limite: pageSize || 20,
                 order: `${campo}:${ordem}`,
-                recaptchaToken: token,
                 ...(valores && valores.genero ? { genero: valores.genero } : {}),
                 ...(valores && valores.familia ? { familia_nome: valores.familia } : {})
             }
-    
+
+            const isLogged = Boolean(localStorage.getItem('token'))
+
+            if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
+                await new Promise(resolve => window.grecaptcha.ready(resolve))
+                const token = await window.grecaptcha.execute(recaptchaKey, { action: 'generos' })
+                params.recaptchaToken = token
+            }
+
             const response = await axios.get('/generos', { params })
-    
+
             if (response.status === 200) {
                 const { data } = response
                 this.setState({
@@ -274,7 +281,7 @@ class ListaTaxonomiaGenero extends Component {
                 this.notificacao('warning', 'Buscar gênero', 'Erro ao buscar os gêneros.')
                 this.setState({ loading: false })
             } else {
-                this.notificacao('error', 'Erro', 'Erro do servidor ao buscar os gêneros.')
+                this.notificacao('error', 'Error', 'Erro de servidor ao buscar os gêneros.')
                 this.setState({ loading: false })
             }
         } catch (err) {
@@ -348,7 +355,7 @@ class ListaTaxonomiaGenero extends Component {
         })
 
         const formValues = this.props.form.getFieldsValue()
-            
+
         const extrairId = (valor) => {
             if (typeof valor === 'object' && valor.key) {
                 return valor.key
@@ -395,15 +402,18 @@ class ListaTaxonomiaGenero extends Component {
         this.setState({ fetchingFamilias: true })
 
         try {
-
-            await new Promise(resolve => window.grecaptcha.ready(resolve))
-
-            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'familias' })
-
             const params = {
                 limite: 9999999,
                 ...(searchText ? { familia: searchText } : {}),
                 ...(reinoId ? { reino_id: reinoId } : {})
+            }
+
+            const isLogged = Boolean(localStorage.getItem('token'))
+
+            if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
+                await new Promise(resolve => window.grecaptcha.ready(resolve))
+                const token = await window.grecaptcha.execute(recaptchaKey, { action: 'familias' })
+                params.recaptchaToken = token
             }
 
             const response = await axios.get('/familias', { params })
@@ -545,7 +555,7 @@ class ListaTaxonomiaGenero extends Component {
                             } else {
                                 this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome do gênero e da família.')
                             }
-                            
+
                             this.props.form.resetFields()
                             this.setState({
                                 visibleModal: false,
@@ -566,7 +576,7 @@ class ListaTaxonomiaGenero extends Component {
                                         this.requisitaReinos(searchText || '')
                                     }}
                                     onChange={value => {
-                                        this.setState({ 
+                                        this.setState({
                                             reinoSelecionado: value,
                                             familias: []
                                         })

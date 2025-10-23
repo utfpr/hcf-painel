@@ -214,10 +214,6 @@ class ListaTaxonomiaEspecie extends Component {
         this.setState({ loading: true })
 
         try {
-            await new Promise(resolve => window.grecaptcha.ready(resolve))
-
-            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'especies' })
-
             const campo = sorter && sorter.field ? sorter.field : 'especie'
             const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
 
@@ -225,10 +221,17 @@ class ListaTaxonomiaEspecie extends Component {
                 pagina: pg,
                 limite: pageSize || 20,
                 order: `${campo}:${ordem}`,
-                recaptchaToken: token,
                 ...(valores && valores.especie ? { especie: valores.especie } : {}),
                 ...(valores && valores.familia ? { familia_nome: valores.familia } : {}),
                 ...(valores && valores.genero ? { genero_nome: valores.genero } : {})
+            }
+
+            const isLogged = Boolean(localStorage.getItem('token'))
+
+            if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
+                await new Promise(resolve => window.grecaptcha.ready(resolve))
+                const token = await window.grecaptcha.execute(recaptchaKey, { action: 'especies' })
+                params.recaptchaToken = token
             }
 
             const response = await axios.get('/especies', { params })
@@ -244,7 +247,7 @@ class ListaTaxonomiaEspecie extends Component {
                 this.notificacao('warning', 'Buscar espécie', 'Erro ao buscar as espécies.')
                 this.setState({ loading: false })
             } else {
-                this.notificacao('error', 'Erro', 'Erro do servidor ao buscar as espécies.')
+                this.notificacao('error', 'Error', 'Erro de servidor ao buscar as espécies.')
                 this.setState({ loading: false })
             }
         } catch (err) {
@@ -277,14 +280,17 @@ class ListaTaxonomiaEspecie extends Component {
         this.setState({ fetchingAutores: true })
 
         try {
-            await new Promise(resolve => window.grecaptcha.ready(resolve))
-
-            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'autores' })
-
             const params = {
                 limite: 9999999,
-                recaptchaToken: token,
                 ...(searchText ? { autor: searchText } : {})
+            }
+
+            const isLogged = Boolean(localStorage.getItem('token'))
+
+            if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
+                await new Promise(resolve => window.grecaptcha.ready(resolve))
+                const token = await window.grecaptcha.execute(recaptchaKey, { action: 'autores' })
+                params.recaptchaToken = token
             }
 
             const response = await axios.get('/autores', { params })
@@ -315,14 +321,17 @@ class ListaTaxonomiaEspecie extends Component {
         this.setState({ fetchingReinos: true })
 
         try {
-            await new Promise(resolve => window.grecaptcha.ready(resolve))
-
-            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'reinos' })
-
             const params = {
                 limite: 9999999,
-                recaptchaToken: token,
                 ...(searchText ? { reino: searchText } : {})
+            }
+
+            const isLogged = Boolean(localStorage.getItem('token'))
+
+            if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
+                await new Promise(resolve => window.grecaptcha.ready(resolve))
+                const token = await window.grecaptcha.execute(recaptchaKey, { action: 'reinos' })
+                params.recaptchaToken = token
             }
 
             const response = await axios.get('/reinos', { params })
@@ -350,15 +359,18 @@ class ListaTaxonomiaEspecie extends Component {
         this.setState({ fetchingFamilias: true })
 
         try {
-            await new Promise(resolve => window.grecaptcha.ready(resolve))
-
-            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'familias' })
-
             const params = {
                 limite: 9999999,
-                recaptchaToken: token,
                 ...(searchText ? { familia: searchText } : {}),
                 ...(reinoId ? { reino_id: reinoId } : {})
+            }
+
+            const isLogged = Boolean(localStorage.getItem('token'))
+
+            if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
+                await new Promise(resolve => window.grecaptcha.ready(resolve))
+                const token = await window.grecaptcha.execute(recaptchaKey, { action: 'familias' })
+                params.recaptchaToken = token
             }
 
             const response = await axios.get('/familias', { params })
@@ -389,15 +401,18 @@ class ListaTaxonomiaEspecie extends Component {
         this.setState({ fetchingGeneros: true })
 
         try {
-            await new Promise(resolve => window.grecaptcha.ready(resolve))
-
-            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'generos' })
-
             const params = {
                 limite: 9999999,
-                recaptchaToken: token,
                 ...(searchText ? { genero: searchText } : {}),
                 ...(familiaId ? { familia_id: familiaId } : {})
+            }
+
+            const isLogged = Boolean(localStorage.getItem('token'))
+
+            if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
+                await new Promise(resolve => window.grecaptcha.ready(resolve))
+                const token = await window.grecaptcha.execute(recaptchaKey, { action: 'generos' })
+                params.recaptchaToken = token
             }
 
             const response = await axios.get('/generos', { params })
