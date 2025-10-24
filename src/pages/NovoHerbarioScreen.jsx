@@ -1,7 +1,6 @@
 import { Component } from 'react'
 
 import {
-
     Row,
     Col,
     Divider,
@@ -15,10 +14,11 @@ import {
 import axios from 'axios'
 
 import { Form } from '@ant-design/compatible'
+import SelectedFormField from './tombos/components/SelectedFormFiled'
 
 const FormItem = Form.Item
-const { Option } = Select
 const { TextArea } = Input
+const { Option } = Select
 
 class NovoHerbarioScreen extends Component {
     constructor(props) {
@@ -30,133 +30,102 @@ class NovoHerbarioScreen extends Component {
             paises: [],
             cidadeInicial: '',
             estadoInicial: '',
-            paisInicial: ''
+            paisInicial: '',
+            paisSelecionado: null,
+            estadoSelecionado: null,
+            fetchingPaises: false,
+            fetchingEstados: false,
+            fetchingCidades: false
         }
     }
 
-    formataDadosPais = () => this.state.paises.map(item => <Option key={`${item.id}`}>{item.nome}</Option>)
+    requisitaPaises = async (searchText = '') => {
+        this.setState({ fetchingPaises: true })
 
-    formataDadosEstados = () => this.state.estados.map(item => <Option key={`${item.id}`}>{item.nome}</Option>)
+        try {
+            const params = {
+                ...(searchText ? { nome: searchText } : {})
+            }
 
-    formataDadosCidades = () => this.state.cidades.map(item => <Option key={item.id}>{item.nome}</Option>)
-
-    requisitaPaises = () => {
-        this.setState({
-            loading: true
-        })
-        axios.get('/paises')
-            .then(response => {
+            const response = await axios.get('/paises', { params })
+            
+            if (response.status === 200) {
                 this.setState({
-                    loading: false
+                    paises: response.data,
+                    fetchingPaises: false
                 })
-                if (response.data && response.status === 200) {
-                    this.setState({
-                        paises: response.data
-                    })
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    if (response.status === 400 || response.status === 422) {
-                        this.notificacao('warning', 'Falha', response.data.error.message)
-                    } else {
-                        this.notificacao('error', 'Falha', 'Houve um problema ao buscar os países, tente novamente.')
-                    }
-                    const { error } = response.data
-                    throw new Error(error.message)
+            }
+        } catch (err) {
+            this.setState({ fetchingPaises: false })
+            const { response } = err
+            if (response && response.data) {
+                if (response.status === 400 || response.status === 422) {
+                    this.notificacao('warning', 'Falha', response.data.error.message)
                 } else {
-                    throw err
+                    this.notificacao('error', 'Falha', 'Houve um problema ao buscar os países, tente novamente.')
                 }
-            })
-            .catch(() => {
-                this.notificacao('error', 'Falha', 'Houve um problema ao requisitar os paises, tente novamente.')
-            })
+            }
+        }
     }
 
-    requisitaEstados = id => {
-        this.setState({
-            loading: true
-        })
-        axios.get('/estados', {
-            params: {
-                pais_id: id
+    requisitaEstados = async (searchText = '', paisId = null) => {
+        this.setState({ fetchingEstados: true })
+
+        try {
+            const params = {
+                ...(paisId ? { pais_id: paisId } : {}),
+                ...(searchText ? { nome: searchText } : {})
             }
-        })
-            .then(response => {
+
+            const response = await axios.get('/estados', { params })
+            
+            if (response.status === 200) {
                 this.setState({
-                    loading: false
+                    estados: response.data,
+                    fetchingEstados: false
                 })
-                if (response.data && response.status === 200) {
-                    this.setState({
-                        estados: response.data
-                    })
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    if (response.status === 400 || response.status === 422) {
-                        this.notificacao('warning', 'Falha', response.data.error.message)
-                    } else {
-                        this.notificacao('error', 'Falha', 'Houve um problema ao buscar os estados, tente novamente.')
-                    }
-                    const { error } = response.data
-                    throw new Error(error.message)
+            }
+        } catch (err) {
+            this.setState({ fetchingEstados: false })
+            const { response } = err
+            if (response && response.data) {
+                if (response.status === 400 || response.status === 422) {
+                    this.notificacao('warning', 'Falha', response.data.error.message)
                 } else {
-                    throw err
+                    this.notificacao('error', 'Falha', 'Houve um problema ao buscar os estados, tente novamente.')
                 }
-            })
-            .catch(() => {
-                this.notificacao('error', 'Falha', 'Houve um problema ao requisitar os estados, tente novamente.')
-            })
+            }
+        }
     }
 
-    requisitaCidades = id => {
-        this.setState({
-            loading: true
-        })
-        axios.get('/cidades', {
-            params: {
-                id
+    requisitaCidades = async (searchText = '', estadoId = null) => {
+        this.setState({ fetchingCidades: true })
+
+        try {
+            const params = {
+                ...(estadoId ? { estado_id: estadoId } : {}),
+                ...(searchText ? { nome: searchText } : {})
             }
-        })
-            .then(response => {
+
+            const response = await axios.get('/cidades', { params })
+            
+            if (response.status === 200) {
                 this.setState({
-                    loading: false
+                    cidades: response.data,
+                    fetchingCidades: false
                 })
-                if (response.data && response.status === 200) {
-                    this.setState({
-                        cidades: response.data
-                    })
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    if (response.status === 400 || response.status === 422) {
-                        this.notificacao('warning', 'Falha', response.data.error.message)
-                    } else {
-                        this.notificacao('error', 'Falha', 'Houve um problema ao buscar as cidades, tente novamente.')
-                    }
-                    const { error } = response.data
-                    throw new Error(error.message)
+            }
+        } catch (err) {
+            this.setState({ fetchingCidades: false })
+            const { response } = err
+            if (response && response.data) {
+                if (response.status === 400 || response.status === 422) {
+                    this.notificacao('warning', 'Falha', response.data.error.message)
                 } else {
-                    throw err
+                    this.notificacao('error', 'Falha', 'Houve um problema ao buscar as cidades, tente novamente.')
                 }
-            })
-            .catch(() => {
-                this.notificacao('error', 'Falha', 'Houve um problema ao requisitar as cidades, tente novamente.')
-            })
+            }
+        }
     }
 
     componentDidMount() {
@@ -249,63 +218,78 @@ class NovoHerbarioScreen extends Component {
             })
     }
 
-    requisitaHerbario = () => {
+    requisitaHerbario = async () => {
         this.setState({
             loading: true
         })
-        axios.get(`/herbarios/${this.props.match.params.herbario_id}`)
-            .then(response => {
+        
+        try {
+            const response = await axios.get(`/herbarios/${this.props.match.params.herbario_id}`)
+            
+            if (response.status === 200) {
                 const {
                     nome, email, sigla, endereco
                 } = response.data.herbario
                 const { paises, cidades, estados } = response.data
 
-                if (response.status === 200) {
+                this.setState({
+                    cidades,
+                    estados,
+                    paises
+                })
+                
+                if (endereco !== null) {
+                    const paisId = endereco.cidade.estado.paise.id
+                    const estadoId = endereco.cidade.estado.id
+                    
+                    await this.requisitaEstados('', paisId)
+                    await this.requisitaCidades('', estadoId)
+                    
                     this.setState({
-                        cidades,
-                        estados,
-                        paises
+                        paisInicial: paisId,
+                        estadoInicial: estadoId,
+                        cidadeInicial: endereco.cidade.id,
+                        paisSelecionado: paisId,
+                        estadoSelecionado: estadoId
                     })
-                    if (endereco !== null) {
-                        this.setState({
-                            paisInicial: endereco.cidade.estado.paise.id,
-                            estadoInicial: endereco.cidade.estado.id,
-                            cidadeInicial: endereco.cidade.id
-                        })
-                        this.props.form.setFields({
-                            logradouro: { value: endereco.logradouro },
-                            numero: { value: endereco.numero },
-                            complemento: { value: endereco.complemento }
-                        })
-                    }
+                    
+                    this.props.form.setFieldsValue({
+                        pais: paisId,
+                        estado: estadoId,
+                        cidade: endereco.cidade.id,
+                        logradouro: endereco.logradouro,
+                        numero: endereco.numero,
+                        complemento: endereco.complemento
+                    })
+                }
 
-                    this.props.form.setFields({
-                        nome: { value: nome },
-                        email: { value: email },
-                        sigla: { value: sigla }
-                    })
-                }
+                this.props.form.setFieldsValue({
+                    nome: nome,
+                    email: email,
+                    sigla: sigla
+                })
+                
                 this.setState({
                     loading: false
                 })
+            }
+        } catch (err) {
+            this.setState({
+                loading: false
             })
-            .catch(err => {
-                this.setState({
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    if (response.status === 400 || response.status === 422) {
-                        this.notificacao('warning', 'Falha', response.data.error.message)
-                    } else {
-                        this.notificacao('error', 'Falha', 'Houve um problema ao buscar os dados do herbário, tente novamente.')
-                    }
-                    const { error } = response.data
-                    console.error(error.message)
+            const { response } = err
+            if (response && response.data) {
+                if (response.status === 400 || response.status === 422) {
+                    this.notificacao('warning', 'Falha', response.data.error.message)
                 } else {
-                    throw err
+                    this.notificacao('error', 'Falha', 'Houve um problema ao buscar os dados do herbário, tente novamente.')
                 }
-            })
+                const { error } = response.data
+                console.error(error.message)
+            } else {
+                throw err
+            }
+        }
     }
 
     requisitaEdicaoHerbario = valores => {
@@ -368,6 +352,8 @@ class NovoHerbarioScreen extends Component {
 
     renderFormulario() {
         const { getFieldDecorator } = this.props.form
+        const { paises, estados, cidades, fetchingPaises, fetchingEstados, fetchingCidades, paisSelecionado, estadoSelecionado } = this.state
+
         return (
             <Form onSubmit={this.onSubmit}>
                 <Row>
@@ -425,6 +411,7 @@ class NovoHerbarioScreen extends Component {
                         </Col>
                     </Col>
                 </Row>
+                
                 <Row gutter={8}>
                     <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                         <Col span={24}>
@@ -461,89 +448,129 @@ class NovoHerbarioScreen extends Component {
                         </Col>
                     </Col>
                 </Row>
+                
                 <Row gutter={8}>
-                    <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-                        <Col span={24}>
-                            <span>País:</span>
-                        </Col>
-                        <Col span={24}>
-                            <FormItem>
-                                {getFieldDecorator('pais', {
-                                    initialValue: String(this.state.paisInicial),
-                                    rules: [{
-                                        required: true,
-                                        message: 'Selecione ou insira um pais'
-                                    }]
-                                })(
-                                    <Select
-                                        showSearch
-                                        placeholder="Selecione um país"
-                                        optionFilterProp="children"
-                                        style={{ width: '100%' }}
-                                        onChange={value => {
-                                            this.requisitaEstados(value)
-                                        }}
-                                    >
-                                        {this.formataDadosPais()}
-                                    </Select>
-                                )}
-                            </FormItem>
-                        </Col>
-                    </Col>
-                    <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-                        <Col span={24}>
-                            <span>Estado:</span>
-                        </Col>
-                        <Col span={24}>
-                            <FormItem>
-                                {getFieldDecorator('estado', {
-                                    initialValue: String(this.state.estadoInicial),
-                                    rules: [{
-                                        required: true,
-                                        message: 'Selecione ou insira um estado'
-                                    }]
-                                })(
-                                    <Select
-                                        showSearch
-                                        style={{ width: '100%' }}
-                                        placeholder="Paraná"
-                                        optionFilterProp="children"
-                                        onChange={value => {
-                                            this.requisitaCidades(value)
-                                        }}
-                                    >
-                                        {this.formataDadosEstados()}
-                                    </Select>
-                                )}
-                            </FormItem>
-                        </Col>
-                    </Col>
-                    <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-                        <Col span={24}>
-                            <span>Cidade:</span>
-                        </Col>
-                        <Col span={24}>
-                            <FormItem>
-                                {getFieldDecorator('cidade', {
-                                    initialValue: String(this.state.cidadeInicial),
-                                    rules: [{
-                                        required: true,
-                                        message: 'Selecione ou insira uma cidade'
-                                    }]
-                                })(
-                                    <Select
-                                        showSearch
-                                        style={{ width: '100%' }}
-                                        placeholder="Campo Mourão"
-                                        optionFilterProp="children"
-                                    >
-                                        {this.formataDadosCidades()}
-                                    </Select>
-                                )}
-                            </FormItem>
-                        </Col>
-                    </Col>
+                    <SelectedFormField
+                        title="País:"
+                        placeholder="Selecione um país"
+                        fieldName="pais"
+                        getFieldDecorator={getFieldDecorator}
+                        onSearch={searchText => {
+                            this.requisitaPaises(searchText || '')
+                        }}
+                        onChange={async value => {
+                            this.setState({ 
+                                paisSelecionado: value,
+                                estadoSelecionado: null,
+                                estados: [],
+                                cidades: []
+                            })
+                            this.props.form.setFieldsValue({
+                                estado: undefined,
+                                cidade: undefined
+                            })
+                            if (value) {
+                                await this.requisitaEstados('', value)
+                            }
+                        }}
+                        others={{
+                            loading: fetchingPaises,
+                            notFoundContent: fetchingPaises ? <Spin size="small" /> : 'Nenhum resultado encontrado',
+                            allowClear: true
+                        }}
+                        debounceDelay={600}
+                        xs={24}
+                        sm={12}
+                        md={8}
+                        lg={8}
+                        xl={8}
+                        rules={[{
+                            required: true,
+                            message: 'Selecione ou insira um país'
+                        }]}
+                    >
+                        {paises.map(item => (
+                            <Select.Option key={item.id} value={item.id}>{item.nome}</Select.Option>
+                        ))}
+                    </SelectedFormField>
+
+                    <SelectedFormField
+                        title="Estado:"
+                        placeholder={paisSelecionado ? "Selecione um estado" : "Selecione um país primeiro"}
+                        fieldName="estado"
+                        getFieldDecorator={getFieldDecorator}
+                        disabled={!paisSelecionado}
+                        onSearch={searchText => {
+                            if (paisSelecionado) {
+                                this.requisitaEstados(searchText || '', paisSelecionado)
+                            }
+                        }}
+                        onChange={async value => {
+                            this.setState({ 
+                                estadoSelecionado: value,
+                                cidades: []
+                            })
+                            this.props.form.setFieldsValue({
+                                cidade: undefined
+                            })
+                            if (value) {
+                                await this.requisitaCidades('', value)
+                            }
+                        }}
+                        others={{
+                            loading: fetchingEstados,
+                            notFoundContent: fetchingEstados ? <Spin size="small" /> : 'Nenhum resultado encontrado',
+                            allowClear: true
+                        }}
+                        debounceDelay={600}
+                        xs={24}
+                        sm={12}
+                        md={8}
+                        lg={8}
+                        xl={8}
+                        rules={[{
+                            required: true,
+                            message: 'Selecione ou insira um estado'
+                        }]}
+                    >
+                        {estados.map(item => (
+                            <Select.Option key={item.id} value={item.id}>{item.nome}</Select.Option>
+                        ))}
+                    </SelectedFormField>
+
+                    <SelectedFormField
+                        title="Cidade:"
+                        placeholder={estadoSelecionado ? "Selecione uma cidade" : "Selecione um estado primeiro"}
+                        fieldName="cidade"
+                        getFieldDecorator={getFieldDecorator}
+                        disabled={!estadoSelecionado}
+                        onSearch={searchText => {
+                            if (estadoSelecionado) {
+                                this.requisitaCidades(searchText || '', estadoSelecionado)
+                            }
+                        }}
+                        others={{
+                            loading: fetchingCidades,
+                            notFoundContent: fetchingCidades ? <Spin size="small" /> : 'Nenhum resultado encontrado',
+                            allowClear: true
+                        }}
+                        debounceDelay={600}
+                        xs={24}
+                        sm={12}
+                        md={8}
+                        lg={8}
+                        xl={8}
+                        rules={[{
+                            required: true,
+                            message: 'Selecione ou insira uma cidade'
+                        }]}
+                    >
+                        {cidades.map(item => (
+                            <Select.Option key={item.id} value={item.id}>{item.nome}</Select.Option>
+                        ))}
+                    </SelectedFormField>
                 </Row>
+                
                 <Row gutter={8}>
                     <Col xs={24} sm={16} md={16} lg={16} xl={16}>
                         <Col span={24}>
