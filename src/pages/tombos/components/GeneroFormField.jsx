@@ -1,17 +1,17 @@
 import React from 'react'
-
-import { Select } from 'antd'
-
+import { Select, Spin } from 'antd'
 import SelectedFormFiled from './SelectedFormFiled'
 
 const { Option } = Select
 
 const GeneroFormField = ({
-    initialValue, generos, getFieldDecorator, onClickAddMore, onChange, validateStatus
+    initialValue, generos, getFieldDecorator, onClickAddMore, onChange, validateStatus,
+    onSearch, loading = false, debounceDelay = 600, disabled = false
 }) => {
-    const optionGenero = () => generos.map(item => (
-        <Option value={`${item.id}`}>{item.nome}</Option>
+    const optionGeneros = () => generos?.map(item => (
+        <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
     ))
+
     return (
         <SelectedFormFiled
             xs={24}
@@ -21,15 +21,23 @@ const GeneroFormField = ({
             xl={12}
             title="Gênero:"
             initialValue={initialValue}
-            placeholder="Selecione um gênero"
+            placeholder="Digite para buscar gêneros..."
             fieldName="genero"
             getFieldDecorator={getFieldDecorator}
             onClickAddMore={onClickAddMore}
             onChange={onChange}
             validateStatus={validateStatus}
-            others={{allowClear: true}}
+            onSearch={onSearch}
+            debounceDelay={debounceDelay}
+            disabled={disabled}
+            others={{
+                allowClear: true,
+                loading: loading,
+                notFoundContent: loading ? <Spin size="small" /> : 'Nenhum gênero encontrado',
+                filterOption: onSearch ? false : undefined
+            }}
         >
-            {optionGenero()}
+            {optionGeneros()}
         </SelectedFormFiled>
     )
 }
