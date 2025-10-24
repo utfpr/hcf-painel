@@ -78,7 +78,8 @@ const TableCollapseParaLocais = ({ data, loading }) => {
             'Santa Catarina': 'SC',
             'São Paulo': 'SP',
             Sergipe: 'SE',
-            Tocantins: 'TO'
+            Tocantins: 'TO',
+            desconhecido: 'desconhecido'
         }
         return estados[estado] || estado
     }
