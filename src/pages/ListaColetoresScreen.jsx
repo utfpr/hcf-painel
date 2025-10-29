@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom'
 
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
-import { EditOutlined } from '@ant-design/icons'
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 
 import HeaderListComponent from '../components/HeaderListComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
@@ -47,6 +47,39 @@ class ListaColetoresScreen extends Component {
         this.requisitaListaColetores({}, this.state.pagina)
     }
 
+    requisitaExclusao(id) {
+        this.setState({
+            loading: true
+        })
+        axios.delete(`/coletores/${id}`)
+            .then(response => {
+                this.setState({
+                    loading: false
+                })
+                if (response.status === 204) {
+                    this.requisitaListaColetores(this.state.valores, this.state.pagina)
+                    this.notificacao('success', 'Excluir', 'O coletor foi excluído com sucesso.')
+                }
+            })
+            .catch(err => {
+                this.setState({
+                    loading: false
+                })
+                const { response } = err
+                if (response && response.data) {
+                    const { error } = response.data
+                    if (error && error.code) {
+                        this.notificacao('error', 'Erro ao excluir coletor', error.code)
+                    } else {
+                        this.notificacao('error', 'Erro ao excluir coletor', 'Ocorreu um erro inesperado ao tentar excluir o coletor.')
+                    }
+                    console.error(error)
+                } else {
+                    this.notificacao('error', 'Erro ao excluir coletor', 'Falha na comunicação com o servidor.')
+                }
+            })
+    }
+
     gerarAcao = id => {
         if (isCuradorOuOperador()) {
             return (
@@ -54,6 +87,10 @@ class ListaColetoresScreen extends Component {
                     <Link to={`/coletores/${id}`}>
                         <EditOutlined style={{ color: '#FFCC00' }} />
                     </Link>
+                    <Divider type="vertical" />
+                    <a onClick={() => this.mostraMensagemDelete(id)}>
+                        <DeleteOutlined style={{ color: '#e30613' }} />
+                    </a>
                 </span>
             )
         }
@@ -75,8 +112,8 @@ class ListaColetoresScreen extends Component {
     mostraMensagemDelete(id) {
         const self = this
         confirm({
-            title: 'Você tem certeza que deseja excluir este herbário?',
-            content: 'Ao clicar em SIM, o herbário será excluído.',
+            title: 'Você tem certeza que deseja excluir este coletor?',
+            content: 'Ao clicar em SIM, o coletor será excluído.',
             okText: 'SIM',
             okType: 'danger',
             cancelText: 'NÃO',
@@ -177,7 +214,7 @@ class ListaColetoresScreen extends Component {
                                         <Button
                                             type="primary"
                                             htmlType="submit"
-                                            className="login-form-button"
+                                            className="login-form-button ant-btn-pesquisar"
                                         >
                                             Pesquisar
                                         </Button>

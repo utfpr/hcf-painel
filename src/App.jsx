@@ -17,7 +17,7 @@ import MainLayout from './layouts/MainLayout'
 import DetalhesTomboScreen from './pages/DetalhesTomboScreen'
 import FichaTomboScreen from './pages/FichaTomboScreen'
 import filtrosMapa from './pages/FiltrosMapa'
-import InicioScreen from './pages/InicioScreen'
+import InicioScreen from './features/login/InicioScreen'
 import ListaColetoresScreen from './pages/ListaColetoresScreen'
 import ListaHerbariosScreen from './pages/ListaHerbariosScreen'
 import ListaIdentificadoresScreen from './pages/ListaIdentificadoresScreen'
@@ -55,6 +55,7 @@ import ServicosSpeciesLinkScreen from './pages/ServicosSpeciesLinkScreen'
 import NovoTomboScreen from './pages/tombos/NovoTomboScreen'
 import PendenciaPagina from './pages/VerPendenciaScreen'
 import 'antd/dist/antd.css'
+import './assets/css/antd-theme.css'
 import './assets/css/App.css'
 import './assets/css/FormEnterSystem.css'
 import './assets/css/Main.css'
@@ -62,6 +63,8 @@ import './assets/css/Search.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
 import ExportaçãoScreen from './pages/ExportaçãoScreen'
 import ListaLocalColetaScreen from './pages/ListaLocalColetaScreen'
+import ListaEstadosScreen from './pages/ListaEstadosScreen'
+import ListaCidadesScreen from './pages/ListaCidadesScreen'
 
 const PrivateRoute = ({ component: Component, authed, ...rest }) => {
     return (
@@ -127,13 +130,13 @@ export default class App extends Component {
                 <PrivateRoute authed={isCurador()} path="/coletores/novo" component={NovoColetorScreen} />
                 <PrivateRoute authed={isCurador()} path="/coletores/:coletor_id" component={NovoColetorScreen} />
                 <PrivateRoute authed={isCurador()} path="/coletores" component={ListaColetoresScreen} />
-
                 <PrivateRoute authed={isLogado()} path="/herbarios" component={ListaHerbariosScreen} />
                 <PrivateRoute authed={isLogado()} path="/fichas/tombos" component={FichaTomboScreen} />
                 <PrivateRoute authed={isLogado()} path="/locais-coleta" component={ListaLocalColetaScreen} />
+                <PrivateRoute authed={isLogado()} path="/estados" component={ListaEstadosScreen} />
+                <PrivateRoute authed={isLogado()} path="/cidades" component={ListaCidadesScreen} />
                 <PrivateRoute authed={isCurador()} path="/reflora" component={ServicosRefloraScreen} />
                 <PrivateRoute authed={isCurador()} path="/specieslink" component={ServicosSpeciesLinkScreen} />
-
                 <PrivateRoute authed={isCurador()} path="/exportacao" component={ExportaçãoScreen} />
 
                 <Route path="/livro-tombo" component={LivroTomboScreen} />
@@ -163,7 +166,7 @@ export default class App extends Component {
 
     render() {
         return (
-            <BrowserRouter>
+            <BrowserRouter basename={import.meta.env.VITE_BASE_URL}>
                 <Switch>
                     <Route path="/inicio" component={InicioScreen} />
                     <Route path="/" render={this.renderContent} />
