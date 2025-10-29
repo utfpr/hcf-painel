@@ -88,17 +88,20 @@ export default class BarcodeTableComponent extends Component {
 
     probeImageExists = async (url) => {
         try {
-            const get = await fetch(url, {
-                method: "GET",
-                cache: "no-cache",
+            const response = await axios.get(url, {
                 headers: {
                     "Cache-Control": "no-cache, no-store, must-revalidate",
-                    Pragma: "no-cache",
-                    Expires: "0",
+                    "Pragma": "no-cache",
+                    "Expires": "0",
                 },
+                validateStatus: (status) => status < 400,
             });
-            return get.ok;
-        } catch {
+            return response.status >= 200 && response.status < 400;
+        } catch (error) {
+            if (error.response && error.response.status === 404) {
+                return false;
+            }
+            console.warn('Error probing image:', url, error.message);
             return false;
         }
     };
@@ -424,14 +427,13 @@ export default class BarcodeTableComponent extends Component {
         const url = `${baseUrl}${cacheBuster}`;
 
         try {
-            const response = await fetch(url, {
-                method: "GET",
-                cache: "no-cache",
+            const response = await axios.get(url, {
                 headers: {
                     "Cache-Control": "no-cache, no-store, must-revalidate",
-                    Pragma: "no-cache",
-                    Expires: "0",
+                    "Pragma": "no-cache",
+                    "Expires": "0",
                 },
+                validateStatus: (status) => status < 400,
             });
 
             if (response.ok) {
