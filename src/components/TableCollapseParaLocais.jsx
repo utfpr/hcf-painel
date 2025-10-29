@@ -78,7 +78,8 @@ const TableCollapseParaLocais = ({ data, loading }) => {
             'Santa Catarina': 'SC',
             'São Paulo': 'SP',
             Sergipe: 'SE',
-            Tocantins: 'TO'
+            Tocantins: 'TO',
+            desconhecido: 'desconhecido'
         }
         return estados[estado] || estado
     }
@@ -104,7 +105,7 @@ const TableCollapseParaLocais = ({ data, loading }) => {
                                 latitude: latitude ? latitude.trim() : null,
                                 longitude: longitude ? longitude.trim() : null,
                                 datacoleta: dataColeta,
-                                familia: registro?.especy?.familia?.nome || '-',
+                                familia: registro?.familia?.nome || '-',
                                 especie: registro?.especy?.nome || '-'
                             }
                         })}

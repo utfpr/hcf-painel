@@ -306,45 +306,48 @@ class ListaTaxonomiaReino extends Component {
 
     requisitaReinos = async (valores, pg, pageSize, sorter) => {
         this.setState({ loading: true })
-      
-        await new Promise(resolve => window.grecaptcha.ready(resolve))
-      
-        const token = await window.grecaptcha.execute(recaptchaKey, { action: 'reinos' })
-      
+
         const campo = sorter && sorter.field ? sorter.field : 'reino'
         const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
         const params = {
-          pagina: pg,
-          limite: pageSize || 20,
-          order: `${campo}:${ordem}`,
-          recaptchaToken: token,
-          ...(valores && valores.reino ? { reino: valores.reino } : {})
+            pagina: pg,
+            limite: pageSize || 20,
+            order: `${campo}:${ordem}`,
+            ...(valores && valores.reino ? { reino: valores.reino } : {})
         }
 
-         const isLogged = Boolean(localStorage.getItem('token'))
-         if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
-           await new Promise(resolve => window.grecaptcha.ready(resolve))
-           const token = await window.grecaptcha.execute(recaptchaKey, { action: 'reinos' })
-           params.recaptchaToken = token
-        }
-      
-        axios.get('/reinos', { params })
-          .then(response => {
-            this.setState({ loading: false })
-            if (response.status === 200) {
-              this.setState({
-                reinos: this.formataDadosReino(response.data.resultado),
-                metadados: response.data.metadados
-              })
+        const isLogged = Boolean(localStorage.getItem('token'))
+
+        if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
+            try {
+                await new Promise(resolve => window.grecaptcha.ready(resolve))
+                const token = await window.grecaptcha.execute(recaptchaKey, { action: 'reinos' })
+                params.recaptchaToken = token
+            } catch (error) {
+                console.error('Erro ao executar reCAPTCHA:', error)
+                this.setState({ loading: false })
+                this.notificacao('error', 'Erro', 'Falha ao validar reCAPTCHA.')
+                return
             }
-          })
-          .catch(err => {
-            this.setState({ loading: false })
-            console.error(err.response?.data?.error?.message)
-            this.notificacao('error', 'Erro', 'Falha ao buscar reinos.')
-          })
-    }      
-      
+        }
+
+        axios.get('/reinos', { params })
+            .then(response => {
+                this.setState({ loading: false })
+                if (response.status === 200) {
+                    this.setState({
+                        reinos: this.formataDadosReino(response.data.resultado),
+                        metadados: response.data.metadados
+                    })
+                }
+            })
+            .catch(err => {
+                this.setState({ loading: false })
+                console.error(err.response?.data?.error?.message)
+                this.notificacao('error', 'Erro', 'Falha ao buscar reinos.')
+            })
+    }
+
 
     renderAdd = () => {
         if (isCuradorOuOperador()) {

@@ -71,18 +71,34 @@ class ListaUsuariosScreen extends Component {
     }
 
     requisitaExclusao(id) {
+        this.setState({
+            loading: true
+        })
         axios.delete(`/usuarios/${id}`)
             .then(response => {
+                this.setState({
+                    loading: false
+                })
                 if (response.status === 204) {
                     this.requisitaListaUsuarios(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir usuário', 'O usuário foi excluído com sucesso.')
+                    this.notificacao('success', 'Excluir', 'O usuário foi excluído com sucesso.')
                 }
             })
             .catch(err => {
+                this.setState({
+                    loading: false
+                })
                 const { response } = err
                 if (response && response.data) {
                     const { error } = response.data
-                    console.error(error.message)
+                    if (error && error.code) {
+                        this.notificacao('error', 'Erro ao excluir usuário', error.code)
+                    } else {
+                        this.notificacao('error', 'Erro ao excluir usuário', 'Ocorreu um erro inesperado ao tentar excluir o usuário.')
+                    }
+                    console.error(error)
+                } else {
+                    this.notificacao('error', 'Erro ao excluir usuário', 'Falha na comunicação com o servidor.')
                 }
             })
     }
@@ -298,7 +314,7 @@ class ListaUsuariosScreen extends Component {
                                         <Button
                                             type="primary"
                                             htmlType="submit"
-                                            className="login-form-button"
+                                            className="login-form-button ant-btn-pesquisar"
                                         >
                                             Pesquisar
                                         </Button>

@@ -99,7 +99,7 @@ class RelatorioLocalColetaScreen extends Component {
     requisitaEstados = async paisId => {
         try {
             const response = await axios.get('/estados', {
-                params: { id: paisId }
+                params: { pais_id: paisId }
             })
 
             if (response.status === 200) {

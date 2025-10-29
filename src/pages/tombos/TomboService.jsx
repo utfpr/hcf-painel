@@ -155,7 +155,7 @@ export const requisitaNumeroHcfService = getResponse => {
 export const requisitaEstadosService = (getResponse, id) => {
     return axios.get('/estados', {
         params: {
-            id
+            pais_id: id
         }
     })
         .then(response => {

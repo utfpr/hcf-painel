@@ -1,16 +1,15 @@
 import React from 'react'
-
-import { Select } from 'antd'
-
+import { Select, Spin } from 'antd'
 import SelectedFormFiled from './SelectedFormFiled'
 
 const { Option } = Select
 
 const ReinoFormField = ({
-    initialValue, reinos, getFieldDecorator, onClickAddMore, onChange
+    initialValue, reinos, getFieldDecorator, onClickAddMore, onChange, 
+    onSearch, loading = false, debounceDelay = 600
 }) => {
     const optionReino = () => reinos?.map(item => (
-        <Option value={`${item.id}`}>{item.nome}</Option>
+        <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
     ))
 
     return (
@@ -22,12 +21,19 @@ const ReinoFormField = ({
             xl={12}
             title="Reino:"
             initialValue={initialValue}
-            placeholder="Selecione um reino"
+            placeholder="Digite para buscar reinos..."
             fieldName="reino"
             getFieldDecorator={getFieldDecorator}
             onClickAddMore={onClickAddMore}
             onChange={onChange}
-            others={{allowClear: true}}
+            onSearch={onSearch}
+            debounceDelay={debounceDelay}
+            others={{
+                allowClear: true,
+                loading: loading,
+                notFoundContent: loading ? <Spin size="small" /> : 'Nenhum reino encontrado',
+                filterOption: onSearch ? false : undefined
+            }}
         >
             {optionReino()}
         </SelectedFormFiled>

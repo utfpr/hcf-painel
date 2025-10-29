@@ -161,25 +161,28 @@ class ListaTaxonomiaAutores extends Component {
 
     requisitaListaAutores = async (valores, pg, pageSize, sorter) => {
         this.setState({ loading: true })
-    
-        try {
+
+        const campo = sorter && sorter.field ? sorter.field : 'autor'
+        const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
+
+        const params = {
+            pagina: pg,
+            limite: pageSize || 20,
+            order: `${campo}:${ordem}`,
+            ...(valores && valores.autor ? { autor: valores.autor } : {})
+        }
+
+        const isLogged = Boolean(localStorage.getItem('token'))
+
+        if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
             await new Promise(resolve => window.grecaptcha.ready(resolve))
-    
-            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'autores' })
-    
-            const campo = sorter && sorter.field ? sorter.field : 'autor'
-            const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
-    
-            const params = {
-                pagina: pg,
-                limite: pageSize || 20,
-                order: `${campo}:${ordem}`,
-                recaptchaToken: token,
-                ...(valores && valores.autor ? { autor: valores.autor } : {})
-            }
-    
+            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'generos' })
+            params.recaptchaToken = token
+        }
+
+        try {
             const response = await axios.get('/autores', { params })
-    
+
             if (response.status === 200) {
                 const { data } = response
                 this.setState({

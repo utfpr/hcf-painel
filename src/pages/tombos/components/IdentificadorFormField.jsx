@@ -1,18 +1,17 @@
 import React from 'react'
-
-import { Select } from 'antd'
-
+import { Select, Spin } from 'antd'
 import SelectedFormFiled from './SelectedFormFiled'
 
 const { Option } = Select
 
 const IdentificadorFormField = ({
-    initialValue, identificadores, getFieldDecorator,
-    onClickAddMore, onChange, validateStatus, getFieldError, onSearch
+    initialValue, identificadores, getFieldDecorator, onChange, onSearch,
+    loading = false, debounceDelay = 600, getFieldError
 }) => {
-    const optionIdentificadores = () => identificadores.map(item => (
-        <Option value={`${item.id}`}>{item.nome}</Option>
+    const optionIdentificadores = () => identificadores?.map(item => (
+        <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
     ))
+
     return (
         <SelectedFormFiled
             xs={24}
@@ -20,17 +19,23 @@ const IdentificadorFormField = ({
             md={12}
             lg={12}
             xl={12}
-            title="Identificadores:"
+            title="Identificador:"
             initialValue={initialValue}
-            placeholder="Selecione um identificador"
+            placeholder="Digite para buscar identificadores..."
             fieldName="identificador"
-            labelInValue
             getFieldDecorator={getFieldDecorator}
-            onClickAddMore={onClickAddMore}
             onChange={onChange}
-            validateStatus={validateStatus}
-            getFieldError={getFieldError}
             onSearch={onSearch}
+            debounceDelay={debounceDelay}
+            others={{
+                allowClear: true,
+                mode: 'multiple',
+                loading: loading,
+                notFoundContent: loading ? <Spin size="small" /> : 'Nenhum identificador encontrado',
+                filterOption: false,
+                labelInValue: true,
+                status: getFieldError && getFieldError('identificador') ? 'error' : ''
+            }}
         >
             {optionIdentificadores()}
         </SelectedFormFiled>

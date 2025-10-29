@@ -1,17 +1,17 @@
 import React from 'react'
-
-import { Select } from 'antd'
-
+import { Select, Spin } from 'antd'
 import SelectedFormFiled from './SelectedFormFiled'
 
 const { Option } = Select
 
 const VegetacaoFormField = ({
-    initialValue, vegetacoes, getFieldDecorator, onClickAddMore, onChange, validateStatus
+    initialValue, vegetacoes, getFieldDecorator, onClickAddMore, onChange, validateStatus,
+    onSearch, loading = false, debounceDelay = 600
 }) => {
     const optionVegetacoes = () => vegetacoes.map(item => (
-        <Option value={`${item.id}`}>{item.nome}</Option>
+        <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
     ))
+    
     return (
         <SelectedFormFiled
             xs={24}
@@ -21,13 +21,20 @@ const VegetacaoFormField = ({
             xl={12}
             title="Vegetação:"
             initialValue={initialValue}
-            placeholder="Selecione uma vegetação"
+            placeholder="Digite para buscar vegetações..."
             fieldName="vegetacao"
             getFieldDecorator={getFieldDecorator}
             onClickAddMore={onClickAddMore}
             onChange={onChange}
             validateStatus={validateStatus}
-            others={{allowClear: true}}
+            onSearch={onSearch}
+            debounceDelay={debounceDelay}
+            others={{
+                allowClear: true,
+                loading: loading,
+                notFoundContent: loading ? <Spin size="small" /> : 'Nenhuma vegetação encontrada',
+                filterOption: onSearch ? false : undefined
+            }}
         >
             {optionVegetacoes()}
         </SelectedFormFiled>

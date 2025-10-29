@@ -18,7 +18,7 @@ import DetalhesTomboScreen from './pages/DetalhesTomboScreen'
 import ExportaçãoScreen from './pages/ExportaçãoScreen'
 import FichaTomboScreen from './pages/FichaTomboScreen'
 import filtrosMapa from './pages/FiltrosMapa'
-import InicioScreen from './pages/InicioScreen'
+import InicioScreen from './features/login/InicioScreen'
 import ListaColetoresScreen from './pages/ListaColetoresScreen'
 import ListaHerbariosScreen from './pages/ListaHerbariosScreen'
 import ListaIdentificadoresScreen from './pages/ListaIdentificadoresScreen'
@@ -59,6 +59,7 @@ import ServicosSpeciesLinkScreen from './pages/ServicosSpeciesLinkScreen'
 import NovoTomboScreen from './pages/tombos/NovoTomboScreen'
 import PendenciaPagina from './pages/VerPendenciaScreen'
 import 'antd/dist/antd.css'
+import './assets/css/antd-theme.css'
 import './assets/css/App.css'
 import './assets/css/FormEnterSystem.css'
 import './assets/css/Main.css'
@@ -167,7 +168,7 @@ export default class App extends Component {
 
     render() {
         return (
-            <BrowserRouter>
+            <BrowserRouter basename={import.meta.env.VITE_BASE_URL}>
                 <Switch>
                     <Route path="/reset-senha" component={ResetSenhaScreen} />
                     <Route path="/recuperar-senha" component={RecuperarSenhaScreen} />

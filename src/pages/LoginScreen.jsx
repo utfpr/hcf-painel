@@ -7,6 +7,7 @@ import {
 import { Link } from 'react-router-dom'
 
 import LoginLayout from '../layouts/LoginLayout'
+import InicioLayout from './InicioScreen'
 
 const { Header, Footer, Content } = Layout
 
@@ -47,32 +48,9 @@ export default class InicioScreen extends Component {
 
     renderFormulario() {
         return (
-            <Layout>
-                <Header>
-                    <div className="logo" />
-                    <Menu
-                        theme="dark"
-                        mode="horizontal"
-                        style={{ lineHeight: '64px' }}
-                    >
-                        <Menu.Item key="1">SOBRE O HCF</Menu.Item>
-                        <Menu.Item key="2">
-                            <Link to="/">DASHBOARD</Link>
-                        </Menu.Item>
-                        <Menu.Item key="3">BUSCAR</Menu.Item>
-                        <Menu.Item key="4">CONTATO</Menu.Item>
-                    </Menu>
-                </Header>
-                <Content>
-                    <div className="container">
-                        <div className="divOpaca">
-                            <div className="contentForm">
-                                {this.renderViewLogin()}
-                            </div>
-                        </div>
-                    </div>
-                </Content>
-            </Layout>
+            <InicioLayout>
+                {this.renderViewLogin()}
+            </InicioLayout>
         )
     }
 

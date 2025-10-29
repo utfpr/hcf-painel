@@ -1,17 +1,17 @@
 import React from 'react'
-
-import { Select } from 'antd'
-
+import { Select, Spin } from 'antd'
 import SelectedFormFiled from './SelectedFormFiled'
 
 const { Option } = Select
 
 const SubespecieFormField = ({
-    initialValue, subespecies, getFieldDecorator, onClickAddMore, onChange, validateStatus, autor
+    initialValue, subespecies, getFieldDecorator, onClickAddMore, onChange, validateStatus, autor,
+    onSearch, loading = false, debounceDelay = 600, disabled = false
 }) => {
-    const optionSubespecies = () => subespecies.map(item => (
-        <Option value={`${item.id}`}>{item.nome}</Option>
+    const optionSubespecies = () => subespecies?.map(item => (
+        <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
     ))
+
     return (
         <SelectedFormFiled
             xs={24}
@@ -21,14 +21,22 @@ const SubespecieFormField = ({
             xl={12}
             title="Subespécie:"
             initialValue={initialValue}
-            placeholder="Selecione uma subespécie"
+            placeholder="Digite para buscar subespécies..."
             fieldName="subespecie"
             getFieldDecorator={getFieldDecorator}
             onClickAddMore={onClickAddMore}
             onChange={onChange}
             validateStatus={validateStatus}
             autor={autor}
-            others={{allowClear: true}}
+            onSearch={onSearch}
+            debounceDelay={debounceDelay}
+            disabled={disabled}
+            others={{
+                allowClear: true,
+                loading: loading,
+                notFoundContent: loading ? <Spin size="small" /> : 'Nenhuma subespécie encontrada',
+                filterOption: onSearch ? false : undefined
+            }}
         >
             {optionSubespecies()}
         </SelectedFormFiled>

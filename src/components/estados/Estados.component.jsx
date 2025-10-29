@@ -196,7 +196,17 @@ const ListaEstadosComponent = ({
                 name="paisId"
                 rules={[{ required: true, message: 'Informe o país' }]}
               >
-                <Select placeholder="Selecione o país" optionFilterProp="children">
+                <Select
+                  showSearch
+                  placeholder="Selecione ou pesquise o país"
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    (option?.children ?? '').toLowerCase().includes(input.toLowerCase())
+                  }
+                  filterSort={(optionA, optionB) =>
+                    (optionA?.children ?? '').toLowerCase().localeCompare((optionB?.children ?? '').toLowerCase())
+                  }
+                >
                   {paises.map(pais => (
                     <Select.Option key={pais.id} value={pais.id}>
                       {pais.nome}

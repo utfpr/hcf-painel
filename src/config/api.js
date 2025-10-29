@@ -8,4 +8,6 @@ export const fichaTomboUrl = import.meta.env.VITE_API_URL
 
 export const recaptchaKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY
 
+export const uploadsUrl = import.meta.env.VITE_UPLOADS_URL
+
 export default {}

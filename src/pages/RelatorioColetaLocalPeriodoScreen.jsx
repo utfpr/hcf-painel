@@ -12,7 +12,7 @@ import ptbr from 'antd/es/date-picker/locale/pt_BR'
 import axios from 'axios'
 import moment from 'moment'
 
-import TableCollapseParaLocais from '@/components/TableCollapseParaLocais'
+import TableColetaPorLocalData from '@/components/TableColetaPorLocalData'
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import { LoadingOutlined } from '@ant-design/icons'
@@ -100,7 +100,7 @@ class RelatorioInventarioEspeciesScreen extends Component {
                 if (response.status === 200) {
                     const { data } = response
                     this.setState({
-                        dados: this.formataDadosDoRelatorio(data.resultado),
+                        dados: data.resultado,
                         metadados: data.metadados
                     })
                 } else if (response.status === 400) {
@@ -368,7 +368,7 @@ class RelatorioInventarioEspeciesScreen extends Component {
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
 
-                <TableCollapseParaLocais data={this.state.dados} loading={this.state.loading} />
+                <TableColetaPorLocalData data={this.state.dados} loading={this.state.loading} />
                 <Divider dashed />
             </div>
         )
