@@ -11,7 +11,10 @@ const LocalColetaFormField = ({
     fetchingLocaisColeta,
     onSearch,
     onClickAddMore,
-    getFieldError
+    getFieldError,
+    loading = false,
+    debounceDelay = 600,
+    disabled = false
 }) => {
     const optionLocalColeta = () => locaisColeta.map(d => <Option key={d.id}>{d.descricao}</Option>)
 
@@ -30,10 +33,13 @@ const LocalColetaFormField = ({
             getFieldError={getFieldError}
             onClickAddMore={onClickAddMore}
             onSearch={onSearch}
+            debounceDelay={debounceDelay}
+            disabled={disabled}
             others={{
-                labelInValue: true,
-                filterOption: true,    
-                allowClear: true,        
+                allowClear: true,
+                loading: loading,
+                notFoundContent: loading ? <Spin size="small" /> : 'Nenhum país encontrado',
+                filterOption: onSearch ? false : undefined
             }}
             rules={[{
                 required: true,

@@ -14,6 +14,7 @@ import { Form } from '@ant-design/compatible'
 import {
     DeleteOutlined, EditOutlined, PlusOutlined, UploadOutlined
 } from '@ant-design/icons'
+import debounce from 'lodash.debounce'
 
 import BarcodeTableComponent from '../../components/BarcodeTableComponent'
 import ButtonComponent from '../../components/ButtonComponent'
@@ -43,12 +44,14 @@ import SubespecieFormField from './components/SubespecieFormField'
 import SubfamiliaFormField from './components/SubfamiliaFormField'
 import VariedadeFormField from './components/VariedadeFormField'
 import VegetacaoFormField from './components/VegetacaoFormField'
+import HerbarioFormField from './components/HerbarioFormField'
 import {
     excluirFotoTomboService, atualizarFotoTomboService, criaCodigoBarrasSemFotosService,
     requisitaDadosEdicaoService, requisitaDadosFormularioService, requisitaIdentificadoresPredicaoService,
     verificaPendenciasService, requisitaCodigoBarrasService, requisitaNumeroHcfService,
     handleSubmitIdentificadorService
 } from './TomboService'
+import SelectedFormField from './components/SelectedFormFiled'
 
 const { confirm } = Modal
 const FormItem = Form.Item
@@ -123,6 +126,16 @@ class NovoTomboScreen extends Component {
             showTable: false,
             fetchingColetores: false,
             fetchingIdentificadores: false,
+            fetchingHerbarios: false,
+            fetchingPaises: false,
+            fetchingEstados: false,
+            fetchingCidades: false,
+            fetchingLocaisColeta: false,
+            fetchingSolos: false,
+            fetchingRelevos: false,
+            fetchingVegetacoes: false,
+            fetchingFases: false,
+            fetchingAutores: false,
             valoresColetores: [],
             search: {
                 subfamilia: '',
@@ -205,10 +218,18 @@ class NovoTomboScreen extends Component {
             codigosBarrasInicial: [],
             toDeleteBarcodes: [],
             dadosFormulabarcodePhotosFromServerrioInicial: {},
-            barcodePhotosForm: {},      // fotos ATUAIS -> vindo do componente via onChangeBarcodePhotos
-            initialBarcodePhotos: {}, 
-            isEditing: false
+            barcodePhotosForm: {},
+            initialBarcodePhotos: {},
+            isEditing: false,
+            fetchingReinos: false,
+            fetchingFamilias: false,
+            fetchingSubfamilias: false,
+            fetchingGeneros: false,
+            fetchingEspecies: false,
+            fetchingSubespecies: false,
+            fetchingVariedades: false,
         }
+
     }
 
     componentDidMount() {
@@ -252,68 +273,64 @@ class NovoTomboScreen extends Component {
 
     carregaInformacoesEdicao = async () => {
         try {
-            this.setState({
-                loading: true
-            })
+            this.setState({ loading: true })
 
             await Promise.all([
                 this.requisitaDadosFormulario(),
-                this.requisitaReinos(),
-                this.requisitaFamilias(this.state.reinoInicial)
+                this.requisitaReinos(''),
+                this.requisitaFamilias('', this.state.reinoInicial)
             ])
         } catch (error) {
             console.error(error)
         } finally {
-            this.setState({
-                loading: false
-            })
+            this.setState({ loading: false })
         }
     }
 
     getCodigosTombo = (hcf) => {
         axios
-          .get(`/tombos/codigo_barras/${hcf}`)
-          .then(({ status, data }) => {
-            if (status !== 200 || !Array.isArray(data)) return;
+            .get(`/tombos/codigo_barras/${hcf}`)
+            .then(({ status, data }) => {
+                if (status !== 200 || !Array.isArray(data)) return;
 
-            const parseNumero = (numBarra, codigoBarra) => {
-              const inteiro = parseInt(String(numBarra ?? "").split(".")[0], 10);
-              if (Number.isFinite(inteiro)) return inteiro;
-              return parseInt(String(codigoBarra || "").replace(/\D/g, ""), 10);
-            };
+                const parseNumero = (numBarra, codigoBarra) => {
+                    const inteiro = parseInt(String(numBarra ?? "").split(".")[0], 10);
+                    if (Number.isFinite(inteiro)) return inteiro;
+                    return parseInt(String(codigoBarra || "").replace(/\D/g, ""), 10);
+                };
 
-            const normalize = (items) =>
-              items.map((item) => ({
-                id: item.id,
-                codigo_barra: String(item.codigo_barra || ""),
-                num_barra: parseNumero(item.num_barra, item.codigo_barra),
-              }));
+                const normalize = (items) =>
+                    items.map((item) => ({
+                        id: item.id,
+                        codigo_barra: String(item.codigo_barra || ""),
+                        num_barra: parseNumero(item.num_barra, item.codigo_barra),
+                    }));
 
-            const dedupeByCodigo = (rows) =>
-              rows
-                .filter((row) => row.codigo_barra)
-                .reduce((acc, cur) => {
-                  if (!acc.some((x) => x.codigo_barra === cur.codigo_barra)) acc.push(cur);
-                  return acc;
-                }, []);
+                const dedupeByCodigo = (rows) =>
+                    rows
+                        .filter((row) => row.codigo_barra)
+                        .reduce((acc, cur) => {
+                            if (!acc.some((x) => x.codigo_barra === cur.codigo_barra)) acc.push(cur);
+                            return acc;
+                        }, []);
 
-            const barcodeEditList = dedupeByCodigo(normalize(data));
+                const barcodeEditList = dedupeByCodigo(normalize(data));
 
-            this.setState({ codigosBarrasForm: barcodeEditList });
-            this.setState({ codigosBarrasInicial : barcodeEditList });
-          })
-          .catch(this.catchRequestError);
+                this.setState({ codigosBarrasForm: barcodeEditList });
+                this.setState({ codigosBarrasInicial: barcodeEditList });
+            })
+            .catch(this.catchRequestError);
     };
 
     handleChangeBarcodeList = (updatedList) => {
         const serialize = (list = []) =>
-          list.map(({ codigo_barra, num_barra }) => `${codigo_barra}:${num_barra}`).join("|");
+            list.map(({ codigo_barra, num_barra }) => `${codigo_barra}:${num_barra}`).join("|");
 
         const previousSignature = serialize(this.state.codigosBarrasForm);
         const nextSignature = serialize(updatedList);
 
         if (previousSignature !== nextSignature) {
-          this.setState({ codigosBarrasForm: updatedList });
+            this.setState({ codigosBarrasForm: updatedList });
         }
     };
 
@@ -515,47 +532,47 @@ class NovoTomboScreen extends Component {
         const asArray = Array.isArray(barcodeList) ? barcodeList : [barcodeList];
 
         const integerPart = (val) => {
-          const [int] = String(val).split(".");
-          const n = parseInt(int, 10);
-          return Number.isFinite(n) ? n : NaN;
+            const [int] = String(val).split(".");
+            const n = parseInt(int, 10);
+            return Number.isFinite(n) ? n : NaN;
         };
 
         const extractNumber = (item) => {
-          if (item == null) return NaN;
+            if (item == null) return NaN;
 
-          // 1) Objeto com num_barra (ex.: "41806.0")
-          if (typeof item === "object" && "num_barra" in item) {
-            return integerPart(item.num_barra);
-          }
+            // 1) Objeto com num_barra (ex.: "41806.0")
+            if (typeof item === "object" && "num_barra" in item) {
+                return integerPart(item.num_barra);
+            }
 
-          // 2) Objeto com codigo_barra OU string tipo "HCF000041890"
-          if ((typeof item === "object" && "codigo_barra" in item) || typeof item === "string") {
-            const raw = typeof item === "string" ? item : String(item.codigo_barra || "");
-            const n = parseInt(raw.replace(/\D/g, ""), 10);
+            // 2) Objeto com codigo_barra OU string tipo "HCF000041890"
+            if ((typeof item === "object" && "codigo_barra" in item) || typeof item === "string") {
+                const raw = typeof item === "string" ? item : String(item.codigo_barra || "");
+                const n = parseInt(raw.replace(/\D/g, ""), 10);
+                return Number.isFinite(n) ? n : NaN;
+            }
+
+            // 3) Número puro
+            if (typeof item === "number" && Number.isFinite(item)) {
+                return Math.trunc(item);
+            }
+
+            // 4) Fallback: extrai dígitos de qualquer coisa
+            const n = parseInt(String(item).replace(/\D/g, ""), 10);
             return Number.isFinite(n) ? n : NaN;
-          }
-
-          // 3) Número puro
-          if (typeof item === "number" && Number.isFinite(item)) {
-            return Math.trunc(item);
-          }
-
-          // 4) Fallback: extrai dígitos de qualquer coisa
-          const n = parseInt(String(item).replace(/\D/g, ""), 10);
-          return Number.isFinite(n) ? n : NaN;
         };
 
         const seen = new Set();
         return asArray
-          .map(extractNumber)
-          .filter((n) => Number.isFinite(n) && n > 0)
-          .filter((n) => (seen.has(n) ? false : (seen.add(n), true)));
+            .map(extractNumber)
+            .filter((n) => Number.isFinite(n) && n > 0)
+            .filter((n) => (seen.has(n) ? false : (seen.add(n), true)));
     };
 
     criarCodigoBarras = async (id_tombo, barcodeList = [], getFiles) => {
         const hcf = Number(id_tombo);
         if (!Number.isFinite(hcf)) {
-            this.openNotificationWithIcon("error", "Erro", "Tombo (HCF) inválido.");
+            message.error("Tombo (HCF) inválido.");
             return;
         }
     
@@ -770,7 +787,7 @@ class NovoTomboScreen extends Component {
                             })
 
                             if (estadoParana) {
-                                this.requisitaCidades(estadoParana.id)
+                                this.requisitaCidades('',estadoParana.id)
                             }
                         }
                     })
@@ -975,63 +992,6 @@ class NovoTomboScreen extends Component {
             .catch(this.catchRequestError)
     }
 
-    requisitaEstados = id => {
-        axios.get('/estados', {
-            params: {
-                pais_id: id
-            }
-        })
-            .then(response => {
-                if (response.data && response.status === 200) {
-                    this.setState({
-                        estados: response.data
-                    })
-                } else {
-                    this.openNotificationWithIcon(
-                        'error',
-                        'Falha',
-                        'Houve um problema ao buscar os estados desse país, tente novamente.'
-                    )
-                }
-            })
-            .catch(err => {
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
-    }
-
-    requisitaCidades = id => {
-        axios.get('/cidades', {
-            params: {
-                id
-            }
-        })
-            .then(response => {
-                if (response.data && response.status === 200) {
-                    this.setState({
-                        cidades: response.data
-                    })
-                } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar as cidades desse estado, tente novamente.')
-                }
-            })
-            .catch(err => {
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
-    }
 
     requisitaTipos = () => {
         this.setState({
@@ -1123,7 +1083,7 @@ class NovoTomboScreen extends Component {
                     loading: false
                 })
                 if (response.status === 204) {
-                    this.requisitaReinos()
+                    this.requisitaReinos('')
                     this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
                 }
                 this.props.form.setFields({ campo: { value: '' } }) // eslint-disable-line
@@ -1153,6 +1113,7 @@ class NovoTomboScreen extends Component {
             loading: true
         })
         axios.post('/familias', {
+            reinoId: this.props.form.getFieldsValue().reino,
             nome: this.props.form.getFieldsValue().campo
         })
             .then(response => {
@@ -1160,7 +1121,7 @@ class NovoTomboScreen extends Component {
                     loading: false
                 })
                 if (response.status === 204) {
-                    this.requisitaFamilias()
+                    this.requisitaFamilias('', this.state.reinoInicial)
                     this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
                 }
                 this.props.form.setFields({
@@ -1197,62 +1158,50 @@ class NovoTomboScreen extends Component {
             })
     }
 
-    requisitaReinos = async () => {
-        return axios.get('/reinos', {
-            params: {
-                limite: 9999999999
+    requisitaReinos = async (searchText = '') => {
+        this.setState({ fetchingReinos: true })
+
+        try {
+            const params = {
+                limite: 9999999999,
+                ...(searchText ? { reino: searchText } : {})
             }
-        })
-            .then(response => {
-                if (response.status === 200) {
-                    this.setState({
-                        reinos: response.data.resultado
-                    })
-                } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar reinos, tente novamente.')
-                }
-            })
-            .catch(err => {
-                const { response } = err
-                if (response && response.data) {
-                    if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
-                    } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar a listagem dos reinos, tente novamente.')
-                    }
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
+
+            const response = await axios.get('/reinos', { params })
+
+            if (response.status === 200) {
+                this.setState({
+                    reinos: response.data.resultado,
+                    fetchingReinos: false
+                })
+            }
+        } catch (err) {
+            this.setState({ fetchingReinos: false })
+            console.error('Erro ao buscar reinos:', err)
+        }
     }
 
-    requisitaFamilias = async (reinoId) => {
+    requisitaFamilias = async (searchText = '', reinoId = null) => {
+        this.setState({ fetchingFamilias: true })
+
         try {
-            const params = { limite: 9999999999 }
-            if (reinoId) {
-                params.reino_id = reinoId
+            const params = {
+                limite: 9999999999,
+                ...(searchText ? { familia: searchText } : {}),
+                ...(reinoId ? { reino_id: reinoId } : {})
             }
 
             const response = await axios.get('/familias', { params })
 
             if (response.status === 200) {
                 this.setState({
-                    familias: response.data.resultado
+                    familias: response.data.resultado,
+                    fetchingFamilias: false
                 })
-            } else {
-                this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar famílias, tente novamente.')
             }
         } catch (err) {
-            const { response } = err
-            if (response && response.data) {
-                const { error } = response.data
-                this.openNotificationWithIcon('warning', 'Falha', error.message)
-            } else {
-                throw err
-            }
+            this.setState({ fetchingFamilias: false })
+            console.error('Erro ao buscar famílias:', err)
         }
     }
 
@@ -1266,7 +1215,7 @@ class NovoTomboScreen extends Component {
             })
                 .then(response => {
                     if (response.status === 204) {
-                        this.requisitaSubfamilias(this.props.form.getFieldsValue().familia)
+                        this.requisitaSubfamilias('', this.props.form.getFieldsValue().familia)
                         this.setState({
                             search: {
                                 subfamilia: 'validating'
@@ -1298,54 +1247,28 @@ class NovoTomboScreen extends Component {
         }
     }
 
-    requisitaSubfamilias = id => {
-        this.setState({
-            loading: true
-        })
-        axios.get('/subfamilias', {
-            params: {
-                familia_id: id,
-                limite: 999999999
+    requisitaSubfamilias = async (searchText = '', familiaId = null) => {
+        this.setState({ fetchingSubfamilias: true })
+
+        try {
+            const params = {
+                limite: 999999999,
+                ...(searchText ? { subfamilia: searchText } : {}),
+                ...(familiaId ? { familia_id: familiaId } : {})
             }
-        })
-            .then(response => {
+
+            const response = await axios.get('/subfamilias', { params })
+
+            if (response.status === 200) {
                 this.setState({
-                    loading: false
+                    subfamilias: response.data.resultado,
+                    fetchingSubfamilias: false
                 })
-                this.setState({
-                    search: {
-                        subfamilia: ''
-                    }
-                })
-                if (response.status === 200) {
-                    this.setState({
-                        subfamilias: response.data.resultado
-                    })
-                } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar as subfamílias, tente novamente.')
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    search: {
-                        subfamilia: ''
-                    },
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
-                    } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar a listagem de subfamília, tente novamente.')
-                    }
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
+            }
+        } catch (err) {
+            this.setState({ fetchingSubfamilias: false })
+            console.error('Erro ao buscar subfamílias:', err)
+        }
     }
 
     cadastraNovoGenero = () => {
@@ -1364,7 +1287,7 @@ class NovoTomboScreen extends Component {
                         loading: false
                     })
                     if (response.status === 204) {
-                        this.requisitaGeneros(this.props.form.getFieldsValue().familia)
+                        this.requisitaGeneros('', this.props.form.getFieldsValue().familia)
                         this.setState({
                             search: {
                                 genero: 'validating'
@@ -1399,50 +1322,28 @@ class NovoTomboScreen extends Component {
         }
     }
 
-    requisitaGeneros = id => {
-        this.setState({
-            loading: true
-        })
-        axios.get('/generos', {
-            params: {
-                familia_id: id,
-                limite: 9999999999
+    requisitaGeneros = async (searchText = '', familiaId = null) => {
+        this.setState({ fetchingGeneros: true })
+
+        try {
+            const params = {
+                limite: 9999999999,
+                ...(searchText ? { genero: searchText } : {}),
+                ...(familiaId ? { familia_id: familiaId } : {})
             }
-        })
-            .then(response => {
+
+            const response = await axios.get('/generos', { params })
+
+            if (response.status === 200) {
                 this.setState({
-                    search: {
-                        genero: ''
-                    },
-                    loading: false
+                    generos: response.data.resultado,
+                    fetchingGeneros: false
                 })
-                if (response.status === 200) {
-                    this.setState({
-                        generos: response.data.resultado
-                    })
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    search: {
-                        genero: ''
-                    },
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
-                    } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar a listagem de gêneros, tente novamente.')
-                    }
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
+            }
+        } catch (err) {
+            this.setState({ fetchingGeneros: false })
+            console.error('Erro ao buscar gêneros:', err)
+        }
     }
 
     cadastraNovaEspecie = () => {
@@ -1466,7 +1367,7 @@ class NovoTomboScreen extends Component {
                         loading: false
                     })
                     if (response.status === 204) {
-                        this.requisitaEspecies(this.props.form.getFieldsValue().genero)
+                        this.requisitaEspecies('', this.props.form.getFieldsValue().genero)
                         this.setState({
                             search: {
                                 especie: 'validating'
@@ -1501,52 +1402,28 @@ class NovoTomboScreen extends Component {
         }
     }
 
-    requisitaEspecies = id => {
-        this.setState({
-            loading: true
-        })
-        axios.get('/especies', {
-            params: {
-                genero_id: id,
-                limite: 9999999999
+    requisitaEspecies = async (searchText = '', generoId = null) => {
+        this.setState({ fetchingEspecies: true })
+
+        try {
+            const params = {
+                limite: 9999999999,
+                ...(searchText ? { especie: searchText } : {}),
+                ...(generoId ? { genero_id: generoId } : {})
             }
-        })
-            .then(response => {
+
+            const response = await axios.get('/especies', { params })
+
+            if (response.status === 200) {
                 this.setState({
-                    search: {
-                        especie: ''
-                    },
-                    loading: false
+                    especies: response.data.resultado,
+                    fetchingEspecies: false
                 })
-                if (response.status === 200) {
-                    this.setState({
-                        especies: response.data.resultado
-                    })
-                } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar as espécies, tente novamente.')
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    search: {
-                        especie: ''
-                    },
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
-                    } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar a listagem de espécies, tente novamente.')
-                    }
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
+            }
+        } catch (err) {
+            this.setState({ fetchingEspecies: false })
+            console.error('Erro ao buscar espécies:', err)
+        }
     }
 
     cadastraNovaSubespecie = () => {
@@ -1574,7 +1451,7 @@ class NovoTomboScreen extends Component {
                         loading: false
                     })
                     if (response.status === 204) {
-                        this.requisitaSubespecies(this.props.form.getFieldsValue().especie)
+                        this.requisitaSubespecies('', this.props.form.getFieldsValue().especie)
                         this.setState({
                             search: {
                                 subespecie: 'validating'
@@ -1609,50 +1486,28 @@ class NovoTomboScreen extends Component {
         }
     }
 
-    requisitaSubespecies = id => {
-        this.setState({
-            loading: true
-        })
-        axios.get('/subespecies', {
-            params: {
-                especie_id: id,
-                limite: 999999999
+    requisitaSubespecies = async (searchText = '', especieId = null) => {
+        this.setState({ fetchingSubespecies: true })
+
+        try {
+            const params = {
+                limite: 999999999,
+                ...(searchText ? { subespecie: searchText } : {}),
+                ...(especieId ? { especie_id: especieId } : {})
             }
-        })
-            .then(response => {
+
+            const response = await axios.get('/subespecies', { params })
+
+            if (response.status === 200) {
                 this.setState({
-                    search: {
-                        subespecie: ''
-                    },
-                    loading: false
+                    subespecies: response.data.resultado,
+                    fetchingSubespecies: false
                 })
-                if (response.status === 200) {
-                    this.setState({
-                        subespecies: response.data.resultado
-                    })
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    search: {
-                        subespecie: ''
-                    },
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
-                    } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar a listagem das subespécies, tente novamente.')
-                    }
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
+            }
+        } catch (err) {
+            this.setState({ fetchingSubespecies: false })
+            console.error('Erro ao buscar subespécies:', err)
+        }
     }
 
     cadastraNovaVariedade = () => {
@@ -1680,7 +1535,7 @@ class NovoTomboScreen extends Component {
                         loading: false
                     })
                     if (response.status === 204) {
-                        this.requisitaVariedades(this.props.form.getFieldsValue().especie)
+                        this.requisitaVariedades('', this.props.form.getFieldsValue().especie)
                         this.setState({
                             search: {
                                 variedade: 'validating'
@@ -1715,50 +1570,28 @@ class NovoTomboScreen extends Component {
         }
     }
 
-    requisitaVariedades = id => {
-        this.setState({
-            loading: true
-        })
-        axios.get('/variedades', {
-            params: {
-                especie_id: id,
-                limite: 999999999
+    requisitaVariedades = async (searchText = '', especieId = null) => {
+        this.setState({ fetchingVariedades: true })
+
+        try {
+            const params = {
+                limite: 999999999,
+                ...(searchText ? { variedade: searchText } : {}),
+                ...(especieId ? { especie_id: especieId } : {})
             }
-        })
-            .then(response => {
+
+            const response = await axios.get('/variedades', { params })
+
+            if (response.status === 200) {
                 this.setState({
-                    loading: false,
-                    search: {
-                        variedade: ''
-                    }
+                    variedades: response.data.resultado,
+                    fetchingVariedades: false
                 })
-                if (response.status === 200) {
-                    this.setState({
-                        variedades: response.data.resultado
-                    })
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    search: {
-                        variedade: ''
-                    },
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
-                    } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar a listagem de variedade, tente novamente.')
-                    }
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
+            }
+        } catch (err) {
+            this.setState({ fetchingVariedades: false })
+            console.error('Erro ao buscar variedades:', err)
+        }
     }
 
     cadastraNovoAutor = () => {
@@ -1798,47 +1631,27 @@ class NovoTomboScreen extends Component {
             .catch(this.catchRequestError)
     }
 
-    requisitaAutores = id => {
-        this.setState({
-            loading: true
-        })
-        axios.get('/autores')
-            .then(response => {
+    requisitaAutores = async (searchText = '') => {
+        this.setState({ fetchingAutores: true })
+
+        try {
+            const params = {
+                limite: 9999999,
+                ...(searchText ? { autor: searchText } : {})
+            }
+
+            const response = await axios.get('/autores', { params })
+
+            if (response.status === 200) {
                 this.setState({
-                    loading: false
+                    autores: response.data.resultado || response.data,
+                    fetchingAutores: false
                 })
-                if (response.status === 200) {
-                    this.setState({
-                        search: {
-                            autor: ''
-                        }
-                    })
-                    this.setState({
-                        autores: response.data
-                    })
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    search: {
-                        autor: ''
-                    },
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
-                    } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao requisitar os autores, tente novamente.')
-                    }
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
+            }
+        } catch (err) {
+            this.setState({ fetchingAutores: false })
+            console.error('Erro ao buscar autores:', err)
+        }
     }
 
     cadastraNovoSolo = () => {
@@ -1850,7 +1663,7 @@ class NovoTomboScreen extends Component {
         })
             .then(response => {
                 if (response.status === 204) {
-                    this.requisitaSolos()
+                    this.requisitaSolos('')
                     this.setState({
                         search: {
                             solo: 'validating'
@@ -1885,49 +1698,6 @@ class NovoTomboScreen extends Component {
             .catch(this.catchRequestError)
     }
 
-    requisitaSolos = id => {
-        this.setState({
-            loading: true
-        })
-        axios.get('/solos')
-            .then(response => {
-                this.setState({
-                    loading: false
-                })
-                if (response.status === 200) {
-                    this.setState({
-                        search: {
-                            solo: ''
-                        }
-                    })
-                    this.setState({
-                        solos: response.data
-                    })
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    search: {
-                        solo: ''
-                    },
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
-                    } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar o novo solo, tente novamente.')
-                    }
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
-    }
-
     cadastraNovoRelevo = () => {
         this.setState({
             loading: true
@@ -1940,7 +1710,7 @@ class NovoTomboScreen extends Component {
                     loading: false
                 })
                 if (response.status === 204) {
-                    this.requisitaRelevos()
+                    this.requisitaRelevos('')
                     this.setState({
                         search: {
                             relevo: 'validating'
@@ -1978,49 +1748,6 @@ class NovoTomboScreen extends Component {
             .catch(this.catchRequestError)
     }
 
-    requisitaRelevos = id => {
-        this.setState({
-            loading: true
-        })
-        axios.get('/relevos')
-            .then(response => {
-                this.setState({
-                    loading: false
-                })
-                if (response.status === 200) {
-                    this.setState({
-                        search: {
-                            relevo: ''
-                        }
-                    })
-                    this.setState({
-                        relevos: response.data
-                    })
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    search: {
-                        relevo: ''
-                    },
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
-                    } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao requisitar o relevo, tente novamente.')
-                    }
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
-    }
-
     cadastraNovaVegetacao = () => {
         this.setState({
             loading: true
@@ -2033,7 +1760,7 @@ class NovoTomboScreen extends Component {
                     loading: false
                 })
                 if (response.status === 204) {
-                    this.requisitaVegetacoes()
+                    this.requisitaVegetacoes('')
                     this.setState({
                         search: {
                             vegetacao: 'validating'
@@ -2057,51 +1784,6 @@ class NovoTomboScreen extends Component {
                         this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
                     } else {
                         this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar a nova vegetação, tente novamente.')
-                    }
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
-    }
-
-    requisitaVegetacoes = id => {
-        this.setState({
-            loading: true
-        })
-        axios.get('/vegetacoes')
-            .then(response => {
-                this.setState({
-                    loading: false
-                })
-                if (response.status === 200) {
-                    this.setState({
-                        search: {
-                            vegetacao: ''
-                        }
-                    })
-                    this.setState({
-                        vegetacoes: response.data
-                    })
-                } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar as vegetações, tente novamente.')
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    search: {
-                        vegetacao: ''
-                    },
-                    loading: false
-                })
-                const { response } = err
-                if (response && response.data) {
-                    if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
-                    } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao requisitar as vegetacoes, tente novamente.')
                     }
                     const { error } = response.data
                     throw new Error(error.message)
@@ -2136,58 +1818,19 @@ class NovoTomboScreen extends Component {
                     this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
                 }
                 this.props.form.setFields({
-                    nomeColetor: {
-                        value: ''
-                    },
-                    emailColetor: {
-                        value: ''
-                    },
-                    numeroColetor: {
-                        value: ''
-                    }
+                    nomeColetor: { value: '' },
+                    emailColetor: { value: '' },
+                    numeroColetor: { value: '' }
                 })
             })
             .catch(err => {
-                this.setState({
-                    loading: false
-                })
+                this.setState({ loading: false })
                 const { response } = err
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
                         this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
                     } else {
                         this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar o novo coletor, tente novamente.')
-                    }
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
-    }
-
-    requisitaColetores = nome => {
-        this.setState({
-            coletores: [],
-            fetchingColetores: true
-        })
-        axios.get(`/coletores-predicao?nome=${nome}`)
-            .then(response => {
-                if (response.status === 200) {
-                    this.setState({
-                        coletores: response.data
-                    })
-                }
-                this.setState({ fetchingColetores: false })
-            })
-            .catch(err => {
-                const { response } = err
-                if (response && response.data) {
-                    if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
-                    } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao requisitar coletores, tente novamente.')
                     }
                     const { error } = response.data
                     throw new Error(error.message)
@@ -2244,66 +1887,6 @@ class NovoTomboScreen extends Component {
             })
     }
 
-    requisitaLocaisColeta = id => {
-        const cidadeId = id || this.props.form.getFieldValue('cidade')
-        if (!cidadeId) {
-            this.openNotificationWithIcon('warning', 'Atenção', 'Por favor, selecione uma cidade primeiro.')
-            return
-        }
-
-        this.setState({
-            locaisColeta: [],
-            fetchingLocaisColeta: true
-        })
-        axios.get('/locais-coleta', { params: { cidade_id: cidadeId, getAll: 'true' } })
-            .then(response => {
-                if (response.status === 200) {
-                    this.setState({
-                        locaisColeta: response.data.resultado
-                    })
-                }
-                this.setState({ fetchingLocaisColeta: false })
-            })
-            .catch(err => {
-                this.setState({ fetchingLocaisColeta: false })
-                const { response } = err
-                if (response && response.data) {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao requisitar os locais de coleta, tente novamente.')
-                }
-            })
-    }
-
-    requisitaIdentificadores = nome => {
-        this.setState({
-            identificadores: [],
-            fetchingIdentificadores: true
-        })
-        axios.get(`/identificadores-predicao?nome=${nome}`)
-            .then(response => {
-                if (response.status === 200) {
-                    this.setState({
-                        identificadores: response.data
-                    })
-                }
-                this.setState({ fetchingIdentificadores: false })
-            })
-            .catch(err => {
-                const { response } = err
-                if (response && response.data) {
-                    if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
-                    } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao requisitar os identificadores, tente novamente.')
-                    }
-                    const { error } = response.data
-                    throw new Error(error.message)
-                } else {
-                    throw err
-                }
-            })
-            .catch(this.catchRequestError)
-    }
-
     requisitaEdicaoTombo = json => {
         const tomboId = this.props.match.params.tombo_id
         this.defaultRequest(
@@ -2316,7 +1899,6 @@ class NovoTomboScreen extends Component {
             json
         )
     }
-
 
     requisitaCadastroTombo = json => {
         axios.post('/tombos', { json })
@@ -2381,6 +1963,7 @@ class NovoTomboScreen extends Component {
         const { form } = this.props
         
         this.setState({ dadosFormulario: dados })
+        
         let insereState = {
             estados: dados.estados,
             cidades: dados.cidades,
@@ -2391,20 +1974,20 @@ class NovoTomboScreen extends Component {
             variedades: dados.variedades
         }
 
-        this.requisitaFamilias()
+        this.requisitaFamilias('', dados.reinoInicial)
 
         if (dados.familiaInicial) {
-            this.requisitaSubfamilias(dados.familiaInicial)
-            this.requisitaGeneros(dados.familiaInicial)
+            this.requisitaSubfamilias('', dados.familiaInicial)
+            this.requisitaGeneros('', dados.familiaInicial)
         }
 
         if (dados.generoInicial) {
-            this.requisitaEspecies(dados.generoInicial)
+            this.requisitaEspecies('', dados.generoInicial)
         }
 
         if (dados.especieInicial) {
-            this.requisitaSubespecies(dados.especieInicial)
-            this.requisitaVariedades(dados.especieInicial)
+            this.requisitaSubespecies('', dados.especieInicial)
+            this.requisitaVariedades('', dados.especieInicial)
         }
 
         if (dados.coletor) {
@@ -2520,7 +2103,7 @@ class NovoTomboScreen extends Component {
         })
 
         if (dados.cidadeInicial) {
-            this.requisitaLocaisColeta(dados.cidadeInicial)
+            this.requisitaLocaisColeta('',dados.cidadeInicial)
         }
     }
 
@@ -2628,6 +2211,7 @@ class NovoTomboScreen extends Component {
         const soloId = extrairId(solo)
         const relevoId = extrairId(relevo)
         const vegetacaoId = extrairId(vegetacao)
+        const localColetaId = extrairId(complemento)
 
         json.principal = {
             entidade_id: parseInt(entidade),
@@ -2661,7 +2245,7 @@ class NovoTomboScreen extends Component {
             latitude: latitude ? converteDecimalParaGrausMinutosSegundos(latitude, false, true) : null,
             longitude: longitude ? converteDecimalParaGrausMinutosSegundos(longitude, true, true) : null,
             altitude: altitude ? parseInt(altitude) : null,
-            local_coleta_id: complemento ? parseInt(complemento.key) : null
+            local_coleta_id: localColetaId
         }
 
         json.paisagem = {
@@ -2749,6 +2333,7 @@ class NovoTomboScreen extends Component {
         const soloId = extrairId(solo)
         const relevoId = extrairId(relevo)
         const vegetacaoId = extrairId(vegetacao)
+        const localColetaId = extrairId(complemento)
 
         if (nomePopular) json.principal = { nome_popular: nomePopular }
         json.principal = { ...json.principal, data_tombo: this.normalizaDataTombo(dataTombo) }
@@ -2770,8 +2355,8 @@ class NovoTomboScreen extends Component {
         if (longitude) json.localidade = { ...json.localidade, longitude: converteDecimalParaGrausMinutosSegundos(longitude, true, true) }
         if (altitude) json.localidade = { ...json.localidade, altitude }
         json.localidade = { ...json.localidade, cidade_id: parseInt(cidade) }
-        if (complemento) {
-            json.localidade = { ...json.localidade, local_coleta_id: parseInt(complemento.key) }
+        if (localColetaId) {
+            json.localidade = { ...json.localidade, local_coleta_id: localColetaId }
         }
         if (solo) json.paisagem = { ...json.paisagem, solo_id: soloId }
         if (relevoDescricao) json.paisagem = { ...json.paisagem, descricao: relevoDescricao }
@@ -2820,7 +2405,7 @@ class NovoTomboScreen extends Component {
 
     handleSubmitForm = e => {
         e.preventDefault()
-        this.props.form.validateFields((err, values) => {})
+        this.props.form.validateFields((err, values) => { })
     }
 
     optionEntidades = () => this.state.herbarios.map(item => (
@@ -2899,6 +2484,252 @@ class NovoTomboScreen extends Component {
         }
     }
 
+    requisitaColetores = async (searchText = '') => {
+        this.setState({ fetchingColetores: true })
+
+        try {
+            const response = await axios.get(`/coletores-predicao?nome=${searchText || ''}`)
+
+            if (response.status === 200) {
+                this.setState({
+                    coletores: response.data,
+                    fetchingColetores: false
+                })
+            }
+        } catch (err) {
+            this.setState({ fetchingColetores: false })
+            console.error('Erro ao buscar coletores:', err)
+        }
+    }
+
+    requisitaHerbarios = async (searchText = '') => {
+        this.setState({ fetchingHerbarios: true })
+
+        try {
+            const params = {
+                limite: 9999999999,
+                ...(searchText ? { nome: searchText } : {})
+            }
+
+            const response = await axios.get('/herbarios', { params })
+
+            if (response.status === 200) {
+                this.setState({
+                    herbarios: response.data.herbarios || [],
+                    fetchingHerbarios: false
+                })
+            }
+        } catch (err) {
+            this.setState({ fetchingHerbarios: false })
+            console.error('Erro ao buscar herbários:', err)
+        }
+    }
+
+    requisitaPaises = async (searchText = '') => {
+        this.setState({ fetchingPaises: true })
+
+        try {
+            const params = {
+                ...(searchText ? { nome: searchText } : {})
+            }
+
+            const response = await axios.get('/paises', { params })
+
+            if (response.status === 200) {
+                this.setState({
+                    paises: response.data,
+                    fetchingPaises: false
+                })
+            }
+        } catch (err) {
+            this.setState({ fetchingPaises: false })
+            console.error('Erro ao buscar países:', err)
+        }
+    }
+
+    requisitaEstados = async (searchText = '', paisId = null) => {
+        this.setState({ fetchingEstados: true })
+
+        try {
+            const params = {
+                ...(paisId ? { pais_id: paisId } : {}),
+                ...(searchText ? { nome: searchText } : {})
+            }
+
+            const response = await axios.get('/estados', { params })
+
+            if (response.status === 200) {
+                this.setState({
+                    estados: response.data,
+                    fetchingEstados: false
+                })
+            }
+        } catch (err) {
+            this.setState({ fetchingEstados: false })
+            console.error('Erro ao buscar estados:', err)
+        }
+    }
+
+    requisitaCidades = async (searchText = '', estadoId = null) => {
+        this.setState({ fetchingCidades: true })
+
+        try {
+            const params = {
+                ...(estadoId ? { estado_id: estadoId } : {}),
+                ...(searchText ? { nome: searchText } : {})
+            }
+
+            const response = await axios.get('/cidades', { params })
+
+            if (response.status === 200) {
+                this.setState({
+                    cidades: response.data,
+                    fetchingCidades: false
+                })
+            }
+        } catch (err) {
+            this.setState({ fetchingCidades: false })
+            console.error('Erro ao buscar cidades:', err)
+        }
+    }
+
+    requisitaLocaisColeta = async (searchText = '', cidadeId = null) => {
+        const cidade = cidadeId || this.props.form.getFieldValue('cidade')
+        
+        if (!cidade) {
+            this.openNotificationWithIcon('warning', 'Atenção', 'Por favor, selecione uma cidade primeiro.')
+            return
+        }
+
+        this.setState({ fetchingLocaisColeta: true })
+
+        try {
+            const params = {
+                getAll: 'true',
+                ...(cidade ? { cidade_id: cidade } : {}),
+                ...(searchText ? { descricao: searchText } : {})
+            }
+
+            const response = await axios.get('/locais-coleta', { params })
+
+            if (response.status === 200) {
+                this.setState({
+                    locaisColeta: response.data.resultado,
+                    fetchingLocaisColeta: false
+                })
+            }
+        } catch (err) {
+            this.setState({ fetchingLocaisColeta: false })
+            console.error('Erro ao buscar locais de coleta:', err)
+        }
+    }
+
+    requisitaSolos = async (searchText = '') => {
+        this.setState({ fetchingSolos: true })
+
+        try {
+            const params = {
+                ...(searchText ? { nome: searchText } : {})
+            }
+
+            const response = await axios.get('/solos', { params })
+
+            if (response.status === 200) {
+                this.setState({
+                    solos: response.data,
+                    fetchingSolos: false
+                })
+            }
+        } catch (err) {
+            this.setState({ fetchingSolos: false })
+            console.error('Erro ao buscar solos:', err)
+        }
+    }
+
+    requisitaRelevos = async (searchText = '') => {
+        this.setState({ fetchingRelevos: true })
+
+        try {
+            const params = {
+                ...(searchText ? { nome: searchText } : {})
+            }
+
+            const response = await axios.get('/relevos', { params })
+
+            if (response.status === 200) {
+                this.setState({
+                    relevos: response.data,
+                    fetchingRelevos: false
+                })
+            }
+        } catch (err) {
+            this.setState({ fetchingRelevos: false })
+            console.error('Erro ao buscar relevos:', err)
+        }
+    }
+
+    requisitaVegetacoes = async (searchText = '') => {
+        this.setState({ fetchingVegetacoes: true })
+
+        try {
+            const params = {
+                ...(searchText ? { nome: searchText } : {})
+            }
+
+            const response = await axios.get('/vegetacoes', { params })
+
+            if (response.status === 200) {
+                this.setState({
+                    vegetacoes: response.data,
+                    fetchingVegetacoes: false
+                })
+            }
+        } catch (err) {
+            this.setState({ fetchingVegetacoes: false })
+            console.error('Erro ao buscar vegetações:', err)
+        }
+    }
+
+    requisitaFases = async (searchText = '') => {
+        this.setState({ fetchingFases: true })
+
+        try {
+            const params = {
+                ...(searchText ? { nome: searchText } : {})
+            }
+
+            const response = await axios.get('/fases-sucessionais', { params })
+
+            if (response.status === 200) {
+                this.setState({
+                    fases: response.data,
+                    fetchingFases: false
+                })
+            }
+        } catch (err) {
+            this.setState({ fetchingFases: false })
+            console.error('Erro ao buscar fases:', err)
+        }
+    }
+
+    requisitaIdentificadores = async (searchText = '') => {
+        this.setState({ fetchingIdentificadores: true })
+
+        try {
+            const response = await axios.get(`/identificadores-predicao?nome=${searchText || ''}`)
+
+            if (response.status === 200) {
+                this.setState({
+                    identificadores: response.data,
+                    fetchingIdentificadores: false
+                })
+            }
+        } catch (err) {
+            this.setState({ fetchingIdentificadores: false })
+            console.error('Erro ao buscar identificadores:', err)
+        }
+    }
+
     validacaoModal = () => {
         if (this.state.formColetor) {
             if (!this.props.form.getFieldsValue().nomeColetor || !this.props.form.getFieldsValue().numeroColetor) {
@@ -2952,11 +2783,13 @@ class NovoTomboScreen extends Component {
                             value={valoresColetores}
                             placeholder="Selecione os coletores"
                             filterOption={false}
-                            onSearch={value => {
-                                this.requisitaColetores(value)
+                            onSearch={searchText => {
+                                this.requisitaColetores(searchText || '')
                             }}
                             status={getFieldError('coletores') ? 'error' : ''}
-                            others={{allowClear: true}}
+                            others={{ allowClear: true }}
+                            loading={fetchingColetores}
+                            debounceDelay={600}
                         />
                     </Col>
 
@@ -2982,6 +2815,7 @@ class NovoTomboScreen extends Component {
             </div>
         )
     }
+
 
     renderColecoesAnexas = getFieldDecorator => {
         const { colecaoInicial, value } = this.state
@@ -3048,6 +2882,7 @@ class NovoTomboScreen extends Component {
             )
         }
         if (this.state.formComAutor) {
+            const { fetchingAutores, autores } = this.state
             return (
                 <div>
                     <Row gutter={8}>
@@ -3075,18 +2910,27 @@ class NovoTomboScreen extends Component {
                     </Row>
                     <Row gutter={8}>
                         <Col span={24}>
-                            <FormItem>
-                                {getFieldDecorator('autor')(
-                                    <Select
-                                        showSearch
-                                        style={{ width: '100%' }}
-                                        placeholder="Selecione um autor"
-                                        optionFilterProp="children"
-                                    >
-                                        {this.optionAutores()}
-                                    </Select>
-                                )}
-                            </FormItem>
+                            <SelectedFormField
+                                title=""
+                                placeholder="Selecione um autor"
+                                fieldName="autor"
+                                getFieldDecorator={getFieldDecorator}
+                                onSearch={searchText => {
+                                    this.requisitaAutores(searchText || '')
+                                }}
+                                others={{
+                                    loading: fetchingAutores,
+                                    notFoundContent: fetchingAutores ? <Spin size="small" /> : 'Nenhum resultado encontrado'
+                                }}
+                                debounceDelay={600}
+                                xs={24}
+                                sm={24}
+                                md={24}
+                                lg={24}
+                                xl={24}
+                            >
+                                {this.optionAutores()}
+                            </SelectedFormField>
                         </Col>
                     </Row>
                 </div>
@@ -3201,7 +3045,8 @@ class NovoTomboScreen extends Component {
     renderLocalTombo = (getFieldDecorator, getFieldError) => {
         const {
             paisInicial, estadoInicial, cidadeInicial,
-            paises, estados, cidades
+            paises, estados, cidades,
+            fetchingPaises, fetchingEstados, fetchingCidades, fetchingLocaisColeta
         } = this.state
         return (
             <div>
@@ -3219,8 +3064,26 @@ class NovoTomboScreen extends Component {
                             message: 'Escolha um país'
                         }]}
                         onChange={value => {
-                            this.requisitaEstados(value)
+                            if (value) {
+                                this.requisitaEstados('', value)
+                            } else {
+                                this.setState({
+                                    estados: [],
+                                    cidades: [],
+                                    locaisColeta: []
+                                })
+                                this.props.form.setFields({
+                                    estados: { value: undefined },
+                                    cidade: { value: undefined },
+                                    complemento: { value: undefined }
+                                })
+                            }
                         }}
+                        onSearch={searchText => {
+                            this.requisitaPaises(searchText || '')
+                        }}
+                        loading={fetchingPaises}
+                        debounceDelay={600}
                         status={getFieldError('pais') ? 'error' : ''}
                     />
                     <EstadoFormField
@@ -3231,19 +3094,55 @@ class NovoTomboScreen extends Component {
                             required: true,
                             message: 'Escolha um estado'
                         }]}
+                        disabled={!this.props.form.getFieldValue('pais')}
                         onChange={value => {
-                            this.requisitaCidades(value)
+                            if (value) {
+                                this.requisitaCidades('', value)
+                            } else {
+                                this.setState({
+                                    cidades: [],
+                                    locaisColeta: []
+                                })
+                                this.props.form.setFields({
+                                    cidade: { value: undefined },
+                                    complemento: { value: undefined }
+                                })
+                            }
                         }}
+                        onSearch={searchText => {
+                            const paisSelecionado = this.props.form.getFieldValue('pais')
+                            if (paisSelecionado) {
+                                this.requisitaEstados(searchText || '', paisSelecionado)
+                            }
+                        }}
+                        loading={fetchingEstados}
+                        debounceDelay={600}
                         status={getFieldError('estado') ? 'error' : ''}
                     />
                     <CidadeFormField
                         initialValue={String(cidadeInicial)}
                         cidades={cidades}
                         getFieldDecorator={getFieldDecorator}
+                        disabled={!this.props.form.getFieldValue('estados')}
                         onChange={value => {
-                            this.props.form.setFieldsValue({ complemento: undefined })
-                            this.requisitaLocaisColeta(value)
+                            if (value) {
+                                this.props.form.setFieldsValue({ complemento: undefined })
+                                this.requisitaLocaisColeta('', value)
+                            } else {
+                                this.setState({ locaisColeta: [] })
+                                this.props.form.setFields({
+                                    complemento: { value: undefined }
+                                })
+                            }
                         }}
+                        onSearch={searchText => {
+                            const estadoSelecionado = this.props.form.getFieldValue('estados')
+                            if (estadoSelecionado) {
+                                this.requisitaCidades(searchText || '', estadoSelecionado)
+                            }
+                        }}
+                        loading={fetchingCidades}
+                        debounceDelay={600}
                         getFieldError={getFieldError}
                     />
                 </Row>
@@ -3253,8 +3152,15 @@ class NovoTomboScreen extends Component {
                         getFieldDecorator={getFieldDecorator}
                         initialValue={this.state.complementoInicial}
                         locaisColeta={this.state.locaisColeta}
-                        fetchingLocaisColeta={this.state.fetchingLocaisColeta}
-                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                        fetchingLocaisColeta={fetchingLocaisColeta}
+                        disabled={!this.props.form.getFieldValue('cidade')}
+                        filterOption={false}
+                        onSearch={searchText => {
+                            const cidadeSelecionada = this.props.form.getFieldValue('cidade')
+                            if (cidadeSelecionada) {
+                                this.requisitaLocaisColeta(searchText || '', cidadeSelecionada)
+                            }
+                        }}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
@@ -3265,6 +3171,8 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true
                             })
                         }}
+                        loading={fetchingLocaisColeta}
+                        debounceDelay={600}
                         getFieldError={getFieldError}
                     />
                     <Col xs={24} sm={24} md={16} lg={8} xl={8}>
@@ -3286,8 +3194,17 @@ class NovoTomboScreen extends Component {
         const {
             reinoInicial, familiaInicial, reinos, familias, generoInicial, generos, search,
             especieInicial, especies, subespecieInicial, subespecies,
-            variedadeInicial, variedades, subfamiliaInicial, subfamilias
+            variedadeInicial, variedades, subfamiliaInicial, subfamilias,
+            fetchingReinos, fetchingFamilias, fetchingSubfamilias,
+            fetchingGeneros, fetchingEspecies, fetchingSubespecies, fetchingVariedades
         } = this.state
+
+        const { form } = this.props
+        const reinoSelecionado = form.getFieldValue('reino')
+        const familiaSelecionada = form.getFieldValue('familia')
+        const generoSelecionado = form.getFieldValue('genero')
+        const especieSelecionada = form.getFieldValue('especie')
+
         return (
             <div>
                 {this.props.match.params.tombo_id && (
@@ -3296,14 +3213,8 @@ class NovoTomboScreen extends Component {
                     </Row>
                 )}
                 <Row justify="end" gutter={8}>
-                    <Button
-                        type="secondary"
-                    >
-                        <Link
-                            to="/tombos"
-                        >
-                            Sair/Cancelar
-                        </Link>
+                    <Button type="secondary">
+                        <Link to="/tombos">Sair/Cancelar</Link>
                     </Button>
                 </Row>
                 <Row gutter={8}>
@@ -3339,37 +3250,36 @@ class NovoTomboScreen extends Component {
                         reinos={reinos}
                         getFieldDecorator={getFieldDecorator}
                         onChange={value => {
-                            this.requisitaFamilias(value)
-                            this.setState({
-                                search: {
-                                    familia: 'validating'
-                                },
-                                autorSubfamilia: '',
-                                autorEspecie: '',
-                                autorSubespecie: '',
-                                autorVariedade: ''
-                            })
+                            if (value) {
+                                this.requisitaFamilias('', value)
+                            } else {
+                                this.setState({
+                                    familias: [],
+                                    subfamilias: [],
+                                    generos: [],
+                                    especies: [],
+                                    subespecies: [],
+                                    variedades: [],
+                                    autorSubfamilia: '',
+                                    autorEspecie: '',
+                                    autorSubespecie: '',
+                                    autorVariedade: ''
+                                })
+                            }
+
                             this.props.form.setFields({
-                                familia: {
-                                    value: ''
-                                },
-                                subfamilia: {
-                                    value: ''
-                                },
-                                genero: {
-                                    value: ''
-                                },
-                                especie: {
-                                    value: ''
-                                },
-                                subespecie: {
-                                    value: ''
-                                },
-                                variedade: {
-                                    value: ''
-                                }
+                                familia: { value: undefined },
+                                subfamilia: { value: undefined },
+                                genero: { value: undefined },
+                                especie: { value: undefined },
+                                subespecie: { value: undefined },
+                                variedade: { value: undefined }
                             })
                         }}
+                        onSearch={searchText => {
+                            this.requisitaReinos(searchText || '')
+                        }}
+                        loading={fetchingReinos}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
@@ -3379,43 +3289,47 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true
                             })
                         }}
+                        debounceDelay={600}
                     />
                     <FamiliaFormField
                         initialValue={String(familiaInicial)}
                         familias={familias}
                         getFieldDecorator={getFieldDecorator}
                         getFieldError={getFieldError}
+                        disabled={!reinoSelecionado}
                         onChange={value => {
-                            this.requisitaSubfamilias(value)
-                            this.requisitaGeneros(value)
-                            this.setState({
-                                search: {
-                                    subfamilia: 'validating',
-                                    genero: 'validating'
-                                },
-                                autorSubfamilia: '',
-                                autorEspecie: '',
-                                autorSubespecie: '',
-                                autorVariedade: ''
-                            })
+                            if (value) {
+                                this.requisitaSubfamilias('', value)
+                                this.requisitaGeneros('', value)
+                            } else {
+                                this.setState({
+                                    subfamilias: [],
+                                    generos: [],
+                                    especies: [],
+                                    subespecies: [],
+                                    variedades: [],
+                                    autorSubfamilia: '',
+                                    autorEspecie: '',
+                                    autorSubespecie: '',
+                                    autorVariedade: ''
+                                })
+                            }
+
                             this.props.form.setFields({
-                                subfamilia: {
-                                    value: ''
-                                },
-                                genero: {
-                                    value: ''
-                                },
-                                especie: {
-                                    value: ''
-                                },
-                                subespecie: {
-                                    value: ''
-                                },
-                                variedade: {
-                                    value: ''
-                                }
+                                subfamilia: { value: undefined },
+                                genero: { value: undefined },
+                                especie: { value: undefined },
+                                subespecie: { value: undefined },
+                                variedade: { value: undefined }
                             })
                         }}
+                        onSearch={searchText => {
+                            const reinoSelecionado = this.props.form.getFieldValue('reino')
+                            if (reinoSelecionado) {
+                                this.requisitaFamilias(searchText || '', reinoSelecionado)
+                            }
+                        }}
+                        loading={fetchingFamilias}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
@@ -3425,6 +3339,7 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true
                             })
                         }}
+                        debounceDelay={600}
                     />
                 </Row>
                 <br />
@@ -3434,45 +3349,66 @@ class NovoTomboScreen extends Component {
                         subfamilias={subfamilias}
                         validateStatus={search.subfamilia}
                         getFieldDecorator={getFieldDecorator}
-                        onChange={value => this.encontraAutor(subfamilias, value, 'autorSubfamilia')}
+                        disabled={!familiaSelecionada}
+                        onChange={value => {
+                            if (value) {
+                                this.encontraAutor(subfamilias, value, 'autorSubfamilia')
+                            } else {
+                                this.setState({ autorSubfamilia: '' })
+                            }
+                        }}
                         autor={this.state.autorSubfamilia}
+                        onSearch={searchText => {
+                            const familiaSelecionada = this.props.form.getFieldValue('familia')
+                            if (familiaSelecionada) {
+                                this.requisitaSubfamilias(searchText || '', familiaSelecionada)
+                            }
+                        }}
+                        loading={fetchingSubfamilias}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: 'do novo subfamília',
+                                    desc: ' da nova subfamília',
                                     tipo: 2
                                 },
                                 visibleModal: true
                             })
                         }}
+                        debounceDelay={600}
                     />
                     <GeneroFormField
                         initialValue={String(generoInicial)}
                         generos={generos}
                         validateStatus={search.genero}
                         getFieldDecorator={getFieldDecorator}
+                        disabled={!familiaSelecionada}
                         onChange={value => {
-                            this.requisitaEspecies(value)
-                            this.setState({
-                                search: {
-                                    especie: 'validating'
-                                },
-                                autorEspecie: '',
-                                autorSubespecie: '',
-                                autorVariedade: ''
-                            })
+                            if (value) {
+                                this.requisitaEspecies('', value)
+                            } else {
+                                this.setState({
+                                    especies: [],
+                                    subespecies: [],
+                                    variedades: [],
+                                    autorEspecie: '',
+                                    autorSubespecie: '',
+                                    autorVariedade: ''
+                                })
+                            }
+
                             this.props.form.setFields({
-                                especie: {
-                                    value: ''
-                                },
-                                subespecie: {
-                                    value: ''
-                                },
-                                variedade: {
-                                    value: ''
-                                }
+                                especie: { value: undefined },
+                                subespecie: { value: undefined },
+                                variedade: { value: undefined }
                             })
                         }}
+                        onSearch={searchText => {
+                            const familiaSelecionada = this.props.form.getFieldValue('familia')
+                            if (familiaSelecionada) {
+                                this.requisitaGeneros(searchText || '', familiaSelecionada)
+                            }
+                        }}
+                        loading={fetchingGeneros}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
@@ -3482,6 +3418,7 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true
                             })
                         }}
+                        debounceDelay={600}
                     />
                 </Row>
                 <br />
@@ -3491,30 +3428,36 @@ class NovoTomboScreen extends Component {
                         especies={especies}
                         validateStatus={search.especie}
                         getFieldDecorator={getFieldDecorator}
+                        disabled={(!generoSelecionado || !familiaSelecionada)}
                         autor={this.state.autorEspecie}
                         onChange={value => {
-                            this.requisitaSubespecies(value)
-                            this.requisitaVariedades(value)
-                            this.setState({
-                                search: {
-                                    subespecie: 'validating',
-                                    variedade: 'validating'
-                                },
-                                formComAutor: true,
-                                autorSubespecie: '',
-                                autorVariedade: ''
-                            })
-                            this.props.form.setFields({
-                                subespecie: {
-                                    value: ''
-                                },
-                                variedade: {
-                                    value: ''
-                                }
-                            })
+                            if (value) {
+                                this.requisitaSubespecies('', value)
+                                this.requisitaVariedades('', value)
+                                this.encontraAutor(especies, value, 'autorEspecie')
+                                this.setState({ formComAutor: true })
+                            } else {
+                                this.setState({
+                                    subespecies: [],
+                                    variedades: [],
+                                    autorEspecie: '',
+                                    autorSubespecie: '',
+                                    autorVariedade: ''
+                                })
+                            }
 
-                            this.encontraAutor(especies, value, 'autorEspecie')
+                            this.props.form.setFields({
+                                subespecie: { value: undefined },
+                                variedade: { value: undefined }
+                            })
                         }}
+                        onSearch={searchText => {
+                            const generoSelecionado = this.props.form.getFieldValue('genero')
+                            if (generoSelecionado) {
+                                this.requisitaEspecies(searchText || '', generoSelecionado)
+                            }
+                        }}
+                        loading={fetchingEspecies}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
@@ -3525,30 +3468,40 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true
                             })
                         }}
+                        debounceDelay={600}
                     />
                     <SubespecieFormField
                         initialValue={String(subespecieInicial)}
                         subespecies={subespecies}
                         validateStatus={search.subespecie}
                         getFieldDecorator={getFieldDecorator}
+                        disabled={(!especieSelecionada || !generoSelecionado || !familiaSelecionada)}
                         autor={this.state.autorSubespecie}
                         onChange={value => {
-                            this.encontraAutor(subespecies, value, 'autorSubespecie')
-
-                            this.setState({
-                                autorVariedade: ''
-                            })
+                            if (value) {
+                                this.encontraAutor(subespecies, value, 'autorSubespecie')
+                            } else {
+                                this.setState({ autorSubespecie: '' })
+                            }
                         }}
+                        onSearch={searchText => {
+                            const especieSelecionada = this.props.form.getFieldValue('especie')
+                            if (especieSelecionada) {
+                                this.requisitaSubespecies(searchText || '', especieSelecionada)
+                            }
+                        }}
+                        loading={fetchingSubespecies}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: 'da nova subespécie',
+                                    desc: ' da nova subespécie',
                                     tipo: 5
                                 },
                                 formComAutor: true,
                                 visibleModal: true
                             })
                         }}
+                        debounceDelay={600}
                     />
                 </Row>
                 <br />
@@ -3558,18 +3511,33 @@ class NovoTomboScreen extends Component {
                         variedades={variedades}
                         validateStatus={search.variedade}
                         getFieldDecorator={getFieldDecorator}
+                        disabled={(!especieSelecionada || !generoSelecionado || !familiaSelecionada)}
                         autor={this.state.autorVariedade}
-                        onChange={value => this.encontraAutor(variedades, value, 'autorVariedade')}
+                        onChange={value => {
+                            if (value) {
+                                this.encontraAutor(variedades, value, 'autorVariedade')
+                            } else {
+                                this.setState({ autorVariedade: '' })
+                            }
+                        }}
+                        onSearch={searchText => {
+                            const especieSelecionada = this.props.form.getFieldValue('especie')
+                            if (especieSelecionada) {
+                                this.requisitaVariedades(searchText || '', especieSelecionada)
+                            }
+                        }}
+                        loading={fetchingVariedades}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: 'da nova variedade',
+                                    desc: ' da nova variedade',
                                     tipo: 6
                                 },
                                 formComAutor: true,
                                 visibleModal: true
                             })
                         }}
+                        debounceDelay={600}
                     />
                 </Row>
             </div>
@@ -3579,8 +3547,11 @@ class NovoTomboScreen extends Component {
     renderTipoSoloTombo = getFieldDecorator => {
         const {
             soloInicial, search, solos, relevos, faseInicial,
-            relevoInicial, vegetacaoInicial, vegetacoes, fases, idSoloInicial, idRelevoInicial, idVegetacaoInicial, idFaseInicial
+            relevoInicial, vegetacaoInicial, vegetacoes, fases,
+            idSoloInicial, idRelevoInicial, idVegetacaoInicial, idFaseInicial,
+            fetchingSolos, fetchingRelevos, fetchingVegetacoes, fetchingFases
         } = this.state
+
         return (
             <div>
                 <Row gutter={8}>
@@ -3595,12 +3566,17 @@ class NovoTomboScreen extends Component {
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: 'do novo solo',
+                                    desc: ' do novo solo',
                                     tipo: 8
                                 },
                                 visibleModal: true
                             })
                         }}
+                        onSearch={searchText => {
+                            this.requisitaSolos(searchText || '')
+                        }}
+                        loading={fetchingSolos}
+                        debounceDelay={600}
                     />
                     <RelevoFormField
                         initialValue={idRelevoInicial ? {
@@ -3613,12 +3589,17 @@ class NovoTomboScreen extends Component {
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: 'do novo relevo',
+                                    desc: ' do novo relevo',
                                     tipo: 9
                                 },
                                 visibleModal: true
                             })
                         }}
+                        onSearch={searchText => {
+                            this.requisitaRelevos(searchText || '')
+                        }}
+                        loading={fetchingRelevos}
+                        debounceDelay={600}
                     />
                 </Row>
                 <br />
@@ -3634,12 +3615,17 @@ class NovoTomboScreen extends Component {
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: 'da nova vegetação',
+                                    desc: ' da nova vegetação',
                                     tipo: 10
                                 },
                                 visibleModal: true
                             })
                         }}
+                        onSearch={searchText => {
+                            this.requisitaVegetacoes(searchText || '')
+                        }}
+                        loading={fetchingVegetacoes}
+                        debounceDelay={600}
                     />
                     <FaseFormField
                         initialValue={idFaseInicial ? {
@@ -3649,6 +3635,11 @@ class NovoTomboScreen extends Component {
                         fases={fases}
                         validateStatus={search.fase}
                         getFieldDecorator={getFieldDecorator}
+                        onSearch={searchText => {
+                            this.requisitaFases(searchText || '')
+                        }}
+                        loading={fetchingFases}
+                        debounceDelay={600}
                     />
                 </Row>
             </div>
@@ -3656,8 +3647,9 @@ class NovoTomboScreen extends Component {
     }
 
     renderIdentificador = (getFieldDecorator, getFieldError) => {
-        const { identificadores, identificadorInicial, identificadorNome } = this.state
+        const { identificadores, identificadorInicial, identificadorNome, fetchingIdentificadores } = this.state
         const initialValue = identificadorInicial ? { key: String(identificadorInicial), label: identificadorNome } : undefined
+
         return (
             <div>
                 <Row gutter={8}>
@@ -3668,13 +3660,14 @@ class NovoTomboScreen extends Component {
                         showSearch
                         style={{ width: '100%' }}
                         optionFilterProp="children"
-                        // onChange={this.handleChangeIdentificadores}
-                        placeholder="Selecione o idenficador"
+                        placeholder="Selecione o identificador"
                         getFieldError={getFieldError}
-                        onSearch={value => {
-                            this.requisitaIdentificadores(value)
+                        onSearch={searchText => {
+                            this.requisitaIdentificadores(searchText || '')
                         }}
                         filterOption={false}
+                        loading={fetchingIdentificadores}
+                        debounceDelay={600}
                     />
                     <DataIdentificacaoFormField
                         getFieldDecorator={getFieldDecorator}
@@ -3822,164 +3815,8 @@ class NovoTomboScreen extends Component {
                     <br />
                     {' '}
                     <br />
-                    <Row gutter={8}>
-                        {/* <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                            <Col span={24}>
-                                <span> Fotos da exsicata: </span>
-                            </Col>
-                            <Col span={24}>
-                                <FormItem>
-                                    {getFieldDecorator('fotosExsicata')(
-                                        <UploadPicturesComponent
-                                            fileList={this.state.fotosExsicata}
-                                            beforeUpload={foto => {
-                                                this.setState(({ fotosExsicata }) => ({
-                                                    fotosExsicata: [
-                                                        ...fotosExsicata,
-                                                        foto
-                                                    ]
-                                                }))
-
-                                                return false
-                                            }}
-                                            onRemove={foto => {
-                                                this.setState(({ fotosExsicata: listaAntiga }) => {
-                                                    const index = listaAntiga.indexOf(foto)
-
-                                                    const fotosExsicata = listaAntiga
-                                                        .filter((item, i) => i !== index)
-
-                                                    return { fotosExsicata }
-                                                })
-                                            }}
-                                        />
-                                    )}
-                                </FormItem>
-                            </Col>
-                        </Col>
-                        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                            <Col span={24}>
-                                <span> Fotos em vivo: </span>
-                            </Col>
-                            <Col span={24}>
-                                <FormItem>
-                                    {getFieldDecorator('fotosVivo')(
-                                        <UploadPicturesComponent
-                                            fileList={this.state.fotosEmVivo}
-                                            beforeUpload={foto => {
-                                                this.setState(({ fotosEmVivo }) => ({
-                                                    fotosEmVivo: [
-                                                        ...fotosEmVivo,
-                                                        foto
-                                                    ]
-                                                }))
-
-                                                return false
-                                            }}
-                                            onRemove={foto => {
-                                                this.setState(({ fotosEmVivo: listaAntiga }) => {
-                                                    const index = listaAntiga.indexOf(foto)
-
-                                                    const fotosEmVivo = listaAntiga
-                                                        .filter((item, i) => i !== index)
-
-                                                    return { fotosEmVivo }
-                                                })
-                                            }}
-                                        />
-                                    )}
-                                </FormItem>
-                            </Col>
-                        </Col>
-                    </Row>
-                    <br />
-                    <br />
-                    <Row gutter={8}>
-                        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                            <Col span={24}>
-                                <span> Exsicata sem foto: </span>
-                            </Col>
-                            <Col span={8}>
-                                <Button onClick={() => this.criaCodigoBarrasSemFotos(false)}>
-                                    <UploadOutlined />
-                                    {' '}
-                                    Enviar
-                                </Button>
-                            </Col>
-                        </Col>
-                        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                            <Col span={24}>
-                                <span> Em vivo sem foto: </span>
-                            </Col>
-                            <Col span={8}>
-                                <Button onClick={() => this.criaCodigoBarrasSemFotos(true)}>
-                                    <UploadOutlined />
-                                    {' '}
-                                    Enviar
-                                </Button>
-                            </Col>
-                        </Col> */}
-                    </Row>
                     <Divider dashed />
-                    {/* {this.state.showTable && this.props.match.params.tombo_id && (
-                        <Row gutter={8}>
-                            <Table
-                                columns={this.tabelaFotosColunas}
-                                dataSource={this.state.fotos}
-                                loading={this.state.loading}
-                                rowKey="id"
-                            />
-                        </Row>
-                    )} */}
                     <Row type="flex" justify="start" gutter={8}>
-                        {/* <Col>
-                            <Button
-                                disabled={!this.props.match.params.tombo_id}
-                                type="primary"
-                            >
-                                <Link
-                                    to={{
-                                        pathname: `${baseUrl}/fichas/tombos/${this.state.numeroHcf}/1`
-                                    }}
-                                    target="_blank"
-                                >
-                                    {' '}
-                                    imprimir ficha c/ código
-                                </Link>
-                            </Button>
-                        </Col>
-                        <Col>
-                            <Button
-                                disabled={!this.props.match.params.tombo_id}
-                                type="primary"
-                            >
-                                <Link
-                                    to={{
-                                        pathname: `${baseUrl}/fichas/tombos/${this.state.numeroHcf}/0`
-                                    }}
-                                    target="_blank"
-                                >
-                                    {' '}
-                                    imprimir ficha s/ código
-                                </Link>
-                            </Button>
-                        </Col>
-                        <Col>
-                            <Button
-                                disabled={!this.props.match.params.tombo_id}
-                                type="primary"
-                            >
-                                <Link
-                                    to={{
-                                        pathname: `/pendencias/${this.state.numeroHcf}`
-                                    }}
-                                    target="_blank"
-                                >
-                                    {' '}
-                                    ver pendencias
-                                </Link>
-                            </Button>
-                        </Col> */}
                         <Col style={{ marginLeft: 'auto' }} xs={24} sm={8} md={3} lg={3} xl={3}>
                             <ButtonComponent titleButton="Salvar" />
                         </Col>
@@ -3990,6 +3827,8 @@ class NovoTomboScreen extends Component {
     }
 
     renderPrincipaisCaracteristicas = (getFieldDecorator, getFieldError) => {
+        const { fetchingHerbarios, herbarios } = this.state
+
         return (
             <div>
                 <Row gutter={8}>
@@ -4093,28 +3932,17 @@ class NovoTomboScreen extends Component {
                             </FormItem>
                         </Col>
                     </Col>
-                    <Col xs={24} sm={24} md={8} lg={12} xl={12}>
-                        <Col span={24}>
-                            <span>Herbário:</span>
-                        </Col>
-                        <Col span={24}>
-                            <FormItem>
-                                {getFieldDecorator('entidade', {
-                                    initialValue: String(!this.props.match.params.tombo_id ? this.state.herbarioInicial?.value || '' : this.state.herbarioInicial),
-                                })(
-                                    <Select
-                                        showSearch
-                                        placeholder="Selecione uma entidade"
-                                        optionFilterProp="children"
-                                        allowClear
-                                        status={getFieldError('entidade') ? 'error' : ''}
-                                    >
-                                        {this.optionEntidades()}
-                                    </Select>
-                                )}
-                            </FormItem>
-                        </Col>
-                    </Col>
+                    <HerbarioFormField
+                        initialValue={String(!this.props.match.params.tombo_id ? this.state.herbarioInicial?.value || '' : this.state.herbarioInicial)}
+                        herbarios={herbarios}
+                        getFieldDecorator={getFieldDecorator}
+                        onSearch={searchText => {
+                            this.requisitaHerbarios(searchText || '')
+                        }}
+                        loading={fetchingHerbarios}
+                        debounceDelay={600}
+                        getFieldError={getFieldError}
+                    />
                 </Row>
                 <br />
                 <Row gutter={8}>
