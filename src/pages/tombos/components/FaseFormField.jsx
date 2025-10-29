@@ -1,17 +1,17 @@
 import React from 'react'
-
-import { Select } from 'antd'
-
+import { Select, Spin } from 'antd'
 import SelectedFormFiled from './SelectedFormFiled'
 
 const { Option } = Select
 
 const FaseFormField = ({
-    initialValue, fases, getFieldDecorator, onClickAddMore, onChange, validateStatus
+    initialValue, fases, getFieldDecorator, onClickAddMore, onChange, validateStatus,
+    onSearch, loading = false, debounceDelay = 600
 }) => {
     const optionFases = () => fases.map(item => (
-        <Option value={`${item.numero}`}>{item.nome}</Option>
+        <Option key={item.numero} value={`${item.numero}`}>{item.nome}</Option>
     ))
+    
     return (
         <SelectedFormFiled
             xs={24}
@@ -21,13 +21,20 @@ const FaseFormField = ({
             xl={12}
             title="Fase sucessional:"
             initialValue={initialValue}
-            placeholder="Selecione uma fase sucessional"
+            placeholder="Digite para buscar fases..."
             fieldName="fases"
             getFieldDecorator={getFieldDecorator}
             onClickAddMore={onClickAddMore}
             onChange={onChange}
             validateStatus={validateStatus}
-            others={{allowClear: true}}
+            onSearch={onSearch}
+            debounceDelay={debounceDelay}
+            others={{
+                allowClear: true,
+                loading: loading,
+                notFoundContent: loading ? <Spin size="small" /> : 'Nenhuma fase encontrada',
+                filterOption: onSearch ? false : undefined
+            }}
         >
             {optionFases()}
         </SelectedFormFiled>

@@ -1,13 +1,13 @@
 import React from 'react'
 
-import { Select } from 'antd'
+import { Select, Spin } from 'antd'
 
 import SelectedFormFiled from './SelectedFormFiled'
 
 const { Option } = Select
 
 const CidadeFormField = ({
-    initialValue, cidades, getFieldDecorator, onClickAddMore, onChange, validateStatus, getFieldError
+    initialValue, cidades, getFieldDecorator, onClickAddMore, onChange, validateStatus, getFieldError, onSearch, loading = false, debounceDelay = 600, disabled = false
 }) => {
     const optionCidades = () => cidades.map(item => (
         <Option value={`${item.id}`}>{item.nome}</Option>
@@ -32,7 +32,15 @@ const CidadeFormField = ({
                 required: true,
                 message: 'Escolha uma cidade'
             }]}
-            others={{allowClear: true}}
+            onSearch={onSearch}
+            debounceDelay={debounceDelay}
+            disabled={disabled}
+            others={{
+                allowClear: true,
+                loading: loading,
+                notFoundContent: loading ? <Spin size="small" /> : 'Nenhum país encontrado',
+                filterOption: onSearch ? false : undefined
+            }}
         >
             {optionCidades()}
         </SelectedFormFiled>

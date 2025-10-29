@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {
-    Card, Col, Row, Input, Button, Divider, notification, Modal, Select
+    Card, Col, Row, Input, Button, Divider, notification, Modal, Spin, Select
 } from 'antd'
 import { Form } from '@ant-design/compatible'
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons'
@@ -11,6 +11,7 @@ import { isCuradorOuOperador } from '../helpers/usuarios'
 import HeaderListComponent from '../components/HeaderListComponent'
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
 import TotalRecordsFound from '@/components/TotalRecordsFound'
+import SelectedFormField from './tombos/components/SelectedFormFiled'
 
 const { confirm } = Modal
 const { Option } = Select
@@ -62,7 +63,10 @@ class ListaLocaisColeta extends Component {
             paisSelecionado: null,
             estadoSelecionado: null,
             cidadeSelecionada: null,
-            nomeLocal: ''
+            nomeLocal: '',
+            fetchingPaises: false,
+            fetchingEstados: false,
+            fetchingCidades: false
         }
     }
 
@@ -78,67 +82,73 @@ class ListaLocaisColeta extends Component {
         })
     }
 
-    requisitaPaises = async () => {
+    requisitaPaises = async (searchText = '') => {
+        this.setState({ fetchingPaises: true })
+
         try {
-            const response = await axios.get('/paises')
+            const params = {
+                ...(searchText ? { nome: searchText } : {})
+            }
+
+            const response = await axios.get('/paises', { params })
             
             if (response.status === 200) {
                 this.setState({
-                    paises: response.data
+                    paises: response.data,
+                    fetchingPaises: false
                 })
             }
         } catch (err) {
+            this.setState({ fetchingPaises: false })
             this.notificacao('error', 'Erro', 'Falha ao buscar países.')
         }
     }
 
-    requisitaEstados = async (paisId) => {
+    requisitaEstados = async (searchText = '', paisId = null) => {
+        this.setState({ fetchingEstados: true })
+
         try {
-            const response = await axios.get('/estados', {
-                params: { pais_id: paisId }
-            })
+            const params = {
+                ...(paisId ? { pais_id: paisId } : {}),
+                ...(searchText ? { nome: searchText } : {})
+            }
+
+            const response = await axios.get('/estados', { params })
             
             if (response.status === 200) {
                 this.setState({
                     estados: response.data,
-                    cidades: [],
-                    estadoSelecionado: null,
-                    cidadeSelecionada: null
+                    fetchingEstados: false
                 })
             }
         } catch (err) {
+            this.setState({ fetchingEstados: false })
             this.notificacao('error', 'Erro', 'Falha ao buscar estados.')
         }
     }
 
-    requisitaCidades = async (estadoId) => {
+    requisitaCidades = async (searchText = '', estadoId = null) => {
+        this.setState({ fetchingCidades: true })
+
         try {
-            const response = await axios.get('/cidades', {
-                params: { estado_id: estadoId }
-            })
+            const params = {
+                ...(estadoId ? { estado_id: estadoId } : {}),
+                ...(searchText ? { nome: searchText } : {})
+            }
+
+            const response = await axios.get('/cidades', { params })
             
             if (response.status === 200) {
                 this.setState({
                     cidades: response.data,
-                    cidadeSelecionada: null
+                    fetchingCidades: false
                 })
             }
         } catch (err) {
+            this.setState({ fetchingCidades: false })
             this.notificacao('error', 'Erro', 'Falha ao buscar cidades.')
         }
     }
-
-    formataDadosPaises = () => this.state.paises.map(item => (
-        <Option key={item.id} value={item.id}>{item.nome}</Option>
-    ))
-
-    formataDadosEstados = () => this.state.estados.map(item => (
-        <Option key={item.id} value={item.id}>{item.nome}</Option>
-    ))
-
-    formataDadosCidades = () => this.state.cidades.map(item => (
-        <Option key={item.id} value={item.id}>{item.nome}</Option>
-    ))
 
     formataDadosLocais = locais => locais.map(item => ({
         key: item.id,
@@ -172,25 +182,27 @@ class ListaLocaisColeta extends Component {
             
             if (response.status === 200) {
                 const local = response.data
+                const paisId = local.cidade.estado.paise.id
+                const estadoId = local.cidade.estado.id
                 
-                await this.requisitaEstados(local.cidade.estado.paise.id) 
-                await this.requisitaCidades(local.cidade.estado.id)
+                await this.requisitaEstados('', paisId) 
+                await this.requisitaCidades('', estadoId)
                 
                 this.setState({
                     visibleModal: true,
                     titulo: 'Atualizar',
                     id: local.id,
                     nomeLocal: local.descricao, 
-                    paisSelecionado: local.cidade.estado.paise.id,
-                    estadoSelecionado: local.cidade.estado.id,
+                    paisSelecionado: paisId,
+                    estadoSelecionado: estadoId,
                     cidadeSelecionada: local.cidade.id
                 })
                 
-                this.props.form.setFields({
-                    nomeLocalModal: { value: local.descricao }, 
-                    paisModal: { value: local.cidade.estado.paise.id },
-                    estadoModal: { value: local.cidade.estado.id },
-                    cidadeModal: { value: local.cidade.id }
+                this.props.form.setFieldsValue({
+                    nomeLocalModal: local.descricao,
+                    paisModal: paisId,
+                    estadoModal: estadoId,
+                    cidadeModal: local.cidade.id
                 })
             }
         } catch (err) {
@@ -340,11 +352,11 @@ class ListaLocaisColeta extends Component {
             estados: [],
             cidades: []
         })
-        this.props.form.setFields({
-            nomeLocalModal: { value: '' },
-            paisModal: { value: undefined },
-            estadoModal: { value: undefined },
-            cidadeModal: { value: undefined }
+        this.props.form.setFieldsValue({
+            nomeLocalModal: undefined,
+            paisModal: undefined,
+            estadoModal: undefined,
+            cidadeModal: undefined
         })
     }
 
@@ -354,7 +366,8 @@ class ListaLocaisColeta extends Component {
                 <Button
                     type="primary"
                     icon={<PlusOutlined />}
-                    onClick={() => {
+                    onClick={async () => {
+                        await this.requisitaPaises()
                         this.setState({
                             visibleModal: true,
                             titulo: 'Cadastrar',
@@ -372,93 +385,116 @@ class ListaLocaisColeta extends Component {
     }
 
     renderPainelBusca = (getFieldDecorator) => {
+        const { paises, estados, cidades, fetchingPaises, fetchingEstados, fetchingCidades } = this.state
+        const paisSelecionadoBusca = this.props.form.getFieldValue('pais')
+        const estadoSelecionadoBusca = this.props.form.getFieldValue('estado')
+
         return (
             <Card title="Buscar local de coleta">
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
-                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
-                            <Col span={24}>
-                                <span>País:</span>
-                            </Col>
-                            <Col span={24}>
-                                <FormItem>
-                                    {getFieldDecorator('pais')(
-                                        <Select 
-                                            placeholder="Selecione um país"
-                                            allowClear
-                                            showSearch
-                                            optionFilterProp="children"
-                                            onChange={value => {
-                                                if (value) {
-                                                    this.requisitaEstados(value)
-                                                } else {
-                                                    this.setState({
-                                                        estados: [],
-                                                        cidades: []
-                                                    })
-                                                    this.props.form.setFields({
-                                                        estado: { value: undefined },
-                                                        cidade: { value: undefined }
-                                                    })
-                                                }
-                                            }}
-                                        >
-                                            {this.formataDadosPaises()}
-                                        </Select>
-                                    )}
-                                </FormItem>
-                            </Col>
-                        </Col>
+                        <SelectedFormField
+                            title="País:"
+                            placeholder="Selecione um país"
+                            fieldName="pais"
+                            getFieldDecorator={getFieldDecorator}
+                            onSearch={searchText => {
+                                this.requisitaPaises(searchText || '')
+                            }}
+                            onChange={value => {
+                                this.props.form.setFieldsValue({
+                                    estado: undefined,
+                                    cidade: undefined
+                                })
+                                this.setState({
+                                    estados: [],
+                                    cidades: []
+                                })
+                                if (value) {
+                                    this.requisitaEstados('', value)
+                                }
+                            }}
+                            others={{
+                                loading: fetchingPaises,
+                                notFoundContent: fetchingPaises ? <Spin size="small" /> : 'Nenhum resultado encontrado',
+                                allowClear: true
+                            }}
+                            debounceDelay={600}
+                            xs={24}
+                            sm={24}
+                            md={8}
+                            lg={8}
+                            xl={8}
+                        >
+                            {paises.map(item => (
+                                <Select.Option key={item.id} value={item.id}>{item.nome}</Select.Option>
+                            ))}
+                        </SelectedFormField>
 
-                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
-                            <Col span={24}>
-                                <span>Estado:</span>
-                            </Col>
-                            <Col span={24}>
-                                <FormItem>
-                                    {getFieldDecorator('estado')(
-                                        <Select 
-                                            placeholder="Selecione um estado"
-                                            allowClear
-                                            showSearch
-                                            optionFilterProp="children"
-                                            onChange={value => {
-                                                if (value) {
-                                                    this.requisitaCidades(value)
-                                                } else {
-                                                    this.setState({ cidades: [] })
-                                                    this.props.form.setFields({
-                                                        cidade: { value: undefined }
-                                                    })
-                                                }
-                                            }}
-                                        >
-                                            {this.formataDadosEstados()}
-                                        </Select>
-                                    )}
-                                </FormItem>
-                            </Col>
-                        </Col>
+                        <SelectedFormField
+                            title="Estado:"
+                            placeholder={paisSelecionadoBusca ? "Selecione um estado" : "Selecione um país primeiro"}
+                            fieldName="estado"
+                            getFieldDecorator={getFieldDecorator}
+                            disabled={!paisSelecionadoBusca}
+                            onSearch={searchText => {
+                                if (paisSelecionadoBusca) {
+                                    this.requisitaEstados(searchText || '', paisSelecionadoBusca)
+                                }
+                            }}
+                            onChange={value => {
+                                this.props.form.setFieldsValue({
+                                    cidade: undefined
+                                })
+                                this.setState({ cidades: [] })
+                                if (value) {
+                                    this.requisitaCidades('', value)
+                                }
+                            }}
+                            others={{
+                                loading: fetchingEstados,
+                                notFoundContent: fetchingEstados ? <Spin size="small" /> : 'Nenhum resultado encontrado',
+                                allowClear: true
+                            }}
+                            debounceDelay={600}
+                            xs={24}
+                            sm={24}
+                            md={8}
+                            lg={8}
+                            xl={8}
+                        >
+                            {estados.map(item => (
+                                <Select.Option key={item.id} value={item.id}>{item.nome}</Select.Option>
+                            ))}
+                        </SelectedFormField>
 
-                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
-                            <Col span={24}>
-                                <span>Cidade:</span>
-                            </Col>
-                            <Col span={24}>
-                                <FormItem>
-                                    {getFieldDecorator('cidade')(
-                                        <Select 
-                                            placeholder="Selecione uma cidade"
-                                            allowClear
-                                            showSearch
-                                            optionFilterProp="children"
-                                        >
-                                            {this.formataDadosCidades()}
-                                        </Select>
-                                    )}
-                                </FormItem>
-                            </Col>
-                        </Col>
+                        <SelectedFormField
+                            title="Cidade:"
+                            placeholder={estadoSelecionadoBusca ? "Selecione uma cidade" : "Selecione um estado primeiro"}
+                            fieldName="cidade"
+                            getFieldDecorator={getFieldDecorator}
+                            disabled={!estadoSelecionadoBusca}
+                            onSearch={searchText => {
+                                if (estadoSelecionadoBusca) {
+                                    this.requisitaCidades(searchText || '', estadoSelecionadoBusca)
+                                }
+                            }}
+                            others={{
+                                loading: fetchingCidades,
+                                notFoundContent: fetchingCidades ? <Spin size="small" /> : 'Nenhum resultado encontrado',
+                                allowClear: true
+                            }}
+                            debounceDelay={600}
+                            xs={24}
+                            sm={24}
+                            md={8}
+                            lg={8}
+                            xl={8}
+                        >
+                            {cidades.map(item => (
+                                <Select.Option key={item.id} value={item.id}>{item.nome}</Select.Option>
+                            ))}
+                        </SelectedFormField>
                     </Row>
 
                     <Row style={{ marginTop: 32 }}>
@@ -574,89 +610,146 @@ class ListaLocaisColeta extends Component {
     }
 
     renderModalConteudo = () => {
+        const { getFieldDecorator } = this.props.form
+        const { paises, estados, cidades, fetchingPaises, fetchingEstados, fetchingCidades, paisSelecionado, estadoSelecionado } = this.state
+
         return (
             <div>
-                <Row gutter={8} style={{ marginTop: 16 }}>
+                <Row gutter={8}>
                     <Col span={24}>
                         <span>Nome do Local de Coleta:</span>
                     </Col>
                 </Row>
                 <Row gutter={8}>
                     <Col span={24}>
-                        <Input 
-                            placeholder="RPPN Moreira Sales"
-                            value={this.state.nomeLocal}
-                            onChange={e => this.setState({ nomeLocal: e.target.value })}
-                        />
+                        <FormItem>
+                            {getFieldDecorator('nomeLocalModal')(
+                                <Input 
+                                    placeholder="RPPN Moreira Sales"
+                                    onChange={e => this.setState({ nomeLocal: e.target.value })}
+                                />
+                            )}
+                        </FormItem>
                     </Col>
                 </Row>
 
                 <Row gutter={8} style={{ marginTop: 16 }}>
-                    <Col span={24}>
-                        <span>País:</span>
-                    </Col>
-                </Row>
-                <Row gutter={8}>
-                    <Col span={24}>
-                        <Select 
-                            placeholder="Selecione um país"
-                            showSearch
-                            optionFilterProp="children"
-                            value={this.state.paisSelecionado}
-                            style={{ width: '100%' }}
-                            onChange={async value => {
-                                this.setState({ paisSelecionado: value })
-                                await this.requisitaEstados(value)
-                            }}
-                        >
-                            {this.formataDadosPaises()}
-                        </Select>
-                    </Col>
-                </Row>
-
-                <Row gutter={8} style={{ marginTop: 16 }}>
-                    <Col span={24}>
-                        <span>Estado:</span>
-                    </Col>
-                </Row>
-                <Row gutter={8}>
-                    <Col span={24}>
-                        <Select 
-                            placeholder="Selecione um estado"
-                            showSearch
-                            optionFilterProp="children"
-                            value={this.state.estadoSelecionado}
-                            style={{ width: '100%' }}
-                            onChange={async value => {
-                                this.setState({ estadoSelecionado: value })
-                                await this.requisitaCidades(value)
-                            }}
-                        >
-                            {this.formataDadosEstados()}
-                        </Select>
-                    </Col>
+                    <SelectedFormField
+                        title="País:"
+                        placeholder="Selecione um país"
+                        fieldName="paisModal"
+                        getFieldDecorator={getFieldDecorator}
+                        onSearch={searchText => {
+                            this.requisitaPaises(searchText || '')
+                        }}
+                        onChange={async value => {
+                            this.setState({ 
+                                paisSelecionado: value,
+                                estadoSelecionado: null,
+                                cidadeSelecionada: null,
+                                estados: [],
+                                cidades: []
+                            })
+                            this.props.form.setFieldsValue({
+                                estadoModal: undefined,
+                                cidadeModal: undefined
+                            })
+                            if (value) {
+                                await this.requisitaEstados('', value)
+                            }
+                        }}
+                        others={{
+                            loading: fetchingPaises,
+                            notFoundContent: fetchingPaises ? <Spin size="small" /> : 'Nenhum resultado encontrado',
+                            allowClear: true
+                        }}
+                        debounceDelay={600}
+                        xs={24}
+                        sm={24}
+                        md={24}
+                        lg={24}
+                        xl={24}
+                    >
+                        {paises.map(item => (
+                            <Select.Option key={item.id} value={item.id}>{item.nome}</Select.Option>
+                        ))}
+                    </SelectedFormField>
                 </Row>
 
                 <Row gutter={8} style={{ marginTop: 16 }}>
-                    <Col span={24}>
-                        <span>Cidade:</span>
-                    </Col>
+                    <SelectedFormField
+                        title="Estado:"
+                        placeholder={paisSelecionado ? "Selecione um estado" : "Selecione um país primeiro"}
+                        fieldName="estadoModal"
+                        getFieldDecorator={getFieldDecorator}
+                        disabled={!paisSelecionado}
+                        onSearch={searchText => {
+                            if (paisSelecionado) {
+                                this.requisitaEstados(searchText || '', paisSelecionado)
+                            }
+                        }}
+                        onChange={async value => {
+                            this.setState({ 
+                                estadoSelecionado: value,
+                                cidadeSelecionada: null,
+                                cidades: []
+                            })
+                            this.props.form.setFieldsValue({
+                                cidadeModal: undefined
+                            })
+                            if (value) {
+                                await this.requisitaCidades('', value)
+                            }
+                        }}
+                        others={{
+                            loading: fetchingEstados,
+                            notFoundContent: fetchingEstados ? <Spin size="small" /> : 'Nenhum resultado encontrado',
+                            allowClear: true
+                        }}
+                        debounceDelay={600}
+                        xs={24}
+                        sm={24}
+                        md={24}
+                        lg={24}
+                        xl={24}
+                    >
+                        {estados.map(item => (
+                            <Select.Option key={item.id} value={item.id}>{item.nome}</Select.Option>
+                        ))}
+                    </SelectedFormField>
                 </Row>
-                <Row gutter={8}>
-                    <Col span={24}>
-                        <Select 
-                            placeholder="Selecione uma cidade"
-                            showSearch
-                            optionFilterProp="children"
-                            value={this.state.cidadeSelecionada}
-                            style={{ width: '100%' }}
-                            onChange={value => {
-                                this.setState({ cidadeSelecionada: value })
-                            }}
-                        >
-                            {this.formataDadosCidades()}
-                        </Select>
-                    </Col>
+
+                <Row gutter={8} style={{ marginTop: 16 }}>
+                    <SelectedFormField
+                        title="Cidade:"
+                        placeholder={estadoSelecionado ? "Selecione uma cidade" : "Selecione um estado primeiro"}
+                        fieldName="cidadeModal"
+                        getFieldDecorator={getFieldDecorator}
+                        disabled={!estadoSelecionado}
+                        onSearch={searchText => {
+                            if (estadoSelecionado) {
+                                this.requisitaCidades(searchText || '', estadoSelecionado)
+                            }
+                        }}
+                        onChange={value => {
+                            this.setState({ cidadeSelecionada: value })
+                        }}
+                        others={{
+                            loading: fetchingCidades,
+                            notFoundContent: fetchingCidades ? <Spin size="small" /> : 'Nenhum resultado encontrado',
+                            allowClear: true
+                        }}
+                        debounceDelay={600}
+                        xs={24}
+                        sm={24}
+                        md={24}
+                        lg={24}
+                        xl={24}
+                    >
+                        {cidades.map(item => (
+                            <Select.Option key={item.id} value={item.id}>{item.nome}</Select.Option>
+                        ))}
+                    </SelectedFormField>
                 </Row>
             </div>
         )

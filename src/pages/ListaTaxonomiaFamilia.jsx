@@ -3,7 +3,7 @@ import { Component } from 'react'
 import {
     Divider, Modal, Card, Row, Col,
     Input, Button, notification,
-    Select
+    Select, Spin
 } from 'antd'
 import axios from 'axios'
 
@@ -13,6 +13,7 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
+import SelectedFormField from './tombos/components/SelectedFormFiled'
 import { isCuradorOuOperador } from '../helpers/usuarios'
 import { recaptchaKey } from '@/config/api'
 
@@ -57,43 +58,44 @@ class ListaTaxonomiaFamilia extends Component {
             visibleModal: false,
             loadingModal: false,
             loading: false,
+            fetchingReinos: false,
             titulo: 'Cadastrar',
             id: -1
         }
     }
 
     requisitaExclusao(id) {
-    this.setState({
-        loading: true
-    })
-    axios.delete(`/familias/${id}`)
-        .then(response => {
-            this.setState({
-                loading: false
-            })
-            if (response.status === 204) {
-                this.requisitaListaFamilia(this.state.valores, this.state.pagina)
-                this.notificacao('success', 'Excluir família', 'A família foi excluída com sucesso.')
-            }
+        this.setState({
+            loading: true
         })
-        .catch(err => {
-            this.setState({
-                loading: false
-            })
-            const { response } = err
-            if (response && response.data) {
-                const { error } = response.data
-                if (error && error.code) {
-                    this.notificacao('error', 'Erro ao excluir família', error.code)
-                } else {
-                    this.notificacao('error', 'Erro ao excluir família', 'Ocorreu um erro inesperado ao tentar excluir a família.')
+        axios.delete(`/familias/${id}`)
+            .then(response => {
+                this.setState({
+                    loading: false
+                })
+                if (response.status === 204) {
+                    this.requisitaListaFamilia(this.state.valores, this.state.pagina)
+                    this.notificacao('success', 'Excluir família', 'A família foi excluída com sucesso.')
                 }
-                console.error(error)
-            } else {
-                this.notificacao('error', 'Erro ao excluir família', 'Falha na comunicação com o servidor.')
-            }
-        })
-}
+            })
+            .catch(err => {
+                this.setState({
+                    loading: false
+                })
+                const { response } = err
+                if (response && response.data) {
+                    const { error } = response.data
+                    if (error && error.code) {
+                        this.notificacao('error', 'Erro ao excluir família', error.code)
+                    } else {
+                        this.notificacao('error', 'Erro ao excluir família', 'Ocorreu um erro inesperado ao tentar excluir a família.')
+                    }
+                    console.error(error)
+                } else {
+                    this.notificacao('error', 'Erro ao excluir família', 'Falha na comunicação com o servidor.')
+                }
+            })
+    }
 
     notificacao = (type, titulo, descricao) => {
         notification[type]({
@@ -169,22 +171,32 @@ class ListaTaxonomiaFamilia extends Component {
 
     requisitaListaFamilia = async (valores, pg, pageSize, sorter) => {
         this.setState({ loading: true })
-    
-        await new Promise(resolve => window.grecaptcha.ready(resolve))
-    
-        const token = await window.grecaptcha.execute(recaptchaKey, { action: 'familias' })
-    
+
         const campo = sorter && sorter.field ? sorter.field : 'familia'
         const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
-    
+
         const params = {
             pagina: pg,
             limite: pageSize || 20,
             order: `${campo}:${ordem}`,
-            recaptchaToken: token,
             ...(valores && valores.familia ? { familia: valores.familia } : {})
         }
-    
+
+        const isLogged = Boolean(localStorage.getItem('token'))
+
+        if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
+            try {
+                await new Promise(resolve => window.grecaptcha.ready(resolve))
+                const token = await window.grecaptcha.execute(recaptchaKey, { action: 'familias' })
+                params.recaptchaToken = token
+            } catch (error) {
+                console.error('Erro ao executar reCAPTCHA:', error)
+                this.setState({ loading: false })
+                this.notificacao('error', 'Erro', 'Falha ao validar reCAPTCHA.')
+                return
+            }
+        }
+
         axios.get('/familias', { params })
             .then(response => {
                 this.setState({ loading: false })
@@ -209,7 +221,6 @@ class ListaTaxonomiaFamilia extends Component {
                 }
             })
     }
-
     handleSubmit = (err, valores) => {
         if (!err) {
             this.setState({
@@ -370,26 +381,40 @@ class ListaTaxonomiaFamilia extends Component {
         )
     }
 
-    requisitaReinos = () => {
-        axios.get('/reinos', {
-            params: {
-                limite: 9999999
+    requisitaReinos = async (searchText = '') => {
+        this.setState({ fetchingReinos: true })
+
+        try {
+            const params = {
+                limite: 9999999,
+                ...(searchText ? { reino: searchText } : {})
             }
-        })
-            .then(response => {
-                if (response.status === 200) {
-                    this.setState({
-                        reinos: response.data.resultado
-                    })
-                }
-            })
-            .catch(err => {
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    console.error(error.message)
-                }
-            })
+
+            const isLogged = Boolean(localStorage.getItem('token'))
+
+            if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
+                await new Promise(resolve => window.grecaptcha.ready(resolve))
+                const token = await window.grecaptcha.execute(recaptchaKey, { action: 'reinos' })
+                params.recaptchaToken = token
+            }
+
+            const response = await axios.get('/reinos', { params })
+
+            if (response.status === 200) {
+                this.setState({
+                    reinos: response.data.resultado,
+                    fetchingReinos: false
+                })
+            }
+        } catch (err) {
+            this.setState({ fetchingReinos: false })
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                console.error(error.message)
+            }
+            this.notificacao('error', 'Erro', 'Falha ao buscar reinos.')
+        }
     }
 
     renderAdd = () => {
@@ -420,6 +445,7 @@ class ListaTaxonomiaFamilia extends Component {
 
     renderFormulario() {
         const { getFieldDecorator } = this.props.form
+        const { fetchingReinos } = this.state
         return (
             <div>
                 <Form onSubmit={this.handleSubmitForm}>
@@ -454,26 +480,28 @@ class ListaTaxonomiaFamilia extends Component {
 
                         <div>
                             <Row gutter={8}>
-                                <Col span={24}>
-                                    <span>Nome do reino:</span>
-                                </Col>
-                            </Row>
-                            <Row gutter={8}>
-                                <Col span={24}>
-                                    <FormItem>
-                                        {getFieldDecorator('nomeReino')(
-                                            <Select
-                                                showSearch
-                                                style={{ width: '100%' }}
-                                                placeholder="Selecione um reino"
-                                                optionFilterProp="children"
-                                            >
-
-                                                {this.optionReino()}
-                                            </Select>
-                                        )}
-                                    </FormItem>
-                                </Col>
+                                <SelectedFormField
+                                    title="Nome do reino:"
+                                    placeholder="Selecione um reino"
+                                    fieldName="nomeReino"
+                                    getFieldDecorator={getFieldDecorator}
+                                    onSearch={searchText => {
+                                        this.requisitaReinos(searchText || '')
+                                    }}
+                                    others={{
+                                        loading: fetchingReinos,
+                                        notFoundContent: fetchingReinos ? <Spin size="small" /> : 'Nenhum resultado encontrado',
+                                        allowClear: true
+                                    }}
+                                    debounceDelay={600}
+                                    xs={24}
+                                    sm={24}
+                                    md={24}
+                                    lg={24}
+                                    xl={24}
+                                >
+                                    {this.optionReino()}
+                                </SelectedFormField>
                             </Row>
                             <Row gutter={8} style={{ marginTop: 16 }}>
                                 <Col span={24}>
@@ -493,7 +521,6 @@ class ListaTaxonomiaFamilia extends Component {
 
                     </ModalCadastroComponent>
                 </Form>
-
                 <Row gutter={24} style={{ marginBottom: '20px' }}>
                     <Col xs={24} sm={14} md={18} lg={20} xl={20}>
                         <h2 style={{ fontWeight: 200 }}>Famílias</h2>

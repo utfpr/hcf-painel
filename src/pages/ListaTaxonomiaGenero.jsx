@@ -12,6 +12,7 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
+import SelectedFormField from './tombos/components/SelectedFormFiled'
 import { isCuradorOuOperador } from '../helpers/usuarios'
 import { recaptchaKey } from '@/config/api'
 
@@ -50,48 +51,52 @@ class ListaTaxonomiaGenero extends Component {
         this.state = {
             generos: [],
             metadados: {},
+            reinos: [],
             familias: [],
             pagina: 1,
             visibleModal: false,
             loadingModal: false,
             loading: false,
+            fetchingReinos: false,
+            fetchingFamilias: false,
+            reinoSelecionado: null,
             titulo: 'Cadastrar',
             id: -1
         }
     }
 
     requisitaExclusao(id) {
-    this.setState({
-        loading: true
-    })
-    axios.delete(`/generos/${id}`)
-        .then(response => {
-            this.setState({
-                loading: false
-            })
-            if (response.status === 204) {
-                this.requisitaListaGenero(this.state.valores, this.state.pagina)
-                this.notificacao('success', 'Excluir', 'O gênero foi excluída com sucesso.')
-            }
+        this.setState({
+            loading: true
         })
-        .catch(err => {
-            this.setState({
-                loading: false
-            })
-            const { response } = err
-            if (response && response.data) {
-                const { error } = response.data
-                if (error && error.code) {
-                    this.notificacao('error', 'Erro ao excluir gênero', error.code)
-                } else {
-                    this.notificacao('error', 'Erro ao excluir gênero', 'Ocorreu um erro inesperado ao tentar excluir o gênero.')
+        axios.delete(`/generos/${id}`)
+            .then(response => {
+                this.setState({
+                    loading: false
+                })
+                if (response.status === 204) {
+                    this.requisitaListaGenero(this.state.valores, this.state.pagina)
+                    this.notificacao('success', 'Excluir', 'O gênero foi excluída com sucesso.')
                 }
-                console.error(error)
-            } else {
-                this.notificacao('error', 'Erro ao excluir gênero', 'Falha na comunicação com o servidor.')
-            }
-        })
-}
+            })
+            .catch(err => {
+                this.setState({
+                    loading: false
+                })
+                const { response } = err
+                if (response && response.data) {
+                    const { error } = response.data
+                    if (error && error.code) {
+                        this.notificacao('error', 'Erro ao excluir gênero', error.code)
+                    } else {
+                        this.notificacao('error', 'Erro ao excluir gênero', 'Ocorreu um erro inesperado ao tentar excluir o gênero.')
+                    }
+                    console.error(error)
+                } else {
+                    this.notificacao('error', 'Erro ao excluir gênero', 'Falha na comunicação com o servidor.')
+                }
+            })
+    }
 
     notificacao = (type, titulo, descricao) => {
         notification[type]({
@@ -118,7 +123,43 @@ class ListaTaxonomiaGenero extends Component {
 
     componentDidMount() {
         this.requisitaListaGenero({}, this.state.pagina)
-        this.requisitaFamilias()
+        this.requisitaReinos()
+    }
+
+    requisitaReinos = async (searchText = '') => {
+        this.setState({ fetchingReinos: true })
+
+        try {
+            const params = {
+                limite: 9999999,
+                ...(searchText ? { reino: searchText } : {})
+            }
+
+            const isLogged = Boolean(localStorage.getItem('token'))
+
+            if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
+                await new Promise(resolve => window.grecaptcha.ready(resolve))
+                const token = await window.grecaptcha.execute(recaptchaKey, { action: 'reinos' })
+                params.recaptchaToken = token
+            }
+
+            const response = await axios.get('/reinos', { params })
+
+            if (response.status === 200) {
+                this.setState({
+                    reinos: response.data.resultado,
+                    fetchingReinos: false
+                })
+            }
+        } catch (err) {
+            this.setState({ fetchingReinos: false })
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                console.error(error.message)
+            }
+            this.notificacao('error', 'Erro', 'Falha ao buscar reinos.')
+        }
     }
 
     gerarAcao(item) {
@@ -128,19 +169,25 @@ class ListaTaxonomiaGenero extends Component {
                     <Divider type="vertical" />
                     <a
                         href="#"
-                        onClick={() => {
-                            this.props.form.setFields({
-                                nomeGenero: {
-                                    value: item.nome
-                                },
-                                nomeFamilia: {
-                                    value: { key: item.familia.id, label: item.familia.nome }
-                                }
-                            })
+                        onClick={async () => {
+                            const reinoId = item.familia.reino.id || null
+
                             this.setState({
                                 visibleModal: true,
                                 id: item.id,
-                                titulo: 'Atualizar'
+                                titulo: 'Atualizar',
+                                reinoSelecionado: reinoId,
+                                familiaIdEdicao: item.familia.id
+                            })
+
+                            if (reinoId) {
+                                await this.requisitaFamilias('', reinoId)
+                            }
+
+                            this.props.form.setFieldsValue({
+                                nomeGenero: item.nome,
+                                nomeFamilia: item.familia.id,
+                                nomeReino: reinoId
                             })
                         }}
                     >
@@ -169,6 +216,7 @@ class ListaTaxonomiaGenero extends Component {
         genero: item.nome,
         acao: this.gerarAcao(item),
         familia: item.familia?.nome,
+        familiaId: item.familia?.id
     }))
 
     renderAdd = () => {
@@ -178,10 +226,14 @@ class ListaTaxonomiaGenero extends Component {
                     type="primary"
                     icon={<PlusOutlined />}
                     onClick={() => {
+                        this.props.form.resetFields()
+
                         this.setState({
                             visibleModal: true,
                             titulo: 'Cadastrar',
-                            id: -1
+                            id: -1,
+                            reinoSelecionado: null,
+                            familias: []
                         })
                     }}
                     style={{ backgroundColor: '#5CB85C', borderColor: '#5CB85C', width: '100%' }}
@@ -195,26 +247,29 @@ class ListaTaxonomiaGenero extends Component {
 
     requisitaListaGenero = async (valores, pg, pageSize, sorter) => {
         this.setState({ loading: true })
-    
+
         try {
-            await new Promise(resolve => window.grecaptcha.ready(resolve))
-    
-            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'generos' })
-    
             const campo = sorter && sorter.field ? sorter.field : 'genero'
             const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
-    
+
             const params = {
                 pagina: pg,
                 limite: pageSize || 20,
                 order: `${campo}:${ordem}`,
-                recaptchaToken: token,
                 ...(valores && valores.genero ? { genero: valores.genero } : {}),
                 ...(valores && valores.familia ? { familia_nome: valores.familia } : {})
             }
-    
+
+            const isLogged = Boolean(localStorage.getItem('token'))
+
+            if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
+                await new Promise(resolve => window.grecaptcha.ready(resolve))
+                const token = await window.grecaptcha.execute(recaptchaKey, { action: 'generos' })
+                params.recaptchaToken = token
+            }
+
             const response = await axios.get('/generos', { params })
-    
+
             if (response.status === 200) {
                 const { data } = response
                 this.setState({
@@ -226,7 +281,7 @@ class ListaTaxonomiaGenero extends Component {
                 this.notificacao('warning', 'Buscar gênero', 'Erro ao buscar os gêneros.')
                 this.setState({ loading: false })
             } else {
-                this.notificacao('error', 'Erro', 'Erro do servidor ao buscar os gêneros.')
+                this.notificacao('error', 'Error', 'Erro de servidor ao buscar os gêneros.')
                 this.setState({ loading: false })
             }
         } catch (err) {
@@ -300,7 +355,7 @@ class ListaTaxonomiaGenero extends Component {
         })
 
         const formValues = this.props.form.getFieldsValue()
-            
+
         const extrairId = (valor) => {
             if (typeof valor === 'object' && valor.key) {
                 return valor.key
@@ -343,29 +398,43 @@ class ListaTaxonomiaGenero extends Component {
             .catch(this.catchRequestError)
     }
 
-    requisitaFamilias = () => {
-        axios.get('/familias', {
-            params: {
-                limite: 9999999
+    requisitaFamilias = async (searchText = '', reinoId = null) => {
+        this.setState({ fetchingFamilias: true })
+
+        try {
+            const params = {
+                limite: 9999999,
+                ...(searchText ? { familia: searchText } : {}),
+                ...(reinoId ? { reino_id: reinoId } : {})
             }
-        })
-            .then(response => {
-                if (response.status === 200) {
-                    this.setState({
-                        familias: response.data.resultado
-                    })
-                } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar famílias, tente novamente.')
-                }
-            })
-            .catch(err => {
-                const { response } = err
-                if (response && response.data) {
-                    const { error } = response.data
-                    console.error(error.message)
-                }
-            })
-            .catch(this.catchRequestError)
+
+            const isLogged = Boolean(localStorage.getItem('token'))
+
+            if (!isLogged && window.grecaptcha && window.grecaptcha.ready) {
+                await new Promise(resolve => window.grecaptcha.ready(resolve))
+                const token = await window.grecaptcha.execute(recaptchaKey, { action: 'familias' })
+                params.recaptchaToken = token
+            }
+
+            const response = await axios.get('/familias', { params })
+
+            if (response.status === 200) {
+                this.setState({
+                    familias: response.data.resultado,
+                    fetchingFamilias: false
+                })
+                return response.data.resultado
+            }
+        } catch (err) {
+            this.setState({ fetchingFamilias: false })
+            const { response } = err
+            if (response && response.data) {
+                const { error } = response.data
+                console.error(error.message)
+            }
+            this.notificacao('error', 'Erro', 'Falha ao buscar famílias.')
+        }
+        return []
     }
 
     renderPainelBusca(getFieldDecorator) {
@@ -446,12 +515,17 @@ class ListaTaxonomiaGenero extends Component {
         )
     }
 
+    optionReino = () => this.state.reinos.map(item => (
+        <Option value={item.id}>{item.nome}</Option>
+    ))
+
     optionFamilia = () => this.state.familias.map(item => (
         <Option value={item.id}>{item.nome}</Option>
     ))
 
     renderFormulario() {
         const { getFieldDecorator } = this.props.form
+        const { fetchingReinos, fetchingFamilias, reinoSelecionado } = this.state
         return (
             <div>
                 <Form onSubmit={this.handleSubmitForm}>
@@ -461,8 +535,11 @@ class ListaTaxonomiaGenero extends Component {
                         loadingModal={this.state.loadingModal}
                         onCancel={
                             () => {
+                                this.props.form.resetFields()
                                 this.setState({
-                                    visibleModal: false
+                                    visibleModal: false,
+                                    reinoSelecionado: null,
+                                    familias: []
                                 })
                             }
                         }
@@ -478,34 +555,77 @@ class ListaTaxonomiaGenero extends Component {
                             } else {
                                 this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome do gênero e da família.')
                             }
+
+                            this.props.form.resetFields()
                             this.setState({
-                                visibleModal: false
+                                visibleModal: false,
+                                reinoSelecionado: null,
+                                familias: []
                             })
                         }}
                     >
 
                         <div>
-                            <Row gutter={8} style={{ marginTop: 16 }}>
-                                <Col span={24}>
-                                    <span>Nome da família:</span>
-                                </Col>
-                            </Row>
                             <Row gutter={8}>
-                                <Col span={24}>
-                                    <FormItem>
-                                        {getFieldDecorator('nomeFamilia')(
-                                            <Select
-                                                showSearch
-                                                style={{ width: '100%' }}
-                                                placeholder="Selecione uma família"
-                                                optionFilterProp="children"
-                                            >
-
-                                                {this.optionFamilia()}
-                                            </Select>
-                                        )}
-                                    </FormItem>
-                                </Col>
+                                <SelectedFormField
+                                    title="Nome do reino:"
+                                    placeholder="Selecione um reino"
+                                    fieldName="nomeReino"
+                                    getFieldDecorator={getFieldDecorator}
+                                    onSearch={searchText => {
+                                        this.requisitaReinos(searchText || '')
+                                    }}
+                                    onChange={value => {
+                                        this.setState({
+                                            reinoSelecionado: value,
+                                            familias: []
+                                        })
+                                        this.props.form.setFieldsValue({ nomeFamilia: undefined })
+                                        if (value) {
+                                            this.requisitaFamilias('', value)
+                                        }
+                                    }}
+                                    others={{
+                                        loading: fetchingReinos,
+                                        notFoundContent: fetchingReinos ? <Spin size="small" /> : 'Nenhum resultado encontrado',
+                                        allowClear: true
+                                    }}
+                                    debounceDelay={600}
+                                    xs={24}
+                                    sm={24}
+                                    md={24}
+                                    lg={24}
+                                    xl={24}
+                                >
+                                    {this.optionReino()}
+                                </SelectedFormField>
+                            </Row>
+                            <Row gutter={8} style={{ marginTop: 16 }}>
+                                <SelectedFormField
+                                    title="Nome da família:"
+                                    placeholder={reinoSelecionado ? "Selecione uma família" : "Selecione um reino primeiro"}
+                                    fieldName="nomeFamilia"
+                                    getFieldDecorator={getFieldDecorator}
+                                    onSearch={searchText => {
+                                        if (reinoSelecionado) {
+                                            this.requisitaFamilias(searchText || '', reinoSelecionado)
+                                        }
+                                    }}
+                                    others={{
+                                        loading: fetchingFamilias,
+                                        notFoundContent: fetchingFamilias ? <Spin size="small" /> : 'Nenhum resultado encontrado',
+                                        allowClear: true
+                                    }}
+                                    disabled={!reinoSelecionado}
+                                    debounceDelay={600}
+                                    xs={24}
+                                    sm={24}
+                                    md={24}
+                                    lg={24}
+                                    xl={24}
+                                >
+                                    {this.optionFamilia()}
+                                </SelectedFormField>
                             </Row>
                             <Row gutter={8} style={{ marginTop: 16 }}>
                                 <Col span={24}>
