@@ -45,7 +45,7 @@ import NovoIdentificadorScreen from './pages/NovoIdentificadorScreen'
 import NovoUsuarioScreen from './pages/NovoUsuarioScreen'
 import PerfilScreen from './pages/PerfilScreen'
 import RecuperarSenhaScreen from './pages/recuperacaoSenha/RecuperarSenhaScreen'
-import ResetSenhaScreen from './pages/recuperacaoSenha/ResetSenhaScreen'
+import TrocarSenhaScreen from './pages/recuperacaoSenha/TrocarSenhaScreen'
 import RelatorioCodigoBarrasScreen from './pages/RelatorioCodigoBarrasScreen'
 import RelatorioColetaLocalPeriodoScreen from './pages/RelatorioColetaLocalPeriodoScreen'
 import RelatorioColetaPeriodoScreen from './pages/RelatorioColetaPeriodoScreen'
@@ -170,7 +170,7 @@ export default class App extends Component {
         return (
             <BrowserRouter basename={import.meta.env.VITE_BASE_URL}>
                 <Switch>
-                    <Route path="/reset-senha" component={ResetSenhaScreen} />
+                    <Route path="/alterar-senha" component={TrocarSenhaScreen} />
                     <Route path="/recuperar-senha" component={RecuperarSenhaScreen} />
                     <Route path="/inicio" component={InicioScreen} />
                     <Route path="/" render={this.renderContent} />
