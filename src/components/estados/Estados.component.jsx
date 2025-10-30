@@ -11,7 +11,6 @@ import SimpleTableComponent from '@/components/SimpleTableComponent';
 const columns = [
   { title: 'Estado', dataIndex: 'nome', key: 'nome', sorter: true },
   { title: 'Sigla', dataIndex: 'sigla', key: 'sigla', sorter: true },
-  { title: 'Código Telefone', dataIndex: 'codigo_telefone', key: 'codigo_telefone', sorter: true },
   { title: 'País', dataIndex: 'paisNome', key: 'paisNome', sorter: true },
   { title: 'Ação', key: 'acao' }
 ];
@@ -72,7 +71,6 @@ const ListaEstadosComponent = ({
         onSalvar({
           nome: values.nomeEstado,
           sigla: values.ufEstado,
-          codigo_telefone: values.codigoTelefone,
           pais_id: parseInt(values.paisId, 10)
         });
       }
@@ -172,20 +170,6 @@ const ListaEstadosComponent = ({
                 ]}
               >
                 <Input maxLength={3} placeholder="PR" />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={8}>
-            <Col span={24}>
-              <Form.Item
-                label="Código de telefone"
-                name="codigoTelefone"
-                rules={[
-                  { required: true, message: 'Informe o código de telefone' },
-                  { pattern: /^[0-9]+$/, message: 'O código deve conter apenas números' }
-                ]}
-              >
-                <Input maxLength={3} placeholder="44" />
               </Form.Item>
             </Col>
           </Row>
