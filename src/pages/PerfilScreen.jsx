@@ -65,8 +65,8 @@ export default class PerfilScreen extends Component {
         this.setState({ confirmLoading: true })
 
         axios.put(`/usuarios/${user.id}/senha`, {
-            senhaAtual: values.senhaAtual,
-            novaSenha: values.novaSenha
+            senha_atual: values.senha_atual,
+            nova_senha: values.nova_senha
         })
             .then(() => {
                 notification.success({
@@ -225,7 +225,7 @@ export default class PerfilScreen extends Component {
                     <Form onFinish={this.handleUpdatePassword}>
                         <Form.Item
                             label="Senha Atual"
-                            name="senhaAtual"
+                            name="senha_atual"
                             labelCol={{ span: 24 }}
                             wrapperCol={{ span: 24 }}
                             rules={[{ message: 'Insira sua senha atual.' }]}
@@ -234,7 +234,7 @@ export default class PerfilScreen extends Component {
                         </Form.Item>
                         <Form.Item
                             label="Nova Senha"
-                            name="novaSenha"
+                            name="nova_senha"
                             labelCol={{ span: 24 }}
                             wrapperCol={{ span: 24 }}
                             rules={[
