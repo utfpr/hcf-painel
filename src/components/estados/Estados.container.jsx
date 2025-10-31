@@ -19,6 +19,7 @@ const ListaEstadosContainer = () => {
     const [tituloModal, setTituloModal] = useState('Cadastrar');
     const [idEstado, setIdEstado] = useState(-1);
     const [paises, setPaises] = useState([]);
+    const [estadosFiltrados, setEstadosFiltrados] = useState([]);
 
     const requisitaPaises = async () => {
         try {
@@ -46,8 +47,9 @@ const ListaEstadosContainer = () => {
         try {
             const response = await axios.get('/estados');
             if (response.status === 200 && Array.isArray(response.data)) {
-                setEstadosOriginais(response.data);
-                atualizaPagina(pagina, pageSize, response.data);
+                const ordenados = response.data.sort((a, b) => a.nome.localeCompare(b.nome));
+                setEstadosOriginais(ordenados);
+                atualizaPagina(pagina, pageSize, ordenados);
             }
         } catch {
             notification.error({
@@ -64,10 +66,11 @@ const ListaEstadosContainer = () => {
         requisitaListaEstados();
     }, []);
 
-    const handleTabelaChange = (page, pageSize, sorter) => {
+    const handleTabelaChange = (page, pageSize) => {
         setPagina(page);
         setPageSize(pageSize);
-        atualizaPagina(page, pageSize);
+        const dataAtual = estadosFiltrados.length > 0 ? estadosFiltrados : estadosOriginais;
+        atualizaPagina(page, pageSize, dataAtual);
     };
 
     const handleExcluir = (id) => {
@@ -85,7 +88,9 @@ const ListaEstadosContainer = () => {
         setLoading(true);
         try {
             await axios.delete(`/estados/${id}`);
-            const novos = estadosOriginais.filter(e => e.id !== id);
+            const novos = estadosOriginais
+                .filter(e => e.id !== id)
+                .sort((a, b) => a.nome.localeCompare(b.nome));
             setEstadosOriginais(novos);
             atualizaPagina(pagina, pageSize, novos);
             notification.success({
@@ -109,13 +114,15 @@ const ListaEstadosContainer = () => {
         try {
             if (idEstado === -1) {
                 const resp = await axios.post('/estados', values);
-                const novos = [...estadosOriginais, resp.data];
+                const novos = [...estadosOriginais, resp.data].sort((a, b) => a.nome.localeCompare(b.nome));
                 setEstadosOriginais(novos);
                 atualizaPagina(pagina, pageSize, novos);
                 notification.success({ message: 'Sucesso', description: 'Estado cadastrado com sucesso.' });
             } else {
                 await axios.put(`/estados/${idEstado}`, values);
-                const atualizados = estadosOriginais.map(e => e.id === idEstado ? { ...e, ...values } : e);
+                const atualizados = estadosOriginais
+                    .map(e => e.id === idEstado ? { ...e, ...values } : e)
+                    .sort((a, b) => a.nome.localeCompare(b.nome));
                 setEstadosOriginais(atualizados);
                 atualizaPagina(pagina, pageSize, atualizados);
                 notification.success({ message: 'Sucesso', description: 'Estado atualizado com sucesso.' });
@@ -163,9 +170,17 @@ const ListaEstadosContainer = () => {
     };
 
     const handleBusca = (valores) => {
-        const filtrados = estadosOriginais.filter(e =>
-            !valores.nome || e.nome.toLowerCase().includes(valores.nome.toLowerCase())
-        );
+        let filtrados = estadosOriginais;
+        if (valores.nome) {
+            filtrados = filtrados.filter(e =>
+                e.nome.toLowerCase().includes(valores.nome.toLowerCase())
+            );
+        }
+        if (valores.paisId) {
+            filtrados = filtrados.filter(e => e.pais_id === parseInt(valores.paisId));
+        }
+
+        setEstadosFiltrados(filtrados);
         setPagina(1);
         atualizaPagina(1, pageSize, filtrados);
     };
@@ -173,6 +188,7 @@ const ListaEstadosContainer = () => {
     const handleLimparBusca = () => {
         form.resetFields();
         setPagina(1);
+        setEstadosFiltrados([]);
         atualizaPagina(1, pageSize, estadosOriginais);
     };
 
