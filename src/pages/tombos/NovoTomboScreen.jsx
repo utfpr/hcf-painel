@@ -121,6 +121,7 @@ class NovoTomboScreen extends Component {
 
     constructor(props) {
         super(props)
+        this.barcodeRef = null // Add ref for BarcodeTableComponent
         this.state = {
             showTable: false,
             fetchingColetores: false,
@@ -216,6 +217,9 @@ class NovoTomboScreen extends Component {
             codigosBarrasForm: [],
             codigosBarrasInicial: [],
             toDeleteBarcodes: [],
+            dadosFormulabarcodePhotosFromServerrioInicial: {},
+            barcodePhotosForm: {},
+            initialBarcodePhotos: {},
             isEditing: false,
             fetchingReinos: false,
             fetchingFamilias: false,
@@ -375,23 +379,126 @@ class NovoTomboScreen extends Component {
         });
     };
 
+    uploadFotoCodigo = async (tomboHcf, numeroCodigo, file) => {
+        const form = new FormData();
+        form.append("imagem", file);
+        form.append("codigo_foto", String(numeroCodigo));
+        form.append("tombo_hcf", String(tomboHcf));
+        form.append("em_vivo", "true");
+      
+        return axios.post("/uploads", form, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      };
+      
 
-    editarCodigosBarras = async (tomboHcf, currentList) => {
+    makeFileGetter = (source) => (codigo) => {
+        if (typeof source === "function") return source(codigo) || [];
+        if (source && typeof source === "object") return source[codigo] || [];
+        if (typeof this?.getPhotosOfCode === "function") return this.getPhotosOfCode(codigo) || [];
+        return [];
+    };
+
+    pickUploadableFile = (list = []) => {
+        for (const f of list) {
+            if (typeof File !== "undefined" && f instanceof File) return f;
+            if (f && f.originFileObj) return f.originFileObj;
+        }
+        return null;
+    };
+
+    hasLocalFile = (files = []) => !!this.pickUploadableFile(files);
+
+    shouldUploadPhoto = (initialFiles = [], currentFiles = []) => {
+        if (this.hasLocalFile(currentFiles)) return true;
+        return false;
+    };
+
+    formatCodeLabel = (n) => `HCF${String(n).padStart(9, "0")}`;
+
+    editarCodigosBarras = async (tomboHcf, currentList, photoSourceArg) => {
         try {
             const initialList = this.state.codigosBarrasInicial || [];
             const currentBarcodes = currentList || [];
             const deletions = this.state.toDeleteBarcodes || [];
             const isEditing = this.state.isEditing;
+    
+            const initialPhotosMap = this.state.initialBarcodePhotos || {};
+            const currentPhotosMap = photoSourceArg ?? this.state.currentBarcodePhotos ?? {};
 
-            const initialSet = new Set(initialList.map((item) => item.codigo_barra));
-            const newBarcodes = currentBarcodes.filter(
-                (item) => !initialSet.has(item.codigo_barra)
-            );
+            const getFiles = (typeof this.makeFileGetter === "function")
+                ? this.makeFileGetter(currentPhotosMap)
+                : (() => []);
 
+            const initialSet = new Set(initialList.map((it) => it.codigo_barra));
+            const newBarcodes = currentBarcodes.filter((it) => !initialSet.has(it.codigo_barra));
+            const existingBarcodes = currentBarcodes.filter((it) => initialSet.has(it.codigo_barra));
+    
             const ops = [];
 
             if (newBarcodes.length > 0) {
-                ops.push(this.criarCodigoBarras(tomboHcf, newBarcodes));
+                ops.push(this.criarCodigoBarras(tomboHcf, newBarcodes, getFiles));
+            }
+    
+
+            if (isEditing && existingBarcodes.length > 0) {
+                const codigosComAlteracaoArquivo = existingBarcodes
+                    .filter((row) => {
+                        const codigoFormatado = this.formatCodeLabel(row.num_barra);
+                        const filesAtuais = getFiles(codigoFormatado) || [];
+                        const filesIniciais = initialPhotosMap[codigoFormatado] || [];
+                        
+                        const temArquivoNovo = this.hasLocalFile(filesAtuais);
+                        const adicionouArquivo = filesIniciais.length === 0 && filesAtuais.length > 0;
+                        
+                        return temArquivoNovo || adicionouArquivo;
+                    })
+                    .map((row) => {
+                        const codigoFormatado = this.formatCodeLabel(row.num_barra);
+                        const files = getFiles(codigoFormatado) || [];
+                        const file = this.pickUploadableFile ? this.pickUploadableFile(files) : null;
+                        return file ? { numeroCodigo: row.num_barra, file } : null;
+                    })
+                    .filter(Boolean);
+    
+                if (codigosComAlteracaoArquivo.length > 0) {
+                    const uploadRequests = codigosComAlteracaoArquivo.map(({ numeroCodigo, file }) =>
+                        this.uploadFotoCodigo(tomboHcf, numeroCodigo, file)
+                    );
+                    ops.push(Promise.allSettled(uploadRequests));
+                }
+            }
+    
+            if (isEditing) {
+                const codesWithPhotoInitially = Object.keys(initialPhotosMap)
+                    .filter((code) => Array.isArray(initialPhotosMap[code]) && initialPhotosMap[code].length > 0);
+    
+                if (codesWithPhotoInitially.length > 0) {
+                    const codesNowWithoutPhoto = codesWithPhotoInitially.filter((code) => {
+                        const atual = currentPhotosMap[code];
+                        return !Array.isArray(atual) || atual.length === 0; // vazio agora
+                    });
+    
+                    if (codesNowWithoutPhoto.length > 0) {
+                        const deletePhotoRequests = codesNowWithoutPhoto
+                            .map((code) => {
+                                const row =
+                                    currentBarcodes.find((r) => r.codigo_barra === code) ||
+                                    initialList.find((r) => r.codigo_barra === code) ||
+                                    null;
+    
+                                const numeroCodigo = row?.num_barra ?? parseInt(String(code).replace(/\D/g, ""), 10);
+                                if (!Number.isFinite(numeroCodigo)) return null;
+    
+                                return axios.delete(`/uploads/${encodeURIComponent(numeroCodigo)}`);
+                            })
+                            .filter(Boolean);
+    
+                        if (deletePhotoRequests.length > 0) {
+                            ops.push(Promise.allSettled(deletePhotoRequests));
+                        }
+                    }
+                }
             }
 
             if (isEditing && deletions.length > 0) {
@@ -404,17 +511,20 @@ class NovoTomboScreen extends Component {
             if (ops.length > 0) {
                 await Promise.all(ops);
             }
-
-            if (newBarcodes.length > 0 || (isEditing && deletions.length > 0)) {
-                message.success("Códigos de barra atualizados com sucesso");
+    
+            if (
+                newBarcodes.length > 0 ||
+                (isEditing && (deletions.length > 0 || existingBarcodes.length > 0))
+            ) {
+                this.openNotificationWithIcon("success", "Sucesso", "Códigos de barra atualizados com sucesso");
             }
-
+    
             if (isEditing && deletions.length > 0) {
                 this.setState({ toDeleteBarcodes: [] });
             }
         } catch (error) {
             console.error("Erro ao atualizar códigos de barras:", error);
-            message.error("Erro ao atualizar os códigos de barras. Tente novamente.");
+            this.openNotificationWithIcon("error", "Erro", "Erro ao atualizar os códigos de barras. Tente novamente.");
         }
     };
 
@@ -459,40 +569,72 @@ class NovoTomboScreen extends Component {
             .filter((n) => (seen.has(n) ? false : (seen.add(n), true)));
     };
 
-    criarCodigoBarras = async (id_tombo, barcodeList = []) => {
+    criarCodigoBarras = async (id_tombo, barcodeList = [], getFiles) => {
         const hcf = Number(id_tombo);
         if (!Number.isFinite(hcf)) {
             message.error("Tombo (HCF) inválido.");
             return;
         }
-
+    
         const numeros = this.normalizeBarcodes(barcodeList);
         if (!numeros.length) {
-            message.warning("Nenhum código válido para enviar.");
+            this.openNotificationWithIcon("warning", "Atenção", "Nenhum código válido para enviar.");
             return;
         }
+    
+        const resultados = await Promise.all(
+            numeros.map(async (numeroCodigo) => {
+                try {
+                    await axios.post("/tombos/codigo_barras", {
+                        hcf,
+                        codigo_barra: numeroCodigo,
+                    });
 
-        const key = "post-codigos";
-
-        const results = await Promise.allSettled(
-            numeros.map((n) => axios.post("/tombos/codigo_barras", { hcf, codigo_barra: n }))
+                    let uploaded = false;
+                    if (typeof getFiles === "function") {
+                        const codigoFormatado = this.formatCodeLabel(numeroCodigo);
+                        const arquivos = getFiles(codigoFormatado);
+    
+                        if (arquivos && arquivos[0]) {
+                            const file = this.pickUploadableFile(arquivos);
+                            if (file) {
+                                await this.uploadFotoCodigo(hcf, numeroCodigo, file);
+                                uploaded = true;
+                            }
+                        }
+                    }
+    
+                    return { ok: true, numeroCodigo, uploaded };
+                } catch (error) {
+                    console.error("Erro ao criar/enviar para código:", numeroCodigo, error);
+                    return { ok: false, numeroCodigo, error };
+                }
+            })
         );
-
-        const ok = results.filter((r) => r.status === "fulfilled").length;
-        const fail = results.length - ok;
-
-        if (ok) {
-            message.success({ key, content: `Códigos criados: ${ok}${fail ? ` • Falharam: ${fail}` : ""}` });
+    
+        const okCount = resultados.filter((r) => r.ok).length;
+        const failCount = resultados.length - okCount;
+        const uploadedCount = resultados.filter((r) => r.ok && r.uploaded).length;
+    
+        if (okCount) {
+            this.openNotificationWithIcon(
+                "success",
+                "Sucesso",
+                `Códigos criados: ${okCount}${uploadedCount ? ` • Uploads: ${uploadedCount}` : ""}${
+                    failCount ? ` • Falharam: ${failCount}` : ""
+                }`
+            );
         } else {
-            message.error({ key, content: "Nenhum código foi criado." });
+            this.openNotificationWithIcon("error", "Erro", "Nenhum código foi criado.");
         }
     };
 
-
     handleRequisicao = values => {
         const { match } = this.props
+        const photoSourceArg = (codigo) => this.barcodeRef?.getPhotosOfCode?.(codigo) || [];
+
         if (match.params.tombo_id) {
-            this.editarCodigosBarras(match.params.tombo_id, this.state.codigosBarrasForm)
+            this.editarCodigosBarras(match.params.tombo_id, this.state.codigosBarrasForm, photoSourceArg)
             const json = this.montaFormularioJsonEdicao(values)
             this.requisitaEdicaoTombo(json)
         } else {
@@ -1763,7 +1905,8 @@ class NovoTomboScreen extends Component {
             .then(response => {
                 if (response.status === 201) {
                     const tombo = response.data
-                    this.criarCodigoBarras(tombo.hcf, this.state.codigosBarrasForm)
+                    const photoSourceArg = (codigo) => this.barcodeRef?.getPhotosOfCode?.(codigo) || [];
+                    this.criarCodigoBarras(tombo.hcf, this.state.codigosBarrasForm, photoSourceArg)
                 }
             })
             .then(response => {
@@ -1818,6 +1961,7 @@ class NovoTomboScreen extends Component {
 
     insereDadosFormulario = dados => {
         const { form } = this.props
+        
         this.setState({ dadosFormulario: dados })
         
         let insereState = {
@@ -1972,7 +2116,7 @@ class NovoTomboScreen extends Component {
             cancelText: 'NÃO',
             onOk: () => {
             },
-            onCancel: () => {
+            onCancel: () => {''
                 window.history.go(-1)
             }
         })
@@ -3657,10 +3801,14 @@ class NovoTomboScreen extends Component {
                     <Divider />
                     <Row gutter={8}>
                         <BarcodeTableComponent
+                            ref={(el) => (this.barcodeRef = el)}
+                            barcodePhotos={this.state.barcodePhotosFromServer}
                             barcodeEditList={this.state.codigosBarrasForm}
                             onDeletedBarcode={this.handleDeletedBarcode}
                             onChangeBarcodeList={this.handleChangeBarcodeList}
                             isEditing={this.state.isEditing}
+                            onChangeBarcodePhotos={this.handleChangeBarcodePhotos}
+                            onInitBarcodePhotos={this.handleInitBarcodePhotos}
                         />
                     </Row>
                     <br />
