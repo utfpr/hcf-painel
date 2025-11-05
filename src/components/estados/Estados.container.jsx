@@ -153,7 +153,6 @@ const ListaEstadosContainer = () => {
             form.setFieldsValue({
                 nomeEstado: estado.nome,
                 ufEstado: estado.sigla,
-                codigoTelefone: estado.codigo_telefone,
                 paisId: estado.pais_id,
             });
         } else {
