@@ -3368,6 +3368,39 @@ class NovoTomboScreen extends Component {
         }
     };
 
+    verifyCoordenada = async (cidadeId = null) => {
+        try {
+            const { form } = this.props;
+            if(cidadeId == null) {
+                cidadeId = form.getFieldValue('cidade');
+            }
+            const latitude = form.getFieldValue('latitude');
+            const longitude = form.getFieldValue('longitude');
+
+            if (!cidadeId || !latitude || !longitude) return;
+
+            if (latitude == null || Number.isNaN(latitude)) return;
+            if (longitude == null || Number.isNaN(longitude)) return;
+
+            const payload = {
+                cidade_id: Number(cidadeId),
+                latitude,
+                longitude,
+            };
+
+            const response = await axios.post('/tombos/verificarCoordenada', payload);
+            if (response?.data && response.data.dentro === false) {
+                this.openNotificationWithIcon(
+                    'warning',
+                    'Coordenada fora do município',
+                    'A coordenada informada não pertence ao munícipio informado.'
+                );
+            }
+        } catch (err) {
+            console.error('Falha ao verificar coordenada:', err);
+        }
+    };
+
     validacaoModal = () => {
         if (this.state.formColetor) {
             if (
@@ -3712,7 +3745,9 @@ class NovoTomboScreen extends Component {
         return (
             <div>
                 <Row gutter={8}>
-                    <LatLongFormField getFieldDecorator={getFieldDecorator} />
+                    <LatLongFormField
+                        getFieldDecorator={getFieldDecorator}
+                    />
                 </Row>
                 <br />
                 <Row gutter={8}>
@@ -3794,6 +3829,7 @@ class NovoTomboScreen extends Component {
                         getFieldDecorator={getFieldDecorator}
                         disabled={!this.props.form.getFieldValue("estados")}
                         onChange={(value) => {
+                            this.verifyCoordenada(value);
                             if (value) {
                                 this.props.form.setFieldsValue({
                                     complemento: undefined,
