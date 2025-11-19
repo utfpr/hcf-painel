@@ -2211,6 +2211,7 @@ class NovoTomboScreen extends Component {
         const soloId = extrairId(solo)
         const relevoId = extrairId(relevo)
         const vegetacaoId = extrairId(vegetacao)
+        const fasesId = extrairId(fases)
         const localColetaId = extrairId(complemento)
 
         json.principal = {
@@ -2252,7 +2253,7 @@ class NovoTomboScreen extends Component {
             solo_id: soloId,
             relevo_id: relevoId,
             vegetacao_id: vegetacaoId,
-            fase_sucessional_id: fases ? parseInt(fases) : null,
+            fase_sucessional_id: fasesId,
             descricao: relevoDescricao || null
         }
 
@@ -2333,6 +2334,7 @@ class NovoTomboScreen extends Component {
         const soloId = extrairId(solo)
         const relevoId = extrairId(relevo)
         const vegetacaoId = extrairId(vegetacao)
+        const fasesId = extrairId(fases)
         const localColetaId = extrairId(complemento)
 
         if (nomePopular) json.principal = { nome_popular: nomePopular }
@@ -2361,7 +2363,7 @@ class NovoTomboScreen extends Component {
         if (relevoDescricao) json.paisagem = { ...json.paisagem, descricao: relevoDescricao }
         if (relevo) json.paisagem = { ...json.paisagem, relevo_id: relevoId }
         if (vegetacao) json.paisagem = { ...json.paisagem, vegetacao_id: vegetacaoId }
-        if (fases) json.paisagem = { ...json.paisagem, fase_sucessional_id: fases }
+        if (fases) json.paisagem = { ...json.paisagem, fase_sucessional_id: fasesId }
         if (identificador) json.identificacao = { identificadores: normalizarIdentificadores(identificador) }
         if (dataIdentDia) {
             json.identificacao = {
