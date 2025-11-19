@@ -2788,7 +2788,7 @@ class NovoTomboScreen extends Component {
                             status={getFieldError('coletores') ? 'error' : ''}
                             others={{ allowClear: true }}
                             loading={fetchingColetores}
-                            debounceDelay={600}
+                            debounceDelay={200}
                         />
                     </Col>
 
@@ -2921,7 +2921,7 @@ class NovoTomboScreen extends Component {
                                     loading: fetchingAutores,
                                     notFoundContent: fetchingAutores ? <Spin size="small" /> : 'Nenhum resultado encontrado'
                                 }}
-                                debounceDelay={600}
+                                debounceDelay={200}
                                 xs={24}
                                 sm={24}
                                 md={24}
@@ -3082,7 +3082,7 @@ class NovoTomboScreen extends Component {
                             this.requisitaPaises(searchText || '')
                         }}
                         loading={fetchingPaises}
-                        debounceDelay={600}
+                        debounceDelay={200}
                         status={getFieldError('pais') ? 'error' : ''}
                     />
                     <EstadoFormField
@@ -3115,7 +3115,7 @@ class NovoTomboScreen extends Component {
                             }
                         }}
                         loading={fetchingEstados}
-                        debounceDelay={600}
+                        debounceDelay={200}
                         status={getFieldError('estado') ? 'error' : ''}
                     />
                     <CidadeFormField
@@ -3141,7 +3141,7 @@ class NovoTomboScreen extends Component {
                             }
                         }}
                         loading={fetchingCidades}
-                        debounceDelay={600}
+                        debounceDelay={200}
                         getFieldError={getFieldError}
                     />
                 </Row>
@@ -3171,7 +3171,7 @@ class NovoTomboScreen extends Component {
                             })
                         }}
                         loading={fetchingLocaisColeta}
-                        debounceDelay={600}
+                        debounceDelay={200}
                         getFieldError={getFieldError}
                     />
                     <Col xs={24} sm={24} md={16} lg={8} xl={8}>
@@ -3288,7 +3288,7 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true
                             })
                         }}
-                        debounceDelay={600}
+                        debounceDelay={200}
                     />
                     <FamiliaFormField
                         initialValue={String(familiaInicial)}
@@ -3338,7 +3338,7 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true
                             })
                         }}
-                        debounceDelay={600}
+                        debounceDelay={200}
                     />
                 </Row>
                 <br />
@@ -3373,7 +3373,7 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true
                             })
                         }}
-                        debounceDelay={600}
+                        debounceDelay={200}
                     />
                     <GeneroFormField
                         initialValue={String(generoInicial)}
@@ -3417,7 +3417,7 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true
                             })
                         }}
-                        debounceDelay={600}
+                        debounceDelay={200}
                     />
                 </Row>
                 <br />
@@ -3467,7 +3467,7 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true
                             })
                         }}
-                        debounceDelay={600}
+                        debounceDelay={200}
                     />
                     <SubespecieFormField
                         initialValue={String(subespecieInicial)}
@@ -3500,7 +3500,7 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true
                             })
                         }}
-                        debounceDelay={600}
+                        debounceDelay={200}
                     />
                 </Row>
                 <br />
@@ -3536,7 +3536,7 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true
                             })
                         }}
-                        debounceDelay={600}
+                        debounceDelay={200}
                     />
                 </Row>
             </div>
@@ -3575,7 +3575,7 @@ class NovoTomboScreen extends Component {
                             this.requisitaSolos(searchText || '')
                         }}
                         loading={fetchingSolos}
-                        debounceDelay={600}
+                        debounceDelay={200}
                     />
                     <RelevoFormField
                         initialValue={idRelevoInicial ? {
@@ -3598,7 +3598,7 @@ class NovoTomboScreen extends Component {
                             this.requisitaRelevos(searchText || '')
                         }}
                         loading={fetchingRelevos}
-                        debounceDelay={600}
+                        debounceDelay={200}
                     />
                 </Row>
                 <br />
@@ -3624,7 +3624,7 @@ class NovoTomboScreen extends Component {
                             this.requisitaVegetacoes(searchText || '')
                         }}
                         loading={fetchingVegetacoes}
-                        debounceDelay={600}
+                        debounceDelay={200}
                     />
                     <FaseFormField
                         initialValue={idFaseInicial ? {
@@ -3638,7 +3638,7 @@ class NovoTomboScreen extends Component {
                             this.requisitaFases(searchText || '')
                         }}
                         loading={fetchingFases}
-                        debounceDelay={600}
+                        debounceDelay={200}
                     />
                 </Row>
             </div>
@@ -3666,7 +3666,7 @@ class NovoTomboScreen extends Component {
                         }}
                         filterOption={false}
                         loading={fetchingIdentificadores}
-                        debounceDelay={600}
+                        debounceDelay={200}
                     />
                     <DataIdentificacaoFormField
                         getFieldDecorator={getFieldDecorator}
@@ -3939,7 +3939,7 @@ class NovoTomboScreen extends Component {
                             this.requisitaHerbarios(searchText || '')
                         }}
                         loading={fetchingHerbarios}
-                        debounceDelay={600}
+                        debounceDelay={200}
                         getFieldError={getFieldError}
                     />
                 </Row>
