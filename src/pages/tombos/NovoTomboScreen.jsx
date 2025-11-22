@@ -72,6 +72,7 @@ import {
     requisitaCodigoBarrasService,
     requisitaNumeroHcfService,
     handleSubmitIdentificadorService,
+    verificarCoordenada,
 } from "./TomboService";
 import SelectedFormField from "./components/SelectedFormFiled";
 
@@ -3829,7 +3830,23 @@ class NovoTomboScreen extends Component {
                         getFieldDecorator={getFieldDecorator}
                         disabled={!this.props.form.getFieldValue("estados")}
                         onChange={(value) => {
-                            this.verifyCoordenada(value);
+                            const latitude = this.props.form.getFieldValue('latitude');
+                            const longitude = this.props.form.getFieldValue('longitude');
+                            try{
+                                if(value && latitude && longitude){
+                                    verificarCoordenada((res) =>{
+                                        if(res.data && res.data.dentro == false){
+                                            this.openNotificationWithIcon(
+                                            'warning',
+                                            'Coordenada fora do município',
+                                            'A coordenada informada não pertence ao munícipio informado.'
+                                        );
+                                        }
+                                    }, value, latitude, longitude)
+                                }
+                            } catch(err) {
+                                console.error('Falha ao verificar coordenada:', err);
+                            }
                             if (value) {
                                 this.props.form.setFieldsValue({
                                     complemento: undefined,

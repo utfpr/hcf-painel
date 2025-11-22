@@ -22,6 +22,7 @@ import SimpleTableComponent from '../components/SimpleTableComponent'
 import { baseUrl, recaptchaKey } from '../config/api'
 import { isCuradorOuOperador, isIdentificador } from '../helpers/usuarios'
 import FichaTomboActions from './tombos/components/FichaTomboActions'
+import { requisitaDadosEdicaoService, verificarCoordenada } from './tombos/TomboService'
 
 const { confirm } = Modal
 const FormItem = Form.Item
@@ -162,11 +163,33 @@ class ListaTombosScreen extends Component {
         )
     }
 
+    handleDetalhesClick = (id) => {
+        this.setState({ loading: true })
+        requisitaDadosEdicaoService((response) => {
+            const tombo = response.data
+            const { cidade_id, latitude, longitude } = tombo
+
+            if (!cidade_id || !latitude || !longitude) {
+                this.setState({ loading: false })
+                this.props.history.push(`/tombos/detalhes/${id}`)
+                return
+            }
+
+            verificarCoordenada((res) => {
+                this.setState({ loading: false })
+                if (res.data && res.data.dentro === false) {
+                    this.notificacao('warning', 'Atenção', 'A coordenada informada não pertence à cidade do tombo.')
+                }
+                this.props.history.push(`/tombos/detalhes/${id}`)
+            }, cidade_id, latitude, longitude)
+        }, id)
+    }
+
     renderDetalhes(id) {
         return (
-            <Link to={`/tombos/detalhes/${id}`}>
+            <a onClick={() => this.handleDetalhesClick(id)}>
                 <SearchOutlined />
-            </Link>
+            </a>
         )
     }
 
