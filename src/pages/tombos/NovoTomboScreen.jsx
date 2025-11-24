@@ -2235,6 +2235,60 @@ class NovoTomboScreen extends Component {
             .catch(this.catchRequestError);
     };
 
+    cadastraNovoIdentificador = () => {
+        this.setState({
+            loading: true,
+        });
+        axios
+            .post("/identificadores", {
+                nome: this.props.form.getFieldsValue().campo,
+            })
+            .then((response) => {
+                this.setState({
+                    loading: false,
+                });
+                if (response.status === 204 || response.status === 201) {
+                    this.requisitaIdentificadores("");
+                    this.openNotificationWithIcon(
+                        "success",
+                        "Sucesso",
+                        "O cadastro foi realizado com sucesso."
+                    );
+                }
+                this.props.form.setFields({
+                    campo: {
+                        value: "",
+                    },
+                });
+            })
+            .catch((err) => {
+                this.setState({
+                    loading: false,
+                });
+                const { response } = err;
+                if (response && response.data) {
+                    if (response.status === 400 || response.status === 422) {
+                        this.openNotificationWithIcon(
+                            "warning",
+                            "Falha",
+                            response.data.error.message
+                        );
+                    } else {
+                        this.openNotificationWithIcon(
+                            "error",
+                            "Falha",
+                            "Houve um problema ao cadastrar o novo identificador, tente novamente."
+                        );
+                    }
+                    const { error } = response.data;
+                    throw new Error(error.message);
+                } else {
+                    throw err;
+                }
+            })
+            .catch(this.catchRequestError);
+    };
+
     cadastraNovoColetor = () => {
         this.setState({
             formColetor: false,
@@ -4455,6 +4509,15 @@ class NovoTomboScreen extends Component {
                         filterOption={false}
                         loading={fetchingIdentificadores}
                         debounceDelay={600}
+                        onClickAddMore={() => {
+                            this.setState({
+                                formulario: {
+                                    desc: " do novo identificador",
+                                    tipo: 14,
+                                },
+                                visibleModal: true,
+                            });
+                        }}
                     />
                     <DataIdentificacaoFormField
                         getFieldDecorator={getFieldDecorator}
@@ -4527,6 +4590,9 @@ class NovoTomboScreen extends Component {
                                         break;
                                     case 13:
                                         this.cadastraNovoLocalColeta();
+                                        break;
+                                    case 14:
+                                        this.cadastraNovoIdentificador();
                                         break;
                                     default:
                                         break;
