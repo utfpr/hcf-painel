@@ -5,9 +5,9 @@ import {
     Divider, Card, Row, Col,
     Button, notification,
     Spin,
-    Input,
     DatePicker,
-    Select
+    Select,
+    Checkbox
 } from 'antd'
 import ptbr from 'antd/es/date-picker/locale/pt_BR'
 import axios from 'axios'
@@ -19,7 +19,6 @@ import { Form } from '@ant-design/compatible'
 import { LoadingOutlined } from '@ant-design/icons'
 
 const FormItem = Form.Item
-const { RangePicker } = DatePicker
 const { Option } = Select
 
 const dateFormat = 'DD/MM/YYYY'
@@ -48,7 +47,8 @@ class RelatorioLocalColetaScreen extends Component {
             estados: [],
             cidades: [],
             paises: [],
-            locais: []
+            locais: [],
+            showCoordenadas: false
         }
     }
 
@@ -225,20 +225,20 @@ class RelatorioLocalColetaScreen extends Component {
         }
 
         if (valores !== undefined) {
-            const { local, intervaloData } = valores
-
+            const { local } = valores
+            const { dataInicio, dataFim } = this.state
             if (local) {
                 params.local = local
                 this.setState({
                     local
                 })
             }
-            if (intervaloData && intervaloData.length > 0) {
-                params.dataInicio = intervaloData[0].toISOString()
-                params.dataFim = intervaloData[1].toISOString()
+            if (dataInicio && dataFim) {
+                params.dataInicio = dataInicio
+                params.dataFim = dataFim
                 this.setState({
-                    dataInicio: intervaloData[0].toISOString(),
-                    dataFim: intervaloData[1].toISOString()
+                    dataInicio,
+                    dataFim
                 })
             } else {
                 params.dataInicio = moment().startOf('month')
@@ -310,6 +310,10 @@ class RelatorioLocalColetaScreen extends Component {
             if (dataFim) {
                 params.dataFim = dataFim
             }
+        }
+
+        if (this.state.showCoordenadas) {
+            params.showCoord = this.state.showCoordenadas
         }
 
         await axios.post('/relatorio/local-coleta', null, {
@@ -539,29 +543,65 @@ class RelatorioLocalColetaScreen extends Component {
                     <Row gutter={8} style={{ marginTop: 16 }}>
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Intervalo de data:</span>
+                                <span>Data inicial:</span>
                             </Col>
-                        </Col>
-                    </Row>
-                    <Row gutter={8}>
-                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                             <Col span={24}>
                                 <FormItem>
-                                    {getFieldDecorator('intervaloData')(
-                                        <RangePicker
-                                            defaultValue={[moment().startOf('month'), moment().endOf('day')]}
-                                            format={dateFormat}
+                                    {getFieldDecorator('dataInicio')(
+                                        <DatePicker
+                                            defaultValue={moment().startOf('month')}
+                                            style={{ width: '100%' }}
+                                            format="DD/MM/YYYY"
                                             locale={dateLocale}
-                                            onChange={a => {
+                                            onChange={(a, b) => {
                                                 this.setState({
-                                                    dataInicio: a[0].toISOString(),
-                                                    dataFim: a[1].toISOString()
+                                                    dataInicio: moment(b, dateFormat).toISOString()
                                                 })
                                             }}
                                         />
                                     )}
                                 </FormItem>
                             </Col>
+                        </Col>
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                            <Col span={24}>
+                                <span>Data final:</span>
+                            </Col>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('dataFim')(
+                                        <DatePicker
+                                            defaultValue={moment().endOf('day')}
+                                            style={{ width: '100%' }}
+                                            format="DD/MM/YYYY"
+                                            locale={dateLocale}
+                                            onChange={a => {
+                                                this.setState({
+                                                    dataFim: a.toISOString()
+                                                })
+                                            }}
+                                        />
+                                    )}
+                                </FormItem>
+                            </Col>
+                        </Col>
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                            <Col span={24}>
+                                <span>Outras opções:</span>
+                            </Col>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('showCoord')(
+                                        <Checkbox onChange={e => {
+                                            this.setState({ showCoordenadas: e.target.checked })
+                                        }}
+                                        >
+                                            Mostrar coordenadas
+                                        </Checkbox>
+                                    )}
+                                </FormItem>
+                            </Col>
+
                         </Col>
                     </Row>
 
@@ -582,7 +622,6 @@ class RelatorioLocalColetaScreen extends Component {
                                                 form.resetFields()
                                                 this.setState({
                                                     pagina: 1,
-                                                    valores: {},
                                                     metadados: {},
                                                     local: null,
                                                     dataInicio: moment().startOf('month')
@@ -642,7 +681,11 @@ class RelatorioLocalColetaScreen extends Component {
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
 
-                <TableCollapseParaLocais data={this.state.dados?.locais} loading={this.state.loading} />
+                <TableCollapseParaLocais
+                    data={this.state.dados?.locais}
+                    loading={this.state.loading}
+                    showCoordenadas={this.state.showCoordenadas}
+                />
                 <Divider dashed />
             </div>
         )
