@@ -6,7 +6,7 @@ const { Option } = Select
 
 const IdentificadorFormField = ({
     initialValue, identificadores, getFieldDecorator, onChange, onSearch,
-    loading = false, debounceDelay = 600, getFieldError
+    loading = false, debounceDelay = 600, getFieldError, onClickAddMore
 }) => {
     const optionIdentificadores = () => identificadores?.map(item => (
         <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
@@ -27,6 +27,7 @@ const IdentificadorFormField = ({
             onChange={onChange}
             onSearch={onSearch}
             debounceDelay={debounceDelay}
+            onClickAddMore={onClickAddMore}
             others={{
                 allowClear: true,
                 mode: 'multiple',
