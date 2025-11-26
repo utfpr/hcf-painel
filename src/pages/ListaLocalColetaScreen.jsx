@@ -419,7 +419,7 @@ class ListaLocaisColeta extends Component {
                                 notFoundContent: fetchingPaises ? <Spin size="small" /> : 'Nenhum resultado encontrado',
                                 allowClear: true
                             }}
-                            debounceDelay={600}
+                            debounceDelay={200}
                             xs={24}
                             sm={24}
                             md={8}
@@ -456,7 +456,7 @@ class ListaLocaisColeta extends Component {
                                 notFoundContent: fetchingEstados ? <Spin size="small" /> : 'Nenhum resultado encontrado',
                                 allowClear: true
                             }}
-                            debounceDelay={600}
+                            debounceDelay={200}
                             xs={24}
                             sm={24}
                             md={8}
@@ -484,7 +484,7 @@ class ListaLocaisColeta extends Component {
                                 notFoundContent: fetchingCidades ? <Spin size="small" /> : 'Nenhum resultado encontrado',
                                 allowClear: true
                             }}
-                            debounceDelay={600}
+                            debounceDelay={200}
                             xs={24}
                             sm={24}
                             md={8}
@@ -663,7 +663,7 @@ class ListaLocaisColeta extends Component {
                             notFoundContent: fetchingPaises ? <Spin size="small" /> : 'Nenhum resultado encontrado',
                             allowClear: true
                         }}
-                        debounceDelay={600}
+                        debounceDelay={200}
                         xs={24}
                         sm={24}
                         md={24}
@@ -706,7 +706,7 @@ class ListaLocaisColeta extends Component {
                             notFoundContent: fetchingEstados ? <Spin size="small" /> : 'Nenhum resultado encontrado',
                             allowClear: true
                         }}
-                        debounceDelay={600}
+                        debounceDelay={200}
                         xs={24}
                         sm={24}
                         md={24}
@@ -739,7 +739,7 @@ class ListaLocaisColeta extends Component {
                             notFoundContent: fetchingCidades ? <Spin size="small" /> : 'Nenhum resultado encontrado',
                             allowClear: true
                         }}
-                        debounceDelay={600}
+                        debounceDelay={200}
                         xs={24}
                         sm={24}
                         md={24}
