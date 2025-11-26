@@ -202,14 +202,26 @@ const CidadesComponent = ({
                     <Row style={{ marginTop: 32 }}>
                         <Col span={24}>
                             <Row justify="end" align="middle" gutter={16}>
-                                <Col xs={24} sm={8} md={12} lg={16} xl={16}>
-                                    <TotalRecordFound total={metadados?.total} />
+                                <Col xs={24} sm={8} md={6} lg={4} xl={4}>
+                                    <Form.Item>
+                                        <Button
+                                            onClick={onLimparBusca}
+                                            className="login-form-button"
+                                        >
+                                            Limpar
+                                        </Button>
+                                    </Form.Item>
                                 </Col>
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
-                                    <Button onClick={onLimparBusca}>Limpar</Button>
-                                </Col>
-                                <Col xs={24} sm={8} md={6} lg={4} xl={4}>
-                                    <Button type="primary" htmlType="submit">Pesquisar</Button>
+                                    <Form.Item>
+                                        <Button
+                                            type="primary"
+                                            htmlType="submit"
+                                            className="login-form-button ant-btn-pesquisar"
+                                        >
+                                            Pesquisar
+                                        </Button>
+                                    </Form.Item>
                                 </Col>
                             </Row>
                         </Col>

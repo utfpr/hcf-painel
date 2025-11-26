@@ -581,7 +581,7 @@ class ListaLocaisColeta extends Component {
 
                 <Row gutter={24} style={{ marginBottom: '20px' }}>
                     <Col xs={24} sm={14} md={18} lg={20} xl={20}>
-                        <h2 style={{ fontWeight: 200 }}>Listagem de locais de coleta</h2>
+                        <h2 style={{ fontWeight: 200 }}>Locais de Coleta</h2>
                     </Col>
                     <Col xs={24} sm={10} md={6} lg={4} xl={4}>
                         {this.renderAdd()}
