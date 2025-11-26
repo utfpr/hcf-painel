@@ -1794,6 +1794,46 @@ class NovoTomboScreen extends Component {
             .catch(this.catchRequestError)
     }
 
+    cadastraNovaFase = () => {
+        this.setState({ loading: true })
+        axios.post('/fases-sucessionais', {
+            nome: this.props.form.getFieldsValue().campo
+        })
+            .then(response => {
+                this.setState({ loading: false })
+                if (response.status === 204 || response.status === 201) {
+                    this.requisitaFases('')
+                    this.setState({
+                        search: {
+                            fase: 'validating'
+                        }
+                    })
+                    this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                } else if (response.status === 400) {
+                    this.openNotificationWithIcon('warning', 'Falha', response.data.error?.message)
+                } else {
+                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar a nova fase sucessional, tente novamente.')
+                }
+                this.props.form.setFields({ campo: { value: '' } })
+            })
+            .catch(err => {
+                this.setState({ loading: false })
+                const { response } = err
+                if (response && response.data) {
+                    if (response.status === 400 || response.status === 422) {
+                        this.openNotificationWithIcon('warning', 'Falha', response.data.error?.message)
+                    } else {
+                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar a nova fase sucessional, tente novamente.')
+                    }
+                    const { error } = response.data
+                    throw new Error(error?.message)
+                } else {
+                    throw err
+                }
+            })
+            .catch(this.catchRequestError)
+    }
+
     cadastraNovoColetor = () => {
         this.setState({
             formColetor: false,
@@ -2211,6 +2251,7 @@ class NovoTomboScreen extends Component {
         const soloId = extrairId(solo)
         const relevoId = extrairId(relevo)
         const vegetacaoId = extrairId(vegetacao)
+        const fasesId = extrairId(fases)
         const localColetaId = extrairId(complemento)
 
         json.principal = {
@@ -2252,7 +2293,7 @@ class NovoTomboScreen extends Component {
             solo_id: soloId,
             relevo_id: relevoId,
             vegetacao_id: vegetacaoId,
-            fase_sucessional_id: fases ? parseInt(fases) : null,
+            fase_sucessional_id: fasesId,
             descricao: relevoDescricao || null
         }
 
@@ -2333,6 +2374,7 @@ class NovoTomboScreen extends Component {
         const soloId = extrairId(solo)
         const relevoId = extrairId(relevo)
         const vegetacaoId = extrairId(vegetacao)
+        const fasesId = extrairId(fases)
         const localColetaId = extrairId(complemento)
 
         if (nomePopular) json.principal = { nome_popular: nomePopular }
@@ -2361,7 +2403,7 @@ class NovoTomboScreen extends Component {
         if (relevoDescricao) json.paisagem = { ...json.paisagem, descricao: relevoDescricao }
         if (relevo) json.paisagem = { ...json.paisagem, relevo_id: relevoId }
         if (vegetacao) json.paisagem = { ...json.paisagem, vegetacao_id: vegetacaoId }
-        if (fases) json.paisagem = { ...json.paisagem, fase_sucessional_id: fases }
+        if (fases) json.paisagem = { ...json.paisagem, fase_sucessional_id: fasesId }
         if (identificador) json.identificacao = { identificadores: normalizarIdentificadores(identificador) }
         if (dataIdentDia) {
             json.identificacao = {
@@ -3635,6 +3677,15 @@ class NovoTomboScreen extends Component {
                         fases={fases}
                         validateStatus={search.fase}
                         getFieldDecorator={getFieldDecorator}
+                        onClickAddMore={() => {
+                            this.setState({
+                                formulario: {
+                                    desc: ' da nova fase sucessional',
+                                    tipo: 14
+                                },
+                                visibleModal: true
+                            })
+                        }}
                         onSearch={searchText => {
                             this.requisitaFases(searchText || '')
                         }}
@@ -3742,6 +3793,9 @@ class NovoTomboScreen extends Component {
                                         break
                                     case 13:
                                         this.cadastraNovoLocalColeta()
+                                        break
+                                    case 14:
+                                        this.cadastraNovaFase()
                                         break
                                     default:
                                         break
