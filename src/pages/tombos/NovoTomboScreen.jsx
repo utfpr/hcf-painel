@@ -3877,7 +3877,6 @@ class NovoTomboScreen extends Component {
                         }}
                         loading={fetchingCidades}
                         debounceDelay={200}
-                        getFieldError={getFieldError}
                     />
                 </Row>
                 <br />
