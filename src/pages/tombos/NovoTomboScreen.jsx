@@ -2236,6 +2236,100 @@ class NovoTomboScreen extends Component {
             .catch(this.catchRequestError);
     };
 
+    cadastraNovoIdentificador = () => {
+        this.setState({
+            loading: true,
+        });
+        axios
+            .post("/identificadores", {
+                nome: this.props.form.getFieldsValue().campo,
+            })
+            .then((response) => {
+                this.setState({
+                    loading: false,
+                });
+                if (response.status === 204 || response.status === 201) {
+                    this.requisitaIdentificadores("");
+                    this.openNotificationWithIcon(
+                        "success",
+                        "Sucesso",
+                        "O cadastro foi realizado com sucesso."
+                    );
+                }
+                this.props.form.setFields({
+                    campo: {
+                        value: "",
+                    },
+                });
+            })
+            .catch((err) => {
+                this.setState({
+                    loading: false,
+                });
+                const { response } = err;
+                if (response && response.data) {
+                    if (response.status === 400 || response.status === 422) {
+                        this.openNotificationWithIcon(
+                            "warning",
+                            "Falha",
+                            response.data.error.message
+                        );
+                    } else {
+                        this.openNotificationWithIcon(
+                            "error",
+                            "Falha",
+                            "Houve um problema ao cadastrar o novo identificador, tente novamente."
+                        );
+                    }
+                    const { error } = response.data;
+                    throw new Error(error.message);
+                } else {
+                    throw err;
+                }
+            })
+            .catch(this.catchRequestError);
+    };
+
+    cadastraNovaFase = () => {
+        this.setState({ loading: true })
+        axios.post('/fases-sucessionais', {
+            nome: this.props.form.getFieldsValue().campo
+        })
+            .then(response => {
+                this.setState({ loading: false })
+                if (response.status === 204 || response.status === 201) {
+                    this.requisitaFases('')
+                    this.setState({
+                        search: {
+                            fase: 'validating'
+                        }
+                    })
+                    this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                } else if (response.status === 400) {
+                    this.openNotificationWithIcon('warning', 'Falha', response.data.error?.message)
+                } else {
+                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar a nova fase sucessional, tente novamente.')
+                }
+                this.props.form.setFields({ campo: { value: '' } })
+            })
+            .catch(err => {
+                this.setState({ loading: false })
+                const { response } = err
+                if (response && response.data) {
+                    if (response.status === 400 || response.status === 422) {
+                        this.openNotificationWithIcon('warning', 'Falha', response.data.error?.message)
+                    } else {
+                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar a nova fase sucessional, tente novamente.')
+                    }
+                    const { error } = response.data
+                    throw new Error(error?.message)
+                } else {
+                    throw err
+                }
+            })
+            .catch(this.catchRequestError)
+    }
+
     cadastraNovoColetor = () => {
         this.setState({
             formColetor: false,
@@ -2750,10 +2844,11 @@ class NovoTomboScreen extends Component {
             return json;
         }
 
-        const soloId = extrairId(solo);
-        const relevoId = extrairId(relevo);
-        const vegetacaoId = extrairId(vegetacao);
-        const localColetaId = extrairId(complemento);
+        const soloId = extrairId(solo)
+        const relevoId = extrairId(relevo)
+        const vegetacaoId = extrairId(vegetacao)
+        const fasesId = extrairId(fases)
+        const localColetaId = extrairId(complemento)
 
         json.principal = {
             entidade_id: parseInt(entidade),
@@ -2798,9 +2893,9 @@ class NovoTomboScreen extends Component {
             solo_id: soloId,
             relevo_id: relevoId,
             vegetacao_id: vegetacaoId,
-            fase_sucessional_id: fases ? parseInt(fases) : null,
-            descricao: relevoDescricao || null,
-        };
+            fase_sucessional_id: fasesId,
+            descricao: relevoDescricao || null
+        }
 
         json.identificacao = {
             identificadores: normalizarIdentificadores(identificador),
@@ -2909,80 +3004,43 @@ class NovoTomboScreen extends Component {
             });
         };
 
-        const soloId = extrairId(solo);
-        const relevoId = extrairId(relevo);
-        const vegetacaoId = extrairId(vegetacao);
-        const localColetaId = extrairId(complemento);
+        const soloId = extrairId(solo)
+        const relevoId = extrairId(relevo)
+        const vegetacaoId = extrairId(vegetacao)
+        const fasesId = extrairId(fases)
+        const localColetaId = extrairId(complemento)
 
-        if (nomePopular) json.principal = { nome_popular: nomePopular };
-        json.principal = {
-            ...json.principal,
-            data_tombo: this.normalizaDataTombo(dataTombo),
-        };
-        json.principal = { ...json.principal, entidade_id: parseInt(entidade) };
-        json.principal.numero_coleta = parseInt(numColeta);
-        if (dataColetaDia) json.principal.data_coleta = { dia: dataColetaDia };
-        if (dataColetaMes)
-            json.principal.data_coleta = {
-                ...json.principal.data_coleta,
-                mes: dataColetaMes,
-            };
-        if (dataColetaAno)
-            json.principal.data_coleta = {
-                ...json.principal.data_coleta,
-                ano: dataColetaAno,
-            };
-        if (tipo) json.principal.tipo_id = tipo;
-        if (localidadeCor) json.principal.cor = localidadeCor;
-        if (reino) json.taxonomia = { reino_id: reino };
-        if (familia)
-            json.taxonomia = { ...json.taxonomia, familia_id: familia };
-        if (genero) json.taxonomia = { ...json.taxonomia, genero_id: genero };
-        if (subfamilia)
-            json.taxonomia = { ...json.taxonomia, sub_familia_id: subfamilia };
-        if (especie)
-            json.taxonomia = { ...json.taxonomia, especie_id: especie };
-        if (variedade)
-            json.taxonomia = { ...json.taxonomia, variedade_id: variedade };
-        if (subespecie)
-            json.taxonomia = { ...json.taxonomia, sub_especie_id: subespecie };
-        if (latitude)
-            json.localidade = {
-                latitude: converteDecimalParaGrausMinutosSegundos(
-                    latitude,
-                    false,
-                    true
-                ),
-            };
-        if (longitude)
-            json.localidade = {
-                ...json.localidade,
-                longitude: converteDecimalParaGrausMinutosSegundos(
-                    longitude,
-                    true,
-                    true
-                ),
-            };
-        if (altitude) json.localidade = { ...json.localidade, altitude };
-        json.localidade = { ...json.localidade, cidade_id: parseInt(cidade) };
+        if (nomePopular) json.principal = { nome_popular: nomePopular }
+        json.principal = { ...json.principal, data_tombo: this.normalizaDataTombo(dataTombo) }
+        json.principal = { ...json.principal, entidade_id: parseInt(entidade) }
+        json.principal.numero_coleta = parseInt(numColeta)
+        if (dataColetaDia) json.principal.data_coleta = { dia: dataColetaDia }
+        if (dataColetaMes) json.principal.data_coleta = { ...json.principal.data_coleta, mes: dataColetaMes }
+        if (dataColetaAno) json.principal.data_coleta = { ...json.principal.data_coleta, ano: dataColetaAno }
+        if (tipo) json.principal.tipo_id = tipo
+        if (reino) json.taxonomia = { reino_id: reino }
+        if (familia) json.taxonomia = { ...json.taxonomia, familia_id: familia }
+        if (genero) json.taxonomia = { ...json.taxonomia, genero_id: genero }
+        if (subfamilia) json.taxonomia = { ...json.taxonomia, sub_familia_id: subfamilia }
+        if (especie) json.taxonomia = { ...json.taxonomia, especie_id: especie }
+        if (variedade) json.taxonomia = { ...json.taxonomia, variedade_id: variedade }
+        if (subespecie) json.taxonomia = { ...json.taxonomia, sub_especie_id: subespecie }
+        if (latitude) json.localidade = { latitude: converteDecimalParaGrausMinutosSegundos(latitude, false, true) }
+        if (longitude) json.localidade = { ...json.localidade, longitude: converteDecimalParaGrausMinutosSegundos(longitude, true, true) }
+        if (altitude) json.localidade = { ...json.localidade, altitude }
+        json.localidade = { ...json.localidade, cidade_id: parseInt(cidade) }
         if (localColetaId) {
             json.localidade = {
                 ...json.localidade,
                 local_coleta_id: localColetaId,
             };
         }
-        if (solo) json.paisagem = { ...json.paisagem, solo_id: soloId };
-        if (relevoDescricao)
-            json.paisagem = { ...json.paisagem, descricao: relevoDescricao };
-        if (relevo) json.paisagem = { ...json.paisagem, relevo_id: relevoId };
-        if (vegetacao)
-            json.paisagem = { ...json.paisagem, vegetacao_id: vegetacaoId };
-        if (fases)
-            json.paisagem = { ...json.paisagem, fase_sucessional_id: fases };
-        if (identificador)
-            json.identificacao = {
-                identificadores: normalizarIdentificadores(identificador),
-            };
+        if (solo) json.paisagem = { ...json.paisagem, solo_id: soloId }
+        if (relevoDescricao) json.paisagem = { ...json.paisagem, descricao: relevoDescricao }
+        if (relevo) json.paisagem = { ...json.paisagem, relevo_id: relevoId }
+        if (vegetacao) json.paisagem = { ...json.paisagem, vegetacao_id: vegetacaoId }
+        if (fases) json.paisagem = { ...json.paisagem, fase_sucessional_id: fasesId }
+        if (identificador) json.identificacao = { identificadores: normalizarIdentificadores(identificador) }
         if (dataIdentDia) {
             json.identificacao = {
                 ...json.identificacao,
@@ -3482,7 +3540,7 @@ class NovoTomboScreen extends Component {
                             status={getFieldError("coletores") ? "error" : ""}
                             others={{ allowClear: true }}
                             loading={fetchingColetores}
-                            debounceDelay={600}
+                            debounceDelay={200}
                         />
                     </Col>
 
@@ -3615,7 +3673,7 @@ class NovoTomboScreen extends Component {
                                         "Nenhum resultado encontrado"
                                     ),
                                 }}
-                                debounceDelay={600}
+                                debounceDelay={200}
                                 xs={24}
                                 sm={24}
                                 md={24}
@@ -3782,8 +3840,8 @@ class NovoTomboScreen extends Component {
                             this.requisitaPaises(searchText || "");
                         }}
                         loading={fetchingPaises}
-                        debounceDelay={600}
-                        status={getFieldError("pais") ? "error" : ""}
+                        debounceDelay={200}
+                        status={getFieldError('pais') ? 'error' : ''}
                     />
                     <EstadoFormField
                         initialValue={String(estadoInicial)}
@@ -3821,8 +3879,8 @@ class NovoTomboScreen extends Component {
                             }
                         }}
                         loading={fetchingEstados}
-                        debounceDelay={600}
-                        status={getFieldError("estado") ? "error" : ""}
+                        debounceDelay={200}
+                        status={getFieldError('estado') ? 'error' : ''}
                     />
                     <CidadeFormField
                         initialValue={String(cidadeInicial)}
@@ -3870,8 +3928,7 @@ class NovoTomboScreen extends Component {
                             }
                         }}
                         loading={fetchingCidades}
-                        debounceDelay={600}
-                        getFieldError={getFieldError}
+                        debounceDelay={200}
                     />
                 </Row>
                 <br />
@@ -3904,7 +3961,7 @@ class NovoTomboScreen extends Component {
                             });
                         }}
                         loading={fetchingLocaisColeta}
-                        debounceDelay={600}
+                        debounceDelay={200}
                         getFieldError={getFieldError}
                     />
                     <Col xs={24} sm={24} md={16} lg={8} xl={8}>
@@ -4045,7 +4102,7 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true,
                             });
                         }}
-                        debounceDelay={600}
+                        debounceDelay={200}
                     />
                     <FamiliaFormField
                         initialValue={String(familiaInicial)}
@@ -4099,7 +4156,7 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true,
                             });
                         }}
-                        debounceDelay={600}
+                        debounceDelay={200}
                     />
                 </Row>
                 <br />
@@ -4142,7 +4199,7 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true,
                             });
                         }}
-                        debounceDelay={600}
+                        debounceDelay={200}
                     />
                     <GeneroFormField
                         initialValue={String(generoInicial)}
@@ -4190,7 +4247,7 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true,
                             });
                         }}
-                        debounceDelay={600}
+                        debounceDelay={200}
                     />
                 </Row>
                 <br />
@@ -4248,7 +4305,7 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true,
                             });
                         }}
-                        debounceDelay={600}
+                        debounceDelay={200}
                     />
                     <SubespecieFormField
                         initialValue={String(subespecieInicial)}
@@ -4293,7 +4350,7 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true,
                             });
                         }}
-                        debounceDelay={600}
+                        debounceDelay={200}
                     />
                 </Row>
                 <br />
@@ -4341,7 +4398,7 @@ class NovoTomboScreen extends Component {
                                 visibleModal: true,
                             });
                         }}
-                        debounceDelay={600}
+                        debounceDelay={200}
                     />
                 </Row>
             </div>
@@ -4397,7 +4454,7 @@ class NovoTomboScreen extends Component {
                             this.requisitaSolos(searchText || "");
                         }}
                         loading={fetchingSolos}
-                        debounceDelay={600}
+                        debounceDelay={200}
                     />
                     <RelevoFormField
                         initialValue={
@@ -4424,7 +4481,7 @@ class NovoTomboScreen extends Component {
                             this.requisitaRelevos(searchText || "");
                         }}
                         loading={fetchingRelevos}
-                        debounceDelay={600}
+                        debounceDelay={200}
                     />
                 </Row>
                 <br />
@@ -4454,7 +4511,7 @@ class NovoTomboScreen extends Component {
                             this.requisitaVegetacoes(searchText || "");
                         }}
                         loading={fetchingVegetacoes}
-                        debounceDelay={600}
+                        debounceDelay={200}
                     />
                     <FaseFormField
                         initialValue={
@@ -4468,11 +4525,20 @@ class NovoTomboScreen extends Component {
                         fases={fases}
                         validateStatus={search.fase}
                         getFieldDecorator={getFieldDecorator}
-                        onSearch={(searchText) => {
-                            this.requisitaFases(searchText || "");
+                        onClickAddMore={() => {
+                            this.setState({
+                                formulario: {
+                                    desc: ' da nova fase sucessional',
+                                    tipo: 14
+                                },
+                                visibleModal: true
+                            })
+                        }}
+                        onSearch={searchText => {
+                            this.requisitaFases(searchText || '')
                         }}
                         loading={fetchingFases}
-                        debounceDelay={600}
+                        debounceDelay={200}
                     />
                 </Row>
             </div>
@@ -4507,7 +4573,16 @@ class NovoTomboScreen extends Component {
                         }}
                         filterOption={false}
                         loading={fetchingIdentificadores}
-                        debounceDelay={600}
+                        debounceDelay={200}
+                        onClickAddMore={() => {
+                            this.setState({
+                                formulario: {
+                                    desc: " do novo identificador",
+                                    tipo: 14,
+                                },
+                                visibleModal: true,
+                            });
+                        }}
                     />
                     <DataIdentificacaoFormField
                         getFieldDecorator={getFieldDecorator}
@@ -4581,6 +4656,12 @@ class NovoTomboScreen extends Component {
                                     case 13:
                                         this.cadastraNovoLocalColeta();
                                         break;
+                                    case 14:
+                                        this.cadastraNovoIdentificador();
+                                        break;
+                                    case 15:
+                                        this.cadastraNovaFase()
+                                        break
                                     default:
                                         break;
                                 }
@@ -4926,7 +5007,7 @@ class NovoTomboScreen extends Component {
                             this.requisitaHerbarios(searchText || "");
                         }}
                         loading={fetchingHerbarios}
-                        debounceDelay={600}
+                        debounceDelay={200}
                         getFieldError={getFieldError}
                     />
                 </Row>

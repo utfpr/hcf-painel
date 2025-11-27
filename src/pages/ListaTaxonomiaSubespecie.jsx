@@ -852,7 +852,7 @@ class ListaTaxonomiaSubespecie extends Component {
                                         notFoundContent: fetchingReinos ? <Spin size="small" /> : 'Nenhum resultado encontrado',
                                         allowClear: true
                                     }}
-                                    debounceDelay={600}
+                                    debounceDelay={200}
                                     xs={24}
                                     sm={24}
                                     md={24}
@@ -894,7 +894,7 @@ class ListaTaxonomiaSubespecie extends Component {
                                         allowClear: true
                                     }}
                                     disabled={!reinoSelecionado}
-                                    debounceDelay={600}
+                                    debounceDelay={200}
                                     xs={24}
                                     sm={24}
                                     md={24}
@@ -931,7 +931,7 @@ class ListaTaxonomiaSubespecie extends Component {
                                         allowClear: true
                                     }}
                                     disabled={!familiaSelecionada}
-                                    debounceDelay={600}
+                                    debounceDelay={200}
                                     xs={24}
                                     sm={24}
                                     md={24}
@@ -958,7 +958,7 @@ class ListaTaxonomiaSubespecie extends Component {
                                         allowClear: true
                                     }}
                                     disabled={!generoSelecionado}
-                                    debounceDelay={600}
+                                    debounceDelay={200}
                                     xs={24}
                                     sm={24}
                                     md={24}
@@ -996,7 +996,7 @@ class ListaTaxonomiaSubespecie extends Component {
                                         notFoundContent: fetchingAutores ? <Spin size="small" /> : 'Nenhum resultado encontrado',
                                         allowClear: true
                                     }}
-                                    debounceDelay={600}
+                                    debounceDelay={200}
                                     xs={24}
                                     sm={24}
                                     md={24}

@@ -41,10 +41,6 @@ const LocalColetaFormField = ({
                 notFoundContent: loading ? <Spin size="small" /> : 'Nenhum país encontrado',
                 filterOption: onSearch ? false : undefined
             }}
-            rules={[{
-                required: true,
-                message: 'Escolha um local de coleta'
-            }]}
             
         >
             {optionLocalColeta()}
