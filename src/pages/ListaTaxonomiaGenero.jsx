@@ -590,7 +590,7 @@ class ListaTaxonomiaGenero extends Component {
                                         notFoundContent: fetchingReinos ? <Spin size="small" /> : 'Nenhum resultado encontrado',
                                         allowClear: true
                                     }}
-                                    debounceDelay={600}
+                                    debounceDelay={200}
                                     xs={24}
                                     sm={24}
                                     md={24}
@@ -617,7 +617,7 @@ class ListaTaxonomiaGenero extends Component {
                                         allowClear: true
                                     }}
                                     disabled={!reinoSelecionado}
-                                    debounceDelay={600}
+                                    debounceDelay={200}
                                     xs={24}
                                     sm={24}
                                     md={24}

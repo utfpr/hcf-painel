@@ -478,7 +478,7 @@ class NovoHerbarioScreen extends Component {
                             notFoundContent: fetchingPaises ? <Spin size="small" /> : 'Nenhum resultado encontrado',
                             allowClear: true
                         }}
-                        debounceDelay={600}
+                        debounceDelay={200}
                         xs={24}
                         sm={12}
                         md={8}
@@ -522,7 +522,7 @@ class NovoHerbarioScreen extends Component {
                             notFoundContent: fetchingEstados ? <Spin size="small" /> : 'Nenhum resultado encontrado',
                             allowClear: true
                         }}
-                        debounceDelay={600}
+                        debounceDelay={200}
                         xs={24}
                         sm={12}
                         md={8}
@@ -554,7 +554,7 @@ class NovoHerbarioScreen extends Component {
                             notFoundContent: fetchingCidades ? <Spin size="small" /> : 'Nenhum resultado encontrado',
                             allowClear: true
                         }}
-                        debounceDelay={600}
+                        debounceDelay={200}
                         xs={24}
                         sm={12}
                         md={8}

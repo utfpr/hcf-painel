@@ -19,11 +19,15 @@ const CidadesContainer = () => {
     const [loadingModal, setLoadingModal] = useState(false);
     const [tituloModal, setTituloModal] = useState('Cadastrar');
     const [idCidade, setIdCidade] = useState(-1);
+    const [paises, setPaises] = useState([]);
+    const [estadosFiltrados, setEstadosFiltrados] = useState([]);
+    const [cidadesFiltradas, setCidadesFiltradas] = useState([]);
 
     const atualizaPagina = (pg, size, data = cidadesOriginais) => {
         const start = (pg - 1) * size;
         const end = start + size;
-        setCidades(data);
+        const paginadas = data.slice(start, end);
+        setCidades(paginadas);
         setMetadados({ total: data.length, pagina: pg, limite: size });
     };
 
@@ -32,9 +36,11 @@ const CidadesContainer = () => {
         try {
             const response = await axios.get('/cidades');
             if (response.status === 200 && Array.isArray(response.data)) {
-                setCidadesOriginais(response.data.reverse());
-                atualizaPagina(pagina, pageSize, response.data);
+                const ordenadas = response.data.sort((a, b) => a.nome.localeCompare(b.nome));
+                setCidadesOriginais(ordenadas);
+                atualizaPagina(pagina, pageSize, ordenadas);
             }
+
         } catch {
             notification.error({ message: 'Erro', description: 'Falha ao buscar cidades.' });
         } finally {
@@ -53,7 +59,19 @@ const CidadesContainer = () => {
         }
     };
 
+    const requisitaListaPaises = async () => {
+        try {
+            const response = await axios.get('/paises');
+            if (response.status === 200 && Array.isArray(response.data)) {
+                setPaises(response.data);
+            }
+        } catch {
+            notification.error({ message: 'Erro', description: 'Falha ao buscar países.' });
+        }
+    };
+
     useEffect(() => {
+        requisitaListaPaises();
         requisitaListaCidades();
         requisitaListaEstados();
     }, []);
@@ -61,7 +79,8 @@ const CidadesContainer = () => {
     const handleTabelaChange = (page, pageSize) => {
         setPagina(page);
         setPageSize(pageSize);
-        atualizaPagina(page, pageSize);
+        const dataAtual = cidadesFiltradas.length > 0 ? cidadesFiltradas : cidadesOriginais;
+        atualizaPagina(page, pageSize, dataAtual);
     };
 
     const handleExcluir = (id) => {
@@ -145,9 +164,22 @@ const CidadesContainer = () => {
     };
 
     const handleBusca = (valores) => {
-        const filtradas = cidadesOriginais.filter(c =>
-            !valores.nome || c.nome.toLowerCase().includes(valores.nome.toLowerCase())
-        );
+        let filtradas = cidadesOriginais;
+        if (valores.nome) {
+            filtradas = filtradas.filter(c =>
+                c.nome.toLowerCase().includes(valores.nome.toLowerCase())
+            );
+        }
+
+        if (valores.paisId) {
+            filtradas = filtradas.filter(c => c.estado?.pais_id === parseInt(valores.paisId));
+        }
+
+        if (valores.estadoId) {
+            filtradas = filtradas.filter(c => c.estado_id === parseInt(valores.estadoId));
+        }
+
+        setCidadesFiltradas(filtradas);
         setPagina(1);
         atualizaPagina(1, pageSize, filtradas);
     };
@@ -155,6 +187,7 @@ const CidadesContainer = () => {
     const handleLimparBusca = () => {
         form.resetFields();
         setPagina(1);
+        setCidadesFiltradas([]);
         atualizaPagina(1, pageSize, cidadesOriginais);
     };
 
@@ -162,7 +195,10 @@ const CidadesContainer = () => {
         <CidadesComponent
             form={form}
             cidades={cidades}
-            estados={estados}
+            estados={estadosFiltrados.length > 0 ? estadosFiltrados : estados}
+            paises={paises}
+            estadosFiltrados={estadosFiltrados}
+            setEstadosFiltrados={setEstadosFiltrados}
             metadados={metadados}
             loading={loading}
             visibleModal={visibleModal}
@@ -178,6 +214,7 @@ const CidadesContainer = () => {
             onSalvar={handleSalvar}
             isCuradorOuOperador={isCuradorOuOperador()}
         />
+
     );
 };
 

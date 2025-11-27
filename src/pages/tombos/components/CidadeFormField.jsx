@@ -39,7 +39,8 @@ const CidadeFormField = ({
                 allowClear: true,
                 loading: loading,
                 notFoundContent: loading ? <Spin size="small" /> : 'Nenhum país encontrado',
-                filterOption: onSearch ? false : undefined
+                filterOption: onSearch ? false : undefined,
+                status: getFieldError && getFieldError('cidade') ? 'error' : ''
             }}
         >
             {optionCidades()}
