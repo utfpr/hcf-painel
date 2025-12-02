@@ -72,6 +72,7 @@ import {
     requisitaCodigoBarrasService,
     requisitaNumeroHcfService,
     handleSubmitIdentificadorService,
+    verificarCoordenada,
 } from "./TomboService";
 import SelectedFormField from "./components/SelectedFormFiled";
 
@@ -3425,6 +3426,39 @@ class NovoTomboScreen extends Component {
             console.error("Erro ao buscar identificadores:", err);
         }
     };
+    
+    verifyCoordenada = async (cidadeId = null) => {
+        try {
+            const { form } = this.props;
+            if(cidadeId == null) {
+                cidadeId = form.getFieldValue('cidade');
+            }
+            const latitude = form.getFieldValue('latitude');
+            const longitude = form.getFieldValue('longitude');
+
+            if (!cidadeId || !latitude || !longitude) return;
+
+            if (latitude == null || Number.isNaN(latitude)) return;
+            if (longitude == null || Number.isNaN(longitude)) return;
+
+            const payload = {
+                cidade_id: Number(cidadeId),
+                latitude,
+                longitude,
+            };
+
+            const response = await axios.post('/tombos/verificarCoordenada', payload);
+            if (response?.data && response.data.dentro === false) {
+                this.openNotificationWithIcon(
+                    'warning',
+                    'Coordenada fora do município',
+                    'A coordenada informada não pertence ao munícipio informado.'
+                );
+            }
+        } catch (err) {
+            console.error('Falha ao verificar coordenada:', err);
+        }
+    };  
 
     validacaoModal = () => {
         if (this.state.formColetor) {
@@ -3770,7 +3804,9 @@ class NovoTomboScreen extends Component {
         return (
             <div>
                 <Row gutter={8}>
-                    <LatLongFormField getFieldDecorator={getFieldDecorator} />
+                    <LatLongFormField
+                        getFieldDecorator={getFieldDecorator}
+                    />
                 </Row>
                 <br />
                 <Row gutter={8}>
@@ -3850,9 +3886,25 @@ class NovoTomboScreen extends Component {
                         initialValue={String(cidadeInicial)}
                         cidades={cidades}
                         getFieldDecorator={getFieldDecorator}
-                        getFieldError={getFieldError}
-                        disabled={!this.props.form.getFieldValue('estados')}
-                        onChange={value => {
+                        disabled={!this.props.form.getFieldValue("estados")}
+                        onChange={(value) => {
+                            const latitude = this.props.form.getFieldValue('latitude');
+                            const longitude = this.props.form.getFieldValue('longitude');
+                            try{
+                                if(value && latitude && longitude){
+                                    verificarCoordenada((res) =>{
+                                        if(res.data && res.data.dentro == false){
+                                            this.openNotificationWithIcon(
+                                            'warning',
+                                            'Coordenada fora do município',
+                                            'A coordenada informada não pertence ao munícipio informado.'
+                                        );
+                                        }
+                                    }, value, latitude, longitude)
+                                }
+                            } catch(err) {
+                                console.error('Falha ao verificar coordenada:', err);
+                            }
                             if (value) {
                                 this.props.form.setFieldsValue({
                                     complemento: undefined,

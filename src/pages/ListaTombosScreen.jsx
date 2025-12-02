@@ -22,6 +22,7 @@ import SimpleTableComponent from '../components/SimpleTableComponent'
 import { baseUrl, recaptchaKey } from '../config/api'
 import { isCuradorOuOperador, isIdentificador } from '../helpers/usuarios'
 import FichaTomboActions from './tombos/components/FichaTomboActions'
+import { requisitaDadosEdicaoService, verificarCoordenada } from './tombos/TomboService'
 
 const { confirm } = Modal
 const FormItem = Form.Item
