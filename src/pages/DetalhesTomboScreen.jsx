@@ -18,6 +18,7 @@ import LeafletMap from '../components/LeafletMap'
 import { formatarDataBDtoDataHora } from '../helpers/conversoes/ConversoesData'
 import decimalParaGrausMinutosSegundos from '../helpers/conversoes/Coordenadas'
 import fotosTomboMap from '../helpers/fotos-tombo-map'
+import { verificarCoordenada } from './tombos/TomboService'
 
 export default class DetalhesTomboScreen extends Component {
     constructor(props) {
@@ -50,11 +51,17 @@ export default class DetalhesTomboScreen extends Component {
         axios.get(`/tombos/${this.props.match.params.tombo_id}`)
             .then(response => {
                 if (response.status === 200) {
-                    this.setState({
-                        loading: false,
-                        tombo: response.data
+                    this.setState({ tombo: response.data, loading: false }, () => {
+                        const { cidadeInicial, localizacao } = response.data
+                        const latitude = localizacao?.latitude
+                        const longitude = localizacao?.longitude
+
+                        if (cidadeInicial && latitude && longitude) {
+                            this.verificaCoordenada(cidadeInicial, latitude, longitude)
+                        }
                     })
                 } else {
+                    this.setState({ loading: false })
                     this.openNotificationWithIcon(
                         'error',
                         'Falha',
@@ -110,6 +117,14 @@ export default class DetalhesTomboScreen extends Component {
 
         this.reinosRef.current.promise = promise
         return promise
+    }
+
+    verificaCoordenada = (cidadeId, latitude, longitude) => {
+        verificarCoordenada(res => {
+            if (res.data && res.data.dentro === false) {
+                this.openNotificationWithIcon('warning', 'Atenção', 'A coordenada informada não pertence à cidade do tombo.')
+            }
+        }, cidadeId, latitude, longitude)
     }
 
     handleSubmit = e => {

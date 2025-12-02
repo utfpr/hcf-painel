@@ -3426,7 +3426,7 @@ class NovoTomboScreen extends Component {
             console.error("Erro ao buscar identificadores:", err);
         }
     };
-
+    
     verifyCoordenada = async (cidadeId = null) => {
         try {
             const { form } = this.props;
@@ -3458,7 +3458,7 @@ class NovoTomboScreen extends Component {
         } catch (err) {
             console.error('Falha ao verificar coordenada:', err);
         }
-    };
+    };  
 
     validacaoModal = () => {
         if (this.state.formColetor) {
