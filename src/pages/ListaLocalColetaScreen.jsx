@@ -70,10 +70,13 @@ class ListaLocaisColeta extends Component {
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         this.requisitaListaLocais({}, this.state.pagina)
-        this.requisitaPaises()
+        await this.requisitaPaises()
+        await this.requisitaEstados()
+        await this.requisitaCidades()
     }
+
 
     notificacao = (type, titulo, descricao) => {
         notification[type]({
@@ -91,7 +94,7 @@ class ListaLocaisColeta extends Component {
             }
 
             const response = await axios.get('/paises', { params })
-            
+
             if (response.status === 200) {
                 this.setState({
                     paises: response.data,
@@ -109,12 +112,11 @@ class ListaLocaisColeta extends Component {
 
         try {
             const params = {
-                ...(paisId ? { pais_id: paisId } : {}),
                 ...(searchText ? { nome: searchText } : {})
             }
 
             const response = await axios.get('/estados', { params })
-            
+
             if (response.status === 200) {
                 this.setState({
                     estados: response.data,
@@ -132,12 +134,11 @@ class ListaLocaisColeta extends Component {
 
         try {
             const params = {
-                ...(estadoId ? { estado_id: estadoId } : {}),
                 ...(searchText ? { nome: searchText } : {})
             }
 
             const response = await axios.get('/cidades', { params })
-            
+
             if (response.status === 200) {
                 this.setState({
                     cidades: response.data,
@@ -152,8 +153,8 @@ class ListaLocaisColeta extends Component {
 
     formataDadosLocais = locais => locais.map(item => ({
         key: item.id,
-        nome: item.descricao, 
-        pais: item.cidade?.estado?.paise?.nome || '', 
+        nome: item.descricao,
+        pais: item.cidade?.estado?.paise?.nome || '',
         estado: item.cidade?.estado?.nome || '',
         cidade: item.cidade?.nome || '',
         acao: this.gerarAcao(item.id)
@@ -179,25 +180,25 @@ class ListaLocaisColeta extends Component {
     editarLocal = async (id) => {
         try {
             const response = await axios.get(`/locais-coleta/${id}`)
-            
+
             if (response.status === 200) {
                 const local = response.data
                 const paisId = local.cidade.estado.paise.id
                 const estadoId = local.cidade.estado.id
-                
-                await this.requisitaEstados('', paisId) 
+
+                await this.requisitaEstados('', paisId)
                 await this.requisitaCidades('', estadoId)
-                
+
                 this.setState({
                     visibleModal: true,
                     titulo: 'Atualizar',
                     id: local.id,
-                    nomeLocal: local.descricao, 
+                    nomeLocal: local.descricao,
                     paisSelecionado: paisId,
                     estadoSelecionado: estadoId,
                     cidadeSelecionada: local.cidade.id
                 })
-                
+
                 this.props.form.setFieldsValue({
                     nomeLocalModal: local.descricao,
                     paisModal: paisId,
@@ -219,8 +220,11 @@ class ListaLocaisColeta extends Component {
         }
 
         if (valores !== undefined) {
-            const { pais, estado, cidade } = valores
+            const { pais, estado, cidade, descricao } = valores
 
+            if (descricao) {
+                params.descricao = descricao
+            }
             if (cidade) {
                 params.cidade_id = cidade
             } else if (estado) {
@@ -392,7 +396,18 @@ class ListaLocaisColeta extends Component {
         return (
             <Card title="Buscar local de coleta">
                 <Form onSubmit={this.onSubmit}>
-                    <Row gutter={8}>
+                    <Row gutter={[8, 20]}>
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                            <FormItem label="Nome do Local:">
+                                {getFieldDecorator('descricao')(
+                                    <Input
+                                        placeholder="Buscar por nome do local"
+                                        allowClear
+                                    />
+                                )}
+                            </FormItem>
+                        </Col>
+
                         <SelectedFormField
                             title="País:"
                             placeholder="Selecione um país"
@@ -419,7 +434,7 @@ class ListaLocaisColeta extends Component {
                                 notFoundContent: fetchingPaises ? <Spin size="small" /> : 'Nenhum resultado encontrado',
                                 allowClear: true
                             }}
-                            debounceDelay={600}
+                            debounceDelay={200}
                             xs={24}
                             sm={24}
                             md={8}
@@ -436,12 +451,11 @@ class ListaLocaisColeta extends Component {
                             placeholder={paisSelecionadoBusca ? "Selecione um estado" : "Selecione um país primeiro"}
                             fieldName="estado"
                             getFieldDecorator={getFieldDecorator}
-                            disabled={!paisSelecionadoBusca}
+                            disabled={false}
                             onSearch={searchText => {
-                                if (paisSelecionadoBusca) {
-                                    this.requisitaEstados(searchText || '', paisSelecionadoBusca)
-                                }
+                                this.requisitaEstados(searchText || '')
                             }}
+                            onFocus={() => this.requisitaEstados()}
                             onChange={value => {
                                 this.props.form.setFieldsValue({
                                     cidade: undefined
@@ -456,7 +470,7 @@ class ListaLocaisColeta extends Component {
                                 notFoundContent: fetchingEstados ? <Spin size="small" /> : 'Nenhum resultado encontrado',
                                 allowClear: true
                             }}
-                            debounceDelay={600}
+                            debounceDelay={200}
                             xs={24}
                             sm={24}
                             md={8}
@@ -473,18 +487,17 @@ class ListaLocaisColeta extends Component {
                             placeholder={estadoSelecionadoBusca ? "Selecione uma cidade" : "Selecione um estado primeiro"}
                             fieldName="cidade"
                             getFieldDecorator={getFieldDecorator}
-                            disabled={!estadoSelecionadoBusca}
+                            disabled={false}
                             onSearch={searchText => {
-                                if (estadoSelecionadoBusca) {
-                                    this.requisitaCidades(searchText || '', estadoSelecionadoBusca)
-                                }
+                                this.requisitaCidades(searchText || '')
                             }}
+                            onFocus={() => this.requisitaCidades()}
                             others={{
                                 loading: fetchingCidades,
                                 notFoundContent: fetchingCidades ? <Spin size="small" /> : 'Nenhum resultado encontrado',
                                 allowClear: true
                             }}
-                            debounceDelay={600}
+                            debounceDelay={200}
                             xs={24}
                             sm={24}
                             md={8}
@@ -546,7 +559,7 @@ class ListaLocaisColeta extends Component {
 
     renderFormulario = () => {
         const { getFieldDecorator } = this.props.form
-        
+
         return (
             <div>
                 <ModalCadastroComponent
@@ -581,7 +594,7 @@ class ListaLocaisColeta extends Component {
 
                 <Row gutter={24} style={{ marginBottom: '20px' }}>
                     <Col xs={24} sm={14} md={18} lg={20} xl={20}>
-                        <h2 style={{ fontWeight: 200 }}>Listagem de locais de coleta</h2>
+                        <h2 style={{ fontWeight: 200 }}>Locais de Coleta</h2>
                     </Col>
                     <Col xs={24} sm={10} md={6} lg={4} xl={4}>
                         {this.renderAdd()}
@@ -624,7 +637,7 @@ class ListaLocaisColeta extends Component {
                     <Col span={24}>
                         <FormItem>
                             {getFieldDecorator('nomeLocalModal')(
-                                <Input 
+                                <Input
                                     placeholder="RPPN Moreira Sales"
                                     onChange={e => this.setState({ nomeLocal: e.target.value })}
                                 />
@@ -643,7 +656,7 @@ class ListaLocaisColeta extends Component {
                             this.requisitaPaises(searchText || '')
                         }}
                         onChange={async value => {
-                            this.setState({ 
+                            this.setState({
                                 paisSelecionado: value,
                                 estadoSelecionado: null,
                                 cidadeSelecionada: null,
@@ -663,7 +676,7 @@ class ListaLocaisColeta extends Component {
                             notFoundContent: fetchingPaises ? <Spin size="small" /> : 'Nenhum resultado encontrado',
                             allowClear: true
                         }}
-                        debounceDelay={600}
+                        debounceDelay={200}
                         xs={24}
                         sm={24}
                         md={24}
@@ -689,7 +702,7 @@ class ListaLocaisColeta extends Component {
                             }
                         }}
                         onChange={async value => {
-                            this.setState({ 
+                            this.setState({
                                 estadoSelecionado: value,
                                 cidadeSelecionada: null,
                                 cidades: []
@@ -706,7 +719,7 @@ class ListaLocaisColeta extends Component {
                             notFoundContent: fetchingEstados ? <Spin size="small" /> : 'Nenhum resultado encontrado',
                             allowClear: true
                         }}
-                        debounceDelay={600}
+                        debounceDelay={200}
                         xs={24}
                         sm={24}
                         md={24}
@@ -739,7 +752,7 @@ class ListaLocaisColeta extends Component {
                             notFoundContent: fetchingCidades ? <Spin size="small" /> : 'Nenhum resultado encontrado',
                             allowClear: true
                         }}
-                        debounceDelay={600}
+                        debounceDelay={200}
                         xs={24}
                         sm={24}
                         md={24}
@@ -757,7 +770,7 @@ class ListaLocaisColeta extends Component {
 
     render() {
         const { getFieldDecorator } = this.props.form
-        
+
         return this.renderFormulario()
     }
 }

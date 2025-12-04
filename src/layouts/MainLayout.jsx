@@ -108,7 +108,7 @@ export default class MainLayout extends Component {
 
         setUsuario('')
         localStorage.setItem('usuario', '')
-        
+
         // Limpa as credenciais salvas do "Lembrar-me"
         localStorage.removeItem('hcf_saved_email')
         localStorage.removeItem('hcf_saved_password')
@@ -124,8 +124,8 @@ export default class MainLayout extends Component {
                             <img
                                 src={logoImage}
                                 alt="logo-hcf"
-                                height={this.state.collapsed ? "70px" : "120px"}
-                                width={this.state.collapsed ? "70px" : "120px"}
+                                height={this.state.collapsed ? '70px' : '120px'}
+                                width={this.state.collapsed ? '70px' : '120px'}
                             />
                         </Link>
                     </Col>
@@ -287,9 +287,6 @@ export default class MainLayout extends Component {
                             >
                                 <Menu.Item key="relatorio-inventario-especies">
                                     <Link to="/relatorio-inventario-especies">Inventário de Espécies</Link>
-                                </Menu.Item>
-                                <Menu.Item key="relatorio-coleta-local-data">
-                                    <Link to="/relatorio-coleta-local-data">Coleta por local e intervalo de data</Link>
                                 </Menu.Item>
                                 <Menu.Item key="relatorio-coleta-data">
                                     <Link to="/relatorio-coleta-data">Coleta por intervalo de data</Link>

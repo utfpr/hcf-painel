@@ -5,6 +5,7 @@ import {
     Redirect
 } from 'react-router-dom'
 
+import InicioScreen from './features/login/InicioScreen'
 import {
     setUsuario,
     setTokenUsuario,
@@ -17,7 +18,6 @@ import MainLayout from './layouts/MainLayout'
 import DetalhesTomboScreen from './pages/DetalhesTomboScreen'
 import FichaTomboScreen from './pages/FichaTomboScreen'
 import filtrosMapa from './pages/FiltrosMapa'
-import InicioScreen from './features/login/InicioScreen'
 import ListaColetoresScreen from './pages/ListaColetoresScreen'
 import ListaHerbariosScreen from './pages/ListaHerbariosScreen'
 import ListaIdentificadoresScreen from './pages/ListaIdentificadoresScreen'
@@ -154,7 +154,6 @@ export default class App extends Component {
 
                 <PrivateRoute authed={isLogado()} path="/relatorio-coleta-data" component={RelatorioColetaPeriodoScreen} />
                 <PrivateRoute authed={isLogado()} path="/relatorio-inventario-especies" component={RelatorioInventarioEspeciesScreen} />
-                <PrivateRoute authed={isLogado()} path="/relatorio-coleta-local-data" component={RelatorioColetaLocalPeriodoScreen} />
                 <PrivateRoute authed={isLogado()} path="/relatorio-coletor-data" component={RelatorioColetorPeriodoScreen} />
                 <PrivateRoute authed={isLogado()} path="/relatorio-codigo-barras" component={RelatorioCodigoBarrasScreen} />
                 <PrivateRoute authed={isLogado()} path="/relatorio-familias-genero" component={RelatorioFamiliasGeneroScreen} />

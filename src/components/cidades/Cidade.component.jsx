@@ -12,8 +12,8 @@ import CoordenadaInputText from '@/components/CoordenadaInputText';
 const { Option } = Select;
 
 const columns = [
-    { title: 'Cidade', dataIndex: 'nome', key: 'nome', sorter: true },
-    { title: 'Estado', dataIndex: 'estadoNome', key: 'estadoNome', sorter: true },
+    { title: 'Cidade', dataIndex: 'nome', key: 'nome' },
+    { title: 'Estado', dataIndex: 'estadoNome', key: 'estadoNome' },
     { title: 'Latitude', dataIndex: 'latitude', key: 'latitude' },
     { title: 'Longitude', dataIndex: 'longitude', key: 'longitude' },
     { title: 'Ação', key: 'acao' }
@@ -23,6 +23,9 @@ const CidadesComponent = ({
     form,
     cidades,
     estados,
+    paises,
+    estadosFiltrados,
+    setEstadosFiltrados,
     metadados,
     loading,
     visibleModal,
@@ -67,6 +70,19 @@ const CidadesComponent = ({
         const valores = form.getFieldsValue();
         onBusca(valores);
     };
+
+
+    const handleBusca = (valores) => {
+        const filtradas = cidadesOriginais.filter(c =>
+            (!valores.nome || c.nome.toLowerCase().includes(valores.nome.toLowerCase())) &&
+            (!valores.estadoId || c.estado_id === parseInt(valores.estadoId)) &&
+            (!valores.paisId || c.estado?.pais_id === parseInt(valores.paisId))
+        );
+
+        setPagina(1);
+        atualizaPagina(1, pageSize, filtradas);
+    };
+
 
     const handleModalOk = async () => {
         try {
@@ -130,26 +146,82 @@ const CidadesComponent = ({
             <Card title="Buscar cidade">
                 <Form form={form} onFinish={handleSearch}>
                     <Row gutter={8}>
-                        <Col span={24}><span>Nome da cidade:</span></Col>
-                    </Row>
-                    <Row gutter={8}>
-                        <Col span={24}>
-                            <Form.Item name="nome">
-                                <Input placeholder="Curitiba" type="text" />
-                            </Form.Item>
+                        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+                            <Col span={24}><span>Nome da cidade:</span></Col>
+                            <Col span={24}>
+                                <Form.Item name="nome">
+                                    <Input placeholder="Curitiba" type="text" />
+                                </Form.Item>
+                            </Col>
+                        </Col>
+                        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+                            <Col span={24}><span>País:</span></Col>
+                            <Col span={24}>
+                                <Form.Item name="paisId">
+                                    <Select
+                                        showSearch
+                                        placeholder="Selecione um país (opcional)"
+                                        onChange={(paisId) => {
+                                            form.setFieldsValue({ estadoId: undefined });
+                                            const novosEstados = estados.filter(e => e.pais_id === paisId);
+                                            setEstadosFiltrados(novosEstados);
+                                        }}
+                                        optionFilterProp="children"
+                                        filterOption={(input, option) =>
+                                            (option?.children ?? '').toLowerCase().includes(input.toLowerCase())
+                                        }
+                                    >
+                                        {paises.map(pais => (
+                                            <Option key={pais.id} value={pais.id}>{pais.nome}</Option>
+                                        ))}
+                                    </Select>
+                                </Form.Item>
+                            </Col>
+                        </Col>
+                        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+                            <Col span={24}><span>Estado:</span></Col>
+                            <Col span={24}>
+                                <Form.Item name="estadoId">
+                                    <Select
+                                        showSearch
+                                        placeholder={form.getFieldValue('paisId') ? 'Selecione um estado' : 'Selecione um país primeiro'}
+                                        disabled={!form.getFieldValue('paisId')}
+                                        optionFilterProp="children"
+                                        filterOption={(input, option) =>
+                                            (option?.children ?? '').toLowerCase().includes(input.toLowerCase())
+                                        }
+                                    >
+                                        {estadosFiltrados.map(estado => (
+                                            <Option key={estado.id} value={estado.id}>{estado.nome}</Option>
+                                        ))}
+                                    </Select>
+                                </Form.Item>
+                            </Col>
                         </Col>
                     </Row>
                     <Row style={{ marginTop: 32 }}>
                         <Col span={24}>
                             <Row justify="end" align="middle" gutter={16}>
-                                <Col xs={24} sm={8} md={12} lg={16} xl={16}>
-                                    <TotalRecordFound total={metadados?.total} />
+                                <Col xs={24} sm={8} md={6} lg={4} xl={4}>
+                                    <Form.Item>
+                                        <Button
+                                            onClick={onLimparBusca}
+                                            className="login-form-button"
+                                        >
+                                            Limpar
+                                        </Button>
+                                    </Form.Item>
                                 </Col>
                                 <Col xs={24} sm={8} md={6} lg={4} xl={4}>
-                                    <Button onClick={onLimparBusca}>Limpar</Button>
-                                </Col>
-                                <Col xs={24} sm={8} md={6} lg={4} xl={4}>
-                                    <Button type="primary" htmlType="submit">Pesquisar</Button>
+                                    <Form.Item>
+                                        <Button
+                                            type="primary"
+                                            htmlType="submit"
+                                            className="login-form-button ant-btn-pesquisar"
+                                        >
+                                            Pesquisar
+                                        </Button>
+                                    </Form.Item>
                                 </Col>
                             </Row>
                         </Col>

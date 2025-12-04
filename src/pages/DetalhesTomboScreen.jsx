@@ -543,7 +543,7 @@ export default class DetalhesTomboScreen extends Component {
                             <Col span={24}>
                                 <span>
                                     {' '}
-                                    {tombo.local_coleta.fase_sucessional.nome}
+                                    {tombo.local_coleta.fase_sucessional}
                                     {' '}
                                 </span>
                             </Col>
