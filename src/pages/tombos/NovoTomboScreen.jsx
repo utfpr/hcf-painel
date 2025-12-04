@@ -385,12 +385,12 @@ class NovoTomboScreen extends Component {
         form.append("codigo_foto", String(numeroCodigo));
         form.append("tombo_hcf", String(tomboHcf));
         form.append("em_vivo", "true");
-      
+
         return axios.post("/uploads", form, {
-          headers: { "Content-Type": "multipart/form-data" },
+            headers: { "Content-Type": "multipart/form-data" },
         });
-      };
-      
+    };
+
 
     makeFileGetter = (source) => (codigo) => {
         if (typeof source === "function") return source(codigo) || [];
@@ -422,7 +422,7 @@ class NovoTomboScreen extends Component {
             const currentBarcodes = currentList || [];
             const deletions = this.state.toDeleteBarcodes || [];
             const isEditing = this.state.isEditing;
-    
+
             const initialPhotosMap = this.state.initialBarcodePhotos || {};
             const currentPhotosMap = photoSourceArg ?? this.state.currentBarcodePhotos ?? {};
 
@@ -433,13 +433,13 @@ class NovoTomboScreen extends Component {
             const initialSet = new Set(initialList.map((it) => it.codigo_barra));
             const newBarcodes = currentBarcodes.filter((it) => !initialSet.has(it.codigo_barra));
             const existingBarcodes = currentBarcodes.filter((it) => initialSet.has(it.codigo_barra));
-    
+
             const ops = [];
 
             if (newBarcodes.length > 0) {
                 ops.push(this.criarCodigoBarras(tomboHcf, newBarcodes, getFiles));
             }
-    
+
 
             if (isEditing && existingBarcodes.length > 0) {
                 const codigosComAlteracaoArquivo = existingBarcodes
@@ -447,10 +447,10 @@ class NovoTomboScreen extends Component {
                         const codigoFormatado = this.formatCodeLabel(row.num_barra);
                         const filesAtuais = getFiles(codigoFormatado) || [];
                         const filesIniciais = initialPhotosMap[codigoFormatado] || [];
-                        
+
                         const temArquivoNovo = this.hasLocalFile(filesAtuais);
                         const adicionouArquivo = filesIniciais.length === 0 && filesAtuais.length > 0;
-                        
+
                         return temArquivoNovo || adicionouArquivo;
                     })
                     .map((row) => {
@@ -460,7 +460,7 @@ class NovoTomboScreen extends Component {
                         return file ? { numeroCodigo: row.num_barra, file } : null;
                     })
                     .filter(Boolean);
-    
+
                 if (codigosComAlteracaoArquivo.length > 0) {
                     const uploadRequests = codigosComAlteracaoArquivo.map(({ numeroCodigo, file }) =>
                         this.uploadFotoCodigo(tomboHcf, numeroCodigo, file)
@@ -468,17 +468,17 @@ class NovoTomboScreen extends Component {
                     ops.push(Promise.allSettled(uploadRequests));
                 }
             }
-    
+
             if (isEditing) {
                 const codesWithPhotoInitially = Object.keys(initialPhotosMap)
                     .filter((code) => Array.isArray(initialPhotosMap[code]) && initialPhotosMap[code].length > 0);
-    
+
                 if (codesWithPhotoInitially.length > 0) {
                     const codesNowWithoutPhoto = codesWithPhotoInitially.filter((code) => {
                         const atual = currentPhotosMap[code];
                         return !Array.isArray(atual) || atual.length === 0; // vazio agora
                     });
-    
+
                     if (codesNowWithoutPhoto.length > 0) {
                         const deletePhotoRequests = codesNowWithoutPhoto
                             .map((code) => {
@@ -486,14 +486,14 @@ class NovoTomboScreen extends Component {
                                     currentBarcodes.find((r) => r.codigo_barra === code) ||
                                     initialList.find((r) => r.codigo_barra === code) ||
                                     null;
-    
+
                                 const numeroCodigo = row?.num_barra ?? parseInt(String(code).replace(/\D/g, ""), 10);
                                 if (!Number.isFinite(numeroCodigo)) return null;
-    
+
                                 return axios.delete(`/uploads/${encodeURIComponent(numeroCodigo)}`);
                             })
                             .filter(Boolean);
-    
+
                         if (deletePhotoRequests.length > 0) {
                             ops.push(Promise.allSettled(deletePhotoRequests));
                         }
@@ -511,14 +511,14 @@ class NovoTomboScreen extends Component {
             if (ops.length > 0) {
                 await Promise.all(ops);
             }
-    
+
             if (
                 newBarcodes.length > 0 ||
                 (isEditing && (deletions.length > 0 || existingBarcodes.length > 0))
             ) {
                 this.openNotificationWithIcon("success", "Sucesso", "Códigos de barra atualizados com sucesso");
             }
-    
+
             if (isEditing && deletions.length > 0) {
                 this.setState({ toDeleteBarcodes: [] });
             }
@@ -575,13 +575,13 @@ class NovoTomboScreen extends Component {
             message.error("Tombo (HCF) inválido.");
             return;
         }
-    
+
         const numeros = this.normalizeBarcodes(barcodeList);
         if (!numeros.length) {
             this.openNotificationWithIcon("warning", "Atenção", "Nenhum código válido para enviar.");
             return;
         }
-    
+
         const resultados = await Promise.all(
             numeros.map(async (numeroCodigo) => {
                 try {
@@ -594,7 +594,7 @@ class NovoTomboScreen extends Component {
                     if (typeof getFiles === "function") {
                         const codigoFormatado = this.formatCodeLabel(numeroCodigo);
                         const arquivos = getFiles(codigoFormatado);
-    
+
                         if (arquivos && arquivos[0]) {
                             const file = this.pickUploadableFile(arquivos);
                             if (file) {
@@ -603,7 +603,7 @@ class NovoTomboScreen extends Component {
                             }
                         }
                     }
-    
+
                     return { ok: true, numeroCodigo, uploaded };
                 } catch (error) {
                     console.error("Erro ao criar/enviar para código:", numeroCodigo, error);
@@ -611,17 +611,16 @@ class NovoTomboScreen extends Component {
                 }
             })
         );
-    
+
         const okCount = resultados.filter((r) => r.ok).length;
         const failCount = resultados.length - okCount;
         const uploadedCount = resultados.filter((r) => r.ok && r.uploaded).length;
-    
+
         if (okCount) {
             this.openNotificationWithIcon(
                 "success",
                 "Sucesso",
-                `Códigos criados: ${okCount}${uploadedCount ? ` • Uploads: ${uploadedCount}` : ""}${
-                    failCount ? ` • Falharam: ${failCount}` : ""
+                `Códigos criados: ${okCount}${uploadedCount ? ` • Uploads: ${uploadedCount}` : ""}${failCount ? ` • Falharam: ${failCount}` : ""
                 }`
             );
         } else {
@@ -787,7 +786,7 @@ class NovoTomboScreen extends Component {
                             })
 
                             if (estadoParana) {
-                                this.requisitaCidades('',estadoParana.id)
+                                this.requisitaCidades('', estadoParana.id)
                             }
                         }
                     })
@@ -2001,9 +2000,9 @@ class NovoTomboScreen extends Component {
 
     insereDadosFormulario = dados => {
         const { form } = this.props
-        
+
         this.setState({ dadosFormulario: dados })
-        
+
         let insereState = {
             estados: dados.estados,
             cidades: dados.cidades,
@@ -2143,7 +2142,7 @@ class NovoTomboScreen extends Component {
         })
 
         if (dados.cidadeInicial) {
-            this.requisitaLocaisColeta('',dados.cidadeInicial)
+            this.requisitaLocaisColeta('', dados.cidadeInicial)
         }
     }
 
@@ -2156,7 +2155,8 @@ class NovoTomboScreen extends Component {
             cancelText: 'NÃO',
             onOk: () => {
             },
-            onCancel: () => {''
+            onCancel: () => {
+                ''
                 window.history.go(-1)
             }
         })
@@ -2166,16 +2166,6 @@ class NovoTomboScreen extends Component {
         e.preventDefault()
         const { form } = this.props
         form.validateFields((err, values) => {
-            if (!(form.getFieldsValue().dataColetaDia
-                || form.getFieldsValue().dataColetaMes
-                || form.getFieldsValue().dataColetaAno)) {
-                this.openNotificationWithIcon(
-                    'warning',
-                    'Falha',
-                    'É necessário pelo menos o dia ou o mês ou o ano da data de coleta para o cadastro.'
-                )
-                return false
-            }
             if (err != null) {
                 this.openNotificationWithIcon('warning', 'Falha', 'Preencha todos os dados requiridos.')
             } else {
@@ -2263,12 +2253,10 @@ class NovoTomboScreen extends Component {
         json.principal.tipo_id = tipo ? parseInt(tipo) : null
         json.principal.data_tombo = this.normalizaDataTombo(dataTombo)
 
-        if (dataColetaDia || dataColetaMes || dataColetaAno) {
-            json.principal.data_coleta = {
-                dia: dataColetaDia || null,
-                mes: dataColetaMes || null,
-                ano: dataColetaAno || null
-            }
+        json.principal.data_coleta = {
+            dia: dataColetaDia || null,
+            mes: dataColetaMes || null,
+            ano: dataColetaAno || null
         }
 
         json.taxonomia = {
@@ -2381,9 +2369,9 @@ class NovoTomboScreen extends Component {
         json.principal = { ...json.principal, data_tombo: this.normalizaDataTombo(dataTombo) }
         json.principal = { ...json.principal, entidade_id: parseInt(entidade) }
         json.principal.numero_coleta = parseInt(numColeta)
-        if (dataColetaDia) json.principal.data_coleta = { dia: dataColetaDia }
-        if (dataColetaMes) json.principal.data_coleta = { ...json.principal.data_coleta, mes: dataColetaMes }
-        if (dataColetaAno) json.principal.data_coleta = { ...json.principal.data_coleta, ano: dataColetaAno }
+        json.principal.data_coleta = { dia: dataColetaDia || null }
+        json.principal.data_coleta = { ...json.principal.data_coleta, mes: dataColetaMes || null }
+        json.principal.data_coleta = { ...json.principal.data_coleta, ano: dataColetaAno || null }
         if (tipo) json.principal.tipo_id = tipo
         if (reino) json.taxonomia = { reino_id: reino }
         if (familia) json.taxonomia = { ...json.taxonomia, familia_id: familia }
@@ -2636,7 +2624,7 @@ class NovoTomboScreen extends Component {
 
     requisitaLocaisColeta = async (searchText = '', cidadeId = null) => {
         const cidade = cidadeId || this.props.form.getFieldValue('cidade')
-        
+
         if (!cidade) {
             this.openNotificationWithIcon('warning', 'Atenção', 'Por favor, selecione uma cidade primeiro.')
             return
@@ -3185,7 +3173,6 @@ class NovoTomboScreen extends Component {
                         }}
                         loading={fetchingCidades}
                         debounceDelay={200}
-                        getFieldError={getFieldError}
                     />
                 </Row>
                 <br />
@@ -3913,12 +3900,7 @@ class NovoTomboScreen extends Component {
                             <Row type="flex" gutter={4}>
                                 <Col span={8}>
                                     <FormItem>
-                                        {getFieldDecorator('dataColetaDia', {
-                                            rules: [{
-                                                required: true,
-                                                message: 'Insira o dia da coleta'
-                                            }]
-                                        })(
+                                        {getFieldDecorator('dataColetaDia')(
                                             <InputNumber
                                                 min={1}
                                                 max={31}
@@ -3931,12 +3913,7 @@ class NovoTomboScreen extends Component {
                                 </Col>
                                 <Col span={8}>
                                     <FormItem>
-                                        {getFieldDecorator('dataColetaMes', {
-                                            rules: [{
-                                                required: true,
-                                                message: 'Insira o mês da coleta'
-                                            }]
-                                        })(
+                                        {getFieldDecorator('dataColetaMes')(
                                             <InputNumber
                                                 min={1}
                                                 max={12}
@@ -3950,13 +3927,7 @@ class NovoTomboScreen extends Component {
                                 <Col span={8}>
                                     <FormItem>
                                         {getFieldDecorator('dataColetaAno', {
-                                            rules: [
-                                                {
-                                                    required: true,
-                                                    message: 'Insira o ano da coleta'
-                                                },
-                                                { validator: this.validateAnoNaoFuturo }
-                                            ]
+                                            rules: [{ validator: this.validateAnoNaoFuturo }]
                                         })(
                                             <InputNumber
                                                 min={500}
