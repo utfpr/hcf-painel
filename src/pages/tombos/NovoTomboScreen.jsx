@@ -3152,7 +3152,6 @@ class NovoTomboScreen extends Component {
                         initialValue={String(cidadeInicial)}
                         cidades={cidades}
                         getFieldDecorator={getFieldDecorator}
-                        getFieldError={getFieldError}
                         disabled={!this.props.form.getFieldValue('estados')}
                         onChange={value => {
                             if (value) {
