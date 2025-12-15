@@ -51,15 +51,7 @@ export default class DetalhesTomboScreen extends Component {
         axios.get(`/tombos/${this.props.match.params.tombo_id}`)
             .then(response => {
                 if (response.status === 200) {
-                    this.setState({ tombo: response.data, loading: false }, () => {
-                        const { cidadeInicial, localizacao } = response.data
-                        const latitude = localizacao?.latitude
-                        const longitude = localizacao?.longitude
-
-                        if (cidadeInicial && latitude && longitude) {
-                            this.verificaCoordenada(cidadeInicial, latitude, longitude)
-                        }
-                    })
+                    this.setState({ tombo: response.data, loading: false }, () => {})
                 } else {
                     this.setState({ loading: false })
                     this.openNotificationWithIcon(
