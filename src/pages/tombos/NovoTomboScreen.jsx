@@ -3879,7 +3879,7 @@ class NovoTomboScreen extends Component {
                         <Col span={24}>
                             <FormItem>
                                 {getFieldDecorator('numColeta', {
-                                    initialValue: String(this.state.numero_coleta)
+                                    initialValue: null,
                                 })(
                                     <Input
                                         type="text"
