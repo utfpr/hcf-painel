@@ -16,12 +16,13 @@ const columnsWithCoordenadas = [
     {
         title: 'Espécie',
         dataIndex: 'especie',
-        key: 'especie'
-    },
-    {
-        title: 'Autor',
-        dataIndex: 'autor',
-        key: 'autor'
+        key: 'especie',
+        render: (text, record) => (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <p style={{ fontStyle: 'italic', margin: 0 }}>{record?.especie}</p>
+                <p style={{ margin: 0 }}>{record?.autor}</p>
+            </div>
+        ) || '-'
     },
     {
         title: 'Latitude',
@@ -54,12 +55,13 @@ const columnsWithoutCoordenadas = [
     {
         title: 'Espécie',
         dataIndex: 'especie',
-        key: 'especie'
-    },
-    {
-        title: 'Autor',
-        dataIndex: 'autor',
-        key: 'autor'
+        key: 'especie',
+        render: (text, record) => (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <p style={{ fontStyle: 'italic', margin: 0 }}>{record?.especie}</p>
+                <p style={{ margin: 0 }}>{record?.autor}</p>
+            </div>
+        ) || '-'
     },
     {
         title: 'Nº Tombo',
