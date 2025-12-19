@@ -1,17 +1,36 @@
 import React from 'react'
-
 import { Select, Spin } from 'antd'
-
 import SelectedFormFiled from './SelectedFormFiled'
 
 const { Option } = Select
 
 const CidadeFormField = ({
-    initialValue, cidades, getFieldDecorator, onClickAddMore, onChange, validateStatus, getFieldError, onSearch, loading = false, debounceDelay = 600, disabled = false
+    initialValue,
+    cidades,
+    getFieldDecorator,
+    onClickAddMore,
+    onChange,
+    validateStatus,
+    help,
+    getFieldError,
+    onSearch,
+    loading = false,
+    debounceDelay = 600,
+    disabled = false
 }) => {
+    const errorList = getFieldError && getFieldError('cidade')
+    const hasError = errorList && errorList.length > 0
+    const finalStatus = hasError ? 'error' : (validateStatus || '')
+    const warningMessage = (!hasError && help) ? (
+        <span style={{ color: '#faad14', fontSize: '12px', marginTop: '6px', display: 'block', fontWeight: '500' }}>
+            ⚠️ {help}
+        </span>
+    ) : null
+
     const optionCidades = () => cidades.map(item => (
-        <Option value={`${item.id}`}>{item.nome}</Option>
+        <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
     ))
+
     return (
         <SelectedFormFiled
             xs={24}
@@ -27,7 +46,8 @@ const CidadeFormField = ({
             getFieldError={getFieldError}
             onClickAddMore={onClickAddMore}
             onChange={onChange}
-            validateStatus={validateStatus}
+            validateStatus={finalStatus}
+            extra={hasError ? null : warningMessage}
             rules={[{
                 required: true,
                 message: 'Escolha uma cidade'
@@ -37,10 +57,10 @@ const CidadeFormField = ({
             disabled={disabled}
             others={{
                 allowClear: true,
-                loading: loading,
-                notFoundContent: loading ? <Spin size="small" /> : 'Nenhum país encontrado',
+                loading,
+                notFoundContent: loading ? <Spin size="small" /> : 'Nenhum município encontrado',
                 filterOption: onSearch ? false : undefined,
-                status: getFieldError && getFieldError('cidade') ? 'error' : ''
+                status: finalStatus
             }}
         >
             {optionCidades()}
