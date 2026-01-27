@@ -1,22 +1,13 @@
 import React from 'react'
+
 import { Select, Spin } from 'antd'
+
 import SelectedFormFiled from './SelectedFormFiled'
 
 const { Option } = Select
 
 const CidadeFormField = ({
-    initialValue,
-    cidades,
-    getFieldDecorator,
-    onClickAddMore,
-    onChange,
-    validateStatus,
-    help,
-    getFieldError,
-    onSearch,
-    loading = false,
-    debounceDelay = 600,
-    disabled = false
+    initialValue, cidades, getFieldDecorator, onClickAddMore, onChange, validateStatus, help, getFieldError, onSearch, loading = false, debounceDelay = 600, disabled = false
 }) => {
     const errorList = getFieldError && getFieldError('cidade')
     const hasError = errorList && errorList.length > 0
@@ -28,9 +19,8 @@ const CidadeFormField = ({
     ) : null
 
     const optionCidades = () => cidades.map(item => (
-        <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
+        <Option value={`${item.id}`}>{item.nome}</Option>
     ))
-
     return (
         <SelectedFormFiled
             xs={24}
@@ -57,8 +47,8 @@ const CidadeFormField = ({
             disabled={disabled}
             others={{
                 allowClear: true,
-                loading,
-                notFoundContent: loading ? <Spin size="small" /> : 'Nenhum município encontrado',
+                loading: loading,
+                notFoundContent: loading ? <Spin size="small" /> : 'Nenhum país encontrado',
                 filterOption: onSearch ? false : undefined,
                 status: finalStatus
             }}
