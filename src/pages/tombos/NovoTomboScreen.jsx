@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import { Component } from "react";
 
 import {
     Row,
@@ -16,52 +16,51 @@ import {
     Table,
     Tooltip,
     Upload,
-    Image
-} from 'antd'
-import axios from 'axios'
-import debounce from 'lodash.debounce'
-import { Link } from 'react-router-dom'
+    Image,
+} from "antd";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
-import { formatarDataBRtoEN } from '@/helpers/conversoes/ConversoesData'
-import converteDecimalParaGrausMinutosSegundos from '@/helpers/conversoes/Coordenadas'
-import { Form } from '@ant-design/compatible'
+import { formatarDataBRtoEN } from "@/helpers/conversoes/ConversoesData";
+import converteDecimalParaGrausMinutosSegundos from "@/helpers/conversoes/Coordenadas";
+import { Form } from "@ant-design/compatible";
 import {
     DeleteOutlined,
     EditOutlined,
     PlusOutlined,
-    UploadOutlined
-} from '@ant-design/icons'
+    UploadOutlined,
+} from "@ant-design/icons";
+import debounce from "lodash.debounce";
 
-import BarcodeTableComponent from '../../components/BarcodeTableComponent'
-import ButtonComponent from '../../components/ButtonComponent'
-import ModalCadastroComponent from '../../components/ModalCadastroComponent'
-import UploadPicturesComponent from '../../components/UploadPicturesComponent'
-import { fotosBaseUrl, baseUrl } from '../../config/api'
-import { isIdentificador } from '../../helpers/usuarios'
-import CidadeFormField from './components/CidadeFormField'
-import ColecoesAnexasFormField from './components/ColecoesAnexasFormField'
-import ColetorFormField from './components/ColetorFormField'
-import DataIdentificacaoFormField from './components/DataIdentificacaoFormField'
-import EspecieFormField from './components/EspecieFormField'
-import EstadoFormField from './components/EstadoFormField'
-import ExsicataTipoFormField from './components/ExsicataTipoField'
-import FamiliaFormField from './components/FamiliaFormField'
-import FaseFormField from './components/FaseFormField'
-import GeneroFormField from './components/GeneroFormField'
-import HerbarioFormField from './components/HerbarioFormField'
-import IdentificadorFormField from './components/IdentificadorFormField'
-import InputFormField from './components/InputFormField'
-import LatLongFormField from './components/LatLongFormField'
-import LocalColetaFormField from './components/LocalColetaFormField'
-import PaisFormField from './components/PaisFormField'
-import ReinoFormField from './components/ReinoFormField'
-import RelevoFormField from './components/RelevoFormField'
-import SelectedFormField from './components/SelectedFormFiled'
-import SoloFormField from './components/SoloFormField'
-import SubespecieFormField from './components/SubespecieFormField'
-import SubfamiliaFormField from './components/SubfamiliaFormField'
-import VariedadeFormField from './components/VariedadeFormField'
-import VegetacaoFormField from './components/VegetacaoFormField'
+import BarcodeTableComponent from "../../components/BarcodeTableComponent";
+import ButtonComponent from "../../components/ButtonComponent";
+import ModalCadastroComponent from "../../components/ModalCadastroComponent";
+import UploadPicturesComponent from "../../components/UploadPicturesComponent";
+import { fotosBaseUrl, baseUrl } from "../../config/api";
+import { isIdentificador } from "../../helpers/usuarios";
+import CidadeFormField from "./components/CidadeFormField";
+import ColecoesAnexasFormField from "./components/ColecoesAnexasFormField";
+import ColetorFormField from "./components/ColetorFormField";
+import DataIdentificacaoFormField from "./components/DataIdentificacaoFormField";
+import EspecieFormField from "./components/EspecieFormField";
+import EstadoFormField from "./components/EstadoFormField";
+import ExsicataTipoFormField from "./components/ExsicataTipoField";
+import FamiliaFormField from "./components/FamiliaFormField";
+import FaseFormField from "./components/FaseFormField";
+import GeneroFormField from "./components/GeneroFormField";
+import IdentificadorFormField from "./components/IdentificadorFormField";
+import InputFormField from "./components/InputFormField";
+import LatLongFormField from "./components/LatLongFormField";
+import LocalColetaFormField from "./components/LocalColetaFormField";
+import PaisFormField from "./components/PaisFormField";
+import ReinoFormField from "./components/ReinoFormField";
+import RelevoFormField from "./components/RelevoFormField";
+import SoloFormField from "./components/SoloFormField";
+import SubespecieFormField from "./components/SubespecieFormField";
+import SubfamiliaFormField from "./components/SubfamiliaFormField";
+import VariedadeFormField from "./components/VariedadeFormField";
+import VegetacaoFormField from "./components/VegetacaoFormField";
+import HerbarioFormField from "./components/HerbarioFormField";
 import {
     excluirFotoTomboService,
     atualizarFotoTomboService,
@@ -74,33 +73,34 @@ import {
     requisitaNumeroHcfService,
     handleSubmitIdentificadorService,
     verificarCoordenada
-} from './TomboService'
+} from "./TomboService";
+import SelectedFormField from "./components/SelectedFormFiled";
 
-const { confirm } = Modal
-const FormItem = Form.Item
-const { Option } = Select
-const { TextArea } = Input
-const RadioGroup = Radio.Group
+const { confirm } = Modal;
+const FormItem = Form.Item;
+const { Option } = Select;
+const { TextArea } = Input;
+const RadioGroup = Radio.Group;
 
 class NovoTomboScreen extends Component {
     tabelaFotosColunas = [
         {
-            title: 'Foto',
-            dataIndex: 'thumbnail',
-            render: thumbnail => {
+            title: "Foto",
+            dataIndex: "thumbnail",
+            render: (thumbnail) => {
                 return (
                     <Image width={120} src={`${fotosBaseUrl}/${thumbnail}`} />
-                )
-            }
+                );
+            },
         },
         {
-            title: 'Codigo de Barras',
-            dataIndex: 'codigo_barra',
-            render: codigoBarra => <div width="120">{codigoBarra}</div>
+            title: "Codigo de Barras",
+            dataIndex: "codigo_barra",
+            render: (codigoBarra) => <div width="120">{codigoBarra}</div>,
         },
         {
-            title: 'Ação',
-            dataIndex: 'acao',
+            title: "Ação",
+            dataIndex: "acao",
             render: (text, record, index) => (
                 <>
                     <Row>
@@ -108,16 +108,16 @@ class NovoTomboScreen extends Component {
                             <Tooltip placement="top" title="Excluir">
                                 <a
                                     href="#"
-                                    onClick={e => {
-                                        e.preventDefault()
+                                    onClick={(e) => {
+                                        e.preventDefault();
                                         this.mostraMensagemDeleteCod(
                                             record,
                                             index
-                                        )
+                                        );
                                     }}
                                 >
                                     <DeleteOutlined
-                                        style={{ color: '#e30613' }}
+                                        style={{ color: "#e30613" }}
                                     />
                                 </a>
                             </Tooltip>
@@ -131,12 +131,12 @@ class NovoTomboScreen extends Component {
                                 <Upload
                                     multiple
                                     {...this.props}
-                                    beforeUpload={foto => {
+                                    beforeUpload={(foto) => {
                                         this.atualizarFotoTombo(
                                             foto,
                                             record,
                                             index
-                                        )
+                                        );
                                     }}
                                 >
                                     <Tooltip
@@ -144,7 +144,7 @@ class NovoTomboScreen extends Component {
                                         title="editar imagem"
                                     >
                                         <EditOutlined
-                                            style={{ color: '#FFCC00' }}
+                                            style={{ color: "#FFCC00" }}
                                         />
                                     </Tooltip>
                                 </Upload>
@@ -152,13 +152,13 @@ class NovoTomboScreen extends Component {
                         </Col>
                     </Row>
                 </>
-            )
-        }
-    ]
+            ),
+        },
+    ];
 
     constructor(props) {
-        super(props)
-        this.barcodeRef = null // Add ref for BarcodeTableComponent
+        super(props);
+        this.barcodeRef = null; // Add ref for BarcodeTableComponent
         this.state = {
             showTable: false,
             fetchingColetores: false,
@@ -175,16 +175,16 @@ class NovoTomboScreen extends Component {
             fetchingAutores: false,
             valoresColetores: [],
             search: {
-                subfamilia: '',
-                genero: '',
-                especie: '',
-                subespecie: '',
-                variedade: ''
+                subfamilia: "",
+                genero: "",
+                especie: "",
+                subespecie: "",
+                variedade: "",
             },
             visibleModal: false,
             loadingModal: false,
             formulario: {
-                desc: ''
+                desc: "",
             },
             formComAutor: false,
             formLocalColeta: false,
@@ -212,45 +212,45 @@ class NovoTomboScreen extends Component {
             fotosExsicata: [],
             fotosEmVivo: [],
             numeroHcf: 0,
-            herbarioInicial: '',
-            tipoInicial: '',
-            paisInicial: '',
-            estadoInicial: '',
-            cidadeInicial: '',
-            reinoInicial: '1',
-            familiaInicial: '',
-            subfamiliaInicial: '',
-            generoInicial: '',
-            especieInicial: '',
-            subespecieInicial: '',
-            variedadeInicial: '',
-            soloInicial: '',
-            relevoInicial: '',
-            vegetacaoInicial: '',
-            faseInicial: '',
-            idSoloInicial: '',
-            idRelevoInicial: '',
-            idVegetacaoInicial: '',
-            idFaseInicial: '',
-            identificadorInicial: '',
-            coletoresInicial: '',
-            colecaoInicial: '',
-            complementoInicial: '',
-            latGraus: '',
-            latMinutos: '',
-            latSegundos: '',
+            herbarioInicial: "",
+            tipoInicial: "",
+            paisInicial: "",
+            estadoInicial: "",
+            cidadeInicial: "",
+            reinoInicial: "1",
+            familiaInicial: "",
+            subfamiliaInicial: "",
+            generoInicial: "",
+            especieInicial: "",
+            subespecieInicial: "",
+            variedadeInicial: "",
+            soloInicial: "",
+            relevoInicial: "",
+            vegetacaoInicial: "",
+            faseInicial: "",
+            idSoloInicial: "",
+            idRelevoInicial: "",
+            idVegetacaoInicial: "",
+            idFaseInicial: "",
+            identificadorInicial: "",
+            coletoresInicial: "",
+            colecaoInicial: "",
+            complementoInicial: "",
+            latGraus: "",
+            latMinutos: "",
+            latSegundos: "",
             fotosCadastradas: [],
-            longGraus: '',
-            longMinutos: '',
-            longSegundos: '',
+            longGraus: "",
+            longMinutos: "",
+            longSegundos: "",
             fotosTeste: [],
-            codigoBarras: '',
+            codigoBarras: "",
             dadosFormulario: {},
             editing: Boolean(this.props.match.params.tombo_id),
-            autorSubfamilia: '',
-            autorEspecie: '',
-            autorSubespecie: '',
-            autorVariedade: '',
+            autorSubfamilia: "",
+            autorEspecie: "",
+            autorSubespecie: "",
+            autorVariedade: "",
             codigosBarrasForm: [],
             codigosBarrasInicial: [],
             toDeleteBarcodes: [],
@@ -267,274 +267,287 @@ class NovoTomboScreen extends Component {
             fetchingVariedades: false,
             cidadeStatus: '',
             cidadeHelp: ''
-        }
+        };
     }
 
     componentDidMount() {
-        this.carregaInformacoesEdicao()
+        this.carregaInformacoesEdicao();
     }
 
     validateAnoNaoFuturo = (_rule, value, callback) => {
-        if (value == null || value === '') return callback()
-        const anoAtual = new Date().getFullYear()
+        if (value == null || value === "") return callback();
+        const anoAtual = new Date().getFullYear();
         if (Number(value) > anoAtual) {
-            return callback('O ano não pode ser no futuro.')
+            return callback("O ano não pode ser no futuro.");
         }
-        return callback()
-    }
+        return callback();
+    };
 
     validateDataTombo = (_rule, value, callback) => {
-        if (!value) return callback()
+        if (!value) return callback();
 
-        const str = String(value).trim()
+        const str = String(value).trim();
 
-        const m = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/)
-        if (!m) return callback('Formato inválido. Use DD/MM/AAAA.')
+        const m = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+        if (!m) return callback("Formato inválido. Use DD/MM/AAAA.");
 
-        const d = Number(m[1])
-        const mm = Number(m[2])
-        const y = Number(m[3])
+        const d = Number(m[1]);
+        const mm = Number(m[2]);
+        const y = Number(m[3]);
 
-        if (mm < 1 || mm > 12) return callback('Mês inválido.')
-        if (d < 1 || d > 31) return callback('Dia inválido.')
+        if (mm < 1 || mm > 12) return callback("Mês inválido.");
+        if (d < 1 || d > 31) return callback("Dia inválido.");
 
-        const dt = new Date(y, mm - 1, d)
+        const dt = new Date(y, mm - 1, d);
         if (
-            dt.getFullYear() !== y
-            || dt.getMonth() + 1 !== mm
-            || dt.getDate() !== d
+            dt.getFullYear() !== y ||
+            dt.getMonth() + 1 !== mm ||
+            dt.getDate() !== d
         ) {
-            return callback('Data inválida.')
+            return callback("Data inválida.");
         }
 
-        const anoAtual = new Date().getFullYear()
-        if (y > anoAtual) return callback('O ano não pode ser no futuro.')
+        const anoAtual = new Date().getFullYear();
+        if (y > anoAtual) return callback("O ano não pode ser no futuro.");
 
-        return callback()
-    }
+        return callback();
+    };
 
     carregaInformacoesEdicao = async () => {
         try {
-            this.setState({ loading: true })
+            this.setState({ loading: true });
 
             await Promise.all([
                 this.requisitaDadosFormulario(),
-                this.requisitaReinos(''),
-                this.requisitaFamilias('', this.state.reinoInicial)
-            ])
+                this.requisitaReinos(""),
+                this.requisitaFamilias("", this.state.reinoInicial),
+            ]);
         } catch (error) {
-            console.error(error)
+            console.error(error);
         } finally {
-            this.setState({ loading: false })
+            this.setState({ loading: false });
         }
-    }
+    };
 
-    getCodigosTombo = hcf => {
+    getCodigosTombo = (hcf) => {
         axios
             .get(`/tombos/codigo_barras/${hcf}`)
             .then(({ status, data }) => {
-                if (status !== 200 || !Array.isArray(data)) return
+                if (status !== 200 || !Array.isArray(data)) return;
 
                 const parseNumero = (numBarra, codigoBarra) => {
                     const inteiro = parseInt(
-                        String(numBarra ?? '').split('.')[0],
+                        String(numBarra ?? "").split(".")[0],
                         10
-                    )
-                    if (Number.isFinite(inteiro)) return inteiro
+                    );
+                    if (Number.isFinite(inteiro)) return inteiro;
                     return parseInt(
-                        String(codigoBarra || '').replace(/\D/g, ''),
+                        String(codigoBarra || "").replace(/\D/g, ""),
                         10
-                    )
-                }
+                    );
+                };
 
-                const normalize = items => items.map(item => ({
-                    id: item.id,
-                    codigo_barra: String(item.codigo_barra || ''),
-                    num_barra: parseNumero(
-                        item.num_barra,
-                        item.codigo_barra
-                    )
-                }))
+                const normalize = (items) =>
+                    items.map((item) => ({
+                        id: item.id,
+                        codigo_barra: String(item.codigo_barra || ""),
+                        num_barra: parseNumero(
+                            item.num_barra,
+                            item.codigo_barra
+                        ),
+                    }));
 
-                const dedupeByCodigo = rows => rows
-                    .filter(row => row.codigo_barra)
-                    .reduce((acc, cur) => {
-                        if (
-                            !acc.some(
-                                x => x.codigo_barra === cur.codigo_barra
+                const dedupeByCodigo = (rows) =>
+                    rows
+                        .filter((row) => row.codigo_barra)
+                        .reduce((acc, cur) => {
+                            if (
+                                !acc.some(
+                                    (x) => x.codigo_barra === cur.codigo_barra
+                                )
                             )
-                        ) acc.push(cur)
-                        return acc
-                    }, [])
+                                acc.push(cur);
+                            return acc;
+                        }, []);
 
-                const barcodeEditList = dedupeByCodigo(normalize(data))
+                const barcodeEditList = dedupeByCodigo(normalize(data));
 
-                this.setState({ codigosBarrasForm: barcodeEditList })
-                this.setState({ codigosBarrasInicial: barcodeEditList })
+                this.setState({ codigosBarrasForm: barcodeEditList });
+                this.setState({ codigosBarrasInicial: barcodeEditList });
             })
-            .catch(this.catchRequestError)
-    }
+            .catch(this.catchRequestError);
+    };
 
-    handleChangeBarcodeList = updatedList => {
-        const serialize = (list = []) => list
-            .map(
-                ({ codigo_barra, num_barra }) => `${codigo_barra}:${num_barra}`
-            )
-            .join('|')
+    handleChangeBarcodeList = (updatedList) => {
+        const serialize = (list = []) =>
+            list
+                .map(
+                    ({ codigo_barra, num_barra }) =>
+                        `${codigo_barra}:${num_barra}`
+                )
+                .join("|");
 
-        const previousSignature = serialize(this.state.codigosBarrasForm)
-        const nextSignature = serialize(updatedList)
+        const previousSignature = serialize(this.state.codigosBarrasForm);
+        const nextSignature = serialize(updatedList);
 
         if (previousSignature !== nextSignature) {
-            this.setState({ codigosBarrasForm: updatedList })
+            this.setState({ codigosBarrasForm: updatedList });
         }
-    }
+    };
 
     handleDeletedBarcode = ({ codigo_barra, num_barra, id }) => {
-        const toInt = v => {
-            const n = parseInt(String(v ?? '').split('.')[0], 10)
-            return Number.isFinite(n) ? n : NaN
-        }
+        const toInt = (v) => {
+            const n = parseInt(String(v ?? "").split(".")[0], 10);
+            return Number.isFinite(n) ? n : NaN;
+        };
 
-        const deletedNum = toInt(num_barra)
-        const deletedCode = String(codigo_barra || '')
+        const deletedNum = toInt(num_barra);
+        const deletedCode = String(codigo_barra || "");
 
-        this.setState(prev => {
-            const inicial = prev.codigosBarrasInicial || []
-            const existedInInitial = inicial.some(item => {
-                const itemNum = toInt(item?.num_barra)
-                const itemCode = String(item?.codigo_barra || '')
-                return itemNum === deletedNum || itemCode === deletedCode
-            })
+        this.setState((prev) => {
+            const inicial = prev.codigosBarrasInicial || [];
+            const existedInInitial = inicial.some((item) => {
+                const itemNum = toInt(item?.num_barra);
+                const itemCode = String(item?.codigo_barra || "");
+                return itemNum === deletedNum || itemCode === deletedCode;
+            });
 
-            const nextInicial = inicial.filter(item => {
-                const itemNum = toInt(item?.num_barra)
-                const itemCode = String(item?.codigo_barra || '')
-                return !(itemNum === deletedNum || itemCode === deletedCode)
-            })
+            const nextInicial = inicial.filter((item) => {
+                const itemNum = toInt(item?.num_barra);
+                const itemCode = String(item?.codigo_barra || "");
+                return !(itemNum === deletedNum || itemCode === deletedCode);
+            });
 
-            let nextToDelete = prev.toDeleteBarcodes || []
+            let nextToDelete = prev.toDeleteBarcodes || [];
             if (existedInInitial) {
-                const alreadyQueued = nextToDelete.some(x => {
-                    const n = toInt(x?.num_barra)
-                    const c = String(x?.codigo_barra || '')
-                    return n === deletedNum || c === deletedCode
-                })
+                const alreadyQueued = nextToDelete.some((x) => {
+                    const n = toInt(x?.num_barra);
+                    const c = String(x?.codigo_barra || "");
+                    return n === deletedNum || c === deletedCode;
+                });
                 if (!alreadyQueued) {
                     nextToDelete = [
                         ...nextToDelete,
-                        { codigo_barra, num_barra: deletedNum, id }
-                    ]
+                        { codigo_barra, num_barra: deletedNum, id },
+                    ];
                 }
             }
 
             return {
                 codigosBarrasInicial: nextInicial,
-                toDeleteBarcodes: nextToDelete
-            }
-        })
-    }
+                toDeleteBarcodes: nextToDelete,
+            };
+        });
+    };
 
     uploadFotoCodigo = async (tomboHcf, numeroCodigo, file) => {
-        const form = new FormData()
-        form.append('imagem', file)
-        form.append('codigo_foto', String(numeroCodigo))
-        form.append('tombo_hcf', String(tomboHcf))
-        form.append('em_vivo', 'true')
+        const form = new FormData();
+        form.append("imagem", file);
+        form.append("codigo_foto", String(numeroCodigo));
+        form.append("tombo_hcf", String(tomboHcf));
+        form.append("em_vivo", "true");
 
-        return axios.post('/uploads', form, {
-            headers: { 'Content-Type': 'multipart/form-data' }
-        })
-    }
+        return axios.post("/uploads", form, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
+    };
 
-    makeFileGetter = source => codigo => {
-        if (typeof source === 'function') return source(codigo) || []
-        if (source && typeof source === 'object') return source[codigo] || []
-        if (typeof this?.getPhotosOfCode === 'function') return this.getPhotosOfCode(codigo) || []
-        return []
-    }
+    makeFileGetter = (source) => (codigo) => {
+        if (typeof source === "function") return source(codigo) || [];
+        if (source && typeof source === "object") return source[codigo] || [];
+        if (typeof this?.getPhotosOfCode === "function")
+            return this.getPhotosOfCode(codigo) || [];
+        return [];
+    };
 
     pickUploadableFile = (list = []) => {
         for (const f of list) {
-            if (typeof File !== 'undefined' && f instanceof File) return f
-            if (f && f.originFileObj) return f.originFileObj
+            if (typeof File !== "undefined" && f instanceof File) return f;
+            if (f && f.originFileObj) return f.originFileObj;
         }
-        return null
-    }
+        return null;
+    };
 
-    hasLocalFile = (files = []) => !!this.pickUploadableFile(files)
+    hasLocalFile = (files = []) => !!this.pickUploadableFile(files);
 
     shouldUploadPhoto = (initialFiles = [], currentFiles = []) => {
-        if (this.hasLocalFile(currentFiles)) return true
-        return false
-    }
+        if (this.hasLocalFile(currentFiles)) return true;
+        return false;
+    };
 
-    formatCodeLabel = n => `HCF${String(n).padStart(9, '0')}`
+    formatCodeLabel = (n) => `HCF${String(n).padStart(9, "0")}`;
 
     editarCodigosBarras = async (tomboHcf, currentList, photoSourceArg) => {
         try {
-            const initialList = this.state.codigosBarrasInicial || []
-            const currentBarcodes = currentList || []
-            const deletions = this.state.toDeleteBarcodes || []
-            const { isEditing } = this.state
+            const initialList = this.state.codigosBarrasInicial || [];
+            const currentBarcodes = currentList || [];
+            const deletions = this.state.toDeleteBarcodes || [];
+            const isEditing = this.state.isEditing;
 
-            const initialPhotosMap = this.state.initialBarcodePhotos || {}
-            const currentPhotosMap = photoSourceArg ?? this.state.currentBarcodePhotos ?? {}
+            const initialPhotosMap = this.state.initialBarcodePhotos || {};
+            const currentPhotosMap =
+                photoSourceArg ?? this.state.currentBarcodePhotos ?? {};
 
-            const getFiles = typeof this.makeFileGetter === 'function'
-                ? this.makeFileGetter(currentPhotosMap)
-                : () => []
+            const getFiles =
+                typeof this.makeFileGetter === "function"
+                    ? this.makeFileGetter(currentPhotosMap)
+                    : () => [];
 
             const initialSet = new Set(
-                initialList.map(it => it.codigo_barra)
-            )
+                initialList.map((it) => it.codigo_barra)
+            );
             const newBarcodes = currentBarcodes.filter(
-                it => !initialSet.has(it.codigo_barra)
-            )
-            const existingBarcodes = currentBarcodes.filter(it => initialSet.has(it.codigo_barra))
+                (it) => !initialSet.has(it.codigo_barra)
+            );
+            const existingBarcodes = currentBarcodes.filter((it) =>
+                initialSet.has(it.codigo_barra)
+            );
 
-            const ops = []
+            const ops = [];
 
             if (newBarcodes.length > 0) {
                 ops.push(
                     this.criarCodigoBarras(tomboHcf, newBarcodes, getFiles)
-                )
+                );
             }
 
             if (isEditing && existingBarcodes.length > 0) {
                 const codigosComAlteracaoArquivo = existingBarcodes
-                    .filter(row => {
+                    .filter((row) => {
                         const codigoFormatado = this.formatCodeLabel(
                             row.num_barra
-                        )
-                        const filesAtuais = getFiles(codigoFormatado) || []
-                        const filesIniciais = initialPhotosMap[codigoFormatado] || []
+                        );
+                        const filesAtuais = getFiles(codigoFormatado) || [];
+                        const filesIniciais =
+                            initialPhotosMap[codigoFormatado] || [];
 
-                        const temArquivoNovo = this.hasLocalFile(filesAtuais)
-                        const adicionouArquivo = filesIniciais.length === 0
-                            && filesAtuais.length > 0
+                        const temArquivoNovo = this.hasLocalFile(filesAtuais);
+                        const adicionouArquivo =
+                            filesIniciais.length === 0 &&
+                            filesAtuais.length > 0;
 
-                        return temArquivoNovo || adicionouArquivo
+                        return temArquivoNovo || adicionouArquivo;
                     })
-                    .map(row => {
+                    .map((row) => {
                         const codigoFormatado = this.formatCodeLabel(
                             row.num_barra
-                        )
-                        const files = getFiles(codigoFormatado) || []
+                        );
+                        const files = getFiles(codigoFormatado) || [];
                         const file = this.pickUploadableFile
                             ? this.pickUploadableFile(files)
-                            : null
+                            : null;
                         return file
                             ? { numeroCodigo: row.num_barra, file }
-                            : null
+                            : null;
                     })
-                    .filter(Boolean)
+                    .filter(Boolean);
 
                 if (codigosComAlteracaoArquivo.length > 0) {
                     const uploadRequests = codigosComAlteracaoArquivo.map(
-                        ({ numeroCodigo, file }) => this.uploadFotoCodigo(tomboHcf, numeroCodigo, file)
-                    )
-                    ops.push(Promise.allSettled(uploadRequests))
+                        ({ numeroCodigo, file }) =>
+                            this.uploadFotoCodigo(tomboHcf, numeroCodigo, file)
+                    );
+                    ops.push(Promise.allSettled(uploadRequests));
                 }
             }
 
@@ -542,316 +555,332 @@ class NovoTomboScreen extends Component {
                 const codesWithPhotoInitially = Object.keys(
                     initialPhotosMap
                 ).filter(
-                    code => Array.isArray(initialPhotosMap[code])
-                        && initialPhotosMap[code].length > 0
-                )
+                    (code) =>
+                        Array.isArray(initialPhotosMap[code]) &&
+                        initialPhotosMap[code].length > 0
+                );
 
                 if (codesWithPhotoInitially.length > 0) {
                     const codesNowWithoutPhoto = codesWithPhotoInitially.filter(
-                        code => {
-                            const atual = currentPhotosMap[code]
-                            return !Array.isArray(atual) || atual.length === 0 // vazio agora
+                        (code) => {
+                            const atual = currentPhotosMap[code];
+                            return !Array.isArray(atual) || atual.length === 0; // vazio agora
                         }
-                    )
+                    );
 
                     if (codesNowWithoutPhoto.length > 0) {
                         const deletePhotoRequests = codesNowWithoutPhoto
-                            .map(code => {
-                                const row = currentBarcodes.find(
-                                    r => r.codigo_barra === code
-                                )
-                                    || initialList.find(
-                                        r => r.codigo_barra === code
-                                    )
-                                    || null
+                            .map((code) => {
+                                const row =
+                                    currentBarcodes.find(
+                                        (r) => r.codigo_barra === code
+                                    ) ||
+                                    initialList.find(
+                                        (r) => r.codigo_barra === code
+                                    ) ||
+                                    null;
 
-                                const numeroCodigo = row?.num_barra
-                                    ?? parseInt(
-                                        String(code).replace(/\D/g, ''),
+                                const numeroCodigo =
+                                    row?.num_barra ??
+                                    parseInt(
+                                        String(code).replace(/\D/g, ""),
                                         10
-                                    )
-                                if (!Number.isFinite(numeroCodigo)) return null
+                                    );
+                                if (!Number.isFinite(numeroCodigo)) return null;
 
                                 return axios.delete(
                                     `/uploads/${encodeURIComponent(
                                         numeroCodigo
                                     )}`
-                                )
+                                );
                             })
-                            .filter(Boolean)
+                            .filter(Boolean);
 
                         if (deletePhotoRequests.length > 0) {
-                            ops.push(Promise.allSettled(deletePhotoRequests))
+                            ops.push(Promise.allSettled(deletePhotoRequests));
                         }
                     }
                 }
             }
 
             if (isEditing && deletions.length > 0) {
-                const deleteRequests = deletions.map(b => axios.delete(
-                    `/tombos/codigo_barras/${encodeURIComponent(
-                        b.num_barra
-                    )}`
-                ))
-                ops.push(Promise.allSettled(deleteRequests))
+                const deleteRequests = deletions.map((b) =>
+                    axios.delete(
+                        `/tombos/codigo_barras/${encodeURIComponent(
+                            b.num_barra
+                        )}`
+                    )
+                );
+                ops.push(Promise.allSettled(deleteRequests));
             }
 
             if (ops.length > 0) {
-                await Promise.all(ops)
+                await Promise.all(ops);
             }
 
             if (
-                newBarcodes.length > 0
-                || (isEditing
-                    && (deletions.length > 0 || existingBarcodes.length > 0))
+                newBarcodes.length > 0 ||
+                (isEditing &&
+                    (deletions.length > 0 || existingBarcodes.length > 0))
             ) {
                 this.openNotificationWithIcon(
-                    'success',
-                    'Sucesso',
-                    'Códigos de barra atualizados com sucesso'
-                )
+                    "success",
+                    "Sucesso",
+                    "Códigos de barra atualizados com sucesso"
+                );
             }
 
             if (isEditing && deletions.length > 0) {
-                this.setState({ toDeleteBarcodes: [] })
+                this.setState({ toDeleteBarcodes: [] });
             }
         } catch (error) {
-            console.error('Erro ao atualizar códigos de barras:', error)
+            console.error("Erro ao atualizar códigos de barras:", error);
             this.openNotificationWithIcon(
-                'error',
-                'Erro',
-                'Erro ao atualizar os códigos de barras. Tente novamente.'
-            )
+                "error",
+                "Erro",
+                "Erro ao atualizar os códigos de barras. Tente novamente."
+            );
         }
-    }
+    };
 
     normalizeBarcodes = (barcodeList = []) => {
         const asArray = Array.isArray(barcodeList)
             ? barcodeList
-            : [barcodeList]
+            : [barcodeList];
 
-        const integerPart = val => {
-            const [int] = String(val).split('.')
-            const n = parseInt(int, 10)
-            return Number.isFinite(n) ? n : NaN
-        }
+        const integerPart = (val) => {
+            const [int] = String(val).split(".");
+            const n = parseInt(int, 10);
+            return Number.isFinite(n) ? n : NaN;
+        };
 
-        const extractNumber = item => {
-            if (item == null) return NaN
+        const extractNumber = (item) => {
+            if (item == null) return NaN;
 
             // 1) Objeto com num_barra (ex.: "41806.0")
-            if (typeof item === 'object' && 'num_barra' in item) {
-                return integerPart(item.num_barra)
+            if (typeof item === "object" && "num_barra" in item) {
+                return integerPart(item.num_barra);
             }
 
             // 2) Objeto com codigo_barra OU string tipo "HCF000041890"
             if (
-                (typeof item === 'object' && 'codigo_barra' in item)
-                || typeof item === 'string'
+                (typeof item === "object" && "codigo_barra" in item) ||
+                typeof item === "string"
             ) {
-                const raw = typeof item === 'string'
-                    ? item
-                    : String(item.codigo_barra || '')
-                const n = parseInt(raw.replace(/\D/g, ''), 10)
-                return Number.isFinite(n) ? n : NaN
+                const raw =
+                    typeof item === "string"
+                        ? item
+                        : String(item.codigo_barra || "");
+                const n = parseInt(raw.replace(/\D/g, ""), 10);
+                return Number.isFinite(n) ? n : NaN;
             }
 
             // 3) Número puro
-            if (typeof item === 'number' && Number.isFinite(item)) {
-                return Math.trunc(item)
+            if (typeof item === "number" && Number.isFinite(item)) {
+                return Math.trunc(item);
             }
 
             // 4) Fallback: extrai dígitos de qualquer coisa
-            const n = parseInt(String(item).replace(/\D/g, ''), 10)
-            return Number.isFinite(n) ? n : NaN
-        }
+            const n = parseInt(String(item).replace(/\D/g, ""), 10);
+            return Number.isFinite(n) ? n : NaN;
+        };
 
-        const seen = new Set()
+        const seen = new Set();
         return asArray
             .map(extractNumber)
-            .filter(n => Number.isFinite(n) && n > 0)
-            .filter(n => (seen.has(n) ? false : (seen.add(n), true)))
-    }
+            .filter((n) => Number.isFinite(n) && n > 0)
+            .filter((n) => (seen.has(n) ? false : (seen.add(n), true)));
+    };
 
     criarCodigoBarras = async (id_tombo, barcodeList = [], getFiles) => {
-        const hcf = Number(id_tombo)
+        const hcf = Number(id_tombo);
         if (!Number.isFinite(hcf)) {
-            message.error('Tombo (HCF) inválido.')
-            return
+            message.error("Tombo (HCF) inválido.");
+            return;
         }
 
-        const numeros = this.normalizeBarcodes(barcodeList)
+        const numeros = this.normalizeBarcodes(barcodeList);
         if (!numeros.length) {
             this.openNotificationWithIcon(
-                'warning',
-                'Atenção',
-                'Nenhum código válido para enviar.'
-            )
-            return
+                "warning",
+                "Atenção",
+                "Nenhum código válido para enviar."
+            );
+            return;
         }
 
         const resultados = await Promise.all(
-            numeros.map(async numeroCodigo => {
+            numeros.map(async (numeroCodigo) => {
                 try {
-                    await axios.post('/tombos/codigo_barras', {
+                    await axios.post("/tombos/codigo_barras", {
                         hcf,
-                        codigo_barra: numeroCodigo
-                    })
+                        codigo_barra: numeroCodigo,
+                    });
 
-                    let uploaded = false
-                    if (typeof getFiles === 'function') {
-                        const codigoFormatado = this.formatCodeLabel(numeroCodigo)
-                        const arquivos = getFiles(codigoFormatado)
+                    let uploaded = false;
+                    if (typeof getFiles === "function") {
+                        const codigoFormatado =
+                            this.formatCodeLabel(numeroCodigo);
+                        const arquivos = getFiles(codigoFormatado);
 
                         if (arquivos && arquivos[0]) {
-                            const file = this.pickUploadableFile(arquivos)
+                            const file = this.pickUploadableFile(arquivos);
                             if (file) {
                                 await this.uploadFotoCodigo(
                                     hcf,
                                     numeroCodigo,
                                     file
-                                )
-                                uploaded = true
+                                );
+                                uploaded = true;
                             }
                         }
                     }
 
-                    return { ok: true, numeroCodigo, uploaded }
+                    return { ok: true, numeroCodigo, uploaded };
                 } catch (error) {
                     console.error(
-                        'Erro ao criar/enviar para código:',
+                        "Erro ao criar/enviar para código:",
                         numeroCodigo,
                         error
-                    )
-                    return { ok: false, numeroCodigo, error }
+                    );
+                    return { ok: false, numeroCodigo, error };
                 }
             })
-        )
+        );
 
-        const okCount = resultados.filter(r => r.ok).length
-        const failCount = resultados.length - okCount
+        const okCount = resultados.filter((r) => r.ok).length;
+        const failCount = resultados.length - okCount;
         const uploadedCount = resultados.filter(
-            r => r.ok && r.uploaded
-        ).length
+            (r) => r.ok && r.uploaded
+        ).length;
 
         if (okCount) {
             this.openNotificationWithIcon(
-                'success',
-                'Sucesso',
+                "success",
+                "Sucesso",
                 `Códigos criados: ${okCount}${
-                    uploadedCount ? ` • Uploads: ${uploadedCount}` : ''
-                }${failCount ? ` • Falharam: ${failCount}` : ''}`
-            )
+                    uploadedCount ? ` • Uploads: ${uploadedCount}` : ""
+                }${failCount ? ` • Falharam: ${failCount}` : ""}`
+            );
         } else {
             this.openNotificationWithIcon(
-                'error',
-                'Erro',
-                'Nenhum código foi criado.'
-            )
+                "error",
+                "Erro",
+                "Nenhum código foi criado."
+            );
         }
-    }
+    };
 
-    handleRequisicao = values => {
-        const { match } = this.props
-        const photoSourceArg = codigo => this.barcodeRef?.getPhotosOfCode?.(codigo) || []
+    handleRequisicao = (values) => {
+        const { match } = this.props;
+        const photoSourceArg = (codigo) =>
+            this.barcodeRef?.getPhotosOfCode?.(codigo) || [];
 
         if (match.params.tombo_id) {
             this.editarCodigosBarras(
                 match.params.tombo_id,
                 this.state.codigosBarrasForm,
                 photoSourceArg
-            )
-            const json = this.montaFormularioJsonEdicao(values)
-            this.requisitaEdicaoTombo(json)
+            );
+            const json = this.montaFormularioJsonEdicao(values);
+            this.requisitaEdicaoTombo(json);
         } else {
-            const json = this.montaFormularioJsonCadastro(values)
-            this.requisitaCadastroTombo(json)
+            const json = this.montaFormularioJsonCadastro(values);
+            this.requisitaCadastroTombo(json);
         }
-    }
+    };
 
-    onEditarTomboComSucesso = response => {
-        const { data } = response
+    onEditarTomboComSucesso = (response) => {
+        const { data } = response;
 
         this.encontraAutor(
             data.subfamilias,
             data.subfamiliaInicial,
-            'autorSubfamilia'
-        )
-        this.encontraAutor(data.especies, data.especieInicial, 'autorEspecie')
+            "autorSubfamilia"
+        );
+        this.encontraAutor(data.especies, data.especieInicial, "autorEspecie");
         this.encontraAutor(
             data.subespecies,
             data.subespecieInicial,
-            'autorSubespecie'
-        )
+            "autorSubespecie"
+        );
         this.encontraAutor(
             data.variedades,
             data.variedadeInicial,
-            'autorVariedade'
-        )
+            "autorVariedade"
+        );
 
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             ...prevState,
             loading: false,
-            ...data
-        }))
-        this.insereDadosFormulario(data)
+            ...data,
+        }));
+        this.insereDadosFormulario(data);
 
-        setTimeout(() => {
-            this.verifyCoordenada(data.cidadeInicial)
-        }, 500)
-    }
+        // Verifica coordenadas automaticamente ao carregar os dados de edição
+        if (data.cidadeInicial && data.localizacao?.latitude && data.localizacao?.longitude) {
+            setTimeout(() => {
+                this.verifyCoordenada(
+                    data.cidadeInicial,
+                    data.localizacao.latitude,
+                    data.localizacao.longitude
+                )
+            }, 500)
+        }
+    };
 
     encontraAutor = (lista, valorSelecionado, campoTaxonomiaAutor) => {
-        if ((!valorSelecionado && !lista) || Number.isNaN(valorSelecionado)) return
+        if ((!valorSelecionado && !lista) || Number.isNaN(valorSelecionado))
+            return;
 
         const itemEncontrado = lista.find(
-            item => item.id === Number(valorSelecionado)
-        )
+            (item) => item.id === Number(valorSelecionado)
+        );
 
         this.setState({
-            [campoTaxonomiaAutor]: itemEncontrado?.autor?.nome || ''
-        })
-    }
+            [campoTaxonomiaAutor]: itemEncontrado?.autor?.nome || "",
+        });
+    };
 
-    criaCodigoBarrasSemFotos = emVivo => {
-        const { numeroHcf } = this.state
+    criaCodigoBarrasSemFotos = (emVivo) => {
+        const { numeroHcf } = this.state;
         this.defaultRequest(
             null,
             criaCodigoBarrasSemFotosService,
-            'O codigo foi criado com sucesso.',
-            'Houve um problema ao criar o codigo, tente novamente.',
+            "O codigo foi criado com sucesso.",
+            "Houve um problema ao criar o codigo, tente novamente.",
             null,
             emVivo,
             numeroHcf
-        )
-    }
+        );
+    };
 
     atualizarFotoTombo = (foto, record) => {
-        const tomboCodBar = record.codigo_barra
+        const tomboCodBar = record.codigo_barra;
         this.defaultRequest(
             null,
             atualizarFotoTomboService,
-            'A foto foi alterada com sucesso.',
-            'Houve um problema ao alterar a foto, tente novamente.',
+            "A foto foi alterada com sucesso.",
+            "Houve um problema ao alterar a foto, tente novamente.",
             null,
             foto,
             tomboCodBar
-        )
-    }
+        );
+    };
 
     excluirFotoTombo = (foto, indice) => {
-        const codBarras = foto.codigo_barra
+        const codBarras = foto.codigo_barra;
         this.defaultRequest(
             null,
             excluirFotoTomboService,
-            'O codigo de barras foi deletado com sucesso.',
-            'Houve um problema ao deletar o codigo de barras, tente novamente.',
+            "O codigo de barras foi deletado com sucesso.",
+            "Houve um problema ao deletar o codigo de barras, tente novamente.",
             null,
             foto,
             indice,
             codBarras
-        )
-    }
+        );
+    };
 
     defaultRequest = async (
         onFinish,
@@ -862,184 +891,184 @@ class NovoTomboScreen extends Component {
         ...params
     ) => {
         try {
-            await requestService(response => {
-                successCalback(response, params)
-                if (successMessage !== '') {
+            await requestService((response) => {
+                successCalback(response, params);
+                if (successMessage !== "") {
                     this.openNotificationWithIcon(
-                        'success',
-                        'Sucesso',
+                        "success",
+                        "Sucesso",
                         successMessage
-                    )
+                    );
                 }
-            }, ...params)
+            }, ...params);
         } catch (error) {
-            console.error(error)
-            let message = ''
+            console.error(error);
+            let message = "";
             if (error) {
-                message = `Falha ao carregar os dados do tombo: ${error.message}`
+                message = `Falha ao carregar os dados do tombo: ${error.message}`;
             }
-            this.openNotificationWithIcon('warning', 'Falha', message)
+            this.openNotificationWithIcon("warning", "Falha", message);
         } finally {
             this.setState({
-                loading: false
-            })
+                loading: false,
+            });
         }
-    }
+    };
 
-    requisitaDadosEdicao = id => {
+    requisitaDadosEdicao = (id) => {
         this.defaultRequest(
             null,
             requisitaDadosEdicaoService,
-            '',
-            'Houve um problema ao editar os dados do tombo, tente novamente.',
+            "",
+            "Houve um problema ao editar os dados do tombo, tente novamente.",
             this.onEditarTomboComSucesso,
             id
-        )
-    }
+        );
+    };
 
-    onRequisitarDadosComSucesso = response => {
-        const dados = response.data
+    onRequisitarDadosComSucesso = (response) => {
+        const dados = response.data;
 
-        const { match } = this.props
+        const { match } = this.props;
         this.setState({
             ...this.state,
-            ...dados
-        })
+            ...dados,
+        });
 
         if (match.params.tombo_id) {
-            this.setState({ isEditing: true })
-            this.setState({ showTable: true })
-            this.requisitaDadosEdicao(match.params.tombo_id)
-            this.getCodigosTombo(match.params.tombo_id)
+            this.setState({ isEditing: true });
+            this.setState({ showTable: true });
+            this.requisitaDadosEdicao(match.params.tombo_id);
+            this.getCodigosTombo(match.params.tombo_id);
         } else {
-            this.requisitaNumeroHcf()
+            this.requisitaNumeroHcf();
             const hcfHerbario = dados.herbarios.find(
-                herbario => herbario.sigla === 'HCF'
-            )
-            const paisBrasil = dados.paises.find(p => p.nome === 'BRASIL')
+                (herbario) => herbario.sigla === "HCF"
+            );
+            const paisBrasil = dados.paises.find((p) => p.nome === "BRASIL");
 
             this.setState({
                 loading: false,
                 herbarioInicial: {
-                    value: hcfHerbario?.id
+                    value: hcfHerbario?.id,
                 },
-                paisInicial: paisBrasil ? String(paisBrasil.id) : ''
-            })
+                paisInicial: paisBrasil ? String(paisBrasil.id) : "",
+            });
 
             if (paisBrasil) {
                 axios
-                    .get('/estados', { params: { pais_id: paisBrasil.id } })
-                    .then(estadosResponse => {
+                    .get("/estados", { params: { pais_id: paisBrasil.id } })
+                    .then((estadosResponse) => {
                         if (
-                            estadosResponse.data
-                            && estadosResponse.status === 200
+                            estadosResponse.data &&
+                            estadosResponse.status === 200
                         ) {
                             const estadoParana = estadosResponse.data.find(
-                                e => e.nome === 'Paraná'
-                            )
+                                (e) => e.nome === "Paraná"
+                            );
                             this.setState({
                                 estados: estadosResponse.data,
                                 estadoInicial: estadoParana
                                     ? String(estadoParana.id)
-                                    : ''
-                            })
+                                    : "",
+                            });
 
                             if (estadoParana) {
-                                this.requisitaCidades('', estadoParana.id)
+                                this.requisitaCidades("", estadoParana.id);
                             }
                         }
-                    })
+                    });
             }
         }
-        this.requisitaIdentificadoresPredicao()
-    }
+        this.requisitaIdentificadoresPredicao();
+    };
 
     requisitaDadosFormulario = async () => {
         await this.defaultRequest(
             null,
             requisitaDadosFormularioService,
-            '',
-            'Houve um problema ao buscar os dados do usuário, tente novamente.',
+            "",
+            "Houve um problema ao buscar os dados do usuário, tente novamente.",
             this.onRequisitarDadosComSucesso
-        )
-    }
+        );
+    };
 
-    onRequisitaIdentificadoresPredicaoComSucesso = response => {
+    onRequisitaIdentificadoresPredicaoComSucesso = (response) => {
         if (response.status === 200) {
             this.setState({
-                identificadores: response.data
-            })
+                identificadores: response.data,
+            });
         }
-    }
+    };
 
     onFinishPredicao = () => {
-        this.setState({ fetchingIdentificadores: false })
-    }
+        this.setState({ fetchingIdentificadores: false });
+    };
 
     requisitaIdentificadoresPredicao = () => {
         this.defaultRequest(
             this.onFinishPredicao,
             requisitaIdentificadoresPredicaoService,
-            '',
-            'Houve um problema ao buscar o identificador, tente novamente.',
+            "",
+            "Houve um problema ao buscar o identificador, tente novamente.",
             this.onRequisitaIdentificadoresPredicaoComSucesso
-        )
-    }
+        );
+    };
 
-    onVerificaPendenciasComSucesso = response => {
+    onVerificaPendenciasComSucesso = (response) => {
         if (response.data !== null) {
-            this.mostraMensagemVerificaPendencia()
+            this.mostraMensagemVerificaPendencia();
         }
-    }
+    };
 
-    verificaPendencias = tomboId => {
+    verificaPendencias = (tomboId) => {
         this.defaultRequest(
             null,
             verificaPendenciasService,
-            '',
-            'Houve um problema ao verificar as pendencias, tente novamente.',
+            "",
+            "Houve um problema ao verificar as pendencias, tente novamente.",
             this.onVerificaPendenciasComSucesso,
             tomboId
-        )
-    }
+        );
+    };
 
-    onRequisitaNumeroColetorComSucesso = response => {
-        this.setState(response.data)
+    onRequisitaNumeroColetorComSucesso = (response) => {
+        this.setState(response.data);
         this.props.form.setFields({
             numeroColetor: {
-                value: response.data.numero
-            }
-        })
-    }
+                value: response.data.numero,
+            },
+        });
+    };
 
-    onRequisitaCodigoBarrasComSucesso = response => {
-        const dados = response.data
+    onRequisitaCodigoBarrasComSucesso = (response) => {
+        const dados = response.data;
         this.setState({
-            fotosTeste: dados
-        })
-    }
+            fotosTeste: dados,
+        });
+    };
 
     requisitaCodigoBarras = () => {
-        const tomboId = this.props.match.params.tombo_id
+        const tomboId = this.props.match.params.tombo_id;
         this.defaultRequest(
             null,
             requisitaCodigoBarrasService,
-            '',
-            'Houve um erro ao buscar os codigos de barras, tente novamente.',
+            "",
+            "Houve um erro ao buscar os codigos de barras, tente novamente.",
             this.onRequisitaCodigoBarrasComSucesso,
             tomboId
-        )
-    }
+        );
+    };
 
     onHandleSubmitIdentificadorComSucesso = () => {
         this.setState({
-            loading: false
-        })
-        this.props.history.goBack()
-    }
+            loading: false,
+        });
+        this.props.history.goBack();
+    };
 
-    handleSubmitIdentificador = e => {
-        e.preventDefault()
+    handleSubmitIdentificador = (e) => {
+        e.preventDefault();
         const {
             reino,
             familia,
@@ -1047,1232 +1076,1232 @@ class NovoTomboScreen extends Component {
             genero,
             especie,
             subespecie,
-            variedade
-        } = this.props.form.getFieldsValue()
+            variedade,
+        } = this.props.form.getFieldsValue();
         if (
-            familia
-            || subfamilia
-            || genero
-            || especie
-            || subespecie
-            || variedade
+            familia ||
+            subfamilia ||
+            genero ||
+            especie ||
+            subespecie ||
+            variedade
         ) {
             this.setState({
-                loading: true
-            })
-            const json = {}
+                loading: true,
+            });
+            const json = {};
 
             if (reino) {
-                json.reino_id = reino
+                json.reino_id = reino;
             }
             if (familia) {
-                json.familia_id = familia
+                json.familia_id = familia;
             }
             if (subfamilia) {
-                json.subfamilia_id = subfamilia
+                json.subfamilia_id = subfamilia;
             }
             if (genero) {
-                json.genero_id = genero
+                json.genero_id = genero;
             }
             if (especie) {
-                json.especie_id = especie
+                json.especie_id = especie;
             }
             if (subespecie) {
-                json.subespecie_id = subespecie
+                json.subespecie_id = subespecie;
             }
             if (variedade) {
-                json.variedade_id = variedade
+                json.variedade_id = variedade;
             }
-            const tomboId = this.props.match.params.tombo_id
+            const tomboId = this.props.match.params.tombo_id;
             this.defaultRequest(
                 null,
                 handleSubmitIdentificadorService,
-                'O cadastro foi realizado com sucesso.',
-                'Houve um problema ao cadastrar o tombo, tente novamente.',
+                "O cadastro foi realizado com sucesso.",
+                "Houve um problema ao cadastrar o tombo, tente novamente.",
                 this.onHandleSubmitIdentificadorComSucesso,
                 tomboId,
                 json
-            )
+            );
         }
-    }
+    };
 
     onRequisitaEdicaoTomboComSucesso = async (response, params) => {
-        const tombo = response.data
+        const tombo = response.data;
 
         await axios.put(`/tombos/${this.props.match.params.tombo_id}`, {
-            ...params[1]
-        })
+            ...params[1],
+        });
 
         this.setState({
-            loading: false
-        })
+            loading: false,
+        });
 
-        this.props.history.push('/tombos')
-    }
+        this.props.history.push("/tombos");
+    };
 
     requisitaNumeroHcf = () => {
         axios
-            .get('/tombos/filtrar_ultimo_numero')
-            .then(response => {
+            .get("/tombos/filtrar_ultimo_numero")
+            .then((response) => {
                 if (response.status === 200) {
                     if (this.props.match.params.tombo_id) {
                         this.setState({
-                            numeroHcf: this.props.match.params.tombo_id
-                        })
+                            numeroHcf: this.props.match.params.tombo_id,
+                        });
                         this.props.form.setFields({
                             numeroTombo: {
-                                value: this.props.match.params.tombo_id
-                            }
-                        })
-                        const date = new Date(response.data.data_tombo)
+                                value: this.props.match.params.tombo_id,
+                            },
+                        });
+                        const date = new Date(response.data.data_tombo);
                         this.props.form.setFields({
                             dataTombo: {
                                 value: `${date.getDate()}/${
                                     date.getMonth() + 1
-                                }/${date.getFullYear()}`
-                            }
-                        })
-                        this.requisitaCodigoBarras()
+                                }/${date.getFullYear()}`,
+                            },
+                        });
+                        this.requisitaCodigoBarras();
                         this.verificaPendencias(
                             this.props.match.params.tombo_id
-                        )
+                        );
                     } else {
-                        this.setState({ numeroHcf: response.data.hcf + 1 })
+                        this.setState({ numeroHcf: response.data.hcf + 1 });
                         this.props.form.setFields({
                             numeroTombo: {
-                                value: response.data.hcf + 1
-                            }
-                        })
-                        const date = new Date()
+                                value: response.data.hcf + 1,
+                            },
+                        });
+                        const date = new Date();
                         this.props.form.setFields({
                             dataTombo: {
                                 value: `${date.getDate()}/${
                                     date.getMonth() + 1
-                                }/${date.getFullYear()}`
-                            }
-                        })
+                                }/${date.getFullYear()}`,
+                            },
+                        });
                     }
                 } else {
                     this.openNotification(
-                        'error',
-                        'Falha',
-                        'Houve um problema ao buscar o numero de coletor sugerido, tente novamente.'
-                    )
+                        "error",
+                        "Falha",
+                        "Houve um problema ao buscar o numero de coletor sugerido, tente novamente."
+                    );
                 }
             })
-            .catch(err => {
-                const { response } = err
+            .catch((err) => {
+                const { response } = err;
                 if (response && response.data) {
-                    const { error } = response.data
-                    throw new Error(error.message)
+                    const { error } = response.data;
+                    throw new Error(error.message);
                 } else {
-                    throw err
+                    throw err;
                 }
             })
-            .catch(this.catchRequestError)
-    }
+            .catch(this.catchRequestError);
+    };
 
     requisitaTipos = () => {
         this.setState({
-            loading: true
-        })
+            loading: true,
+        });
         axios
-            .get('/tipos')
-            .then(response => {
+            .get("/tipos")
+            .then((response) => {
                 this.setState({
-                    loading: false
-                })
+                    loading: false,
+                });
                 if (response.status === 200) {
                     this.setState({
-                        tipos: response.data
-                    })
+                        tipos: response.data,
+                    });
                 } else {
                     this.openNotificationWithIcon(
-                        'error',
-                        'Falha',
-                        'Houve um problema ao buscar os tipos do tombo, tente novamente.'
-                    )
+                        "error",
+                        "Falha",
+                        "Houve um problema ao buscar os tipos do tombo, tente novamente."
+                    );
                 }
             })
-            .catch(err => {
+            .catch((err) => {
                 this.setState({
-                    loading: false
-                })
-                const { response } = err
+                    loading: false,
+                });
+                const { response } = err;
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
                         this.openNotificationWithIcon(
-                            'warning',
-                            'Falha',
+                            "warning",
+                            "Falha",
                             response.data.error.message
-                        )
+                        );
                     } else {
                         this.openNotificationWithIcon(
-                            'error',
-                            'Falha',
-                            'Houve um problema a listar os tipos, tente novamente.'
-                        )
+                            "error",
+                            "Falha",
+                            "Houve um problema a listar os tipos, tente novamente."
+                        );
                     }
-                    const { error } = response.data
-                    throw new Error(error.message)
+                    const { error } = response.data;
+                    throw new Error(error.message);
                 } else {
-                    throw err
+                    throw err;
                 }
             })
-            .catch(this.catchRequestError)
-    }
+            .catch(this.catchRequestError);
+    };
 
     cadastraNovoTipo = () => {
         this.setState({
-            loading: true
-        })
+            loading: true,
+        });
         axios
-            .post('/tipos', {
-                nome: this.props.form.getFieldsValue().campo
+            .post("/tipos", {
+                nome: this.props.form.getFieldsValue().campo,
             })
-            .then(response => {
+            .then((response) => {
                 this.setState({
-                    loading: false
-                })
+                    loading: false,
+                });
                 if (response.status === 204) {
-                    this.requisitaTipos()
+                    this.requisitaTipos();
                     this.openNotificationWithIcon(
-                        'success',
-                        'Sucesso',
-                        'O cadastro foi realizado com sucesso.'
-                    )
+                        "success",
+                        "Sucesso",
+                        "O cadastro foi realizado com sucesso."
+                    );
                 }
                 this.props.form.setFields({
                     campo: {
-                        value: ''
-                    }
-                })
+                        value: "",
+                    },
+                });
             })
-            .catch(err => {
+            .catch((err) => {
                 this.setState({
-                    loading: false
-                })
-                const { response } = err
+                    loading: false,
+                });
+                const { response } = err;
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
                         this.openNotificationWithIcon(
-                            'warning',
-                            'Falha',
+                            "warning",
+                            "Falha",
                             response.data.error.message
-                        )
+                        );
                     } else {
                         this.openNotificationWithIcon(
-                            'error',
-                            'Falha',
-                            'Houve um problema ao cadastrar o novo tipo, tente novamente.'
-                        )
+                            "error",
+                            "Falha",
+                            "Houve um problema ao cadastrar o novo tipo, tente novamente."
+                        );
                     }
-                    const { error } = response.data
-                    throw new Error(error.message)
+                    const { error } = response.data;
+                    throw new Error(error.message);
                 } else {
-                    throw err
+                    throw err;
                 }
             })
-            .catch(this.catchRequestError)
-    }
+            .catch(this.catchRequestError);
+    };
 
     cadastraNovoReino = () => {
         this.setState({
-            loading: true
-        })
+            loading: true,
+        });
         axios
-            .post('/reinos', {
-                nome: this.props.form.getFieldsValue().campo
+            .post("/reinos", {
+                nome: this.props.form.getFieldsValue().campo,
             })
-            .then(response => {
+            .then((response) => {
                 this.setState({
-                    loading: false
-                })
+                    loading: false,
+                });
                 if (response.status === 204) {
-                    this.requisitaReinos('')
+                    this.requisitaReinos("");
                     this.openNotificationWithIcon(
-                        'success',
-                        'Sucesso',
-                        'O cadastro foi realizado com sucesso.'
-                    )
+                        "success",
+                        "Sucesso",
+                        "O cadastro foi realizado com sucesso."
+                    );
                 }
                 this.props.form.setFields({ campo: { value: "" } }); // eslint-disable-line
             })
-            .catch(err => {
+            .catch((err) => {
                 this.setState({
-                    loading: false
-                })
-                const { response } = err
+                    loading: false,
+                });
+                const { response } = err;
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
                         this.openNotificationWithIcon(
-                            'warning',
-                            'Falha',
+                            "warning",
+                            "Falha",
                             response.data.error.message
-                        )
+                        );
                     } else {
                         this.openNotificationWithIcon(
-                            'error',
-                            'Falha',
-                            'Houve um problema ao cadastrar o novo reino, tente novamente.'
-                        )
+                            "error",
+                            "Falha",
+                            "Houve um problema ao cadastrar o novo reino, tente novamente."
+                        );
                     }
-                    const { error } = response.data
-                    throw new Error(error.message)
+                    const { error } = response.data;
+                    throw new Error(error.message);
                 } else {
-                    throw err
+                    throw err;
                 }
             })
-            .catch(this.catchRequestError)
-    }
+            .catch(this.catchRequestError);
+    };
 
     cadastraNovaFamilia = () => {
         this.setState({
-            loading: true
-        })
+            loading: true,
+        });
         axios
-            .post('/familias', {
+            .post("/familias", {
                 reinoId: this.props.form.getFieldsValue().reino,
-                nome: this.props.form.getFieldsValue().campo
+                nome: this.props.form.getFieldsValue().campo,
             })
-            .then(response => {
+            .then((response) => {
                 this.setState({
-                    loading: false
-                })
+                    loading: false,
+                });
                 if (response.status === 204) {
-                    this.requisitaFamilias('', this.state.reinoInicial)
+                    this.requisitaFamilias("", this.state.reinoInicial);
                     this.openNotificationWithIcon(
-                        'success',
-                        'Sucesso',
-                        'O cadastro foi realizado com sucesso.'
-                    )
+                        "success",
+                        "Sucesso",
+                        "O cadastro foi realizado com sucesso."
+                    );
                 }
                 this.props.form.setFields({
                     campo: {
-                        value: ''
-                    }
-                })
+                        value: "",
+                    },
+                });
             })
-            .catch(err => {
+            .catch((err) => {
                 this.setState({
-                    loading: false
-                })
-                const { response } = err
+                    loading: false,
+                });
+                const { response } = err;
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
                         this.openNotificationWithIcon(
-                            'warning',
-                            'Falha',
+                            "warning",
+                            "Falha",
                             response.data.error.message
-                        )
+                        );
                     } else {
                         this.openNotificationWithIcon(
-                            'error',
-                            'Falha',
-                            'Houve um problema ao cadastrar a nova família, tente novamente.'
-                        )
+                            "error",
+                            "Falha",
+                            "Houve um problema ao cadastrar a nova família, tente novamente."
+                        );
                     }
-                    const { error } = response.data
-                    throw new Error(error.message)
+                    const { error } = response.data;
+                    throw new Error(error.message);
                 } else {
-                    throw err
+                    throw err;
                 }
             })
             .catch(this.catchRequestError)
             .finally(() => {
                 this.setState({
-                    autorSubfamilia: '',
-                    autorEspecie: '',
-                    autorSubespecie: '',
-                    autorVariedade: ''
-                })
-            })
-    }
+                    autorSubfamilia: "",
+                    autorEspecie: "",
+                    autorSubespecie: "",
+                    autorVariedade: "",
+                });
+            });
+    };
 
-    requisitaReinos = async (searchText = '') => {
-        this.setState({ fetchingReinos: true })
+    requisitaReinos = async (searchText = "") => {
+        this.setState({ fetchingReinos: true });
 
         try {
             const params = {
                 limite: 9999999999,
-                ...(searchText ? { reino: searchText } : {})
-            }
+                ...(searchText ? { reino: searchText } : {}),
+            };
 
-            const response = await axios.get('/reinos', { params })
+            const response = await axios.get("/reinos", { params });
 
             if (response.status === 200) {
                 this.setState({
                     reinos: response.data.resultado,
-                    fetchingReinos: false
-                })
+                    fetchingReinos: false,
+                });
             }
         } catch (err) {
-            this.setState({ fetchingReinos: false })
-            console.error('Erro ao buscar reinos:', err)
+            this.setState({ fetchingReinos: false });
+            console.error("Erro ao buscar reinos:", err);
         }
-    }
+    };
 
-    requisitaFamilias = async (searchText = '', reinoId = null) => {
-        this.setState({ fetchingFamilias: true })
+    requisitaFamilias = async (searchText = "", reinoId = null) => {
+        this.setState({ fetchingFamilias: true });
 
         try {
             const params = {
                 limite: 9999999999,
                 ...(searchText ? { familia: searchText } : {}),
-                ...(reinoId ? { reino_id: reinoId } : {})
-            }
+                ...(reinoId ? { reino_id: reinoId } : {}),
+            };
 
-            const response = await axios.get('/familias', { params })
+            const response = await axios.get("/familias", { params });
 
             if (response.status === 200) {
                 this.setState({
                     familias: response.data.resultado,
-                    fetchingFamilias: false
-                })
+                    fetchingFamilias: false,
+                });
             }
         } catch (err) {
-            this.setState({ fetchingFamilias: false })
-            console.error('Erro ao buscar famílias:', err)
+            this.setState({ fetchingFamilias: false });
+            console.error("Erro ao buscar famílias:", err);
         }
-    }
+    };
 
     cadastraNovaSubfamilia = () => {
         if (!this.props.form.getFieldsValue().familia) {
             this.openNotificationWithIcon(
-                'warning',
-                'Falha',
-                'Selecione uma família para cadastrar uma subfamília.'
-            )
+                "warning",
+                "Falha",
+                "Selecione uma família para cadastrar uma subfamília."
+            );
         } else {
             axios
-                .post('/subfamilias', {
+                .post("/subfamilias", {
                     nome: this.props.form.getFieldsValue().campo,
-                    familia_id: this.props.form.getFieldsValue().familia
+                    familia_id: this.props.form.getFieldsValue().familia,
                 })
-                .then(response => {
+                .then((response) => {
                     if (response.status === 204) {
                         this.requisitaSubfamilias(
-                            '',
+                            "",
                             this.props.form.getFieldsValue().familia
-                        )
+                        );
                         this.setState({
                             search: {
-                                subfamilia: 'validating'
-                            }
-                        })
+                                subfamilia: "validating",
+                            },
+                        });
                         this.openNotificationWithIcon(
-                            'success',
-                            'Sucesso',
-                            'O cadastro foi realizado com sucesso.'
-                        )
+                            "success",
+                            "Sucesso",
+                            "O cadastro foi realizado com sucesso."
+                        );
                     }
                     this.props.form.setFields({
                         campo: {
-                            value: ''
-                        }
-                    })
+                            value: "",
+                        },
+                    });
                 })
-                .catch(err => {
-                    const { response } = err
+                .catch((err) => {
+                    const { response } = err;
                     if (response && response.data) {
                         if (
-                            response.status === 400
-                            || response.status === 422
+                            response.status === 400 ||
+                            response.status === 422
                         ) {
                             this.openNotificationWithIcon(
-                                'warning',
-                                'Falha',
+                                "warning",
+                                "Falha",
                                 response.data.error.message
-                            )
+                            );
                         } else {
                             this.openNotificationWithIcon(
-                                'error',
-                                'Falha',
-                                'Houve um problema ao cadastrar a nova subfamília, tente novamente.'
-                            )
+                                "error",
+                                "Falha",
+                                "Houve um problema ao cadastrar a nova subfamília, tente novamente."
+                            );
                         }
-                        const { error } = response.data
-                        throw new Error(error.message)
+                        const { error } = response.data;
+                        throw new Error(error.message);
                     } else {
-                        throw err
+                        throw err;
                     }
                 })
-                .catch(this.catchRequestError)
+                .catch(this.catchRequestError);
         }
-    }
+    };
 
-    requisitaSubfamilias = async (searchText = '', familiaId = null) => {
-        this.setState({ fetchingSubfamilias: true })
+    requisitaSubfamilias = async (searchText = "", familiaId = null) => {
+        this.setState({ fetchingSubfamilias: true });
 
         try {
             const params = {
                 limite: 999999999,
                 ...(searchText ? { subfamilia: searchText } : {}),
-                ...(familiaId ? { familia_id: familiaId } : {})
-            }
+                ...(familiaId ? { familia_id: familiaId } : {}),
+            };
 
-            const response = await axios.get('/subfamilias', { params })
+            const response = await axios.get("/subfamilias", { params });
 
             if (response.status === 200) {
                 this.setState({
                     subfamilias: response.data.resultado,
-                    fetchingSubfamilias: false
-                })
+                    fetchingSubfamilias: false,
+                });
             }
         } catch (err) {
-            this.setState({ fetchingSubfamilias: false })
-            console.error('Erro ao buscar subfamílias:', err)
+            this.setState({ fetchingSubfamilias: false });
+            console.error("Erro ao buscar subfamílias:", err);
         }
-    }
+    };
 
     cadastraNovoGenero = () => {
         if (!this.props.form.getFieldsValue().familia) {
             this.openNotificationWithIcon(
-                'warning',
-                'Falha',
-                'Selecione uma família para cadastrar uma subfamília.'
-            )
+                "warning",
+                "Falha",
+                "Selecione uma família para cadastrar uma subfamília."
+            );
         } else {
             this.setState({
-                loading: true
-            })
+                loading: true,
+            });
             axios
-                .post('/generos', {
+                .post("/generos", {
                     nome: this.props.form.getFieldsValue().campo,
-                    familia_id: this.props.form.getFieldsValue().familia
+                    familia_id: this.props.form.getFieldsValue().familia,
                 })
-                .then(response => {
+                .then((response) => {
                     this.setState({
-                        loading: false
-                    })
+                        loading: false,
+                    });
                     if (response.status === 204) {
                         this.requisitaGeneros(
-                            '',
+                            "",
                             this.props.form.getFieldsValue().familia
-                        )
+                        );
                         this.setState({
                             search: {
-                                genero: 'validating'
-                            }
-                        })
+                                genero: "validating",
+                            },
+                        });
                         this.openNotificationWithIcon(
-                            'success',
-                            'Sucesso',
-                            'O cadastro foi realizado com sucesso.'
-                        )
+                            "success",
+                            "Sucesso",
+                            "O cadastro foi realizado com sucesso."
+                        );
                     }
                     this.props.form.setFields({
                         campo: {
-                            value: ''
-                        }
-                    })
+                            value: "",
+                        },
+                    });
                 })
-                .catch(err => {
+                .catch((err) => {
                     this.setState({
-                        loading: false
-                    })
-                    const { response } = err
+                        loading: false,
+                    });
+                    const { response } = err;
                     if (response && response.data) {
                         if (
-                            response.status === 400
-                            || response.status === 422
+                            response.status === 400 ||
+                            response.status === 422
                         ) {
                             this.openNotificationWithIcon(
-                                'warning',
-                                'Falha',
+                                "warning",
+                                "Falha",
                                 response.data.error.message
-                            )
+                            );
                         } else {
                             this.openNotificationWithIcon(
-                                'error',
-                                'Falha',
-                                'Houve um problema ao cadastrar o novo gênero, tente novamente.'
-                            )
+                                "error",
+                                "Falha",
+                                "Houve um problema ao cadastrar o novo gênero, tente novamente."
+                            );
                         }
-                        const { error } = response.data
-                        throw new Error(error.message)
+                        const { error } = response.data;
+                        throw new Error(error.message);
                     } else {
-                        throw err
+                        throw err;
                     }
                 })
-                .catch(this.catchRequestError)
+                .catch(this.catchRequestError);
         }
-    }
+    };
 
-    requisitaGeneros = async (searchText = '', familiaId = null) => {
-        this.setState({ fetchingGeneros: true })
+    requisitaGeneros = async (searchText = "", familiaId = null) => {
+        this.setState({ fetchingGeneros: true });
 
         try {
             const params = {
                 limite: 9999999999,
                 ...(searchText ? { genero: searchText } : {}),
-                ...(familiaId ? { familia_id: familiaId } : {})
-            }
+                ...(familiaId ? { familia_id: familiaId } : {}),
+            };
 
-            const response = await axios.get('/generos', { params })
+            const response = await axios.get("/generos", { params });
 
             if (response.status === 200) {
                 this.setState({
                     generos: response.data.resultado,
-                    fetchingGeneros: false
-                })
+                    fetchingGeneros: false,
+                });
             }
         } catch (err) {
-            this.setState({ fetchingGeneros: false })
-            console.error('Erro ao buscar gêneros:', err)
+            this.setState({ fetchingGeneros: false });
+            console.error("Erro ao buscar gêneros:", err);
         }
-    }
+    };
 
     cadastraNovaEspecie = () => {
         if (!this.props.form.getFieldsValue().genero) {
             this.openNotificationWithIcon(
-                'warning',
-                'Falha',
-                'Selecione um gênero para cadastrar uma subfamília.'
-            )
+                "warning",
+                "Falha",
+                "Selecione um gênero para cadastrar uma subfamília."
+            );
         }
         if (!this.props.form.getFieldsValue().familia) {
             this.openNotificationWithIcon(
-                'warning',
-                'Falha',
-                'Selecione uma família para cadastrar uma subfamília.'
-            )
+                "warning",
+                "Falha",
+                "Selecione uma família para cadastrar uma subfamília."
+            );
         } else {
             this.setState({
-                loading: true
-            })
+                loading: true,
+            });
             axios
-                .post('/especies', {
+                .post("/especies", {
                     nome: this.props.form.getFieldsValue().campo,
                     familia_id: this.props.form.getFieldsValue().familia,
                     genero_id: this.props.form.getFieldsValue().genero,
-                    autor_id: this.props.form.getFieldsValue().autor
+                    autor_id: this.props.form.getFieldsValue().autor,
                 })
-                .then(response => {
+                .then((response) => {
                     this.setState({
-                        loading: false
-                    })
+                        loading: false,
+                    });
                     if (response.status === 204) {
                         this.requisitaEspecies(
-                            '',
+                            "",
                             this.props.form.getFieldsValue().genero
-                        )
+                        );
                         this.setState({
                             search: {
-                                especie: 'validating'
-                            }
-                        })
+                                especie: "validating",
+                            },
+                        });
                         this.openNotificationWithIcon(
-                            'success',
-                            'Sucesso',
-                            'O cadastro foi realizado com sucesso.'
-                        )
+                            "success",
+                            "Sucesso",
+                            "O cadastro foi realizado com sucesso."
+                        );
                     }
                     this.props.form.setFields({
                         campo: {
-                            value: ''
-                        }
-                    })
+                            value: "",
+                        },
+                    });
                 })
-                .catch(err => {
+                .catch((err) => {
                     this.setState({
-                        loading: false
-                    })
-                    const { response } = err
+                        loading: false,
+                    });
+                    const { response } = err;
                     if (response && response.data) {
                         if (
-                            response.status === 400
-                            || response.status === 422
+                            response.status === 400 ||
+                            response.status === 422
                         ) {
                             this.openNotificationWithIcon(
-                                'warning',
-                                'Falha',
+                                "warning",
+                                "Falha",
                                 response.data.error.message
-                            )
+                            );
                         } else {
                             this.openNotificationWithIcon(
-                                'error',
-                                'Falha',
-                                'Houve um problema ao cadastrar a nova espécie, tente novamente.'
-                            )
+                                "error",
+                                "Falha",
+                                "Houve um problema ao cadastrar a nova espécie, tente novamente."
+                            );
                         }
-                        const { error } = response.data
-                        throw new Error(error.message)
+                        const { error } = response.data;
+                        throw new Error(error.message);
                     } else {
-                        throw err
+                        throw err;
                     }
                 })
-                .catch(this.catchRequestError)
+                .catch(this.catchRequestError);
         }
-    }
+    };
 
-    requisitaEspecies = async (searchText = '', generoId = null) => {
-        this.setState({ fetchingEspecies: true })
+    requisitaEspecies = async (searchText = "", generoId = null) => {
+        this.setState({ fetchingEspecies: true });
 
         try {
             const params = {
                 limite: 9999999999,
                 ...(searchText ? { especie: searchText } : {}),
-                ...(generoId ? { genero_id: generoId } : {})
-            }
+                ...(generoId ? { genero_id: generoId } : {}),
+            };
 
-            const response = await axios.get('/especies', { params })
+            const response = await axios.get("/especies", { params });
 
             if (response.status === 200) {
                 this.setState({
                     especies: response.data.resultado,
-                    fetchingEspecies: false
-                })
+                    fetchingEspecies: false,
+                });
             }
         } catch (err) {
-            this.setState({ fetchingEspecies: false })
-            console.error('Erro ao buscar espécies:', err)
+            this.setState({ fetchingEspecies: false });
+            console.error("Erro ao buscar espécies:", err);
         }
-    }
+    };
 
     cadastraNovaSubespecie = () => {
         if (!this.props.form.getFieldsValue().especie) {
             this.openNotificationWithIcon(
-                'warning',
-                'Falha',
-                'Selecione uma espécie para cadastrar uma subespécie.'
-            )
+                "warning",
+                "Falha",
+                "Selecione uma espécie para cadastrar uma subespécie."
+            );
         }
         if (!this.props.form.getFieldsValue().genero) {
             this.openNotificationWithIcon(
-                'warning',
-                'Falha',
-                'Selecione um gênero para cadastrar uma subespécie.'
-            )
+                "warning",
+                "Falha",
+                "Selecione um gênero para cadastrar uma subespécie."
+            );
         }
         if (!this.props.form.getFieldsValue().familia) {
             this.openNotificationWithIcon(
-                'warning',
-                'Falha',
-                'Selecione uma família para cadastrar uma subespécie.'
-            )
+                "warning",
+                "Falha",
+                "Selecione uma família para cadastrar uma subespécie."
+            );
         } else {
             this.setState({
-                loading: true
-            })
+                loading: true,
+            });
             axios
-                .post('/subespecies', {
+                .post("/subespecies", {
                     nome: this.props.form.getFieldsValue().campo,
                     familia_id: this.props.form.getFieldsValue().familia,
                     genero_id: this.props.form.getFieldsValue().genero,
                     especie_id: this.props.form.getFieldsValue().especie,
-                    autor_id: this.props.form.getFieldsValue().autor
+                    autor_id: this.props.form.getFieldsValue().autor,
                 })
-                .then(response => {
+                .then((response) => {
                     this.setState({
-                        loading: false
-                    })
+                        loading: false,
+                    });
                     if (response.status === 204) {
                         this.requisitaSubespecies(
-                            '',
+                            "",
                             this.props.form.getFieldsValue().especie
-                        )
+                        );
                         this.setState({
                             search: {
-                                subespecie: 'validating'
-                            }
-                        })
+                                subespecie: "validating",
+                            },
+                        });
                         this.openNotificationWithIcon(
-                            'success',
-                            'Sucesso',
-                            'O cadastro foi realizado com sucesso.'
-                        )
+                            "success",
+                            "Sucesso",
+                            "O cadastro foi realizado com sucesso."
+                        );
                     }
                     this.props.form.setFields({
                         campo: {
-                            value: ''
-                        }
-                    })
+                            value: "",
+                        },
+                    });
                 })
-                .catch(err => {
+                .catch((err) => {
                     this.setState({
-                        loading: false
-                    })
-                    const { response } = err
+                        loading: false,
+                    });
+                    const { response } = err;
                     if (response && response.data) {
                         if (
-                            response.status === 400
-                            || response.status === 422
+                            response.status === 400 ||
+                            response.status === 422
                         ) {
                             this.openNotificationWithIcon(
-                                'warning',
-                                'Falha',
+                                "warning",
+                                "Falha",
                                 response.data.error.message
-                            )
+                            );
                         } else {
                             this.openNotificationWithIcon(
-                                'error',
-                                'Falha',
-                                'Houve um problema ao cadastrar a nova subespécie, tente novamente.'
-                            )
+                                "error",
+                                "Falha",
+                                "Houve um problema ao cadastrar a nova subespécie, tente novamente."
+                            );
                         }
-                        const { error } = response.data
-                        throw new Error(error.message)
+                        const { error } = response.data;
+                        throw new Error(error.message);
                     } else {
-                        throw err
+                        throw err;
                     }
                 })
-                .catch(this.catchRequestError)
+                .catch(this.catchRequestError);
         }
-    }
+    };
 
-    requisitaSubespecies = async (searchText = '', especieId = null) => {
-        this.setState({ fetchingSubespecies: true })
+    requisitaSubespecies = async (searchText = "", especieId = null) => {
+        this.setState({ fetchingSubespecies: true });
 
         try {
             const params = {
                 limite: 999999999,
                 ...(searchText ? { subespecie: searchText } : {}),
-                ...(especieId ? { especie_id: especieId } : {})
-            }
+                ...(especieId ? { especie_id: especieId } : {}),
+            };
 
-            const response = await axios.get('/subespecies', { params })
+            const response = await axios.get("/subespecies", { params });
 
             if (response.status === 200) {
                 this.setState({
                     subespecies: response.data.resultado,
-                    fetchingSubespecies: false
-                })
+                    fetchingSubespecies: false,
+                });
             }
         } catch (err) {
-            this.setState({ fetchingSubespecies: false })
-            console.error('Erro ao buscar subespécies:', err)
+            this.setState({ fetchingSubespecies: false });
+            console.error("Erro ao buscar subespécies:", err);
         }
-    }
+    };
 
     cadastraNovaVariedade = () => {
         if (!this.props.form.getFieldsValue().especie) {
             this.openNotificationWithIcon(
-                'warning',
-                'Falha',
-                'Selecione uma espécie para cadastrar uma variedade.'
-            )
+                "warning",
+                "Falha",
+                "Selecione uma espécie para cadastrar uma variedade."
+            );
         }
         if (!this.props.form.getFieldsValue().genero) {
             this.openNotificationWithIcon(
-                'warning',
-                'Falha',
-                'Selecione um gênero para cadastrar uma variedade.'
-            )
+                "warning",
+                "Falha",
+                "Selecione um gênero para cadastrar uma variedade."
+            );
         }
         if (!this.props.form.getFieldsValue().familia) {
             this.openNotificationWithIcon(
-                'warning',
-                'Falha',
-                'Selecione uma família para cadastrar uma variedade.'
-            )
+                "warning",
+                "Falha",
+                "Selecione uma família para cadastrar uma variedade."
+            );
         } else {
             this.setState({
-                loading: true
-            })
+                loading: true,
+            });
             axios
-                .post('/variedades', {
+                .post("/variedades", {
                     nome: this.props.form.getFieldsValue().campo,
                     familia_id: this.props.form.getFieldsValue().familia,
                     genero_id: this.props.form.getFieldsValue().genero,
                     especie_id: this.props.form.getFieldsValue().especie,
-                    autor_id: this.props.form.getFieldsValue().autor
+                    autor_id: this.props.form.getFieldsValue().autor,
                 })
-                .then(response => {
+                .then((response) => {
                     this.setState({
-                        loading: false
-                    })
+                        loading: false,
+                    });
                     if (response.status === 204) {
                         this.requisitaVariedades(
-                            '',
+                            "",
                             this.props.form.getFieldsValue().especie
-                        )
+                        );
                         this.setState({
                             search: {
-                                variedade: 'validating'
-                            }
-                        })
+                                variedade: "validating",
+                            },
+                        });
                         this.openNotificationWithIcon(
-                            'success',
-                            'Sucesso',
-                            'O cadastro foi realizado com sucesso.'
-                        )
+                            "success",
+                            "Sucesso",
+                            "O cadastro foi realizado com sucesso."
+                        );
                     }
                     this.props.form.setFields({
                         campo: {
-                            value: ''
-                        }
-                    })
+                            value: "",
+                        },
+                    });
                 })
-                .catch(err => {
+                .catch((err) => {
                     this.setState({
-                        loading: false
-                    })
-                    const { response } = err
+                        loading: false,
+                    });
+                    const { response } = err;
                     if (response && response.data) {
                         if (
-                            response.status === 400
-                            || response.status === 422
+                            response.status === 400 ||
+                            response.status === 422
                         ) {
                             this.openNotificationWithIcon(
-                                'warning',
-                                'Falha',
+                                "warning",
+                                "Falha",
                                 response.data.error.message
-                            )
+                            );
                         } else {
                             this.openNotificationWithIcon(
-                                'error',
-                                'Falha',
-                                'Houve um problema ao cadastrar a nova variedade, tente novamente.'
-                            )
+                                "error",
+                                "Falha",
+                                "Houve um problema ao cadastrar a nova variedade, tente novamente."
+                            );
                         }
-                        const { error } = response.data
-                        throw new Error(error.message)
+                        const { error } = response.data;
+                        throw new Error(error.message);
                     } else {
-                        throw err
+                        throw err;
                     }
                 })
-                .catch(this.catchRequestError)
+                .catch(this.catchRequestError);
         }
-    }
+    };
 
-    requisitaVariedades = async (searchText = '', especieId = null) => {
-        this.setState({ fetchingVariedades: true })
+    requisitaVariedades = async (searchText = "", especieId = null) => {
+        this.setState({ fetchingVariedades: true });
 
         try {
             const params = {
                 limite: 999999999,
                 ...(searchText ? { variedade: searchText } : {}),
-                ...(especieId ? { especie_id: especieId } : {})
-            }
+                ...(especieId ? { especie_id: especieId } : {}),
+            };
 
-            const response = await axios.get('/variedades', { params })
+            const response = await axios.get("/variedades", { params });
 
             if (response.status === 200) {
                 this.setState({
                     variedades: response.data.resultado,
-                    fetchingVariedades: false
-                })
+                    fetchingVariedades: false,
+                });
             }
         } catch (err) {
-            this.setState({ fetchingVariedades: false })
-            console.error('Erro ao buscar variedades:', err)
+            this.setState({ fetchingVariedades: false });
+            console.error("Erro ao buscar variedades:", err);
         }
-    }
+    };
 
     cadastraNovoAutor = () => {
         axios
-            .post('/autores', {
+            .post("/autores", {
                 nome: this.props.form.getFieldsValue().campo,
-                iniciais: ''
+                iniciais: "",
             })
-            .then(response => {
+            .then((response) => {
                 if (response.status === 204) {
-                    this.requisitaAutores()
+                    this.requisitaAutores();
                     this.setState({
                         search: {
-                            autor: 'validating'
-                        }
-                    })
+                            autor: "validating",
+                        },
+                    });
                     this.openNotificationWithIcon(
-                        'success',
-                        'Sucesso',
-                        'O cadastro foi realizado com sucesso.'
-                    )
+                        "success",
+                        "Sucesso",
+                        "O cadastro foi realizado com sucesso."
+                    );
                 } else if (response.status === 400) {
                     this.openNotificationWithIcon(
-                        'warning',
-                        'Falha',
+                        "warning",
+                        "Falha",
                         response.data.error.message
-                    )
+                    );
                 } else {
                     this.openNotificationWithIcon(
-                        'error',
-                        'Falha',
-                        'Houve um problema ao cadastrar o novo autor, tente novamente.'
-                    )
+                        "error",
+                        "Falha",
+                        "Houve um problema ao cadastrar o novo autor, tente novamente."
+                    );
                 }
                 this.props.form.setFields({
                     campo: {
-                        value: ''
-                    }
-                })
+                        value: "",
+                    },
+                });
             })
-            .catch(err => {
-                const { response } = err
+            .catch((err) => {
+                const { response } = err;
                 if (response && response.data) {
-                    const { error } = response.data
-                    throw new Error(error.message)
+                    const { error } = response.data;
+                    throw new Error(error.message);
                 } else {
-                    throw err
+                    throw err;
                 }
             })
-            .catch(this.catchRequestError)
-    }
+            .catch(this.catchRequestError);
+    };
 
-    requisitaAutores = async (searchText = '') => {
-        this.setState({ fetchingAutores: true })
+    requisitaAutores = async (searchText = "") => {
+        this.setState({ fetchingAutores: true });
 
         try {
             const params = {
                 limite: 9999999,
-                ...(searchText ? { autor: searchText } : {})
-            }
+                ...(searchText ? { autor: searchText } : {}),
+            };
 
-            const response = await axios.get('/autores', { params })
+            const response = await axios.get("/autores", { params });
 
             if (response.status === 200) {
                 this.setState({
                     autores: response.data.resultado || response.data,
-                    fetchingAutores: false
-                })
+                    fetchingAutores: false,
+                });
             }
         } catch (err) {
-            this.setState({ fetchingAutores: false })
-            console.error('Erro ao buscar autores:', err)
+            this.setState({ fetchingAutores: false });
+            console.error("Erro ao buscar autores:", err);
         }
-    }
+    };
 
     cadastraNovoSolo = () => {
         this.setState({
-            loading: true
-        })
+            loading: true,
+        });
         axios
-            .post('/solos', {
-                nome: this.props.form.getFieldsValue().campo
+            .post("/solos", {
+                nome: this.props.form.getFieldsValue().campo,
             })
-            .then(response => {
+            .then((response) => {
                 if (response.status === 204) {
-                    this.requisitaSolos('')
+                    this.requisitaSolos("");
                     this.setState({
                         search: {
-                            solo: 'validating'
+                            solo: "validating",
                         },
-                        loading: false
-                    })
+                        loading: false,
+                    });
                     this.openNotificationWithIcon(
-                        'success',
-                        'Sucesso',
-                        'O cadastro foi realizado com sucesso.'
-                    )
+                        "success",
+                        "Sucesso",
+                        "O cadastro foi realizado com sucesso."
+                    );
                 }
                 this.props.form.setFields({
                     campo: {
-                        value: ''
-                    }
-                })
+                        value: "",
+                    },
+                });
             })
-            .catch(err => {
+            .catch((err) => {
                 this.setState({
-                    loading: false
-                })
-                const { response } = err
+                    loading: false,
+                });
+                const { response } = err;
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
                         this.openNotificationWithIcon(
-                            'warning',
-                            'Falha',
+                            "warning",
+                            "Falha",
                             response.data.error.message
-                        )
+                        );
                     } else {
                         this.openNotificationWithIcon(
-                            'error',
-                            'Falha',
-                            'Houve um problema ao cadastrar o novo solo, tente novamente.'
-                        )
+                            "error",
+                            "Falha",
+                            "Houve um problema ao cadastrar o novo solo, tente novamente."
+                        );
                     }
-                    const { error } = response.data
-                    throw new Error(error.message)
+                    const { error } = response.data;
+                    throw new Error(error.message);
                 } else {
-                    throw err
+                    throw err;
                 }
             })
-            .catch(this.catchRequestError)
-    }
+            .catch(this.catchRequestError);
+    };
 
     cadastraNovoRelevo = () => {
         this.setState({
-            loading: true
-        })
+            loading: true,
+        });
         axios
-            .post('/relevos', {
-                nome: this.props.form.getFieldsValue().campo
+            .post("/relevos", {
+                nome: this.props.form.getFieldsValue().campo,
             })
-            .then(response => {
+            .then((response) => {
                 this.setState({
-                    loading: false
-                })
+                    loading: false,
+                });
                 if (response.status === 204) {
-                    this.requisitaRelevos('')
+                    this.requisitaRelevos("");
                     this.setState({
                         search: {
-                            relevo: 'validating'
-                        }
-                    })
+                            relevo: "validating",
+                        },
+                    });
                     this.openNotificationWithIcon(
-                        'success',
-                        'Sucesso',
-                        'O cadastro foi realizado com sucesso.'
-                    )
+                        "success",
+                        "Sucesso",
+                        "O cadastro foi realizado com sucesso."
+                    );
                 } else if (response.status === 400) {
                     this.openNotificationWithIcon(
-                        'warning',
-                        'Falha',
+                        "warning",
+                        "Falha",
                         response.data.error.message
-                    )
+                    );
                 } else {
                     this.openNotificationWithIcon(
-                        'error',
-                        'Falha',
-                        'Houve um problema ao cadastrar o novo relevo, tente novamente.'
-                    )
+                        "error",
+                        "Falha",
+                        "Houve um problema ao cadastrar o novo relevo, tente novamente."
+                    );
                 }
                 this.props.form.setFields({
                     campo: {
-                        value: ''
-                    }
-                })
+                        value: "",
+                    },
+                });
             })
-            .catch(err => {
+            .catch((err) => {
                 this.setState({
-                    loading: false
-                })
-                const { response } = err
+                    loading: false,
+                });
+                const { response } = err;
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
                         this.openNotificationWithIcon(
-                            'warning',
-                            'Falha',
+                            "warning",
+                            "Falha",
                             response.data.error.message
-                        )
+                        );
                     } else {
                         this.openNotificationWithIcon(
-                            'error',
-                            'Falha',
-                            'Houve um problema ao cadastrar o novo relevo, tente novamente.'
-                        )
+                            "error",
+                            "Falha",
+                            "Houve um problema ao cadastrar o novo relevo, tente novamente."
+                        );
                     }
-                    const { error } = response.data
-                    throw new Error(error.message)
+                    const { error } = response.data;
+                    throw new Error(error.message);
                 } else {
-                    throw err
+                    throw err;
                 }
             })
-            .catch(this.catchRequestError)
-    }
+            .catch(this.catchRequestError);
+    };
 
     cadastraNovaVegetacao = () => {
         this.setState({
-            loading: true
-        })
+            loading: true,
+        });
         axios
-            .post('/vegetacoes', {
-                nome: this.props.form.getFieldsValue().campo
+            .post("/vegetacoes", {
+                nome: this.props.form.getFieldsValue().campo,
             })
-            .then(response => {
+            .then((response) => {
                 this.setState({
-                    loading: false
-                })
+                    loading: false,
+                });
                 if (response.status === 204) {
-                    this.requisitaVegetacoes('')
+                    this.requisitaVegetacoes("");
                     this.setState({
                         search: {
-                            vegetacao: 'validating'
-                        }
-                    })
+                            vegetacao: "validating",
+                        },
+                    });
                     this.openNotificationWithIcon(
-                        'success',
-                        'Sucesso',
-                        'O cadastro foi realizado com sucesso.'
-                    )
+                        "success",
+                        "Sucesso",
+                        "O cadastro foi realizado com sucesso."
+                    );
                 }
                 this.props.form.setFields({
                     campo: {
-                        value: ''
-                    }
-                })
+                        value: "",
+                    },
+                });
             })
-            .catch(err => {
+            .catch((err) => {
                 this.setState({
-                    loading: false
-                })
-                const { response } = err
+                    loading: false,
+                });
+                const { response } = err;
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
                         this.openNotificationWithIcon(
-                            'warning',
-                            'Falha',
+                            "warning",
+                            "Falha",
                             response.data.error.message
-                        )
+                        );
                     } else {
                         this.openNotificationWithIcon(
-                            'error',
-                            'Falha',
-                            'Houve um problema ao cadastrar a nova vegetação, tente novamente.'
-                        )
+                            "error",
+                            "Falha",
+                            "Houve um problema ao cadastrar a nova vegetação, tente novamente."
+                        );
                     }
-                    const { error } = response.data
-                    throw new Error(error.message)
+                    const { error } = response.data;
+                    throw new Error(error.message);
                 } else {
-                    throw err
+                    throw err;
                 }
             })
-            .catch(this.catchRequestError)
-    }
+            .catch(this.catchRequestError);
+    };
 
     cadastraNovoIdentificador = () => {
         this.setState({
-            loading: true
-        })
+            loading: true,
+        });
         axios
-            .post('/identificadores', {
-                nome: this.props.form.getFieldsValue().campo
+            .post("/identificadores", {
+                nome: this.props.form.getFieldsValue().campo,
             })
-            .then(response => {
+            .then((response) => {
                 this.setState({
-                    loading: false
-                })
+                    loading: false,
+                });
                 if (response.status === 204 || response.status === 201) {
-                    this.requisitaIdentificadores('')
+                    this.requisitaIdentificadores("");
                     this.openNotificationWithIcon(
-                        'success',
-                        'Sucesso',
-                        'O cadastro foi realizado com sucesso.'
-                    )
+                        "success",
+                        "Sucesso",
+                        "O cadastro foi realizado com sucesso."
+                    );
                 }
                 this.props.form.setFields({
                     campo: {
-                        value: ''
-                    }
-                })
+                        value: "",
+                    },
+                });
             })
-            .catch(err => {
+            .catch((err) => {
                 this.setState({
-                    loading: false
-                })
-                const { response } = err
+                    loading: false,
+                });
+                const { response } = err;
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
                         this.openNotificationWithIcon(
-                            'warning',
-                            'Falha',
+                            "warning",
+                            "Falha",
                             response.data.error.message
-                        )
+                        );
                     } else {
                         this.openNotificationWithIcon(
-                            'error',
-                            'Falha',
-                            'Houve um problema ao cadastrar o novo identificador, tente novamente.'
-                        )
+                            "error",
+                            "Falha",
+                            "Houve um problema ao cadastrar o novo identificador, tente novamente."
+                        );
                     }
-                    const { error } = response.data
-                    throw new Error(error.message)
+                    const { error } = response.data;
+                    throw new Error(error.message);
                 } else {
-                    throw err
+                    throw err;
                 }
             })
-            .catch(this.catchRequestError)
-    }
+            .catch(this.catchRequestError);
+    };
 
     cadastraNovaFase = () => {
         this.setState({ loading: true })
@@ -2317,219 +2346,220 @@ class NovoTomboScreen extends Component {
     cadastraNovoColetor = () => {
         this.setState({
             formColetor: false,
-            loading: true
-        })
+            loading: true,
+        });
         axios
-            .post('/coletores', {
+            .post("/coletores", {
                 nome: this.props.form.getFieldsValue().nomeColetor,
                 email: this.props.form.getFieldsValue().emailColetor,
-                numero: this.props.form.getFieldsValue().numeroColetor
+                numero: this.props.form.getFieldsValue().numeroColetor,
             })
-            .then(response => {
+            .then((response) => {
                 this.setState({
-                    loading: false
-                })
+                    loading: false,
+                });
                 if (response.status === 204) {
-                    this.requisitaColetores('')
+                    this.requisitaColetores("");
                     this.setState({
                         search: {
-                            coletor: 'validating'
-                        }
-                    })
+                            coletor: "validating",
+                        },
+                    });
                     this.openNotificationWithIcon(
-                        'success',
-                        'Sucesso',
-                        'O cadastro foi realizado com sucesso.'
-                    )
+                        "success",
+                        "Sucesso",
+                        "O cadastro foi realizado com sucesso."
+                    );
                 }
                 this.props.form.setFields({
-                    nomeColetor: { value: '' },
-                    emailColetor: { value: '' },
-                    numeroColetor: { value: '' }
-                })
+                    nomeColetor: { value: "" },
+                    emailColetor: { value: "" },
+                    numeroColetor: { value: "" },
+                });
             })
-            .catch(err => {
-                this.setState({ loading: false })
-                const { response } = err
+            .catch((err) => {
+                this.setState({ loading: false });
+                const { response } = err;
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
                         this.openNotificationWithIcon(
-                            'warning',
-                            'Falha',
+                            "warning",
+                            "Falha",
                             response.data.error.message
-                        )
+                        );
                     } else {
                         this.openNotificationWithIcon(
-                            'error',
-                            'Falha',
-                            'Houve um problema ao cadastrar o novo coletor, tente novamente.'
-                        )
+                            "error",
+                            "Falha",
+                            "Houve um problema ao cadastrar o novo coletor, tente novamente."
+                        );
                     }
-                    const { error } = response.data
-                    throw new Error(error.message)
+                    const { error } = response.data;
+                    throw new Error(error.message);
                 } else {
-                    throw err
+                    throw err;
                 }
             })
-            .catch(this.catchRequestError)
-    }
+            .catch(this.catchRequestError);
+    };
 
     cadastraNovoLocalColeta = () => {
-        this.setState({ loading: true })
-        const { form } = this.props
-        const { getFieldsValue, getFieldValue } = form
-        const { descricaoLocalColeta } = getFieldsValue()
-        const cidadeId = getFieldValue('cidade')
-        const faseSucessionalId = getFieldValue('fases')
+        this.setState({ loading: true });
+        const { form } = this.props;
+        const { getFieldsValue, getFieldValue } = form;
+        const { descricaoLocalColeta } = getFieldsValue();
+        const cidadeId = getFieldValue("cidade");
+        const faseSucessionalId = getFieldValue("fases");
 
         if (!cidadeId) {
             this.openNotificationWithIcon(
-                'warning',
-                'Atenção',
-                'Selecione uma cidade para cadastrar um local de coleta.'
-            )
-            this.setState({ loading: false })
-            return
+                "warning",
+                "Atenção",
+                "Selecione uma cidade para cadastrar um local de coleta."
+            );
+            this.setState({ loading: false });
+            return;
         }
 
         const payload = {
             descricao: descricaoLocalColeta,
-            cidade_id: cidadeId
-        }
+            cidade_id: cidadeId,
+        };
 
         if (faseSucessionalId) {
-            payload.fase_sucessional_id = faseSucessionalId
+            payload.fase_sucessional_id = faseSucessionalId;
         }
 
         axios
-            .post('/locais-coleta', payload)
-            .then(response => {
+            .post("/locais-coleta", payload)
+            .then((response) => {
                 if (response.status === 201) {
-                    this.requisitaLocaisColeta('')
+                    this.requisitaLocaisColeta("");
                     this.openNotificationWithIcon(
-                        'success',
-                        'Sucesso',
-                        'O cadastro foi realizado com sucesso.'
-                    )
+                        "success",
+                        "Sucesso",
+                        "O cadastro foi realizado com sucesso."
+                    );
                 }
                 form.setFields({
-                    descricaoLocalColeta: { value: '' }
-                })
+                    descricaoLocalColeta: { value: "" },
+                });
             })
-            .catch(err => {
-                const { response } = err
+            .catch((err) => {
+                const { response } = err;
                 if (response && response.data) {
                     this.openNotificationWithIcon(
-                        'error',
-                        'Falha',
-                        response.data.error?.message
-                            || 'Houve um problema ao cadastrar o novo local de coleta.'
-                    )
+                        "error",
+                        "Falha",
+                        response.data.error?.message ||
+                            "Houve um problema ao cadastrar o novo local de coleta."
+                    );
                 } else {
                     this.openNotificationWithIcon(
-                        'error',
-                        'Falha',
-                        'Houve um problema ao cadastrar o novo local de coleta, tente novamente.'
-                    )
+                        "error",
+                        "Falha",
+                        "Houve um problema ao cadastrar o novo local de coleta, tente novamente."
+                    );
                 }
             })
             .finally(() => {
-                this.setState({ loading: false })
-            })
-    }
+                this.setState({ loading: false });
+            });
+    };
 
-    requisitaEdicaoTombo = json => {
-        const tomboId = this.props.match.params.tombo_id
+    requisitaEdicaoTombo = (json) => {
+        const tomboId = this.props.match.params.tombo_id;
         this.defaultRequest(
             null,
             requisitaNumeroHcfService,
-            'A alteração foi realizada com sucesso.',
-            'Houve um problema ao alterar o tombo, tente novamente.',
+            "A alteração foi realizada com sucesso.",
+            "Houve um problema ao alterar o tombo, tente novamente.",
             this.onRequisitaEdicaoTomboComSucesso,
             tomboId,
             json
-        )
-    }
+        );
+    };
 
-    requisitaCadastroTombo = json => {
+    requisitaCadastroTombo = (json) => {
         axios
-            .post('/tombos', { json })
-            .then(response => {
+            .post("/tombos", { json })
+            .then((response) => {
                 if (response.status === 201) {
-                    const tombo = response.data
-                    const photoSourceArg = codigo => this.barcodeRef?.getPhotosOfCode?.(codigo) || []
+                    const tombo = response.data;
+                    const photoSourceArg = (codigo) =>
+                        this.barcodeRef?.getPhotosOfCode?.(codigo) || [];
                     this.criarCodigoBarras(
                         tombo.hcf,
                         this.state.codigosBarrasForm,
                         photoSourceArg
-                    )
+                    );
                 }
             })
-            .then(response => {
+            .then((response) => {
                 this.setState({
-                    loading: false
-                })
+                    loading: false,
+                });
                 this.openNotificationWithIcon(
-                    'success',
-                    'Sucesso',
-                    'O cadastro foi realizado com sucesso.'
-                )
-                this.props.history.push('/tombos')
+                    "success",
+                    "Sucesso",
+                    "O cadastro foi realizado com sucesso."
+                );
+                this.props.history.push("/tombos");
             })
-            .catch(err => {
+            .catch((err) => {
                 this.setState({
-                    loading: false
-                })
-                const { response } = err
+                    loading: false,
+                });
+                const { response } = err;
 
                 if (response.status === 400) {
                     this.openNotificationWithIcon(
-                        'warning',
-                        'Falha',
+                        "warning",
+                        "Falha",
                         response.data.error.message
-                    )
+                    );
                 } else {
                     this.openNotificationWithIcon(
-                        'error',
-                        'Falha',
-                        'Houve um problema ao cadastrar o novo tombo tente novamente.'
-                    )
+                        "error",
+                        "Falha",
+                        "Houve um problema ao cadastrar o novo tombo tente novamente."
+                    );
                 }
                 if (response && response.data) {
-                    const { error } = response.data
-                    console.error(error.message)
+                    const { error } = response.data;
+                    console.error(error.message);
                 } else {
-                    throw err
+                    throw err;
                 }
             })
-            .catch(this.catchRequestError)
-    }
+            .catch(this.catchRequestError);
+    };
 
     openNotification = (type, message, description) => {
         notification[type]({
             message,
-            description
-        })
-    }
+            description,
+        });
+    };
 
     mostraMensagemDeleteCod(foto, indice) {
         confirm({
-            title: 'Você tem certeza que deseja excluir esta foto?',
-            content: 'Ao clicar em SIM, a foto será excluída.',
-            okText: 'SIM',
-            okType: 'danger',
-            cancelText: 'NÃO',
+            title: "Você tem certeza que deseja excluir esta foto?",
+            content: "Ao clicar em SIM, a foto será excluída.",
+            okText: "SIM",
+            okType: "danger",
+            cancelText: "NÃO",
             onOk: () => {
-                this.excluirFotoTombo(foto, indice)
+                this.excluirFotoTombo(foto, indice);
             },
-            onCancel: () => {}
-        })
+            onCancel: () => {},
+        });
     }
 
-    insereDadosFormulario = dados => {
-        const { form } = this.props
+    insereDadosFormulario = (dados) => {
+        const { form } = this.props;
 
-        this.setState({ dadosFormulario: dados })
+        this.setState({ dadosFormulario: dados });
 
         let insereState = {
             estados: dados.estados,
@@ -2538,23 +2568,23 @@ class NovoTomboScreen extends Component {
             generos: dados.generos,
             especies: dados.especies,
             subespecies: dados.subespecies,
-            variedades: dados.variedades
-        }
+            variedades: dados.variedades,
+        };
 
-        this.requisitaFamilias('', dados.reinoInicial)
+        this.requisitaFamilias("", dados.reinoInicial);
 
         if (dados.familiaInicial) {
-            this.requisitaSubfamilias('', dados.familiaInicial)
-            this.requisitaGeneros('', dados.familiaInicial)
+            this.requisitaSubfamilias("", dados.familiaInicial);
+            this.requisitaGeneros("", dados.familiaInicial);
         }
 
         if (dados.generoInicial) {
-            this.requisitaEspecies('', dados.generoInicial)
+            this.requisitaEspecies("", dados.generoInicial);
         }
 
         if (dados.especieInicial) {
-            this.requisitaSubespecies('', dados.especieInicial)
-            this.requisitaVariedades('', dados.especieInicial)
+            this.requisitaSubespecies("", dados.especieInicial);
+            this.requisitaVariedades("", dados.especieInicial);
         }
 
         if (dados.coletor) {
@@ -2562,186 +2592,186 @@ class NovoTomboScreen extends Component {
                 coletores: {
                     value: {
                         key: dados.coletor.id,
-                        label: dados.coletor.nome
-                    }
-                }
-            })
+                        label: dados.coletor.nome,
+                    },
+                },
+            });
         }
         if (dados.localizacao) {
             insereState = {
                 ...insereState,
                 latGraus: dados.localizacao.latitude_graus,
                 latMinutos: dados.localizacao.latitude_min,
-                latSegundos: dados.localizacao.latitude_sec
-            }
+                latSegundos: dados.localizacao.latitude_sec,
+            };
 
             insereState = {
                 ...insereState,
                 longGraus: dados.localizacao.long_graus,
                 longMinutos: dados.localizacao.long_min,
-                longSegundos: dados.localizacao.latitude_sec
-            }
+                longSegundos: dados.localizacao.latitude_sec,
+            };
         }
         this.setState({
-            ...insereState
-        })
+            ...insereState,
+        });
 
         if (
-            dados.retorno
-            && dados.retorno.identificadores
-            && dados.retorno.identificadores.length > 0
+            dados.retorno &&
+            dados.retorno.identificadores &&
+            dados.retorno.identificadores.length > 0
         ) {
             const identificadoresParaFormulario = dados.retorno.identificadores
                 .sort(
-                    (a, b) => a.tombos_identificadores.ordem
-                        - b.tombos_identificadores.ordem
+                    (a, b) =>
+                        a.tombos_identificadores.ordem -
+                        b.tombos_identificadores.ordem
                 )
-                .map(identificador => ({
+                .map((identificador) => ({
                     key: identificador.id,
-                    label: identificador.nome
-                }))
+                    label: identificador.nome,
+                }));
 
             form.setFields({
                 identificador: {
-                    value: identificadoresParaFormulario
-                }
-            })
+                    value: identificadoresParaFormulario,
+                },
+            });
         }
 
-        const date = new Date(dados.data_tombo)
+        const date = new Date(dados.data_tombo);
 
         form.setFields({
             numeroTombo: {
-                value: dados.hcf
+                value: dados.hcf,
             },
             dataTombo: {
                 value: `${date.getUTCDate()}/${
                     date.getUTCMonth() + 1
-                }/${date.getUTCFullYear()}`
+                }/${date.getUTCFullYear()}`,
             },
             altitude: {
-                value: dados.localizacao.altitude
+                value: dados.localizacao.altitude,
             },
             dataColetaAno: {
-                value: dados.data_coleta_ano
+                value: dados.data_coleta_ano,
             },
             dataColetaDia: {
-                value: dados.data_coleta_dia
+                value: dados.data_coleta_dia,
             },
             dataColetaMes: {
-                value: dados.data_coleta_mes
+                value: dados.data_coleta_mes,
             },
             dataIdentAno: {
-                value: dados.data_identificacao_ano
+                value: dados.data_identificacao_ano,
             },
             dataIdentDia: {
-                value: dados.data_identificacao_dia
+                value: dados.data_identificacao_dia,
             },
             dataIdentMes: {
-                value: dados.data_identificacao_mes
+                value: dados.data_identificacao_mes,
             },
             latitude: {
-                value: dados.localizacao.latitude
+                value: dados.localizacao.latitude,
             },
             longitude: {
-                value: dados.localizacao.longitude
+                value: dados.localizacao.longitude,
             },
             nomePopular: {
-                value: dados.retorno.nomes_populares
+                value: dados.retorno.nomes_populares,
             },
             numColeta: {
-                value: dados.numero_coleta
+                value: dados.numero_coleta,
             },
             observacoesColecaoAnexa: {
-                value: dados.colecao_anexa.observacao
+                value: dados.colecao_anexa.observacao,
             },
             observacoesTombo: {
-                value: dados.observacao
+                value: dados.observacao,
             },
             relevoDescricao: {
-                value: dados.descricao
+                value: dados.descricao,
             },
             unicata: {
-                value: dados.unicata
+                value: dados.unicata,
             },
             complemento: {
                 value: {
                     key: dados.local_coleta.id,
-                    label: dados.local_coleta.descricao
-                }
+                    label: dados.local_coleta.descricao,
+                },
             },
             autorEspecie: {
-                value: dados.complemento
+                value: dados.complemento,
             },
             coletoresComplementares: {
-                value: dados.retorno.coletor_complementar?.complementares
-            }
-        })
+                value: dados.retorno.coletor_complementar?.complementares,
+            },
+        });
 
         if (dados.cidadeInicial) {
-            this.requisitaLocaisColeta('', dados.cidadeInicial)
+            this.requisitaLocaisColeta("", dados.cidadeInicial);
         }
-    }
+    };
 
     mostraMensagemVerificaPendencia = () => {
         confirm({
-            title: 'Pendência',
+            title: "Pendência",
             content:
-                'Este tombo possui pendências não resolvidas, deseja continuar alterando?',
-            okText: 'SIM',
-            okType: 'danger',
-            cancelText: 'NÃO',
+                "Este tombo possui pendências não resolvidas, deseja continuar alterando?",
+            okText: "SIM",
+            okType: "danger",
+            cancelText: "NÃO",
             onOk: () => {},
             onCancel: () => {
-                ''
+                "";
+                window.history.go(-1);
+            },
+        });
+    };
 
-                window.history.go(-1)
-            }
-        })
-    }
-
-    handleSubmit = e => {
-        e.preventDefault()
-        const { form } = this.props
+    handleSubmit = (e) => {
+        e.preventDefault();
+        const { form } = this.props;
         form.validateFields((err, values) => {
             if (
                 !(
-                    form.getFieldsValue().dataColetaDia
-                    || form.getFieldsValue().dataColetaMes
-                    || form.getFieldsValue().dataColetaAno
+                    form.getFieldsValue().dataColetaDia ||
+                    form.getFieldsValue().dataColetaMes ||
+                    form.getFieldsValue().dataColetaAno
                 )
             ) {
                 this.openNotificationWithIcon(
-                    'warning',
-                    'Falha',
-                    'É necessário pelo menos o dia ou o mês ou o ano da data de coleta para o cadastro.'
-                )
-                return false
+                    "warning",
+                    "Falha",
+                    "É necessário pelo menos o dia ou o mês ou o ano da data de coleta para o cadastro."
+                );
+                return false;
             }
             if (err != null) {
                 this.openNotificationWithIcon(
-                    'warning',
-                    'Falha',
-                    'Preencha todos os dados requiridos.'
-                )
+                    "warning",
+                    "Falha",
+                    "Preencha todos os dados requiridos."
+                );
             } else {
-                this.handleRequisicao(values)
+                this.handleRequisicao(values);
                 this.setState({
-                    loading: true
-                })
+                    loading: true,
+                });
             }
-            return true
-        })
-    }
+            return true;
+        });
+    };
 
-    normalizaDataTombo = valor => {
-        if (!valor) return null
-        if (/^\d{4}-\d{2}-\d{2}$/.test(valor)) return valor
-        const convertido = formatarDataBRtoEN(valor)
-        return convertido || null
-    }
+    normalizaDataTombo = (valor) => {
+        if (!valor) return null;
+        if (/^\d{4}-\d{2}-\d{2}$/.test(valor)) return valor;
+        const convertido = formatarDataBRtoEN(valor);
+        return convertido || null;
+    };
 
-    montaFormularioJsonEdicao = values => {
+    montaFormularioJsonEdicao = (values) => {
         const {
             altitude,
             autorEspecie,
@@ -2780,38 +2810,38 @@ class NovoTomboScreen extends Component {
             entidade,
             relevoDescricao,
             unicata,
-            dataTombo
-        } = values
+            dataTombo,
+        } = values;
 
-        const isUserIdentificador = isIdentificador()
+        const isUserIdentificador = isIdentificador();
 
-        const json = {}
+        const json = {};
 
-        const extrairId = valor => {
-            if (typeof valor === 'object' && valor.key) {
-                return parseInt(valor.key)
+        const extrairId = (valor) => {
+            if (typeof valor === "object" && valor.key) {
+                return parseInt(valor.key);
             }
-            if (typeof valor === 'string' && valor.trim() !== '') {
-                return parseInt(valor)
+            if (typeof valor === "string" && valor.trim() !== "") {
+                return parseInt(valor);
             }
-            if (typeof valor === 'number') {
-                return valor
+            if (typeof valor === "number") {
+                return valor;
             }
-            return null
-        }
+            return null;
+        };
 
-        const normalizarIdentificadores = identificadores => {
+        const normalizarIdentificadores = (identificadores) => {
             if (!identificadores || !Array.isArray(identificadores)) {
-                return null
+                return null;
             }
 
-            return identificadores.map(item => {
-                if (typeof item === 'object' && item.key) {
-                    return parseInt(item.key)
+            return identificadores.map((item) => {
+                if (typeof item === "object" && item.key) {
+                    return parseInt(item.key);
                 }
-                return item
-            })
-        }
+                return item;
+            });
+        };
 
         if (isUserIdentificador) {
             json.taxonomia = {
@@ -2821,10 +2851,10 @@ class NovoTomboScreen extends Component {
                 genero_id: genero ? parseInt(genero) : null,
                 especie_id: especie ? parseInt(especie) : null,
                 sub_especie_id: subespecie ? parseInt(subespecie) : null,
-                variedade_id: variedade ? parseInt(variedade) : null
-            }
+                variedade_id: variedade ? parseInt(variedade) : null,
+            };
 
-            return json
+            return json;
         }
 
         const soloId = extrairId(solo)
@@ -2835,19 +2865,19 @@ class NovoTomboScreen extends Component {
 
         json.principal = {
             entidade_id: parseInt(entidade),
-            numero_coleta: parseInt(numColeta)
-        }
+            numero_coleta: parseInt(numColeta),
+        };
 
-        json.principal.nome_popular = nomePopular || null
-        json.principal.tipo_id = tipo ? parseInt(tipo) : null
-        json.principal.data_tombo = this.normalizaDataTombo(dataTombo)
+        json.principal.nome_popular = nomePopular || null;
+        json.principal.tipo_id = tipo ? parseInt(tipo) : null;
+        json.principal.data_tombo = this.normalizaDataTombo(dataTombo);
 
         if (dataColetaDia || dataColetaMes || dataColetaAno) {
             json.principal.data_coleta = {
                 dia: dataColetaDia || null,
                 mes: dataColetaMes || null,
-                ano: dataColetaAno || null
-            }
+                ano: dataColetaAno || null,
+            };
         }
 
         json.taxonomia = {
@@ -2857,8 +2887,8 @@ class NovoTomboScreen extends Component {
             genero_id: genero ? parseInt(genero) : null,
             especie_id: especie ? parseInt(especie) : null,
             sub_especie_id: subespecie ? parseInt(subespecie) : null,
-            variedade_id: variedade ? parseInt(variedade) : null
-        }
+            variedade_id: variedade ? parseInt(variedade) : null,
+        };
 
         json.localidade = {
             cidade_id: parseInt(cidade),
@@ -2869,8 +2899,8 @@ class NovoTomboScreen extends Component {
                 ? converteDecimalParaGrausMinutosSegundos(longitude, true, true)
                 : null,
             altitude: altitude ? parseInt(altitude) : null,
-            local_coleta_id: localColetaId
-        }
+            local_coleta_id: localColetaId,
+        };
 
         json.paisagem = {
             solo_id: soloId,
@@ -2881,44 +2911,44 @@ class NovoTomboScreen extends Component {
         }
 
         json.identificacao = {
-            identificadores: normalizarIdentificadores(identificador)
-        }
+            identificadores: normalizarIdentificadores(identificador),
+        };
 
         if (dataIdentDia || dataIdentMes || dataIdentAno) {
             json.identificacao.data_identificacao = {
                 dia: dataIdentDia || null,
                 mes: dataIdentMes || null,
-                ano: dataIdentAno || null
-            }
+                ano: dataIdentAno || null,
+            };
         } else {
-            json.identificacao.data_identificacao = null
+            json.identificacao.data_identificacao = null;
         }
 
-        json.coletor = coletores.key
+        json.coletor = coletores.key;
 
         json.coletor_complementar = {
-            complementares: coletoresComplementares || null
-        }
+            complementares: coletoresComplementares || null,
+        };
 
         json.colecoes_anexas = {
             tipo: tipoColecaoAnexa || null,
-            observacoes: observacoesColecaoAnexa || null
-        }
+            observacoes: observacoesColecaoAnexa || null,
+        };
 
-        json.observacoes = observacoesTombo || null
+        json.observacoes = observacoesTombo || null;
 
         json.autores = {
             especie: autorEspecie || null,
             subespecie: autoresSubespecie || null,
-            variedade: autorVariedade || null
-        }
+            variedade: autorVariedade || null,
+        };
 
-        json.unicata = unicata
+        json.unicata = unicata;
 
-        return json
-    }
+        return json;
+    };
 
-    montaFormularioJsonCadastro = values => {
+    montaFormularioJsonCadastro = (values) => {
         const {
             altitude,
             autorEspecie,
@@ -2957,35 +2987,35 @@ class NovoTomboScreen extends Component {
             entidade,
             relevoDescricao,
             unicata,
-            dataTombo
-        } = values
-        const json = {}
+            dataTombo,
+        } = values;
+        const json = {};
 
-        const extrairId = valor => {
-            if (typeof valor === 'object' && valor.key) {
-                return parseInt(valor.key)
+        const extrairId = (valor) => {
+            if (typeof valor === "object" && valor.key) {
+                return parseInt(valor.key);
             }
-            if (typeof valor === 'string' && valor.trim() !== '') {
-                return parseInt(valor)
+            if (typeof valor === "string" && valor.trim() !== "") {
+                return parseInt(valor);
             }
-            if (typeof valor === 'number') {
-                return valor
+            if (typeof valor === "number") {
+                return valor;
             }
-            return null
-        }
+            return null;
+        };
 
-        const normalizarIdentificadores = identificadores => {
+        const normalizarIdentificadores = (identificadores) => {
             if (!identificadores || !Array.isArray(identificadores)) {
-                return identificadores
+                return identificadores;
             }
 
-            return identificadores.map(item => {
-                if (typeof item === 'object' && item.key) {
-                    return parseInt(item.key)
+            return identificadores.map((item) => {
+                if (typeof item === "object" && item.key) {
+                    return parseInt(item.key);
                 }
-                return item
-            })
-        }
+                return item;
+            });
+        };
 
         const soloId = extrairId(solo)
         const relevoId = extrairId(relevo)
@@ -3015,8 +3045,8 @@ class NovoTomboScreen extends Component {
         if (localColetaId) {
             json.localidade = {
                 ...json.localidade,
-                local_coleta_id: localColetaId
-            }
+                local_coleta_id: localColetaId,
+            };
         }
         if (solo) json.paisagem = { ...json.paisagem, solo_id: soloId }
         if (relevoDescricao) json.paisagem = { ...json.paisagem, descricao: relevoDescricao }
@@ -3028,389 +3058,389 @@ class NovoTomboScreen extends Component {
             json.identificacao = {
                 ...json.identificacao,
                 data_identificacao: {
-                    dia: dataIdentDia
-                }
-            }
+                    dia: dataIdentDia,
+                },
+            };
         }
         if (dataIdentMes) {
             json.identificacao = {
                 ...json.identificacao,
                 data_identificacao: {
                     ...json.identificacao.data_identificacao,
-                    mes: dataIdentMes
-                }
-            }
+                    mes: dataIdentMes,
+                },
+            };
         }
         if (dataIdentAno) {
             json.identificacao = {
                 ...json.identificacao,
                 data_identificacao: {
                     ...json.identificacao.data_identificacao,
-                    ano: dataIdentAno
-                }
-            }
+                    ano: dataIdentAno,
+                },
+            };
         }
 
-        json.coletor = coletores.key
-        if (coletoresComplementares) {
+        json.coletor = coletores.key;
+        if (coletoresComplementares)
             json.coletor_complementar = {
-                complementares: coletoresComplementares
-            }
-        }
-        if (tipoColecaoAnexa) json.colecoes_anexas = { tipo: tipoColecaoAnexa }
-        if (observacoesColecaoAnexa) {
+                complementares: coletoresComplementares,
+            };
+        if (tipoColecaoAnexa) json.colecoes_anexas = { tipo: tipoColecaoAnexa };
+        if (observacoesColecaoAnexa)
             json.colecoes_anexas = {
                 ...json.colecoes_anexas,
-                observacoes: observacoesColecaoAnexa
-            }
-        }
-        if (observacoesTombo) json.observacoes = observacoesTombo
-        if (autorEspecie) json.autores = { especie: autorEspecie }
-        if (autoresSubespecie) json.autores = { ...json.autores, subespecie: autoresSubespecie }
-        if (autorVariedade) json.autores = { ...json.autores, variedade: autorVariedade }
-        if (unicata !== undefined) json.unicata = unicata
-        return json
-    }
+                observacoes: observacoesColecaoAnexa,
+            };
+        if (observacoesTombo) json.observacoes = observacoesTombo;
+        if (autorEspecie) json.autores = { especie: autorEspecie };
+        if (autoresSubespecie)
+            json.autores = { ...json.autores, subespecie: autoresSubespecie };
+        if (autorVariedade)
+            json.autores = { ...json.autores, variedade: autorVariedade };
+        if (unicata !== undefined) json.unicata = unicata;
+        return json;
+    };
 
-    handleSubmitForm = e => {
-        e.preventDefault()
-        this.props.form.validateFields((err, values) => {})
-    }
+    handleSubmitForm = (e) => {
+        e.preventDefault();
+        this.props.form.validateFields((err, values) => {});
+    };
 
-    optionEntidades = () => this.state.herbarios.map(item => (
-        <Option value={`${item.id}`}>
-            {item.sigla}
-            {' '}
-            -
-            {item.nome}
-        </Option>
-    ))
+    optionEntidades = () =>
+        this.state.herbarios.map((item) => (
+            <Option value={`${item.id}`}>
+                {item.sigla} - {item.nome}
+            </Option>
+        ));
 
-    optionTipo = () => this.state.tipos.map(item => (
-        <Option value={`${item.id}`}>{item.nome}</Option>
-    ))
+    optionTipo = () =>
+        this.state.tipos.map((item) => (
+            <Option value={`${item.id}`}>{item.nome}</Option>
+        ));
 
-    optionAutores = () => this.state.autores.map(item => (
-        <Option value={`${item.id}`}>{item.nome}</Option>
-    ))
+    optionAutores = () =>
+        this.state.autores.map((item) => (
+            <Option value={`${item.id}`}>{item.nome}</Option>
+        ));
 
     openNotificationWithIcon = (type, message, description) => {
         notification[type]({
             message,
             description,
-            duration: 10
-        })
-    }
+            duration: 10,
+        });
+    };
 
-    mostraMensagemDelete = id => {
+    mostraMensagemDelete = (id) => {
         confirm({
-            title: 'Você tem certeza que deseja excluir esta foto?',
-            content: 'Ao clicar em SIM, a foto será excluída.',
-            okText: 'SIM',
-            okType: 'danger',
-            cancelText: 'NÃO',
+            title: "Você tem certeza que deseja excluir esta foto?",
+            content: "Ao clicar em SIM, a foto será excluída.",
+            okText: "SIM",
+            okType: "danger",
+            cancelText: "NÃO",
             onOk: () => {},
-            onCancel: () => {}
-        })
-    }
+            onCancel: () => {},
+        });
+    };
 
-    handleChangeColetores = valores => {
+    handleChangeColetores = (valores) => {
         this.setState({
             fetchingColetores: false,
             valoresColetores: valores,
-            coletores: []
-        })
-    }
+            coletores: [],
+        });
+    };
 
-    handleChangeIdentificadores = valor => {
+    handleChangeIdentificadores = (valor) => {
         this.setState({
             fetchingIdentificadores: false,
             identificadorInicial: `${valor}`,
-            identificadores: []
-        })
-    }
+            identificadores: [],
+        });
+    };
 
-    ajustaColetores = value => {
+    ajustaColetores = (value) => {
         if (value) {
             axios
                 .get(`/tombos/numeroColetor/${value.key}`)
-                .then(response => {
+                .then((response) => {
                     if (response.status === 200) {
-                        const todosNumeros = response.data
+                        const todosNumeros = response.data;
                         todosNumeros.sort(
                             (a, b) => b.numero_coleta - a.numero_coleta
-                        )
+                        );
 
                         this.props.form.setFields({
                             numColeta: {
                                 value:
-                                    todosNumeros.length === 0
-                                    || todosNumeros[0].numero_coleta === null
+                                    todosNumeros.length === 0 ||
+                                    todosNumeros[0].numero_coleta === null
                                         ? 1
-                                        : todosNumeros[0].numero_coleta + 1
-                            }
-                        })
+                                        : todosNumeros[0].numero_coleta + 1,
+                            },
+                        });
                     }
                 })
-                .catch(this.catchRequestError)
+                .catch(this.catchRequestError);
         }
-    }
+    };
 
-    requisitaColetores = async (searchText = '') => {
-        this.setState({ fetchingColetores: true })
+    requisitaColetores = async (searchText = "") => {
+        this.setState({ fetchingColetores: true });
 
         try {
             const response = await axios.get(
-                `/coletores-predicao?nome=${searchText || ''}`
-            )
+                `/coletores-predicao?nome=${searchText || ""}`
+            );
 
             if (response.status === 200) {
                 this.setState({
                     coletores: response.data,
-                    fetchingColetores: false
-                })
+                    fetchingColetores: false,
+                });
             }
         } catch (err) {
-            this.setState({ fetchingColetores: false })
-            console.error('Erro ao buscar coletores:', err)
+            this.setState({ fetchingColetores: false });
+            console.error("Erro ao buscar coletores:", err);
         }
-    }
+    };
 
-    requisitaHerbarios = async (searchText = '') => {
-        this.setState({ fetchingHerbarios: true })
+    requisitaHerbarios = async (searchText = "") => {
+        this.setState({ fetchingHerbarios: true });
 
         try {
             const params = {
                 limite: 9999999999,
-                ...(searchText ? { nome: searchText } : {})
-            }
+                ...(searchText ? { nome: searchText } : {}),
+            };
 
-            const response = await axios.get('/herbarios', { params })
+            const response = await axios.get("/herbarios", { params });
 
             if (response.status === 200) {
                 this.setState({
                     herbarios: response.data.herbarios || [],
-                    fetchingHerbarios: false
-                })
+                    fetchingHerbarios: false,
+                });
             }
         } catch (err) {
-            this.setState({ fetchingHerbarios: false })
-            console.error('Erro ao buscar herbários:', err)
+            this.setState({ fetchingHerbarios: false });
+            console.error("Erro ao buscar herbários:", err);
         }
-    }
+    };
 
-    requisitaPaises = async (searchText = '') => {
-        this.setState({ fetchingPaises: true })
+    requisitaPaises = async (searchText = "") => {
+        this.setState({ fetchingPaises: true });
 
         try {
             const params = {
-                ...(searchText ? { nome: searchText } : {})
-            }
+                ...(searchText ? { nome: searchText } : {}),
+            };
 
-            const response = await axios.get('/paises', { params })
+            const response = await axios.get("/paises", { params });
 
             if (response.status === 200) {
                 this.setState({
                     paises: response.data,
-                    fetchingPaises: false
-                })
+                    fetchingPaises: false,
+                });
             }
         } catch (err) {
-            this.setState({ fetchingPaises: false })
-            console.error('Erro ao buscar países:', err)
+            this.setState({ fetchingPaises: false });
+            console.error("Erro ao buscar países:", err);
         }
-    }
+    };
 
-    requisitaEstados = async (searchText = '', paisId = null) => {
-        this.setState({ fetchingEstados: true })
+    requisitaEstados = async (searchText = "", paisId = null) => {
+        this.setState({ fetchingEstados: true });
 
         try {
             const params = {
                 ...(paisId ? { pais_id: paisId } : {}),
-                ...(searchText ? { nome: searchText } : {})
-            }
+                ...(searchText ? { nome: searchText } : {}),
+            };
 
-            const response = await axios.get('/estados', { params })
+            const response = await axios.get("/estados", { params });
 
             if (response.status === 200) {
                 this.setState({
                     estados: response.data,
-                    fetchingEstados: false
-                })
+                    fetchingEstados: false,
+                });
             }
         } catch (err) {
-            this.setState({ fetchingEstados: false })
-            console.error('Erro ao buscar estados:', err)
+            this.setState({ fetchingEstados: false });
+            console.error("Erro ao buscar estados:", err);
         }
-    }
+    };
 
-    requisitaCidades = async (searchText = '', estadoId = null) => {
-        this.setState({ fetchingCidades: true })
+    requisitaCidades = async (searchText = "", estadoId = null) => {
+        this.setState({ fetchingCidades: true });
 
         try {
             const params = {
                 ...(estadoId ? { estado_id: estadoId } : {}),
-                ...(searchText ? { nome: searchText } : {})
-            }
+                ...(searchText ? { nome: searchText } : {}),
+            };
 
-            const response = await axios.get('/cidades', { params })
+            const response = await axios.get("/cidades", { params });
 
             if (response.status === 200) {
                 this.setState({
                     cidades: response.data,
-                    fetchingCidades: false
-                })
+                    fetchingCidades: false,
+                });
             }
         } catch (err) {
-            this.setState({ fetchingCidades: false })
-            console.error('Erro ao buscar cidades:', err)
+            this.setState({ fetchingCidades: false });
+            console.error("Erro ao buscar cidades:", err);
         }
-    }
+    };
 
-    requisitaLocaisColeta = async (searchText = '', cidadeId = null) => {
-        const cidade = cidadeId || this.props.form.getFieldValue('cidade')
+    requisitaLocaisColeta = async (searchText = "", cidadeId = null) => {
+        const cidade = cidadeId || this.props.form.getFieldValue("cidade");
 
         if (!cidade) {
             this.openNotificationWithIcon(
-                'warning',
-                'Atenção',
-                'Por favor, selecione uma cidade primeiro.'
-            )
-            return
+                "warning",
+                "Atenção",
+                "Por favor, selecione uma cidade primeiro."
+            );
+            return;
         }
 
-        this.setState({ fetchingLocaisColeta: true })
+        this.setState({ fetchingLocaisColeta: true });
 
         try {
             const params = {
-                getAll: 'true',
+                getAll: "true",
                 ...(cidade ? { cidade_id: cidade } : {}),
-                ...(searchText ? { descricao: searchText } : {})
-            }
+                ...(searchText ? { descricao: searchText } : {}),
+            };
 
-            const response = await axios.get('/locais-coleta', { params })
+            const response = await axios.get("/locais-coleta", { params });
 
             if (response.status === 200) {
                 this.setState({
                     locaisColeta: response.data.resultado,
-                    fetchingLocaisColeta: false
-                })
+                    fetchingLocaisColeta: false,
+                });
             }
         } catch (err) {
-            this.setState({ fetchingLocaisColeta: false })
-            console.error('Erro ao buscar locais de coleta:', err)
+            this.setState({ fetchingLocaisColeta: false });
+            console.error("Erro ao buscar locais de coleta:", err);
         }
-    }
+    };
 
-    requisitaSolos = async (searchText = '') => {
-        this.setState({ fetchingSolos: true })
+    requisitaSolos = async (searchText = "") => {
+        this.setState({ fetchingSolos: true });
 
         try {
             const params = {
-                ...(searchText ? { nome: searchText } : {})
-            }
+                ...(searchText ? { nome: searchText } : {}),
+            };
 
-            const response = await axios.get('/solos', { params })
+            const response = await axios.get("/solos", { params });
 
             if (response.status === 200) {
                 this.setState({
                     solos: response.data,
-                    fetchingSolos: false
-                })
+                    fetchingSolos: false,
+                });
             }
         } catch (err) {
-            this.setState({ fetchingSolos: false })
-            console.error('Erro ao buscar solos:', err)
+            this.setState({ fetchingSolos: false });
+            console.error("Erro ao buscar solos:", err);
         }
-    }
+    };
 
-    requisitaRelevos = async (searchText = '') => {
-        this.setState({ fetchingRelevos: true })
+    requisitaRelevos = async (searchText = "") => {
+        this.setState({ fetchingRelevos: true });
 
         try {
             const params = {
-                ...(searchText ? { nome: searchText } : {})
-            }
+                ...(searchText ? { nome: searchText } : {}),
+            };
 
-            const response = await axios.get('/relevos', { params })
+            const response = await axios.get("/relevos", { params });
 
             if (response.status === 200) {
                 this.setState({
                     relevos: response.data,
-                    fetchingRelevos: false
-                })
+                    fetchingRelevos: false,
+                });
             }
         } catch (err) {
-            this.setState({ fetchingRelevos: false })
-            console.error('Erro ao buscar relevos:', err)
+            this.setState({ fetchingRelevos: false });
+            console.error("Erro ao buscar relevos:", err);
         }
-    }
+    };
 
-    requisitaVegetacoes = async (searchText = '') => {
-        this.setState({ fetchingVegetacoes: true })
+    requisitaVegetacoes = async (searchText = "") => {
+        this.setState({ fetchingVegetacoes: true });
 
         try {
             const params = {
-                ...(searchText ? { nome: searchText } : {})
-            }
+                ...(searchText ? { nome: searchText } : {}),
+            };
 
-            const response = await axios.get('/vegetacoes', { params })
+            const response = await axios.get("/vegetacoes", { params });
 
             if (response.status === 200) {
                 this.setState({
                     vegetacoes: response.data,
-                    fetchingVegetacoes: false
-                })
+                    fetchingVegetacoes: false,
+                });
             }
         } catch (err) {
-            this.setState({ fetchingVegetacoes: false })
-            console.error('Erro ao buscar vegetações:', err)
+            this.setState({ fetchingVegetacoes: false });
+            console.error("Erro ao buscar vegetações:", err);
         }
-    }
+    };
 
-    requisitaFases = async (searchText = '') => {
-        this.setState({ fetchingFases: true })
+    requisitaFases = async (searchText = "") => {
+        this.setState({ fetchingFases: true });
 
         try {
             const params = {
-                ...(searchText ? { nome: searchText } : {})
-            }
+                ...(searchText ? { nome: searchText } : {}),
+            };
 
-            const response = await axios.get('/fases-sucessionais', { params })
+            const response = await axios.get("/fases-sucessionais", { params });
 
             if (response.status === 200) {
                 this.setState({
                     fases: response.data,
-                    fetchingFases: false
-                })
+                    fetchingFases: false,
+                });
             }
         } catch (err) {
-            this.setState({ fetchingFases: false })
-            console.error('Erro ao buscar fases:', err)
+            this.setState({ fetchingFases: false });
+            console.error("Erro ao buscar fases:", err);
         }
-    }
+    };
 
-    requisitaIdentificadores = async (searchText = '') => {
-        this.setState({ fetchingIdentificadores: true })
+    requisitaIdentificadores = async (searchText = "") => {
+        this.setState({ fetchingIdentificadores: true });
 
         try {
             const response = await axios.get(
-                `/identificadores-predicao?nome=${searchText || ''}`
-            )
+                `/identificadores-predicao?nome=${searchText || ""}`
+            );
 
             if (response.status === 200) {
                 this.setState({
                     identificadores: response.data,
-                    fetchingIdentificadores: false
-                })
+                    fetchingIdentificadores: false,
+                });
             }
         } catch (err) {
-            this.setState({ fetchingIdentificadores: false })
-            console.error('Erro ao buscar identificadores:', err)
+            this.setState({ fetchingIdentificadores: false });
+            console.error("Erro ao buscar identificadores:", err);
         }
-    }
+    };
 
-    verifyCoordenada = async (cidadeId = null) => {
+    verifyCoordenada = async (cidadeId = null, lat = null, lng = null) => {
         try {
             const { form } = this.props;
             
@@ -3418,9 +3448,10 @@ class NovoTomboScreen extends Component {
                 cidadeId = form.getFieldValue('cidade');
             }
 
-            const latitude = form.getFieldValue('latitude');
-            const longitude = form.getFieldValue('longitude');
+            const latitude = lat ?? form.getFieldValue('latitude');
+            const longitude = lng ?? form.getFieldValue('longitude');
 
+            // Clear status first
             this.setState({
                 cidadeStatus: '', 
                 cidadeHelp: '',
@@ -3434,11 +3465,14 @@ class NovoTomboScreen extends Component {
 
             const payload = {
                 cidade_id: Number(cidadeId),
-                latitude,
-                longitude,
+                latitude: Number(latitude),
+                longitude: Number(longitude),
             };
 
+            console.log('Verificando coordenada:', payload);
+
             const response = await axios.post('/tombos/verificarCoordenada', payload);
+            console.log('Resposta verificação:', response?.data);
 
             if (response?.data && response.data.dentro === false) {
                 this.setState({
@@ -3460,39 +3494,39 @@ class NovoTomboScreen extends Component {
     validacaoModal = () => {
         if (this.state.formColetor) {
             if (
-                !this.props.form.getFieldsValue().nomeColetor
-                || !this.props.form.getFieldsValue().numeroColetor
+                !this.props.form.getFieldsValue().nomeColetor ||
+                !this.props.form.getFieldsValue().numeroColetor
             ) {
                 this.openNotificationWithIcon(
-                    'warning',
-                    'Falha',
-                    'O nome e o número do coletor são obrigatórios.'
-                )
-                return false
+                    "warning",
+                    "Falha",
+                    "O nome e o número do coletor são obrigatórios."
+                );
+                return false;
             }
-            return true
+            return true;
         }
         if (this.state.formLocalColeta) {
             if (!this.props.form.getFieldsValue().descricaoLocalColeta) {
                 this.openNotificationWithIcon(
-                    'warning',
-                    'Falha',
-                    'A descrição do local de coleta é obrigatória.'
-                )
-                return false
+                    "warning",
+                    "Falha",
+                    "A descrição do local de coleta é obrigatória."
+                );
+                return false;
             }
-            return true
+            return true;
         }
         if (!this.props.form.getFieldsValue().campo) {
             this.openNotificationWithIcon(
-                'warning',
-                'Falha',
-                'Informe o nome para o cadastro.'
-            )
-            return false
+                "warning",
+                "Falha",
+                "Informe o nome para o cadastro."
+            );
+            return false;
         }
-        return true
-    }
+        return true;
+    };
 
     renderColetores = (getFieldDecorator, getFieldError) => {
         const {
@@ -3500,8 +3534,8 @@ class NovoTomboScreen extends Component {
             coletores,
             search,
             fetchingColetores,
-            valoresColetores
-        } = this.state
+            valoresColetores,
+        } = this.state;
         return (
             <div>
                 <Row gutter={8}>
@@ -3511,19 +3545,19 @@ class NovoTomboScreen extends Component {
                             coletores={coletores}
                             validateStatus={search.coletor}
                             getFieldDecorator={getFieldDecorator}
-                            onChange={value => {
-                                this.ajustaColetores(value)
+                            onChange={(value) => {
+                                this.ajustaColetores(value);
                             }}
                             onClickAddMore={() => {
                                 this.setState({
                                     formulario: {
-                                        tipo: 11
+                                        tipo: 11,
                                     },
                                     formColetor: true,
-                                    visibleModal: true
-                                })
+                                    visibleModal: true,
+                                });
                             }}
-                            style={{ width: '100%' }}
+                            style={{ width: "100%" }}
                             notFoundContent={
                                 fetchingColetores ? <Spin size="small" /> : null
                             }
@@ -3531,10 +3565,10 @@ class NovoTomboScreen extends Component {
                             value={valoresColetores}
                             placeholder="Selecione os coletores"
                             filterOption={false}
-                            onSearch={searchText => {
-                                this.requisitaColetores(searchText || '')
+                            onSearch={(searchText) => {
+                                this.requisitaColetores(searchText || "");
                             }}
-                            status={getFieldError('coletores') ? 'error' : ''}
+                            status={getFieldError("coletores") ? "error" : ""}
                             others={{ allowClear: true }}
                             loading={fetchingColetores}
                             debounceDelay={200}
@@ -3551,7 +3585,7 @@ class NovoTomboScreen extends Component {
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator(
-                                        'coletoresComplementares'
+                                        "coletoresComplementares"
                                     )(<Input placeholder="" type="text" />)}
                                 </FormItem>
                             </Col>
@@ -3559,11 +3593,11 @@ class NovoTomboScreen extends Component {
                     </Col>
                 </Row>
             </div>
-        )
-    }
+        );
+    };
 
-    renderColecoesAnexas = getFieldDecorator => {
-        const { colecaoInicial, value } = this.state
+    renderColecoesAnexas = (getFieldDecorator) => {
+        const { colecaoInicial, value } = this.state;
         return (
             <div>
                 <Row gutter={8}>
@@ -3575,21 +3609,21 @@ class NovoTomboScreen extends Component {
                     />
                 </Row>
             </div>
-        )
-    }
+        );
+    };
 
-    renderExsicataTipo = getFieldDecorator => {
-        const { value } = this.state
+    renderExsicataTipo = (getFieldDecorator) => {
+        const { value } = this.state;
         return (
             <ExsicataTipoFormField
                 getFieldDecorator={getFieldDecorator}
                 value={value}
                 onChange={this.onChange}
             />
-        )
-    }
+        );
+    };
 
-    renderFormulario = getFieldDecorator => {
+    renderFormulario = (getFieldDecorator) => {
         if (this.state.formColetor) {
             return (
                 <div>
@@ -3611,7 +3645,7 @@ class NovoTomboScreen extends Component {
                         />
                     </Row>
                 </div>
-            )
+            );
         }
         if (this.state.formLocalColeta) {
             return (
@@ -3624,25 +3658,24 @@ class NovoTomboScreen extends Component {
                         />
                     </Row>
                 </div>
-            )
+            );
         }
         if (this.state.formComAutor) {
-            const { fetchingAutores, autores } = this.state
+            const { fetchingAutores, autores } = this.state;
             return (
                 <div>
                     <Row gutter={8}>
                         <Col span={24}>
                             <span>
                                 Informe o nome
-                                {this.state.formulario.desc}
-                                :
+                                {this.state.formulario.desc}:
                             </span>
                         </Col>
                     </Row>
                     <Row gutter={8}>
                         <Col span={24}>
                             <FormItem>
-                                {getFieldDecorator('campo')(
+                                {getFieldDecorator("campo")(
                                     <Input placeholder="" type="text" />
                                 )}
                             </FormItem>
@@ -3660,16 +3693,16 @@ class NovoTomboScreen extends Component {
                                 placeholder="Selecione um autor"
                                 fieldName="autor"
                                 getFieldDecorator={getFieldDecorator}
-                                onSearch={searchText => {
-                                    this.requisitaAutores(searchText || '')
+                                onSearch={(searchText) => {
+                                    this.requisitaAutores(searchText || "");
                                 }}
                                 others={{
                                     loading: fetchingAutores,
                                     notFoundContent: fetchingAutores ? (
                                         <Spin size="small" />
                                     ) : (
-                                        'Nenhum resultado encontrado'
-                                    )
+                                        "Nenhum resultado encontrado"
+                                    ),
                                 }}
                                 debounceDelay={200}
                                 xs={24}
@@ -3683,7 +3716,7 @@ class NovoTomboScreen extends Component {
                         </Col>
                     </Row>
                 </div>
-            )
+            );
         }
 
         return (
@@ -3692,26 +3725,25 @@ class NovoTomboScreen extends Component {
                     <Col span={24}>
                         <span>
                             Informe o nome
-                            {this.state.formulario.desc}
-                            :
+                            {this.state.formulario.desc}:
                         </span>
                     </Col>
                 </Row>
                 <Row gutter={8}>
                     <Col span={24}>
                         <FormItem>
-                            {getFieldDecorator('campo')(
+                            {getFieldDecorator("campo")(
                                 <Input placeholder="" type="text" />
                             )}
                         </FormItem>
                     </Col>
                 </Row>
             </div>
-        )
-    }
+        );
+    };
 
     renderConteudoIdentificador = () => {
-        const { getFieldDecorator } = this.props.form
+        const { getFieldDecorator } = this.props.form;
         return (
             <div>
                 <Form onSubmit={this.handleSubmitForm}>
@@ -3723,46 +3755,46 @@ class NovoTomboScreen extends Component {
                             this.setState({
                                 visibleModal: false,
                                 formColetor: 0,
-                                formComAutor: false
-                            })
+                                formComAutor: false,
+                            });
                         }}
                         onOk={() => {
                             if (this.validacaoModal()) {
                                 switch (this.state.formulario.tipo) {
                                     case 8:
-                                        this.cadastraNovoReino()
-                                        break
+                                        this.cadastraNovoReino();
+                                        break;
                                     case 1:
-                                        this.cadastraNovaFamilia()
-                                        break
+                                        this.cadastraNovaFamilia();
+                                        break;
                                     case 2:
-                                        this.cadastraNovaSubfamilia()
-                                        break
+                                        this.cadastraNovaSubfamilia();
+                                        break;
                                     case 3:
-                                        this.cadastraNovoGenero()
-                                        break
+                                        this.cadastraNovoGenero();
+                                        break;
                                     case 4:
-                                        this.cadastraNovaEspecie()
-                                        break
+                                        this.cadastraNovaEspecie();
+                                        break;
                                     case 5:
-                                        this.cadastraNovaSubespecie()
-                                        break
+                                        this.cadastraNovaSubespecie();
+                                        break;
                                     case 6:
-                                        this.cadastraNovaVariedade()
-                                        break
+                                        this.cadastraNovaVariedade();
+                                        break;
                                     case 7:
-                                        this.cadastraNovoAutor()
-                                        break
+                                        this.cadastraNovoAutor();
+                                        break;
                                     default:
-                                        break
+                                        break;
                                 }
                             }
 
                             this.setState({
                                 visibleModal: false,
                                 formComAutor: false,
-                                formColetor: 0
-                            })
+                                formColetor: 0,
+                            });
                         }}
                     >
                         {this.renderFormulario(getFieldDecorator)}
@@ -3784,8 +3816,8 @@ class NovoTomboScreen extends Component {
                     </Row>
                 </Form>
             </div>
-        )
-    }
+        );
+    };
 
     renderLocalTombo = (getFieldDecorator, getFieldError) => {
         const {
@@ -3798,14 +3830,12 @@ class NovoTomboScreen extends Component {
             fetchingPaises,
             fetchingEstados,
             fetchingCidades,
-            fetchingLocaisColeta
-        } = this.state
+            fetchingLocaisColeta,
+        } = this.state;
         return (
             <div>
                 <Row gutter={8}>
-                    <LatLongFormField
-                        getFieldDecorator={getFieldDecorator}
-                    />
+                    <LatLongFormField getFieldDecorator={getFieldDecorator} />
                 </Row>
                 <br />
                 <Row gutter={8}>
@@ -3816,27 +3846,27 @@ class NovoTomboScreen extends Component {
                         rules={[
                             {
                                 required: true,
-                                message: 'Escolha um país'
-                            }
+                                message: "Escolha um país",
+                            },
                         ]}
-                        onChange={value => {
+                        onChange={(value) => {
                             if (value) {
-                                this.requisitaEstados('', value)
+                                this.requisitaEstados("", value);
                             } else {
                                 this.setState({
                                     estados: [],
                                     cidades: [],
-                                    locaisColeta: []
-                                })
+                                    locaisColeta: [],
+                                });
                                 this.props.form.setFields({
                                     estados: { value: undefined },
                                     cidade: { value: undefined },
-                                    complemento: { value: undefined }
-                                })
+                                    complemento: { value: undefined },
+                                });
                             }
                         }}
-                        onSearch={searchText => {
-                            this.requisitaPaises(searchText || '')
+                        onSearch={(searchText) => {
+                            this.requisitaPaises(searchText || "");
                         }}
                         loading={fetchingPaises}
                         debounceDelay={200}
@@ -3849,31 +3879,32 @@ class NovoTomboScreen extends Component {
                         rules={[
                             {
                                 required: true,
-                                message: 'Escolha um estado'
-                            }
+                                message: "Escolha um estado",
+                            },
                         ]}
-                        disabled={!this.props.form.getFieldValue('pais')}
-                        onChange={value => {
+                        disabled={!this.props.form.getFieldValue("pais")}
+                        onChange={(value) => {
                             if (value) {
-                                this.requisitaCidades('', value)
+                                this.requisitaCidades("", value);
                             } else {
                                 this.setState({
                                     cidades: [],
-                                    locaisColeta: []
-                                })
+                                    locaisColeta: [],
+                                });
                                 this.props.form.setFields({
                                     cidade: { value: undefined },
-                                    complemento: { value: undefined }
-                                })
+                                    complemento: { value: undefined },
+                                });
                             }
                         }}
-                        onSearch={searchText => {
-                            const paisSelecionado = this.props.form.getFieldValue('pais')
+                        onSearch={(searchText) => {
+                            const paisSelecionado =
+                                this.props.form.getFieldValue("pais");
                             if (paisSelecionado) {
                                 this.requisitaEstados(
-                                    searchText || '',
+                                    searchText || "",
                                     paisSelecionado
-                                )
+                                );
                             }
                         }}
                         loading={fetchingEstados}
@@ -3884,6 +3915,7 @@ class NovoTomboScreen extends Component {
                         initialValue={String(cidadeInicial)}
                         cidades={cidades}
                         getFieldDecorator={getFieldDecorator}
+                        getFieldError={getFieldError}
                         disabled={!this.props.form.getFieldValue('estados')}
                         onChange={value => {
                             const latitude = this.props.form.getFieldValue('latitude')
@@ -3897,23 +3929,24 @@ class NovoTomboScreen extends Component {
                             }
                             if (value) {
                                 this.props.form.setFieldsValue({
-                                    complemento: undefined
-                                })
-                                this.requisitaLocaisColeta('', value)
+                                    complemento: undefined,
+                                });
+                                this.requisitaLocaisColeta("", value);
                             } else {
-                                this.setState({ locaisColeta: [] })
+                                this.setState({ locaisColeta: [] });
                                 this.props.form.setFields({
-                                    complemento: { value: undefined }
-                                })
+                                    complemento: { value: undefined },
+                                });
                             }
                         }}
-                        onSearch={searchText => {
-                            const estadoSelecionado = this.props.form.getFieldValue('estados')
+                        onSearch={(searchText) => {
+                            const estadoSelecionado =
+                                this.props.form.getFieldValue("estados");
                             if (estadoSelecionado) {
                                 this.requisitaCidades(
-                                    searchText || '',
+                                    searchText || "",
                                     estadoSelecionado
-                                )
+                                );
                             }
                         }}
                         loading={fetchingCidades}
@@ -3929,26 +3962,27 @@ class NovoTomboScreen extends Component {
                         initialValue={this.state.complementoInicial}
                         locaisColeta={this.state.locaisColeta}
                         fetchingLocaisColeta={fetchingLocaisColeta}
-                        disabled={!this.props.form.getFieldValue('cidade')}
+                        disabled={!this.props.form.getFieldValue("cidade")}
                         filterOption={false}
-                        onSearch={searchText => {
-                            const cidadeSelecionada = this.props.form.getFieldValue('cidade')
+                        onSearch={(searchText) => {
+                            const cidadeSelecionada =
+                                this.props.form.getFieldValue("cidade");
                             if (cidadeSelecionada) {
                                 this.requisitaLocaisColeta(
-                                    searchText || '',
+                                    searchText || "",
                                     cidadeSelecionada
-                                )
+                                );
                             }
                         }}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: ' do novo local de coleta',
-                                    tipo: 13
+                                    desc: " do novo local de coleta",
+                                    tipo: 13,
                                 },
                                 formLocalColeta: true,
-                                visibleModal: true
-                            })
+                                visibleModal: true,
+                            });
                         }}
                         loading={fetchingLocaisColeta}
                         debounceDelay={200}
@@ -3959,15 +3993,15 @@ class NovoTomboScreen extends Component {
                             <span>Descrição:</span>
                         </Col>
                         <Col span={24}>
-                            {getFieldDecorator('relevoDescricao')(
+                            {getFieldDecorator("relevoDescricao")(
                                 <TextArea rows={4} />
                             )}
                         </Col>
                     </Col>
                 </Row>
             </div>
-        )
-    }
+        );
+    };
 
     renderFamiliaTombo = (getFieldDecorator, getFieldError) => {
         const {
@@ -3992,14 +4026,14 @@ class NovoTomboScreen extends Component {
             fetchingGeneros,
             fetchingEspecies,
             fetchingSubespecies,
-            fetchingVariedades
-        } = this.state
+            fetchingVariedades,
+        } = this.state;
 
-        const { form } = this.props
-        const reinoSelecionado = form.getFieldValue('reino')
-        const familiaSelecionada = form.getFieldValue('familia')
-        const generoSelecionado = form.getFieldValue('genero')
-        const especieSelecionada = form.getFieldValue('especie')
+        const { form } = this.props;
+        const reinoSelecionado = form.getFieldValue("reino");
+        const familiaSelecionada = form.getFieldValue("familia");
+        const generoSelecionado = form.getFieldValue("genero");
+        const especieSelecionada = form.getFieldValue("especie");
 
         return (
             <div>
@@ -4026,19 +4060,19 @@ class NovoTomboScreen extends Component {
                         </Col>
                         <Col span={24}>
                             <FormItem>
-                                {getFieldDecorator('dataTombo', {
+                                {getFieldDecorator("dataTombo", {
                                     rules: [
-                                        { validator: this.validateDataTombo }
-                                    ]
+                                        { validator: this.validateDataTombo },
+                                    ],
                                 })(
                                     <Input
                                         placeholder="DD/MM/AAAA"
                                         type="text"
                                         status={
-                                            getFieldError
-                                            && getFieldError('dataTombo')
-                                                ? 'error'
-                                                : ''
+                                            getFieldError &&
+                                            getFieldError("dataTombo")
+                                                ? "error"
+                                                : ""
                                         }
                                     />
                                 )}
@@ -4052,9 +4086,9 @@ class NovoTomboScreen extends Component {
                         initialValue={String(reinoInicial)}
                         reinos={reinos}
                         getFieldDecorator={getFieldDecorator}
-                        onChange={value => {
+                        onChange={(value) => {
                             if (value) {
-                                this.requisitaFamilias('', value)
+                                this.requisitaFamilias("", value);
                             } else {
                                 this.setState({
                                     familias: [],
@@ -4063,11 +4097,11 @@ class NovoTomboScreen extends Component {
                                     especies: [],
                                     subespecies: [],
                                     variedades: [],
-                                    autorSubfamilia: '',
-                                    autorEspecie: '',
-                                    autorSubespecie: '',
-                                    autorVariedade: ''
-                                })
+                                    autorSubfamilia: "",
+                                    autorEspecie: "",
+                                    autorSubespecie: "",
+                                    autorVariedade: "",
+                                });
                             }
 
                             this.props.form.setFields({
@@ -4076,21 +4110,21 @@ class NovoTomboScreen extends Component {
                                 genero: { value: undefined },
                                 especie: { value: undefined },
                                 subespecie: { value: undefined },
-                                variedade: { value: undefined }
-                            })
+                                variedade: { value: undefined },
+                            });
                         }}
-                        onSearch={searchText => {
-                            this.requisitaReinos(searchText || '')
+                        onSearch={(searchText) => {
+                            this.requisitaReinos(searchText || "");
                         }}
                         loading={fetchingReinos}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: ' do novo reino',
-                                    tipo: 12
+                                    desc: " do novo reino",
+                                    tipo: 12,
                                 },
-                                visibleModal: true
-                            })
+                                visibleModal: true,
+                            });
                         }}
                         debounceDelay={200}
                     />
@@ -4100,10 +4134,10 @@ class NovoTomboScreen extends Component {
                         getFieldDecorator={getFieldDecorator}
                         getFieldError={getFieldError}
                         disabled={!reinoSelecionado}
-                        onChange={value => {
+                        onChange={(value) => {
                             if (value) {
-                                this.requisitaSubfamilias('', value)
-                                this.requisitaGeneros('', value)
+                                this.requisitaSubfamilias("", value);
+                                this.requisitaGeneros("", value);
                             } else {
                                 this.setState({
                                     subfamilias: [],
@@ -4111,11 +4145,11 @@ class NovoTomboScreen extends Component {
                                     especies: [],
                                     subespecies: [],
                                     variedades: [],
-                                    autorSubfamilia: '',
-                                    autorEspecie: '',
-                                    autorSubespecie: '',
-                                    autorVariedade: ''
-                                })
+                                    autorSubfamilia: "",
+                                    autorEspecie: "",
+                                    autorSubespecie: "",
+                                    autorVariedade: "",
+                                });
                             }
 
                             this.props.form.setFields({
@@ -4123,27 +4157,28 @@ class NovoTomboScreen extends Component {
                                 genero: { value: undefined },
                                 especie: { value: undefined },
                                 subespecie: { value: undefined },
-                                variedade: { value: undefined }
-                            })
+                                variedade: { value: undefined },
+                            });
                         }}
-                        onSearch={searchText => {
-                            const reinoSelecionado = this.props.form.getFieldValue('reino')
+                        onSearch={(searchText) => {
+                            const reinoSelecionado =
+                                this.props.form.getFieldValue("reino");
                             if (reinoSelecionado) {
                                 this.requisitaFamilias(
-                                    searchText || '',
+                                    searchText || "",
                                     reinoSelecionado
-                                )
+                                );
                             }
                         }}
                         loading={fetchingFamilias}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: ' da nova família',
-                                    tipo: 1
+                                    desc: " da nova família",
+                                    tipo: 1,
                                 },
-                                visibleModal: true
-                            })
+                                visibleModal: true,
+                            });
                         }}
                         debounceDelay={200}
                     />
@@ -4156,36 +4191,37 @@ class NovoTomboScreen extends Component {
                         validateStatus={search.subfamilia}
                         getFieldDecorator={getFieldDecorator}
                         disabled={!familiaSelecionada}
-                        onChange={value => {
+                        onChange={(value) => {
                             if (value) {
                                 this.encontraAutor(
                                     subfamilias,
                                     value,
-                                    'autorSubfamilia'
-                                )
+                                    "autorSubfamilia"
+                                );
                             } else {
-                                this.setState({ autorSubfamilia: '' })
+                                this.setState({ autorSubfamilia: "" });
                             }
                         }}
                         autor={this.state.autorSubfamilia}
-                        onSearch={searchText => {
-                            const familiaSelecionada = this.props.form.getFieldValue('familia')
+                        onSearch={(searchText) => {
+                            const familiaSelecionada =
+                                this.props.form.getFieldValue("familia");
                             if (familiaSelecionada) {
                                 this.requisitaSubfamilias(
-                                    searchText || '',
+                                    searchText || "",
                                     familiaSelecionada
-                                )
+                                );
                             }
                         }}
                         loading={fetchingSubfamilias}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: ' da nova subfamília',
-                                    tipo: 2
+                                    desc: " da nova subfamília",
+                                    tipo: 2,
                                 },
-                                visibleModal: true
-                            })
+                                visibleModal: true,
+                            });
                         }}
                         debounceDelay={200}
                     />
@@ -4195,44 +4231,45 @@ class NovoTomboScreen extends Component {
                         validateStatus={search.genero}
                         getFieldDecorator={getFieldDecorator}
                         disabled={!familiaSelecionada}
-                        onChange={value => {
+                        onChange={(value) => {
                             if (value) {
-                                this.requisitaEspecies('', value)
+                                this.requisitaEspecies("", value);
                             } else {
                                 this.setState({
                                     especies: [],
                                     subespecies: [],
                                     variedades: [],
-                                    autorEspecie: '',
-                                    autorSubespecie: '',
-                                    autorVariedade: ''
-                                })
+                                    autorEspecie: "",
+                                    autorSubespecie: "",
+                                    autorVariedade: "",
+                                });
                             }
 
                             this.props.form.setFields({
                                 especie: { value: undefined },
                                 subespecie: { value: undefined },
-                                variedade: { value: undefined }
-                            })
+                                variedade: { value: undefined },
+                            });
                         }}
-                        onSearch={searchText => {
-                            const familiaSelecionada = this.props.form.getFieldValue('familia')
+                        onSearch={(searchText) => {
+                            const familiaSelecionada =
+                                this.props.form.getFieldValue("familia");
                             if (familiaSelecionada) {
                                 this.requisitaGeneros(
-                                    searchText || '',
+                                    searchText || "",
                                     familiaSelecionada
-                                )
+                                );
                             }
                         }}
                         loading={fetchingGeneros}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: ' do novo gênero',
-                                    tipo: 3
+                                    desc: " do novo gênero",
+                                    tipo: 3,
                                 },
-                                visibleModal: true
-                            })
+                                visibleModal: true,
+                            });
                         }}
                         debounceDelay={200}
                     />
@@ -4246,50 +4283,51 @@ class NovoTomboScreen extends Component {
                         getFieldDecorator={getFieldDecorator}
                         disabled={!generoSelecionado || !familiaSelecionada}
                         autor={this.state.autorEspecie}
-                        onChange={value => {
+                        onChange={(value) => {
                             if (value) {
-                                this.requisitaSubespecies('', value)
-                                this.requisitaVariedades('', value)
+                                this.requisitaSubespecies("", value);
+                                this.requisitaVariedades("", value);
                                 this.encontraAutor(
                                     especies,
                                     value,
-                                    'autorEspecie'
-                                )
-                                this.setState({ formComAutor: true })
+                                    "autorEspecie"
+                                );
+                                this.setState({ formComAutor: true });
                             } else {
                                 this.setState({
                                     subespecies: [],
                                     variedades: [],
-                                    autorEspecie: '',
-                                    autorSubespecie: '',
-                                    autorVariedade: ''
-                                })
+                                    autorEspecie: "",
+                                    autorSubespecie: "",
+                                    autorVariedade: "",
+                                });
                             }
 
                             this.props.form.setFields({
                                 subespecie: { value: undefined },
-                                variedade: { value: undefined }
-                            })
+                                variedade: { value: undefined },
+                            });
                         }}
-                        onSearch={searchText => {
-                            const generoSelecionado = this.props.form.getFieldValue('genero')
+                        onSearch={(searchText) => {
+                            const generoSelecionado =
+                                this.props.form.getFieldValue("genero");
                             if (generoSelecionado) {
                                 this.requisitaEspecies(
-                                    searchText || '',
+                                    searchText || "",
                                     generoSelecionado
-                                )
+                                );
                             }
                         }}
                         loading={fetchingEspecies}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: ' da nova espécie',
-                                    tipo: 4
+                                    desc: " da nova espécie",
+                                    tipo: 4,
                                 },
                                 formComAutor: true,
-                                visibleModal: true
-                            })
+                                visibleModal: true,
+                            });
                         }}
                         debounceDelay={200}
                     />
@@ -4299,41 +4337,42 @@ class NovoTomboScreen extends Component {
                         validateStatus={search.subespecie}
                         getFieldDecorator={getFieldDecorator}
                         disabled={
-                            !especieSelecionada
-                            || !generoSelecionado
-                            || !familiaSelecionada
+                            !especieSelecionada ||
+                            !generoSelecionado ||
+                            !familiaSelecionada
                         }
                         autor={this.state.autorSubespecie}
-                        onChange={value => {
+                        onChange={(value) => {
                             if (value) {
                                 this.encontraAutor(
                                     subespecies,
                                     value,
-                                    'autorSubespecie'
-                                )
+                                    "autorSubespecie"
+                                );
                             } else {
-                                this.setState({ autorSubespecie: '' })
+                                this.setState({ autorSubespecie: "" });
                             }
                         }}
-                        onSearch={searchText => {
-                            const especieSelecionada = this.props.form.getFieldValue('especie')
+                        onSearch={(searchText) => {
+                            const especieSelecionada =
+                                this.props.form.getFieldValue("especie");
                             if (especieSelecionada) {
                                 this.requisitaSubespecies(
-                                    searchText || '',
+                                    searchText || "",
                                     especieSelecionada
-                                )
+                                );
                             }
                         }}
                         loading={fetchingSubespecies}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: ' da nova subespécie',
-                                    tipo: 5
+                                    desc: " da nova subespécie",
+                                    tipo: 5,
                                 },
                                 formComAutor: true,
-                                visibleModal: true
-                            })
+                                visibleModal: true,
+                            });
                         }}
                         debounceDelay={200}
                     />
@@ -4346,50 +4385,51 @@ class NovoTomboScreen extends Component {
                         validateStatus={search.variedade}
                         getFieldDecorator={getFieldDecorator}
                         disabled={
-                            !especieSelecionada
-                            || !generoSelecionado
-                            || !familiaSelecionada
+                            !especieSelecionada ||
+                            !generoSelecionado ||
+                            !familiaSelecionada
                         }
                         autor={this.state.autorVariedade}
-                        onChange={value => {
+                        onChange={(value) => {
                             if (value) {
                                 this.encontraAutor(
                                     variedades,
                                     value,
-                                    'autorVariedade'
-                                )
+                                    "autorVariedade"
+                                );
                             } else {
-                                this.setState({ autorVariedade: '' })
+                                this.setState({ autorVariedade: "" });
                             }
                         }}
-                        onSearch={searchText => {
-                            const especieSelecionada = this.props.form.getFieldValue('especie')
+                        onSearch={(searchText) => {
+                            const especieSelecionada =
+                                this.props.form.getFieldValue("especie");
                             if (especieSelecionada) {
                                 this.requisitaVariedades(
-                                    searchText || '',
+                                    searchText || "",
                                     especieSelecionada
-                                )
+                                );
                             }
                         }}
                         loading={fetchingVariedades}
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: ' da nova variedade',
-                                    tipo: 6
+                                    desc: " da nova variedade",
+                                    tipo: 6,
                                 },
                                 formComAutor: true,
-                                visibleModal: true
-                            })
+                                visibleModal: true,
+                            });
                         }}
                         debounceDelay={200}
                     />
                 </Row>
             </div>
-        )
-    }
+        );
+    };
 
-    renderTipoSoloTombo = getFieldDecorator => {
+    renderTipoSoloTombo = (getFieldDecorator) => {
         const {
             soloInicial,
             search,
@@ -4407,8 +4447,8 @@ class NovoTomboScreen extends Component {
             fetchingSolos,
             fetchingRelevos,
             fetchingVegetacoes,
-            fetchingFases
-        } = this.state
+            fetchingFases,
+        } = this.state;
 
         return (
             <div>
@@ -4417,9 +4457,9 @@ class NovoTomboScreen extends Component {
                         initialValue={
                             idSoloInicial
                                 ? {
-                                    key: idSoloInicial,
-                                    label: soloInicial
-                                }
+                                      key: idSoloInicial,
+                                      label: soloInicial,
+                                  }
                                 : undefined
                         }
                         solos={solos}
@@ -4428,14 +4468,14 @@ class NovoTomboScreen extends Component {
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: ' do novo solo',
-                                    tipo: 8
+                                    desc: " do novo solo",
+                                    tipo: 8,
                                 },
-                                visibleModal: true
-                            })
+                                visibleModal: true,
+                            });
                         }}
-                        onSearch={searchText => {
-                            this.requisitaSolos(searchText || '')
+                        onSearch={(searchText) => {
+                            this.requisitaSolos(searchText || "");
                         }}
                         loading={fetchingSolos}
                         debounceDelay={200}
@@ -4444,9 +4484,9 @@ class NovoTomboScreen extends Component {
                         initialValue={
                             idRelevoInicial
                                 ? {
-                                    key: idRelevoInicial,
-                                    label: relevoInicial
-                                }
+                                      key: idRelevoInicial,
+                                      label: relevoInicial,
+                                  }
                                 : undefined
                         }
                         relevos={relevos}
@@ -4455,14 +4495,14 @@ class NovoTomboScreen extends Component {
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: ' do novo relevo',
-                                    tipo: 9
+                                    desc: " do novo relevo",
+                                    tipo: 9,
                                 },
-                                visibleModal: true
-                            })
+                                visibleModal: true,
+                            });
                         }}
-                        onSearch={searchText => {
-                            this.requisitaRelevos(searchText || '')
+                        onSearch={(searchText) => {
+                            this.requisitaRelevos(searchText || "");
                         }}
                         loading={fetchingRelevos}
                         debounceDelay={200}
@@ -4474,9 +4514,9 @@ class NovoTomboScreen extends Component {
                         initialValue={
                             idVegetacaoInicial
                                 ? {
-                                    key: idVegetacaoInicial,
-                                    label: vegetacaoInicial
-                                }
+                                      key: idVegetacaoInicial,
+                                      label: vegetacaoInicial,
+                                  }
                                 : undefined
                         }
                         vegetacoes={vegetacoes}
@@ -4485,14 +4525,14 @@ class NovoTomboScreen extends Component {
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: ' da nova vegetação',
-                                    tipo: 10
+                                    desc: " da nova vegetação",
+                                    tipo: 10,
                                 },
-                                visibleModal: true
-                            })
+                                visibleModal: true,
+                            });
                         }}
-                        onSearch={searchText => {
-                            this.requisitaVegetacoes(searchText || '')
+                        onSearch={(searchText) => {
+                            this.requisitaVegetacoes(searchText || "");
                         }}
                         loading={fetchingVegetacoes}
                         debounceDelay={200}
@@ -4501,9 +4541,9 @@ class NovoTomboScreen extends Component {
                         initialValue={
                             idFaseInicial
                                 ? {
-                                    key: idFaseInicial,
-                                    label: faseInicial
-                                }
+                                      key: idFaseInicial,
+                                      label: faseInicial,
+                                  }
                                 : undefined
                         }
                         fases={fases}
@@ -4526,19 +4566,19 @@ class NovoTomboScreen extends Component {
                     />
                 </Row>
             </div>
-        )
-    }
+        );
+    };
 
     renderIdentificador = (getFieldDecorator, getFieldError) => {
         const {
             identificadores,
             identificadorInicial,
             identificadorNome,
-            fetchingIdentificadores
-        } = this.state
+            fetchingIdentificadores,
+        } = this.state;
         const initialValue = identificadorInicial
             ? { key: String(identificadorInicial), label: identificadorNome }
-            : undefined
+            : undefined;
 
         return (
             <div>
@@ -4548,12 +4588,12 @@ class NovoTomboScreen extends Component {
                         identificadores={identificadores}
                         getFieldDecorator={getFieldDecorator}
                         showSearch
-                        style={{ width: '100%' }}
+                        style={{ width: "100%" }}
                         optionFilterProp="children"
                         placeholder="Selecione o identificador"
                         getFieldError={getFieldError}
-                        onSearch={searchText => {
-                            this.requisitaIdentificadores(searchText || '')
+                        onSearch={(searchText) => {
+                            this.requisitaIdentificadores(searchText || "");
                         }}
                         filterOption={false}
                         loading={fetchingIdentificadores}
@@ -4561,11 +4601,11 @@ class NovoTomboScreen extends Component {
                         onClickAddMore={() => {
                             this.setState({
                                 formulario: {
-                                    desc: ' do novo identificador',
-                                    tipo: 14
+                                    desc: " do novo identificador",
+                                    tipo: 14,
                                 },
-                                visibleModal: true
-                            })
+                                visibleModal: true,
+                            });
                         }}
                     />
                     <DataIdentificacaoFormField
@@ -4574,11 +4614,11 @@ class NovoTomboScreen extends Component {
                     />
                 </Row>
             </div>
-        )
-    }
+        );
+    };
 
     renderConteudo = () => {
-        const { getFieldDecorator, getFieldError } = this.props.form
+        const { getFieldDecorator, getFieldError } = this.props.form;
 
         return (
             <div>
@@ -4592,62 +4632,62 @@ class NovoTomboScreen extends Component {
                                 visibleModal: false,
                                 formColetor: 0,
                                 formComAutor: false,
-                                formLocalColeta: false
-                            })
+                                formLocalColeta: false,
+                            });
                         }}
                         onOk={() => {
                             if (this.validacaoModal()) {
                                 switch (this.state.formulario.tipo) {
                                     case 0:
-                                        this.cadastraNovoTipo()
-                                        break
+                                        this.cadastraNovoTipo();
+                                        break;
                                     case 1:
-                                        this.cadastraNovaFamilia()
-                                        break
+                                        this.cadastraNovaFamilia();
+                                        break;
                                     case 2:
-                                        this.cadastraNovaSubfamilia()
-                                        break
+                                        this.cadastraNovaSubfamilia();
+                                        break;
                                     case 3:
-                                        this.cadastraNovoGenero()
-                                        break
+                                        this.cadastraNovoGenero();
+                                        break;
                                     case 4:
-                                        this.cadastraNovaEspecie()
-                                        break
+                                        this.cadastraNovaEspecie();
+                                        break;
                                     case 5:
-                                        this.cadastraNovaSubespecie()
-                                        break
+                                        this.cadastraNovaSubespecie();
+                                        break;
                                     case 6:
-                                        this.cadastraNovaVariedade()
-                                        break
+                                        this.cadastraNovaVariedade();
+                                        break;
                                     case 7:
-                                        this.cadastraNovoAutor()
-                                        break
+                                        this.cadastraNovoAutor();
+                                        break;
                                     case 8:
-                                        this.cadastraNovoSolo()
-                                        break
+                                        this.cadastraNovoSolo();
+                                        break;
                                     case 9:
-                                        this.cadastraNovoRelevo()
-                                        break
+                                        this.cadastraNovoRelevo();
+                                        break;
                                     case 10:
-                                        this.cadastraNovaVegetacao()
-                                        break
+                                        this.cadastraNovaVegetacao();
+                                        break;
                                     case 11:
-                                        this.cadastraNovoColetor()
-                                        break
+                                        this.cadastraNovoColetor();
+                                        break;
                                     case 12:
-                                        this.cadastraNovoReino()
-                                        break
+                                        this.cadastraNovoReino();
+                                        break;
                                     case 13:
-                                        this.cadastraNovoLocalColeta()
-                                        break
+                                        this.cadastraNovoLocalColeta();
+                                        break;
                                     case 14:
-                                        this.cadastraNovoIdentificador()
-                                        break
+                                        this.cadastraNovoIdentificador();
+                                        break;
                                     case 15:
                                         this.cadastraNovaFase()
                                         break
                                     default:
-                                        break
+                                        break;
                                 }
                             }
 
@@ -4655,8 +4695,8 @@ class NovoTomboScreen extends Component {
                                 visibleModal: false,
                                 formComAutor: false,
                                 formColetor: 0,
-                                formLocalColeta: false
-                            })
+                                formLocalColeta: false,
+                            });
                         }}
                     >
                         {this.renderFormulario(getFieldDecorator)}
@@ -4693,7 +4733,7 @@ class NovoTomboScreen extends Component {
                     <Row gutter={8}>
                         <Col span={20}>
                             <FormItem>
-                                {getFieldDecorator('observacoesTombo')(
+                                {getFieldDecorator("observacoesTombo")(
                                     <TextArea rows={4} />
                                 )}
                             </FormItem>
@@ -4706,7 +4746,7 @@ class NovoTomboScreen extends Component {
                     <Divider />
                     <Row gutter={8}>
                         <BarcodeTableComponent
-                            ref={el => (this.barcodeRef = el)}
+                            ref={(el) => (this.barcodeRef = el)}
                             barcodePhotos={this.state.barcodePhotosFromServer}
                             barcodeEditList={this.state.codigosBarrasForm}
                             onDeletedBarcode={this.handleDeletedBarcode}
@@ -4820,7 +4860,7 @@ class NovoTomboScreen extends Component {
                     <Divider dashed />
                     <Row type="flex" justify="start" gutter={8}>
                         <Col
-                            style={{ marginLeft: 'auto' }}
+                            style={{ marginLeft: "auto" }}
                             xs={24}
                             sm={8}
                             md={3}
@@ -4832,11 +4872,11 @@ class NovoTomboScreen extends Component {
                     </Row>
                 </Form>
             </div>
-        )
-    }
+        );
+    };
 
     renderPrincipaisCaracteristicas = (getFieldDecorator, getFieldError) => {
-        const { fetchingHerbarios, herbarios } = this.state
+        const { fetchingHerbarios, herbarios } = this.state;
 
         return (
             <div>
@@ -4847,19 +4887,19 @@ class NovoTomboScreen extends Component {
                         </Col>
                         <Col span={24}>
                             <FormItem>
-                                {getFieldDecorator('numColeta', {
+                                {getFieldDecorator("numColeta", {
                                     initialValue: String(
                                         this.state.numero_coleta
-                                    )
+                                    ),
                                 })(
                                     <Input
                                         type="text"
                                         placeholder="785"
-                                        style={{ width: '100%' }}
+                                        style={{ width: "100%" }}
                                         status={
-                                            getFieldError('numColeta')
-                                                ? 'error'
-                                                : ''
+                                            getFieldError("numColeta")
+                                                ? "error"
+                                                : ""
                                         }
                                     />
                                 )}
@@ -4874,26 +4914,26 @@ class NovoTomboScreen extends Component {
                             <Row type="flex" gutter={4}>
                                 <Col span={8}>
                                     <FormItem>
-                                        {getFieldDecorator('dataColetaDia', {
+                                        {getFieldDecorator("dataColetaDia", {
                                             rules: [
                                                 {
                                                     required: true,
                                                     message:
-                                                        'Insira o dia da coleta'
-                                                }
-                                            ]
+                                                        "Insira o dia da coleta",
+                                                },
+                                            ],
                                         })(
                                             <InputNumber
                                                 min={1}
                                                 max={31}
                                                 initialValue={17}
-                                                style={{ width: '100%' }}
+                                                style={{ width: "100%" }}
                                                 status={
                                                     getFieldError(
-                                                        'dataColetaDia'
+                                                        "dataColetaDia"
                                                     )
-                                                        ? 'error'
-                                                        : ''
+                                                        ? "error"
+                                                        : ""
                                                 }
                                             />
                                         )}
@@ -4901,26 +4941,26 @@ class NovoTomboScreen extends Component {
                                 </Col>
                                 <Col span={8}>
                                     <FormItem>
-                                        {getFieldDecorator('dataColetaMes', {
+                                        {getFieldDecorator("dataColetaMes", {
                                             rules: [
                                                 {
                                                     required: true,
                                                     message:
-                                                        'Insira o mês da coleta'
-                                                }
-                                            ]
+                                                        "Insira o mês da coleta",
+                                                },
+                                            ],
                                         })(
                                             <InputNumber
                                                 min={1}
                                                 max={12}
                                                 initialValue={11}
-                                                style={{ width: '100%' }}
+                                                style={{ width: "100%" }}
                                                 status={
                                                     getFieldError(
-                                                        'dataColetaMes'
+                                                        "dataColetaMes"
                                                     )
-                                                        ? 'error'
-                                                        : ''
+                                                        ? "error"
+                                                        : ""
                                                 }
                                             />
                                         )}
@@ -4928,31 +4968,31 @@ class NovoTomboScreen extends Component {
                                 </Col>
                                 <Col span={8}>
                                     <FormItem>
-                                        {getFieldDecorator('dataColetaAno', {
+                                        {getFieldDecorator("dataColetaAno", {
                                             rules: [
                                                 {
                                                     required: true,
                                                     message:
-                                                        'Insira o ano da coleta'
+                                                        "Insira o ano da coleta",
                                                 },
                                                 {
                                                     validator:
                                                         this
-                                                            .validateAnoNaoFuturo
-                                                }
-                                            ]
+                                                            .validateAnoNaoFuturo,
+                                                },
+                                            ],
                                         })(
                                             <InputNumber
                                                 min={500}
                                                 max={5000}
                                                 initialValue={2018}
-                                                style={{ width: '100%' }}
+                                                style={{ width: "100%" }}
                                                 status={
                                                     getFieldError(
-                                                        'dataColetaAno'
+                                                        "dataColetaAno"
                                                     )
-                                                        ? 'error'
-                                                        : ''
+                                                        ? "error"
+                                                        : ""
                                                 }
                                             />
                                         )}
@@ -4970,7 +5010,7 @@ class NovoTomboScreen extends Component {
                         </Col>
                         <Col span={24}>
                             <FormItem>
-                                {getFieldDecorator('nomePopular')(
+                                {getFieldDecorator("nomePopular")(
                                     <Input
                                         placeholder="Maracujá Doce"
                                         type="text"
@@ -4982,13 +5022,13 @@ class NovoTomboScreen extends Component {
                     <HerbarioFormField
                         initialValue={String(
                             !this.props.match.params.tombo_id
-                                ? this.state.herbarioInicial?.value || ''
+                                ? this.state.herbarioInicial?.value || ""
                                 : this.state.herbarioInicial
                         )}
                         herbarios={herbarios}
                         getFieldDecorator={getFieldDecorator}
-                        onSearch={searchText => {
-                            this.requisitaHerbarios(searchText || '')
+                        onSearch={(searchText) => {
+                            this.requisitaHerbarios(searchText || "");
                         }}
                         loading={fetchingHerbarios}
                         debounceDelay={200}
@@ -5003,10 +5043,10 @@ class NovoTomboScreen extends Component {
                         </Col>
                         <Col xs={22} sm={22} md={12} lg={12} xl={12}>
                             <FormItem>
-                                {getFieldDecorator('tipo', {
+                                {getFieldDecorator("tipo", {
                                     initialValue: String(
                                         this.state.tipoInicial
-                                    )
+                                    ),
                                 })(
                                     <Select
                                         showSearch
@@ -5024,48 +5064,48 @@ class NovoTomboScreen extends Component {
                                 shape="dashed"
                                 icon={<PlusOutlined />}
                                 style={{
-                                    marginTop: '5px'
+                                    marginTop: "5px",
                                 }}
                                 onClick={() => {
                                     this.setState({
                                         formulario: {
-                                            desc: 'do novo tipo',
-                                            tipo: 0
+                                            desc: "do novo tipo",
+                                            tipo: 0,
                                         },
-                                        visibleModal: true
-                                    })
+                                        visibleModal: true,
+                                    });
                                 }}
                             />
                         </Col>
                     </Col>
                 </Row>
             </div>
-        )
-    }
+        );
+    };
 
-    gerarAcaoFoto = id => {
+    gerarAcaoFoto = (id) => {
         return (
             <span>
                 <a href="#" onClick={() => this.mostraMensagemDelete(id)}>
-                    <DeleteOutlined style={{ color: '#e30613' }} />
+                    <DeleteOutlined style={{ color: "#e30613" }} />
                 </a>
             </span>
-        )
-    }
+        );
+    };
 
     renderPorTipo = () => {
         if (isIdentificador()) {
-            return this.renderConteudoIdentificador()
+            return this.renderConteudoIdentificador();
         }
-        return this.renderConteudo()
-    }
+        return this.renderConteudo();
+    };
 
     render() {
         if (this.state.loading) {
-            return <Spin tip="Carregando...">{this.renderPorTipo()}</Spin>
+            return <Spin tip="Carregando...">{this.renderPorTipo()}</Spin>;
         }
-        return this.renderPorTipo()
+        return this.renderPorTipo();
     }
 }
 
-export default Form.create()(NovoTomboScreen)
+export default Form.create()(NovoTomboScreen);

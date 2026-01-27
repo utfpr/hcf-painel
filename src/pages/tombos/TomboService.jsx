@@ -499,16 +499,15 @@ export const requisitaIdentificadoresService = (getResponse, nome) => {
         })
 }
 
-export const verificarCoordenada = (getResponse, cidadeId, latitude, longitude) => {
-    return axios.post('/tombos/verificarCoordenada', {
-        cidade_id: cidadeId,
-        latitude,
-        longitude
-    })
-        .then(response => {
-            getResponse(response)
+export const verificarCoordenada = async (getResponse, cidadeId, latitude, longitude) => {
+    try {
+        const response = await axios.post('/tombos/verificarCoordenada', {
+            cidade_id: cidadeId,
+            latitude,
+            longitude
         })
-        .catch(error => {
-            catchError(error)
-        })
+        getResponse(response)
+    } catch (error) {
+        catchError(error)
+    }
 }
