@@ -51,7 +51,10 @@ export default class DetalhesTomboScreen extends Component {
         axios.get(`/tombos/${this.props.match.params.tombo_id}`)
             .then(response => {
                 if (response.status === 200) {
-                    this.setState({ tombo: response.data, loading: false }, () => {})
+                    this.setState({
+                        loading: false,
+                        tombo: response.data
+                    })
                 } else {
                     this.setState({ loading: false })
                     this.openNotificationWithIcon(
