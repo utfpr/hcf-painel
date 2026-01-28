@@ -66,8 +66,6 @@ import ServicosRefloraScreen from './pages/ServicosRefloraScreen'
 import ServicosSpeciesLinkScreen from './pages/ServicosSpeciesLinkScreen'
 import NovoTomboScreen from './pages/tombos/NovoTomboScreen'
 import PendenciaPagina from './pages/VerPendenciaScreen'
-import ExportaçãoScreen from './pages/ExportaçãoScreen'
-import ListaLocalColetaScreen from './pages/ListaLocalColetaScreen'
 import ListaEstadosScreen from './pages/ListaEstadosScreen'
 import ListaCidadesScreen from './pages/ListaCidadesScreen'
 
