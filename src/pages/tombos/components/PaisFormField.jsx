@@ -7,7 +7,7 @@ import SelectedFormFiled from './SelectedFormFiled'
 const { Option } = Select
 
 const PaisFormField = ({
-    initialValue, paises, getFieldDecorator, onClickAddMore, onChange, validateStatus, onSearch, loading = false, debounceDelay = 600, disabled = false
+    initialValue, paises, getFieldDecorator, onClickAddMore, onChange, validateStatus, onSearch, loading = false, debounceDelay = 200, disabled = false
 }) => {
     const optionPaises = () => paises.map(item => (
         <Option value={`${item.id}`}>{item.nome}</Option>

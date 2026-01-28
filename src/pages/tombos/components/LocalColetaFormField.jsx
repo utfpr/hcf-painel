@@ -13,7 +13,7 @@ const LocalColetaFormField = ({
     onClickAddMore,
     getFieldError,
     loading = false,
-    debounceDelay = 600,
+    debounceDelay = 200,
     disabled = false
 }) => {
     const optionLocalColeta = () => locaisColeta.map(d => <Option key={d.id}>{d.descricao}</Option>)

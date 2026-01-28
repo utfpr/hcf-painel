@@ -6,7 +6,7 @@ const { Option } = Select
 
 const FamiliaFormField = ({
     initialValue, familias, getFieldDecorator, onClickAddMore, onChange, validateStatus,
-    getFieldError, onSearch, loading = false, debounceDelay = 600, disabled = false
+    getFieldError, onSearch, loading = false, debounceDelay = 200, disabled = false
 }) => {
     const optionFamilia = () => familias?.map(item => (
         <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
