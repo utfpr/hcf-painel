@@ -6,7 +6,7 @@ const { Option } = Select
 
 const ReinoFormField = ({
     initialValue, reinos, getFieldDecorator, onClickAddMore, onChange, 
-    onSearch, loading = false, debounceDelay = 600
+    onSearch, loading = false, debounceDelay = 200
 }) => {
     const optionReino = () => reinos?.map(item => (
         <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>

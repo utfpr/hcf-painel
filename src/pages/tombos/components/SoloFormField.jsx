@@ -6,7 +6,7 @@ const { Option } = Select
 
 const SoloFormField = ({
     initialValue, solos, getFieldDecorator, onClickAddMore, onChange, validateStatus,
-    onSearch, loading = false, debounceDelay = 600
+    onSearch, loading = false, debounceDelay = 200
 }) => {
     const optionSolos = () => solos.map(item => (
         <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
