@@ -3080,7 +3080,7 @@ class NovoTomboScreen extends Component {
         return (
             <div>
                 <Row gutter={8}>
-                    <LatLongFormField getFieldDecorator={getFieldDecorator} />
+                    <LatLongFormField getFieldDecorator={getFieldDecorator} form={this.props.form} />
                 </Row>
                 <br />
                 <Row gutter={8}>
