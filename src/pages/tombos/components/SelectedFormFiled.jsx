@@ -16,7 +16,7 @@ const SelectedFormField = ({
     title, validateStatus, initialValue, rules,
     placeholder, children, fieldName, onClickAddMore,
     getFieldDecorator, getFieldError, onChange, autor,
-    xs, sm, md, lg, xl, onSearch, others, debounceDelay = 800, disabled = false
+    xs, sm, md, lg, xl, onSearch, others, debounceDelay = 200, disabled = false
 }) => {
     const [searchLoading, setSearchLoading] = useState(false)
     const [lastSearchValue, setLastSearchValue] = useState('')
