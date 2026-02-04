@@ -2917,7 +2917,7 @@ class NovoTomboScreen extends Component {
                     <Row gutter={8}>
                         <Col span={24}>
                             <span>
-                                Informe o nome
+                                Informe o nome{" "}
                                 {this.state.formulario.desc}
                                 :
                             </span>
@@ -2971,7 +2971,7 @@ class NovoTomboScreen extends Component {
                 <Row gutter={8}>
                     <Col span={24}>
                         <span>
-                            Informe o nome
+                            Informe o nome{" "}
                             {this.state.formulario.desc}
                             :
                         </span>
