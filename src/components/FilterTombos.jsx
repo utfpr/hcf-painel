@@ -1,4 +1,3 @@
-// src/components/FilterTombos.js
 import React, { useState } from 'react'
 
 import {
@@ -9,10 +8,6 @@ import { PlusCircleOutlined, MinusCircleOutlined } from '@ant-design/icons'
 
 const { Panel } = Collapse
 
-/**
- * Props:
- * - onChange: (values) => void  // dispara sempre que o filtro muda
- */
 const FilterTombos = ({ onChange }) => {
   const [selectedFilters, setSelectedFilters] = useState([])
   const [filterValues, setFilterValues] = useState({})
@@ -20,7 +15,7 @@ const FilterTombos = ({ onChange }) => {
   const handleFilterChange = (key, value) => {
     setFilterValues(prev => {
       const next = { ...prev, [key]: value }
-      onChange?.(next) // ✅ manda pro pai imediatamente
+      onChange?.(next)
       return next
     })
   }
@@ -43,8 +38,6 @@ const FilterTombos = ({ onChange }) => {
     if (!selectedFilters.includes(key)) {
       const nextSelected = [...selectedFilters, key]
       setSelectedFilters(nextSelected)
-
-      // opcional: já dispara pro pai que o filtro existe (mesmo vazio)
       onChange?.({ ...filterValues })
     }
   }
@@ -56,7 +49,7 @@ const FilterTombos = ({ onChange }) => {
     setFilterValues(prev => {
       const next = { ...prev }
       delete next[key]
-      onChange?.(next) // ✅ avisa o pai que removeu
+      onChange?.(next)
       return next
     })
   }
@@ -112,3 +105,4 @@ const FilterTombos = ({ onChange }) => {
 }
 
 export default FilterTombos
+ 

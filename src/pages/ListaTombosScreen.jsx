@@ -236,11 +236,9 @@ class ListaTombosScreen extends Component {
                 recaptchaToken: token,
             };
 
-            // ✅ pega identificador do FilterTombos (é string no input)
             const rawIdent = valores?.identificador;
             const identificadorId = rawIdent ? Number(String(rawIdent).trim()) : null;
 
-            // ✅ SE TEM IDENTIFICADOR → rota nova
             if (identificadorId && !Number.isNaN(identificadorId)) {
                 const response = await axios.get(`/tombos/identificadores/${identificadorId}`, { params });
 
@@ -402,7 +400,6 @@ class ListaTombosScreen extends Component {
                     </Row>
                     <br />
                     <FilterTombos onChange={this.onExtraFiltersChange} />
-
                     <Row align="middle" type="flex" justify="end" gutter={16}>
                         <Col xs={24} sm={8} md={12} lg={16} xl={16}>
                             <TotalRecordFound
