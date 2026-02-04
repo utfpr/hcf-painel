@@ -236,7 +236,7 @@ class ListaTombosScreen extends Component {
                 recaptchaToken: token,
             };
 
-            const rawIdent = valores?.identificador;
+            const rawIdent = valores?.identificador_id;
             const identificadorId = rawIdent ? Number(String(rawIdent).trim()) : null;
 
             if (identificadorId && !Number.isNaN(identificadorId)) {
