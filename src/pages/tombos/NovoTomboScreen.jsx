@@ -72,6 +72,7 @@ import {
     requisitaCodigoBarrasService,
     requisitaNumeroHcfService,
     handleSubmitIdentificadorService,
+    verificarCoordenada
 } from "./TomboService";
 import SelectedFormField from "./components/SelectedFormFiled";
 
@@ -264,6 +265,8 @@ class NovoTomboScreen extends Component {
             fetchingEspecies: false,
             fetchingSubespecies: false,
             fetchingVariedades: false,
+            cidadeStatus: '',
+            cidadeHelp: ''
         };
     }
 
@@ -813,6 +816,17 @@ class NovoTomboScreen extends Component {
             ...data,
         }));
         this.insereDadosFormulario(data);
+
+        // Verifica coordenadas automaticamente ao carregar os dados de edição
+        if (data.cidadeInicial && data.localizacao?.latitude && data.localizacao?.longitude) {
+            setTimeout(() => {
+                this.verifyCoordenada(
+                    data.cidadeInicial,
+                    data.localizacao.latitude,
+                    data.localizacao.longitude
+                )
+            }, 500)
+        }
     };
 
     encontraAutor = (lista, valorSelecionado, campoTaxonomiaAutor) => {
@@ -3426,6 +3440,57 @@ class NovoTomboScreen extends Component {
         }
     };
 
+    verifyCoordenada = async (cidadeId = null, lat = null, lng = null) => {
+        try {
+            const { form } = this.props;
+            
+            if (cidadeId == null) {
+                cidadeId = form.getFieldValue('cidade');
+            }
+
+            const latitude = lat ?? form.getFieldValue('latitude');
+            const longitude = lng ?? form.getFieldValue('longitude');
+
+            // Clear status first
+            this.setState({
+                cidadeStatus: '', 
+                cidadeHelp: '',
+            });
+
+            const paisId = this.state.paisInicial || form.getFieldValue('pais');
+            if (String(paisId) !== '76') return; 
+
+            if (!cidadeId || !latitude || !longitude) return;
+            if (Number.isNaN(Number(latitude)) || Number.isNaN(Number(longitude))) return;
+
+            const payload = {
+                cidade_id: Number(cidadeId),
+                latitude: Number(latitude),
+                longitude: Number(longitude),
+            };
+
+            console.log('Verificando coordenada:', payload);
+
+            const response = await axios.post('/tombos/verificarCoordenada', payload);
+            console.log('Resposta verificação:', response?.data);
+
+            if (response?.data && response.data.dentro === false) {
+                this.setState({
+                    cidadeStatus: 'warning', 
+                    cidadeHelp: 'A coordenada não pertence à cidade', 
+                });
+            } else if (response?.data && response.data.dentro === true) {
+                this.setState({
+                    cidadeStatus: 'success',
+                    cidadeHelp: '',
+                });
+            }
+
+        } catch (err) {
+            console.error('Falha ao verificar coordenada:', err);
+        }
+    };
+
     validacaoModal = () => {
         if (this.state.formColetor) {
             if (
@@ -3853,6 +3918,15 @@ class NovoTomboScreen extends Component {
                         getFieldError={getFieldError}
                         disabled={!this.props.form.getFieldValue('estados')}
                         onChange={value => {
+                            const latitude = this.props.form.getFieldValue('latitude')
+                            const longitude = this.props.form.getFieldValue('longitude')
+                            try {
+                                if (value && latitude && longitude) {
+                                    this.verifyCoordenada(value)
+                                }
+                            } catch (err) {
+                                console.error('Falha ao verificar coordenada:', err)
+                            }
                             if (value) {
                                 this.props.form.setFieldsValue({
                                     complemento: undefined,
@@ -3877,6 +3951,8 @@ class NovoTomboScreen extends Component {
                         }}
                         loading={fetchingCidades}
                         debounceDelay={200}
+                        validateStatus={this.state.cidadeStatus}
+                        help={this.state.cidadeHelp}
                     />
                 </Row>
                 <br />
