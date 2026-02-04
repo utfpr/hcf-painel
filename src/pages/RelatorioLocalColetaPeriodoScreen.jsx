@@ -93,7 +93,7 @@ class RelatorioLocalColetaScreen extends Component {
     ))
 
     formataDadosLocaisOption = () => this.state.locais.map(item => (
-        <Option key={item.key} value={item.nome}>{item.nome}</Option>
+        <Option key={item.key} value={item.id}>{item.nome}</Option>
     ))
 
     requisitaEstados = async paisId => {
@@ -128,7 +128,7 @@ class RelatorioLocalColetaScreen extends Component {
 
             if (response.status === 200) {
                 this.setState({
-                    cidades: response.data
+                    cidades: response.data.filter(c => c.estado_id === estadoId)
                 })
             }
         } catch (err) {
