@@ -6,7 +6,7 @@ const { Option } = Select
 
 const EspecieFormField = ({
     initialValue, especies, getFieldDecorator, onClickAddMore, onChange, validateStatus, autor,
-    onSearch, loading = false, debounceDelay = 600, disabled = false
+    onSearch, loading = false, debounceDelay = 200, disabled = false
 }) => {
     const optionEspecie = () => especies?.map(item => (
         <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
