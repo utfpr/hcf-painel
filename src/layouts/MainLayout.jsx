@@ -32,8 +32,13 @@ export default class MainLayout extends Component {
         this.state = {
             collapsed: false,
             loading: false,
-            userName: ''
+            userName: '',
+            openKeys: []
         }
+    }
+
+    onOpenChange = (openKeys) => {
+        this.setState({ openKeys })
     }
 
     componentDidMount() {
@@ -115,10 +120,17 @@ export default class MainLayout extends Component {
         localStorage.removeItem('hcf_remember_me')
     }
 
+
     renderFormulario() {
         return (
             <Layout style={{ minHeight: '100vh' }}>
-                <Sider trigger={null} collapsible collapsed={this.state.collapsed}>
+                <Sider
+                    trigger={null}
+                    collapsible
+                    collapsed={this.state.collapsed}
+                    width={this.state.openKeys.includes('relatorios') ? 320 : 240}
+                    collapsedWidth={80}
+                >
                     <Col align="center" style={{ marginTop: 20, marginBottom: 20 }}>
                         <Link to="/">
                             <img
@@ -129,7 +141,12 @@ export default class MainLayout extends Component {
                             />
                         </Link>
                     </Col>
-                    <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
+                    <Menu
+                        theme="dark"
+                        mode="inline"
+                        openKeys={this.state.openKeys}
+                        onOpenChange={this.onOpenChange}
+                    >
                         <Menu.Item key="1">
                             <Link to="/tombos">
                                 <DesktopOutlined />
