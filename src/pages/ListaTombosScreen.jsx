@@ -17,6 +17,7 @@ import {
     DeleteOutlined, EditOutlined, ExportOutlined, SearchOutlined
 } from '@ant-design/icons'
 
+import FilterTombos from '../components/FilterTombos'
 import HeaderListComponent from '../components/HeaderListComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
 import { baseUrl, recaptchaKey } from '../config/api'
@@ -76,6 +77,8 @@ class ListaTombosScreen extends Component {
             pagina: 1,
             data: [],
             value: [],
+            filtrosExtras: {},
+            valores: {},
             fetching: false
         }
         this.lastFetchId = 0
@@ -220,76 +223,74 @@ class ListaTombosScreen extends Component {
         acao: <div style={{ display: 'flex' }}>{this.gerarAcao(item.hcf)}</div>
     }))
 
-    requisitaListaTombos = async (valores, pg, pageSize) => {
-        this.setState({ loading: true })
-        console.log('valores: ', valores)
+    requisitaListaTombos = async (valores = {}, pg = 1, pageSize) => {
+        this.setState({ loading: true });
 
         try {
-            await new Promise(resolve => window.grecaptcha.ready(resolve))
+            await new Promise((resolve) => window.grecaptcha.ready(resolve));
+            const token = await window.grecaptcha.execute(recaptchaKey, { action: "tombos" });
 
-            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'tombos' })
-            console.log('token: ', token)
             const params = {
                 pagina: pg,
                 limite: pageSize || 20,
-                recaptchaToken: token
-            }
-            console.log('params: ', params)
+                recaptchaToken: token,
+            };
 
-            if (valores !== undefined) {
-                const {
-                    nomeCientifico, numeroHcf, tipo, nomePopular, situacao
-                } = valores
+            const rawIdent = valores?.identificador_id;
+            const identificadorId = rawIdent ? Number(String(rawIdent).trim()) : null;
 
-                if (nomeCientifico) {
-                    params.nome_cientifico = nomeCientifico
-                }
-                if (numeroHcf) {
-                    params.hcf = numeroHcf
-                }
-                if (tipo && tipo !== -1) {
-                    params.tipo = tipo
-                }
-                if (nomePopular) {
-                    params.nome_popular = nomePopular
-                }
-                if (situacao && situacao !== -1) {
-                    params.situacao = situacao
+            if (identificadorId && !Number.isNaN(identificadorId)) {
+                const response = await axios.get(`/tombos/identificadores/${identificadorId}`, { params });
+
+                if (response.status === 200) {
+                    const data = response.data;
+
+                    this.setState({
+                        tombos: this.formataDadosTombo(data.tombos || []),
+                        metadados: data.metadados || { total: (data.tombos || []).length },
+                        loading: false,
+                    });
+                    return;
                 }
             }
-            console.log('chamando a api: tombos ')
-            const response = await axios.get('/tombos', { params })
-            console.log('response: ', response)
+
+            const { nomeCientifico, numeroHcf, tipo, nomePopular, situacao } = valores;
+
+            if (nomeCientifico) params.nome_cientifico = nomeCientifico;
+            if (numeroHcf) params.hcf = numeroHcf;
+            if (tipo && tipo !== -1) params.tipo = tipo;
+            if (nomePopular) params.nome_popular = nomePopular;
+            if (situacao && situacao !== -1) params.situacao = situacao;
+
+            const response = await axios.get("/tombos", { params });
 
             if (response.status === 200) {
-                const { data } = response
+                const { data } = response;
                 this.setState({
                     tombos: this.formataDadosTombo(data.tombos),
                     metadados: data.metadados,
-                    loading: false
-                })
+                    loading: false,
+                });
             } else {
-                this.notificacao('warning', 'Buscar tombos', 'Erro ao buscar os tombos.')
-                this.setState({ loading: false })
+                this.notificacao("warning", "Buscar tombos", "Erro ao buscar os tombos.");
+                this.setState({ loading: false });
             }
         } catch (err) {
-            this.setState({ loading: false })
-            const { response } = err
-            if (response && response.data) {
-                const { error } = response.data
-                console.error(error.message)
-            }
-            this.notificacao('error', 'Erro', 'Falha ao buscar tombos.')
+            this.setState({ loading: false });
+            this.notificacao("error", "Erro", "Falha ao buscar tombos.");
         }
-    }
+    };
 
-    handleSubmit = (err, valores) => {
+
+    handleSubmit = (err, valoresForm) => {
         if (!err) {
-            this.setState({
-                valores,
-                loading: true
-            })
-            this.requisitaListaTombos(valores, this.state.pagina)
+            const valores = {
+                ...valoresForm,
+                ...this.state.filtrosExtras,
+            }
+
+            this.setState({ valores, loading: true, pagina: 1 })
+            this.requisitaListaTombos(valores, 1)
         }
     }
 
@@ -307,6 +308,14 @@ class ListaTombosScreen extends Component {
     onSubmit = event => {
         event.preventDefault()
         this.props.form.validateFields(this.handleSubmit)
+    }
+
+    onExtraFiltersChange = (values) => {
+        this.onExtraFiltersChangeDebounced(values)
+    }
+
+    onExtraFiltersChangeDebounced = (values) => {
+        this.setState({ filtrosExtras: values || {} })
     }
 
     renderPainelBusca(getFieldDecorator) {
@@ -390,7 +399,7 @@ class ListaTombosScreen extends Component {
                         </Col>
                     </Row>
                     <br />
-
+                    <FilterTombos onChange={this.onExtraFiltersChange} />
                     <Row align="middle" type="flex" justify="end" gutter={16}>
                         <Col xs={24} sm={8} md={12} lg={16} xl={16}>
                             <TotalRecordFound
