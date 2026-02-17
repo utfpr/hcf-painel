@@ -1,20 +1,36 @@
 import { Component } from 'react'
 
 import {
-    Row, Col, Divider, Select, InputNumber,
-    Tag, Input, Button, notification, Spin, Modal,
-    Radio, Table, Tooltip, Upload, Image
+    Row,
+    Col,
+    Divider,
+    Select,
+    InputNumber,
+    Tag,
+    Input,
+    Button,
+    notification,
+    Spin,
+    Modal,
+    Radio,
+    Table,
+    Tooltip,
+    Upload,
+    Image
 } from 'antd'
 import axios from 'axios'
+import debounce from 'lodash.debounce'
 import { Link } from 'react-router-dom'
 
 import { formatarDataBRtoEN } from '@/helpers/conversoes/ConversoesData'
 import converteDecimalParaGrausMinutosSegundos from '@/helpers/conversoes/Coordenadas'
 import { Form } from '@ant-design/compatible'
 import {
-    DeleteOutlined, EditOutlined, PlusOutlined, UploadOutlined
+    DeleteOutlined,
+    EditOutlined,
+    PlusOutlined,
+    UploadOutlined
 } from '@ant-design/icons'
-import debounce from 'lodash.debounce'
 
 import BarcodeTableComponent from '../../components/BarcodeTableComponent'
 import ButtonComponent from '../../components/ButtonComponent'
@@ -32,6 +48,7 @@ import ExsicataTipoFormField from './components/ExsicataTipoField'
 import FamiliaFormField from './components/FamiliaFormField'
 import FaseFormField from './components/FaseFormField'
 import GeneroFormField from './components/GeneroFormField'
+import HerbarioFormField from './components/HerbarioFormField'
 import IdentificadorFormField from './components/IdentificadorFormField'
 import InputFormField from './components/InputFormField'
 import LatLongFormField from './components/LatLongFormField'
@@ -39,19 +56,25 @@ import LocalColetaFormField from './components/LocalColetaFormField'
 import PaisFormField from './components/PaisFormField'
 import ReinoFormField from './components/ReinoFormField'
 import RelevoFormField from './components/RelevoFormField'
+import SelectedFormField from './components/SelectedFormFiled'
 import SoloFormField from './components/SoloFormField'
 import SubespecieFormField from './components/SubespecieFormField'
 import SubfamiliaFormField from './components/SubfamiliaFormField'
 import VariedadeFormField from './components/VariedadeFormField'
 import VegetacaoFormField from './components/VegetacaoFormField'
-import HerbarioFormField from './components/HerbarioFormField'
 import {
-    excluirFotoTomboService, atualizarFotoTomboService, criaCodigoBarrasSemFotosService,
-    requisitaDadosEdicaoService, requisitaDadosFormularioService, requisitaIdentificadoresPredicaoService,
-    verificaPendenciasService, requisitaCodigoBarrasService, requisitaNumeroHcfService,
-    handleSubmitIdentificadorService
+    excluirFotoTomboService,
+    atualizarFotoTomboService,
+    criaCodigoBarrasSemFotosService,
+    requisitaDadosEdicaoService,
+    requisitaDadosFormularioService,
+    requisitaIdentificadoresPredicaoService,
+    verificaPendenciasService,
+    requisitaCodigoBarrasService,
+    requisitaNumeroHcfService,
+    handleSubmitIdentificadorService,
+    verificarCoordenada
 } from './TomboService'
-import SelectedFormField from './components/SelectedFormFiled'
 
 const { confirm } = Modal
 const FormItem = Form.Item
@@ -66,19 +89,14 @@ class NovoTomboScreen extends Component {
             dataIndex: 'thumbnail',
             render: thumbnail => {
                 return (
-                    <Image
-                        width={120}
-                        src={`${fotosBaseUrl}/${thumbnail}`}
-                    />
+                    <Image width={120} src={`${fotosBaseUrl}/${thumbnail}`} />
                 )
             }
         },
         {
             title: 'Codigo de Barras',
             dataIndex: 'codigo_barra',
-            render: codigoBarra => (
-                <div width="120">{codigoBarra}</div>
-            )
+            render: codigoBarra => <div width="120">{codigoBarra}</div>
         },
         {
             title: 'Ação',
@@ -88,8 +106,19 @@ class NovoTomboScreen extends Component {
                     <Row>
                         <Col span={12}>
                             <Tooltip placement="top" title="Excluir">
-                                <a href="#" onClick={e => { e.preventDefault(); this.mostraMensagemDeleteCod(record, index) }}>
-                                    <DeleteOutlined style={{ color: '#e30613' }} />
+                                <a
+                                    href="#"
+                                    onClick={e => {
+                                        e.preventDefault()
+                                        this.mostraMensagemDeleteCod(
+                                            record,
+                                            index
+                                        )
+                                    }}
+                                >
+                                    <DeleteOutlined
+                                        style={{ color: '#e30613' }}
+                                    />
                                 </a>
                             </Tooltip>
                         </Col>
@@ -103,14 +132,22 @@ class NovoTomboScreen extends Component {
                                     multiple
                                     {...this.props}
                                     beforeUpload={foto => {
-                                        this.atualizarFotoTombo(foto, record, index)
+                                        this.atualizarFotoTombo(
+                                            foto,
+                                            record,
+                                            index
+                                        )
                                     }}
                                 >
-                                    <Tooltip placement="top" title="editar imagem">
-                                        <EditOutlined style={{ color: '#FFCC00' }} />
+                                    <Tooltip
+                                        placement="top"
+                                        title="editar imagem"
+                                    >
+                                        <EditOutlined
+                                            style={{ color: '#FFCC00' }}
+                                        />
                                     </Tooltip>
                                 </Upload>
-
                             </Tooltip>
                         </Col>
                     </Row>
@@ -228,8 +265,9 @@ class NovoTomboScreen extends Component {
             fetchingEspecies: false,
             fetchingSubespecies: false,
             fetchingVariedades: false,
+            cidadeStatus: '',
+            cidadeHelp: ''
         }
-
     }
 
     componentDidMount() {
@@ -261,7 +299,11 @@ class NovoTomboScreen extends Component {
         if (d < 1 || d > 31) return callback('Dia inválido.')
 
         const dt = new Date(y, mm - 1, d)
-        if (dt.getFullYear() !== y || (dt.getMonth() + 1) !== mm || dt.getDate() !== d) {
+        if (
+            dt.getFullYear() !== y
+            || dt.getMonth() + 1 !== mm
+            || dt.getDate() !== d
+        ) {
             return callback('Data inválida.')
         }
 
@@ -287,353 +329,423 @@ class NovoTomboScreen extends Component {
         }
     }
 
-    getCodigosTombo = (hcf) => {
+    getCodigosTombo = hcf => {
         axios
             .get(`/tombos/codigo_barras/${hcf}`)
             .then(({ status, data }) => {
-                if (status !== 200 || !Array.isArray(data)) return;
+                if (status !== 200 || !Array.isArray(data)) return
 
                 const parseNumero = (numBarra, codigoBarra) => {
-                    const inteiro = parseInt(String(numBarra ?? "").split(".")[0], 10);
-                    if (Number.isFinite(inteiro)) return inteiro;
-                    return parseInt(String(codigoBarra || "").replace(/\D/g, ""), 10);
-                };
+                    const inteiro = parseInt(
+                        String(numBarra ?? '').split('.')[0],
+                        10
+                    )
+                    if (Number.isFinite(inteiro)) return inteiro
+                    return parseInt(
+                        String(codigoBarra || '').replace(/\D/g, ''),
+                        10
+                    )
+                }
 
-                const normalize = (items) =>
-                    items.map((item) => ({
-                        id: item.id,
-                        codigo_barra: String(item.codigo_barra || ""),
-                        num_barra: parseNumero(item.num_barra, item.codigo_barra),
-                    }));
+                const normalize = items => items.map(item => ({
+                    id: item.id,
+                    codigo_barra: String(item.codigo_barra || ''),
+                    num_barra: parseNumero(
+                        item.num_barra,
+                        item.codigo_barra
+                    )
+                }))
 
-                const dedupeByCodigo = (rows) =>
-                    rows
-                        .filter((row) => row.codigo_barra)
-                        .reduce((acc, cur) => {
-                            if (!acc.some((x) => x.codigo_barra === cur.codigo_barra)) acc.push(cur);
-                            return acc;
-                        }, []);
+                const dedupeByCodigo = rows => rows
+                    .filter(row => row.codigo_barra)
+                    .reduce((acc, cur) => {
+                        if (
+                            !acc.some(
+                                x => x.codigo_barra === cur.codigo_barra
+                            )
+                        ) acc.push(cur)
+                        return acc
+                    }, [])
 
-                const barcodeEditList = dedupeByCodigo(normalize(data));
+                const barcodeEditList = dedupeByCodigo(normalize(data))
 
-                this.setState({ codigosBarrasForm: barcodeEditList });
-                this.setState({ codigosBarrasInicial: barcodeEditList });
+                this.setState({ codigosBarrasForm: barcodeEditList })
+                this.setState({ codigosBarrasInicial: barcodeEditList })
             })
-            .catch(this.catchRequestError);
-    };
+            .catch(this.catchRequestError)
+    }
 
-    handleChangeBarcodeList = (updatedList) => {
-        const serialize = (list = []) =>
-            list.map(({ codigo_barra, num_barra }) => `${codigo_barra}:${num_barra}`).join("|");
+    handleChangeBarcodeList = updatedList => {
+        const serialize = (list = []) => list
+            .map(
+                ({ codigo_barra, num_barra }) => `${codigo_barra}:${num_barra}`
+            )
+            .join('|')
 
-        const previousSignature = serialize(this.state.codigosBarrasForm);
-        const nextSignature = serialize(updatedList);
+        const previousSignature = serialize(this.state.codigosBarrasForm)
+        const nextSignature = serialize(updatedList)
 
         if (previousSignature !== nextSignature) {
-            this.setState({ codigosBarrasForm: updatedList });
+            this.setState({ codigosBarrasForm: updatedList })
         }
-    };
+    }
 
     handleDeletedBarcode = ({ codigo_barra, num_barra, id }) => {
-        const toInt = (v) => {
-            const n = parseInt(String(v ?? "").split(".")[0], 10);
-            return Number.isFinite(n) ? n : NaN;
-        };
+        const toInt = v => {
+            const n = parseInt(String(v ?? '').split('.')[0], 10)
+            return Number.isFinite(n) ? n : NaN
+        }
 
-        const deletedNum = toInt(num_barra);
-        const deletedCode = String(codigo_barra || "");
+        const deletedNum = toInt(num_barra)
+        const deletedCode = String(codigo_barra || '')
 
-        this.setState((prev) => {
-            const inicial = prev.codigosBarrasInicial || [];
-            const existedInInitial = inicial.some((item) => {
-                const itemNum = toInt(item?.num_barra);
-                const itemCode = String(item?.codigo_barra || "");
-                return itemNum === deletedNum || itemCode === deletedCode;
-            });
+        this.setState(prev => {
+            const inicial = prev.codigosBarrasInicial || []
+            const existedInInitial = inicial.some(item => {
+                const itemNum = toInt(item?.num_barra)
+                const itemCode = String(item?.codigo_barra || '')
+                return itemNum === deletedNum || itemCode === deletedCode
+            })
 
-            const nextInicial = inicial.filter((item) => {
-                const itemNum = toInt(item?.num_barra);
-                const itemCode = String(item?.codigo_barra || "");
-                return !(itemNum === deletedNum || itemCode === deletedCode);
-            });
+            const nextInicial = inicial.filter(item => {
+                const itemNum = toInt(item?.num_barra)
+                const itemCode = String(item?.codigo_barra || '')
+                return !(itemNum === deletedNum || itemCode === deletedCode)
+            })
 
-            let nextToDelete = prev.toDeleteBarcodes || [];
+            let nextToDelete = prev.toDeleteBarcodes || []
             if (existedInInitial) {
-                const alreadyQueued = nextToDelete.some((x) => {
-                    const n = toInt(x?.num_barra);
-                    const c = String(x?.codigo_barra || "");
-                    return n === deletedNum || c === deletedCode;
-                });
+                const alreadyQueued = nextToDelete.some(x => {
+                    const n = toInt(x?.num_barra)
+                    const c = String(x?.codigo_barra || '')
+                    return n === deletedNum || c === deletedCode
+                })
                 if (!alreadyQueued) {
                     nextToDelete = [
                         ...nextToDelete,
-                        { codigo_barra, num_barra: deletedNum, id },
-                    ];
+                        { codigo_barra, num_barra: deletedNum, id }
+                    ]
                 }
             }
 
             return {
                 codigosBarrasInicial: nextInicial,
-                toDeleteBarcodes: nextToDelete,
-            };
-        });
-    };
+                toDeleteBarcodes: nextToDelete
+            }
+        })
+    }
 
     uploadFotoCodigo = async (tomboHcf, numeroCodigo, file) => {
-        const form = new FormData();
-        form.append("imagem", file);
-        form.append("codigo_foto", String(numeroCodigo));
-        form.append("tombo_hcf", String(tomboHcf));
-        form.append("em_vivo", "true");
+        const form = new FormData()
+        form.append('imagem', file)
+        form.append('codigo_foto', String(numeroCodigo))
+        form.append('tombo_hcf', String(tomboHcf))
+        form.append('em_vivo', 'true')
 
-        return axios.post("/uploads", form, {
-            headers: { "Content-Type": "multipart/form-data" },
-        });
-    };
+        return axios.post('/uploads', form, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        })
+    }
 
-
-    makeFileGetter = (source) => (codigo) => {
-        if (typeof source === "function") return source(codigo) || [];
-        if (source && typeof source === "object") return source[codigo] || [];
-        if (typeof this?.getPhotosOfCode === "function") return this.getPhotosOfCode(codigo) || [];
-        return [];
-    };
+    makeFileGetter = source => codigo => {
+        if (typeof source === 'function') return source(codigo) || []
+        if (source && typeof source === 'object') return source[codigo] || []
+        if (typeof this?.getPhotosOfCode === 'function') return this.getPhotosOfCode(codigo) || []
+        return []
+    }
 
     pickUploadableFile = (list = []) => {
         for (const f of list) {
-            if (typeof File !== "undefined" && f instanceof File) return f;
-            if (f && f.originFileObj) return f.originFileObj;
+            if (typeof File !== 'undefined' && f instanceof File) return f
+            if (f && f.originFileObj) return f.originFileObj
         }
-        return null;
-    };
+        return null
+    }
 
-    hasLocalFile = (files = []) => !!this.pickUploadableFile(files);
+    hasLocalFile = (files = []) => !!this.pickUploadableFile(files)
 
     shouldUploadPhoto = (initialFiles = [], currentFiles = []) => {
-        if (this.hasLocalFile(currentFiles)) return true;
-        return false;
-    };
+        if (this.hasLocalFile(currentFiles)) return true
+        return false
+    }
 
-    formatCodeLabel = (n) => `HCF${String(n).padStart(9, "0")}`;
+    formatCodeLabel = n => `HCF${String(n).padStart(9, '0')}`
 
     editarCodigosBarras = async (tomboHcf, currentList, photoSourceArg) => {
         try {
-            const initialList = this.state.codigosBarrasInicial || [];
-            const currentBarcodes = currentList || [];
-            const deletions = this.state.toDeleteBarcodes || [];
-            const isEditing = this.state.isEditing;
+            const initialList = this.state.codigosBarrasInicial || []
+            const currentBarcodes = currentList || []
+            const deletions = this.state.toDeleteBarcodes || []
+            const { isEditing } = this.state
 
-            const initialPhotosMap = this.state.initialBarcodePhotos || {};
-            const currentPhotosMap = photoSourceArg ?? this.state.currentBarcodePhotos ?? {};
+            const initialPhotosMap = this.state.initialBarcodePhotos || {}
+            const currentPhotosMap = photoSourceArg ?? this.state.currentBarcodePhotos ?? {}
 
-            const getFiles = (typeof this.makeFileGetter === "function")
+            const getFiles = typeof this.makeFileGetter === 'function'
                 ? this.makeFileGetter(currentPhotosMap)
-                : (() => []);
+                : () => []
 
-            const initialSet = new Set(initialList.map((it) => it.codigo_barra));
-            const newBarcodes = currentBarcodes.filter((it) => !initialSet.has(it.codigo_barra));
-            const existingBarcodes = currentBarcodes.filter((it) => initialSet.has(it.codigo_barra));
+            const initialSet = new Set(
+                initialList.map(it => it.codigo_barra)
+            )
+            const newBarcodes = currentBarcodes.filter(
+                it => !initialSet.has(it.codigo_barra)
+            )
+            const existingBarcodes = currentBarcodes.filter(it => initialSet.has(it.codigo_barra))
 
-            const ops = [];
+            const initialSet = new Set(initialList.map(it => it.codigo_barra))
+            const newBarcodes = currentBarcodes.filter(it => !initialSet.has(it.codigo_barra))
+            const existingBarcodes = currentBarcodes.filter(it => initialSet.has(it.codigo_barra))
+
+            const ops = []
 
             if (newBarcodes.length > 0) {
-                ops.push(this.criarCodigoBarras(tomboHcf, newBarcodes, getFiles));
+                ops.push(
+                    this.criarCodigoBarras(tomboHcf, newBarcodes, getFiles)
+                )
             }
-
 
             if (isEditing && existingBarcodes.length > 0) {
                 const codigosComAlteracaoArquivo = existingBarcodes
-                    .filter((row) => {
-                        const codigoFormatado = this.formatCodeLabel(row.num_barra);
-                        const filesAtuais = getFiles(codigoFormatado) || [];
-                        const filesIniciais = initialPhotosMap[codigoFormatado] || [];
+                    .filter(row => {
+                        const codigoFormatado = this.formatCodeLabel(
+                            row.num_barra
+                        )
+                        const filesAtuais = getFiles(codigoFormatado) || []
+                        const filesIniciais = initialPhotosMap[codigoFormatado] || []
+                        const temArquivoNovo = this.hasLocalFile(filesAtuais)
+                        const adicionouArquivo = filesIniciais.length === 0 && filesAtuais.length > 0
 
-                        const temArquivoNovo = this.hasLocalFile(filesAtuais);
-                        const adicionouArquivo = filesIniciais.length === 0 && filesAtuais.length > 0;
-
-                        return temArquivoNovo || adicionouArquivo;
+                        return temArquivoNovo || adicionouArquivo
                     })
-                    .map((row) => {
-                        const codigoFormatado = this.formatCodeLabel(row.num_barra);
-                        const files = getFiles(codigoFormatado) || [];
-                        const file = this.pickUploadableFile ? this.pickUploadableFile(files) : null;
-                        return file ? { numeroCodigo: row.num_barra, file } : null;
+                    .map(row => {
+                        const codigoFormatado = this.formatCodeLabel(
+                            row.num_barra
+                        )
+                        const files = getFiles(codigoFormatado) || []
+                        const file = this.pickUploadableFile
+                            ? this.pickUploadableFile(files)
+                            : null
+                        return file
+                            ? { numeroCodigo: row.num_barra, file }
+                            : null
                     })
-                    .filter(Boolean);
+                    .filter(Boolean)
 
                 if (codigosComAlteracaoArquivo.length > 0) {
-                    const uploadRequests = codigosComAlteracaoArquivo.map(({ numeroCodigo, file }) =>
-                        this.uploadFotoCodigo(tomboHcf, numeroCodigo, file)
-                    );
-                    ops.push(Promise.allSettled(uploadRequests));
+                    const uploadRequests = codigosComAlteracaoArquivo.map(
+                        ({ numeroCodigo, file }) => this.uploadFotoCodigo(tomboHcf, numeroCodigo, file)
+                    )
+                    ops.push(Promise.allSettled(uploadRequests))
                 }
             }
 
             if (isEditing) {
                 const codesWithPhotoInitially = Object.keys(initialPhotosMap)
-                    .filter((code) => Array.isArray(initialPhotosMap[code]) && initialPhotosMap[code].length > 0);
+                    .filter(code => Array.isArray(initialPhotosMap[code]) && initialPhotosMap[code].length > 0)
 
                 if (codesWithPhotoInitially.length > 0) {
-                    const codesNowWithoutPhoto = codesWithPhotoInitially.filter((code) => {
-                        const atual = currentPhotosMap[code];
-                        return !Array.isArray(atual) || atual.length === 0; // vazio agora
-                    });
+                    const codesNowWithoutPhoto = codesWithPhotoInitially.filter(code => {
+                        const atual = currentPhotosMap[code]
+                        return !Array.isArray(atual) || atual.length === 0 // vazio agora
+                    })
 
                     if (codesNowWithoutPhoto.length > 0) {
                         const deletePhotoRequests = codesNowWithoutPhoto
-                            .map((code) => {
-                                const row =
-                                    currentBarcodes.find((r) => r.codigo_barra === code) ||
-                                    initialList.find((r) => r.codigo_barra === code) ||
-                                    null;
+                            .map(code => {
+                                const row = currentBarcodes.find(
+                                    r => r.codigo_barra === code
+                                )
+                                    || initialList.find(
+                                        r => r.codigo_barra === code
+                                    )
+                                    || null
 
-                                const numeroCodigo = row?.num_barra ?? parseInt(String(code).replace(/\D/g, ""), 10);
-                                if (!Number.isFinite(numeroCodigo)) return null;
+                                const numeroCodigo = row?.num_barra ?? parseInt(String(code).replace(/\D/g, ''), 10)
+                                if (!Number.isFinite(numeroCodigo)) return null
 
-                                return axios.delete(`/uploads/${encodeURIComponent(numeroCodigo)}`);
+                                return axios.delete(`/uploads/${encodeURIComponent(numeroCodigo)}`)
                             })
-                            .filter(Boolean);
+                            .filter(Boolean)
 
                         if (deletePhotoRequests.length > 0) {
-                            ops.push(Promise.allSettled(deletePhotoRequests));
+                            ops.push(Promise.allSettled(deletePhotoRequests))
                         }
                     }
                 }
             }
 
             if (isEditing && deletions.length > 0) {
-                const deleteRequests = deletions.map((b) =>
-                    axios.delete(`/tombos/codigo_barras/${encodeURIComponent(b.num_barra)}`)
-                );
-                ops.push(Promise.allSettled(deleteRequests));
+                const deleteRequests = deletions.map(b => axios.delete(
+                    `/tombos/codigo_barras/${encodeURIComponent(
+                        b.num_barra
+                    )}`
+                ))
+                ops.push(Promise.allSettled(deleteRequests))
             }
 
             if (ops.length > 0) {
-                await Promise.all(ops);
+                await Promise.all(ops)
             }
 
             if (
-                newBarcodes.length > 0 ||
-                (isEditing && (deletions.length > 0 || existingBarcodes.length > 0))
+                newBarcodes.length > 0
+                || (isEditing
+                    && (deletions.length > 0 || existingBarcodes.length > 0))
             ) {
-                this.openNotificationWithIcon("success", "Sucesso", "Códigos de barra atualizados com sucesso");
+                this.openNotificationWithIcon(
+                    'success',
+                    'Sucesso',
+                    'Códigos de barra atualizados com sucesso'
+                )
             }
 
             if (isEditing && deletions.length > 0) {
-                this.setState({ toDeleteBarcodes: [] });
+                this.setState({ toDeleteBarcodes: [] })
             }
         } catch (error) {
-            console.error("Erro ao atualizar códigos de barras:", error);
-            this.openNotificationWithIcon("error", "Erro", "Erro ao atualizar os códigos de barras. Tente novamente.");
+            console.error('Erro ao atualizar códigos de barras:', error)
+            this.openNotificationWithIcon(
+                'error',
+                'Erro',
+                'Erro ao atualizar os códigos de barras. Tente novamente.'
+            )
         }
-    };
+    }
 
     normalizeBarcodes = (barcodeList = []) => {
-        const asArray = Array.isArray(barcodeList) ? barcodeList : [barcodeList];
+        const asArray = Array.isArray(barcodeList)
+            ? barcodeList
+            : [barcodeList]
 
-        const integerPart = (val) => {
-            const [int] = String(val).split(".");
-            const n = parseInt(int, 10);
-            return Number.isFinite(n) ? n : NaN;
-        };
+        const integerPart = val => {
+            const [int] = String(val).split('.')
+            const n = parseInt(int, 10)
+            return Number.isFinite(n) ? n : NaN
+        }
 
-        const extractNumber = (item) => {
-            if (item == null) return NaN;
+        const extractNumber = item => {
+            if (item == null) return NaN
 
             // 1) Objeto com num_barra (ex.: "41806.0")
-            if (typeof item === "object" && "num_barra" in item) {
-                return integerPart(item.num_barra);
+            if (typeof item === 'object' && 'num_barra' in item) {
+                return integerPart(item.num_barra)
             }
 
             // 2) Objeto com codigo_barra OU string tipo "HCF000041890"
-            if ((typeof item === "object" && "codigo_barra" in item) || typeof item === "string") {
-                const raw = typeof item === "string" ? item : String(item.codigo_barra || "");
-                const n = parseInt(raw.replace(/\D/g, ""), 10);
-                return Number.isFinite(n) ? n : NaN;
+            if (
+                (typeof item === 'object' && 'codigo_barra' in item)
+                || typeof item === 'string'
+            ) {
+                const raw = typeof item === 'string'
+                    ? item
+                    : String(item.codigo_barra || '')
+                const n = parseInt(raw.replace(/\D/g, ''), 10)
+                return Number.isFinite(n) ? n : NaN
             }
 
             // 3) Número puro
-            if (typeof item === "number" && Number.isFinite(item)) {
-                return Math.trunc(item);
+            if (typeof item === 'number' && Number.isFinite(item)) {
+                return Math.trunc(item)
             }
 
             // 4) Fallback: extrai dígitos de qualquer coisa
-            const n = parseInt(String(item).replace(/\D/g, ""), 10);
-            return Number.isFinite(n) ? n : NaN;
-        };
-
-        const seen = new Set();
-        return asArray
-            .map(extractNumber)
-            .filter((n) => Number.isFinite(n) && n > 0)
-            .filter((n) => (seen.has(n) ? false : (seen.add(n), true)));
-    };
-
-    criarCodigoBarras = async (id_tombo, barcodeList = [], getFiles) => {
-        const hcf = Number(id_tombo);
-        if (!Number.isFinite(hcf)) {
-            message.error("Tombo (HCF) inválido.");
-            return;
+            const n = parseInt(String(item).replace(/\D/g, ''), 10)
+            return Number.isFinite(n) ? n : NaN
         }
 
-        const numeros = this.normalizeBarcodes(barcodeList);
+        const seen = new Set()
+        return asArray
+            .map(extractNumber)
+            .filter(n => Number.isFinite(n) && n > 0)
+            .filter(n => (seen.has(n) ? false : (seen.add(n), true)))
+    }
+
+    criarCodigoBarras = async (id_tombo, barcodeList = [], getFiles) => {
+        const hcf = Number(id_tombo)
+        if (!Number.isFinite(hcf)) {
+            message.error('Tombo (HCF) inválido.')
+            return
+        }
+
+        const numeros = this.normalizeBarcodes(barcodeList)
         if (!numeros.length) {
-            this.openNotificationWithIcon("warning", "Atenção", "Nenhum código válido para enviar.");
-            return;
+            this.openNotificationWithIcon(
+                'warning',
+                'Atenção',
+                'Nenhum código válido para enviar.'
+            )
+            return
         }
 
         const resultados = await Promise.all(
-            numeros.map(async (numeroCodigo) => {
+            numeros.map(async numeroCodigo => {
                 try {
-                    await axios.post("/tombos/codigo_barras", {
+                    await axios.post('/tombos/codigo_barras', {
                         hcf,
-                        codigo_barra: numeroCodigo,
-                    });
+                        codigo_barra: numeroCodigo
+                    })
 
-                    let uploaded = false;
-                    if (typeof getFiles === "function") {
-                        const codigoFormatado = this.formatCodeLabel(numeroCodigo);
-                        const arquivos = getFiles(codigoFormatado);
+                    let uploaded = false
+                    if (typeof getFiles === 'function') {
+                        const codigoFormatado = this.formatCodeLabel(numeroCodigo)
+                        const arquivos = getFiles(codigoFormatado)
 
                         if (arquivos && arquivos[0]) {
-                            const file = this.pickUploadableFile(arquivos);
+                            const file = this.pickUploadableFile(arquivos)
                             if (file) {
-                                await this.uploadFotoCodigo(hcf, numeroCodigo, file);
-                                uploaded = true;
+                                await this.uploadFotoCodigo(
+                                    hcf,
+                                    numeroCodigo,
+                                    file
+                                )
+                                uploaded = true
                             }
                         }
                     }
 
-                    return { ok: true, numeroCodigo, uploaded };
+                    return { ok: true, numeroCodigo, uploaded }
                 } catch (error) {
-                    console.error("Erro ao criar/enviar para código:", numeroCodigo, error);
-                    return { ok: false, numeroCodigo, error };
+                    console.error(
+                        'Erro ao criar/enviar para código:',
+                        numeroCodigo,
+                        error
+                    )
+                    return { ok: false, numeroCodigo, error }
                 }
             })
-        );
+        )
 
-        const okCount = resultados.filter((r) => r.ok).length;
-        const failCount = resultados.length - okCount;
-        const uploadedCount = resultados.filter((r) => r.ok && r.uploaded).length;
+        const okCount = resultados.filter(r => r.ok).length
+        const failCount = resultados.length - okCount
+        const uploadedCount = resultados.filter(r => r.ok && r.uploaded).length
 
         if (okCount) {
             this.openNotificationWithIcon(
-                "success",
-                "Sucesso",
-                `Códigos criados: ${okCount}${uploadedCount ? ` • Uploads: ${uploadedCount}` : ""}${failCount ? ` • Falharam: ${failCount}` : ""
+                'success',
+                'Sucesso',
+                `Códigos criados: ${okCount}${uploadedCount ? ` • Uploads: ${uploadedCount}` : ''}${failCount ? ` • Falharam: ${failCount}` : ''
                 }`
-            );
+            )
         } else {
-            this.openNotificationWithIcon("error", "Erro", "Nenhum código foi criado.");
+            this.openNotificationWithIcon(
+                'error',
+                'Erro',
+                'Nenhum código foi criado.'
+            )
         }
-    };
+    }
 
     handleRequisicao = values => {
         const { match } = this.props
-        const photoSourceArg = (codigo) => this.barcodeRef?.getPhotosOfCode?.(codigo) || [];
+        const photoSourceArg = codigo => this.barcodeRef?.getPhotosOfCode?.(codigo) || []
 
         if (match.params.tombo_id) {
-            this.editarCodigosBarras(match.params.tombo_id, this.state.codigosBarrasForm, photoSourceArg)
+            this.editarCodigosBarras(
+                match.params.tombo_id,
+                this.state.codigosBarrasForm,
+                photoSourceArg
+            )
             const json = this.montaFormularioJsonEdicao(values)
             this.requisitaEdicaoTombo(json)
         } else {
@@ -645,10 +757,22 @@ class NovoTomboScreen extends Component {
     onEditarTomboComSucesso = response => {
         const { data } = response
 
-        this.encontraAutor(data.subfamilias, data.subfamiliaInicial, 'autorSubfamilia')
+        this.encontraAutor(
+            data.subfamilias,
+            data.subfamiliaInicial,
+            'autorSubfamilia'
+        )
         this.encontraAutor(data.especies, data.especieInicial, 'autorEspecie')
-        this.encontraAutor(data.subespecies, data.subespecieInicial, 'autorSubespecie')
-        this.encontraAutor(data.variedades, data.variedadeInicial, 'autorVariedade')
+        this.encontraAutor(
+            data.subespecies,
+            data.subespecieInicial,
+            'autorSubespecie'
+        )
+        this.encontraAutor(
+            data.variedades,
+            data.variedadeInicial,
+            'autorVariedade'
+        )
 
         this.setState(prevState => ({
             ...prevState,
@@ -656,12 +780,25 @@ class NovoTomboScreen extends Component {
             ...data
         }))
         this.insereDadosFormulario(data)
+
+        // Verifica coordenadas automaticamente ao carregar os dados de edição
+        if (data.cidadeInicial && data.localizacao?.latitude && data.localizacao?.longitude) {
+            setTimeout(() => {
+                this.verifyCoordenada(
+                    data.cidadeInicial,
+                    data.localizacao.latitude,
+                    data.localizacao.longitude
+                )
+            }, 500)
+        }
     }
 
     encontraAutor = (lista, valorSelecionado, campoTaxonomiaAutor) => {
         if ((!valorSelecionado && !lista) || Number.isNaN(valorSelecionado)) return
 
-        const itemEncontrado = lista.find(item => item.id === Number(valorSelecionado))
+        const itemEncontrado = lista.find(
+            item => item.id === Number(valorSelecionado)
+        )
 
         this.setState({
             [campoTaxonomiaAutor]: itemEncontrado?.autor?.nome || ''
@@ -708,28 +845,32 @@ class NovoTomboScreen extends Component {
         )
     }
 
-    defaultRequest = async (onFinish, requestService, successMessage, errorMessage, successCalback, ...params) => {
+    defaultRequest = async (
+        onFinish,
+        requestService,
+        successMessage,
+        errorMessage,
+        successCalback,
+        ...params
+    ) => {
         try {
-            await requestService(
-                response => {
-                    successCalback(response, params)
-                    if (successMessage !== '') {
-                        this.openNotificationWithIcon('success', 'Sucesso', successMessage)
-                    }
-                },
-                ...params
-            )
+            await requestService(response => {
+                successCalback(response, params)
+                if (successMessage !== '') {
+                    this.openNotificationWithIcon(
+                        'success',
+                        'Sucesso',
+                        successMessage
+                    )
+                }
+            }, ...params)
         } catch (error) {
             console.error(error)
             let message = ''
             if (error) {
                 message = `Falha ao carregar os dados do tombo: ${error.message}`
             }
-            this.openNotificationWithIcon(
-                'warning',
-                'Falha',
-                message
-            )
+            this.openNotificationWithIcon('warning', 'Falha', message)
         } finally {
             this.setState({
                 loading: false
@@ -764,7 +905,9 @@ class NovoTomboScreen extends Component {
             this.getCodigosTombo(match.params.tombo_id)
         } else {
             this.requisitaNumeroHcf()
-            const hcfHerbario = dados.herbarios.find(herbario => herbario.sigla === 'HCF')
+            const hcfHerbario = dados.herbarios.find(
+                herbario => herbario.sigla === 'HCF'
+            )
             const paisBrasil = dados.paises.find(p => p.nome === 'BRASIL')
 
             this.setState({
@@ -776,13 +919,21 @@ class NovoTomboScreen extends Component {
             })
 
             if (paisBrasil) {
-                axios.get('/estados', { params: { pais_id: paisBrasil.id } })
+                axios
+                    .get('/estados', { params: { pais_id: paisBrasil.id } })
                     .then(estadosResponse => {
-                        if (estadosResponse.data && estadosResponse.status === 200) {
-                            const estadoParana = estadosResponse.data.find(e => e.nome === 'Paraná')
+                        if (
+                            estadosResponse.data
+                            && estadosResponse.status === 200
+                        ) {
+                            const estadoParana = estadosResponse.data.find(
+                                e => e.nome === 'Paraná'
+                            )
                             this.setState({
                                 estados: estadosResponse.data,
-                                estadoInicial: estadoParana ? String(estadoParana.id) : ''
+                                estadoInicial: estadoParana
+                                    ? String(estadoParana.id)
+                                    : ''
                             })
 
                             if (estadoParana) {
@@ -882,9 +1033,22 @@ class NovoTomboScreen extends Component {
     handleSubmitIdentificador = e => {
         e.preventDefault()
         const {
-            reino, familia, subfamilia, genero, especie, subespecie, variedade
+            reino,
+            familia,
+            subfamilia,
+            genero,
+            especie,
+            subespecie,
+            variedade
         } = this.props.form.getFieldsValue()
-        if ((familia || subfamilia || genero || especie || subespecie || variedade)) {
+        if (
+            familia
+            || subfamilia
+            || genero
+            || especie
+            || subespecie
+            || variedade
+        ) {
             this.setState({
                 loading: true
             })
@@ -939,11 +1103,14 @@ class NovoTomboScreen extends Component {
     }
 
     requisitaNumeroHcf = () => {
-        axios.get('/tombos/filtrar_ultimo_numero')
+        axios
+            .get('/tombos/filtrar_ultimo_numero')
             .then(response => {
                 if (response.status === 200) {
                     if (this.props.match.params.tombo_id) {
-                        this.setState({ numeroHcf: this.props.match.params.tombo_id })
+                        this.setState({
+                            numeroHcf: this.props.match.params.tombo_id
+                        })
                         this.props.form.setFields({
                             numeroTombo: {
                                 value: this.props.match.params.tombo_id
@@ -952,11 +1119,15 @@ class NovoTomboScreen extends Component {
                         const date = new Date(response.data.data_tombo)
                         this.props.form.setFields({
                             dataTombo: {
-                                value: `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+                                value: `${date.getDate()}/${
+                                    date.getMonth() + 1
+                                }/${date.getFullYear()}`
                             }
                         })
                         this.requisitaCodigoBarras()
-                        this.verificaPendencias(this.props.match.params.tombo_id)
+                        this.verificaPendencias(
+                            this.props.match.params.tombo_id
+                        )
                     } else {
                         this.setState({ numeroHcf: response.data.hcf + 1 })
                         this.props.form.setFields({
@@ -967,7 +1138,9 @@ class NovoTomboScreen extends Component {
                         const date = new Date()
                         this.props.form.setFields({
                             dataTombo: {
-                                value: `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+                                value: `${date.getDate()}/${
+                                    date.getMonth() + 1
+                                }/${date.getFullYear()}`
                             }
                         })
                     }
@@ -991,12 +1164,12 @@ class NovoTomboScreen extends Component {
             .catch(this.catchRequestError)
     }
 
-
     requisitaTipos = () => {
         this.setState({
             loading: true
         })
-        axios.get('/tipos')
+        axios
+            .get('/tipos')
             .then(response => {
                 this.setState({
                     loading: false
@@ -1006,7 +1179,11 @@ class NovoTomboScreen extends Component {
                         tipos: response.data
                     })
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar os tipos do tombo, tente novamente.')
+                    this.openNotificationWithIcon(
+                        'error',
+                        'Falha',
+                        'Houve um problema ao buscar os tipos do tombo, tente novamente.'
+                    )
                 }
             })
             .catch(err => {
@@ -1016,9 +1193,17 @@ class NovoTomboScreen extends Component {
                 const { response } = err
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                        this.openNotificationWithIcon(
+                            'warning',
+                            'Falha',
+                            response.data.error.message
+                        )
                     } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema a listar os tipos, tente novamente.')
+                        this.openNotificationWithIcon(
+                            'error',
+                            'Falha',
+                            'Houve um problema a listar os tipos, tente novamente.'
+                        )
                     }
                     const { error } = response.data
                     throw new Error(error.message)
@@ -1033,16 +1218,21 @@ class NovoTomboScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.post('/tipos', {
-            nome: this.props.form.getFieldsValue().campo
-        })
+        axios
+            .post('/tipos', {
+                nome: this.props.form.getFieldsValue().campo
+            })
             .then(response => {
                 this.setState({
                     loading: false
                 })
                 if (response.status === 204) {
                     this.requisitaTipos()
-                    this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                    this.openNotificationWithIcon(
+                        'success',
+                        'Sucesso',
+                        'O cadastro foi realizado com sucesso.'
+                    )
                 }
                 this.props.form.setFields({
                     campo: {
@@ -1057,9 +1247,17 @@ class NovoTomboScreen extends Component {
                 const { response } = err
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                        this.openNotificationWithIcon(
+                            'warning',
+                            'Falha',
+                            response.data.error.message
+                        )
                     } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar o novo tipo, tente novamente.')
+                        this.openNotificationWithIcon(
+                            'error',
+                            'Falha',
+                            'Houve um problema ao cadastrar o novo tipo, tente novamente.'
+                        )
                     }
                     const { error } = response.data
                     throw new Error(error.message)
@@ -1074,18 +1272,23 @@ class NovoTomboScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.post('/reinos', {
-            nome: this.props.form.getFieldsValue().campo
-        })
+        axios
+            .post('/reinos', {
+                nome: this.props.form.getFieldsValue().campo
+            })
             .then(response => {
                 this.setState({
                     loading: false
                 })
                 if (response.status === 204) {
                     this.requisitaReinos('')
-                    this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                    this.openNotificationWithIcon(
+                        'success',
+                        'Sucesso',
+                        'O cadastro foi realizado com sucesso.'
+                    )
                 }
-                this.props.form.setFields({ campo: { value: '' } }) // eslint-disable-line
+                this.props.form.setFields({ campo: { value: "" } }); // eslint-disable-line
             })
             .catch(err => {
                 this.setState({
@@ -1094,9 +1297,17 @@ class NovoTomboScreen extends Component {
                 const { response } = err
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                        this.openNotificationWithIcon(
+                            'warning',
+                            'Falha',
+                            response.data.error.message
+                        )
                     } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar o novo reino, tente novamente.')
+                        this.openNotificationWithIcon(
+                            'error',
+                            'Falha',
+                            'Houve um problema ao cadastrar o novo reino, tente novamente.'
+                        )
                     }
                     const { error } = response.data
                     throw new Error(error.message)
@@ -1111,17 +1322,22 @@ class NovoTomboScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.post('/familias', {
-            reinoId: this.props.form.getFieldsValue().reino,
-            nome: this.props.form.getFieldsValue().campo
-        })
+        axios
+            .post('/familias', {
+                reinoId: this.props.form.getFieldsValue().reino,
+                nome: this.props.form.getFieldsValue().campo
+            })
             .then(response => {
                 this.setState({
                     loading: false
                 })
                 if (response.status === 204) {
                     this.requisitaFamilias('', this.state.reinoInicial)
-                    this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                    this.openNotificationWithIcon(
+                        'success',
+                        'Sucesso',
+                        'O cadastro foi realizado com sucesso.'
+                    )
                 }
                 this.props.form.setFields({
                     campo: {
@@ -1136,9 +1352,17 @@ class NovoTomboScreen extends Component {
                 const { response } = err
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                        this.openNotificationWithIcon(
+                            'warning',
+                            'Falha',
+                            response.data.error.message
+                        )
                     } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar a nova família, tente novamente.')
+                        this.openNotificationWithIcon(
+                            'error',
+                            'Falha',
+                            'Houve um problema ao cadastrar a nova família, tente novamente.'
+                        )
                     }
                     const { error } = response.data
                     throw new Error(error.message)
@@ -1206,21 +1430,33 @@ class NovoTomboScreen extends Component {
 
     cadastraNovaSubfamilia = () => {
         if (!this.props.form.getFieldsValue().familia) {
-            this.openNotificationWithIcon('warning', 'Falha', 'Selecione uma família para cadastrar uma subfamília.')
+            this.openNotificationWithIcon(
+                'warning',
+                'Falha',
+                'Selecione uma família para cadastrar uma subfamília.'
+            )
         } else {
-            axios.post('/subfamilias', {
-                nome: this.props.form.getFieldsValue().campo,
-                familia_id: this.props.form.getFieldsValue().familia
-            })
+            axios
+                .post('/subfamilias', {
+                    nome: this.props.form.getFieldsValue().campo,
+                    familia_id: this.props.form.getFieldsValue().familia
+                })
                 .then(response => {
                     if (response.status === 204) {
-                        this.requisitaSubfamilias('', this.props.form.getFieldsValue().familia)
+                        this.requisitaSubfamilias(
+                            '',
+                            this.props.form.getFieldsValue().familia
+                        )
                         this.setState({
                             search: {
                                 subfamilia: 'validating'
                             }
                         })
-                        this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                        this.openNotificationWithIcon(
+                            'success',
+                            'Sucesso',
+                            'O cadastro foi realizado com sucesso.'
+                        )
                     }
                     this.props.form.setFields({
                         campo: {
@@ -1231,10 +1467,21 @@ class NovoTomboScreen extends Component {
                 .catch(err => {
                     const { response } = err
                     if (response && response.data) {
-                        if (response.status === 400 || response.status === 422) {
-                            this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                        if (
+                            response.status === 400
+                            || response.status === 422
+                        ) {
+                            this.openNotificationWithIcon(
+                                'warning',
+                                'Falha',
+                                response.data.error.message
+                            )
                         } else {
-                            this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar a nova subfamília, tente novamente.')
+                            this.openNotificationWithIcon(
+                                'error',
+                                'Falha',
+                                'Houve um problema ao cadastrar a nova subfamília, tente novamente.'
+                            )
                         }
                         const { error } = response.data
                         throw new Error(error.message)
@@ -1272,27 +1519,39 @@ class NovoTomboScreen extends Component {
 
     cadastraNovoGenero = () => {
         if (!this.props.form.getFieldsValue().familia) {
-            this.openNotificationWithIcon('warning', 'Falha', 'Selecione uma família para cadastrar uma subfamília.')
+            this.openNotificationWithIcon(
+                'warning',
+                'Falha',
+                'Selecione uma família para cadastrar uma subfamília.'
+            )
         } else {
             this.setState({
                 loading: true
             })
-            axios.post('/generos', {
-                nome: this.props.form.getFieldsValue().campo,
-                familia_id: this.props.form.getFieldsValue().familia
-            })
+            axios
+                .post('/generos', {
+                    nome: this.props.form.getFieldsValue().campo,
+                    familia_id: this.props.form.getFieldsValue().familia
+                })
                 .then(response => {
                     this.setState({
                         loading: false
                     })
                     if (response.status === 204) {
-                        this.requisitaGeneros('', this.props.form.getFieldsValue().familia)
+                        this.requisitaGeneros(
+                            '',
+                            this.props.form.getFieldsValue().familia
+                        )
                         this.setState({
                             search: {
                                 genero: 'validating'
                             }
                         })
-                        this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                        this.openNotificationWithIcon(
+                            'success',
+                            'Sucesso',
+                            'O cadastro foi realizado com sucesso.'
+                        )
                     }
                     this.props.form.setFields({
                         campo: {
@@ -1306,10 +1565,21 @@ class NovoTomboScreen extends Component {
                     })
                     const { response } = err
                     if (response && response.data) {
-                        if (response.status === 400 || response.status === 422) {
-                            this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                        if (
+                            response.status === 400
+                            || response.status === 422
+                        ) {
+                            this.openNotificationWithIcon(
+                                'warning',
+                                'Falha',
+                                response.data.error.message
+                            )
                         } else {
-                            this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar o novo gênero, tente novamente.')
+                            this.openNotificationWithIcon(
+                                'error',
+                                'Falha',
+                                'Houve um problema ao cadastrar o novo gênero, tente novamente.'
+                            )
                         }
                         const { error } = response.data
                         throw new Error(error.message)
@@ -1347,32 +1617,48 @@ class NovoTomboScreen extends Component {
 
     cadastraNovaEspecie = () => {
         if (!this.props.form.getFieldsValue().genero) {
-            this.openNotificationWithIcon('warning', 'Falha', 'Selecione um gênero para cadastrar uma subfamília.')
+            this.openNotificationWithIcon(
+                'warning',
+                'Falha',
+                'Selecione um gênero para cadastrar uma subfamília.'
+            )
         }
         if (!this.props.form.getFieldsValue().familia) {
-            this.openNotificationWithIcon('warning', 'Falha', 'Selecione uma família para cadastrar uma subfamília.')
+            this.openNotificationWithIcon(
+                'warning',
+                'Falha',
+                'Selecione uma família para cadastrar uma subfamília.'
+            )
         } else {
             this.setState({
                 loading: true
             })
-            axios.post('/especies', {
-                nome: this.props.form.getFieldsValue().campo,
-                familia_id: this.props.form.getFieldsValue().familia,
-                genero_id: this.props.form.getFieldsValue().genero,
-                autor_id: this.props.form.getFieldsValue().autor
-            })
+            axios
+                .post('/especies', {
+                    nome: this.props.form.getFieldsValue().campo,
+                    familia_id: this.props.form.getFieldsValue().familia,
+                    genero_id: this.props.form.getFieldsValue().genero,
+                    autor_id: this.props.form.getFieldsValue().autor
+                })
                 .then(response => {
                     this.setState({
                         loading: false
                     })
                     if (response.status === 204) {
-                        this.requisitaEspecies('', this.props.form.getFieldsValue().genero)
+                        this.requisitaEspecies(
+                            '',
+                            this.props.form.getFieldsValue().genero
+                        )
                         this.setState({
                             search: {
                                 especie: 'validating'
                             }
                         })
-                        this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                        this.openNotificationWithIcon(
+                            'success',
+                            'Sucesso',
+                            'O cadastro foi realizado com sucesso.'
+                        )
                     }
                     this.props.form.setFields({
                         campo: {
@@ -1386,10 +1672,21 @@ class NovoTomboScreen extends Component {
                     })
                     const { response } = err
                     if (response && response.data) {
-                        if (response.status === 400 || response.status === 422) {
-                            this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                        if (
+                            response.status === 400
+                            || response.status === 422
+                        ) {
+                            this.openNotificationWithIcon(
+                                'warning',
+                                'Falha',
+                                response.data.error.message
+                            )
                         } else {
-                            this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar a nova espécie, tente novamente.')
+                            this.openNotificationWithIcon(
+                                'error',
+                                'Falha',
+                                'Houve um problema ao cadastrar a nova espécie, tente novamente.'
+                            )
                         }
                         const { error } = response.data
                         throw new Error(error.message)
@@ -1427,36 +1724,56 @@ class NovoTomboScreen extends Component {
 
     cadastraNovaSubespecie = () => {
         if (!this.props.form.getFieldsValue().especie) {
-            this.openNotificationWithIcon('warning', 'Falha', 'Selecione uma espécie para cadastrar uma subespécie.')
+            this.openNotificationWithIcon(
+                'warning',
+                'Falha',
+                'Selecione uma espécie para cadastrar uma subespécie.'
+            )
         }
         if (!this.props.form.getFieldsValue().genero) {
-            this.openNotificationWithIcon('warning', 'Falha', 'Selecione um gênero para cadastrar uma subespécie.')
+            this.openNotificationWithIcon(
+                'warning',
+                'Falha',
+                'Selecione um gênero para cadastrar uma subespécie.'
+            )
         }
         if (!this.props.form.getFieldsValue().familia) {
-            this.openNotificationWithIcon('warning', 'Falha', 'Selecione uma família para cadastrar uma subespécie.')
+            this.openNotificationWithIcon(
+                'warning',
+                'Falha',
+                'Selecione uma família para cadastrar uma subespécie.'
+            )
         } else {
             this.setState({
                 loading: true
             })
-            axios.post('/subespecies', {
-                nome: this.props.form.getFieldsValue().campo,
-                familia_id: this.props.form.getFieldsValue().familia,
-                genero_id: this.props.form.getFieldsValue().genero,
-                especie_id: this.props.form.getFieldsValue().especie,
-                autor_id: this.props.form.getFieldsValue().autor
-            })
+            axios
+                .post('/subespecies', {
+                    nome: this.props.form.getFieldsValue().campo,
+                    familia_id: this.props.form.getFieldsValue().familia,
+                    genero_id: this.props.form.getFieldsValue().genero,
+                    especie_id: this.props.form.getFieldsValue().especie,
+                    autor_id: this.props.form.getFieldsValue().autor
+                })
                 .then(response => {
                     this.setState({
                         loading: false
                     })
                     if (response.status === 204) {
-                        this.requisitaSubespecies('', this.props.form.getFieldsValue().especie)
+                        this.requisitaSubespecies(
+                            '',
+                            this.props.form.getFieldsValue().especie
+                        )
                         this.setState({
                             search: {
                                 subespecie: 'validating'
                             }
                         })
-                        this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                        this.openNotificationWithIcon(
+                            'success',
+                            'Sucesso',
+                            'O cadastro foi realizado com sucesso.'
+                        )
                     }
                     this.props.form.setFields({
                         campo: {
@@ -1470,10 +1787,21 @@ class NovoTomboScreen extends Component {
                     })
                     const { response } = err
                     if (response && response.data) {
-                        if (response.status === 400 || response.status === 422) {
-                            this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                        if (
+                            response.status === 400
+                            || response.status === 422
+                        ) {
+                            this.openNotificationWithIcon(
+                                'warning',
+                                'Falha',
+                                response.data.error.message
+                            )
                         } else {
-                            this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar a nova subespécie, tente novamente.')
+                            this.openNotificationWithIcon(
+                                'error',
+                                'Falha',
+                                'Houve um problema ao cadastrar a nova subespécie, tente novamente.'
+                            )
                         }
                         const { error } = response.data
                         throw new Error(error.message)
@@ -1511,36 +1839,56 @@ class NovoTomboScreen extends Component {
 
     cadastraNovaVariedade = () => {
         if (!this.props.form.getFieldsValue().especie) {
-            this.openNotificationWithIcon('warning', 'Falha', 'Selecione uma espécie para cadastrar uma variedade.')
+            this.openNotificationWithIcon(
+                'warning',
+                'Falha',
+                'Selecione uma espécie para cadastrar uma variedade.'
+            )
         }
         if (!this.props.form.getFieldsValue().genero) {
-            this.openNotificationWithIcon('warning', 'Falha', 'Selecione um gênero para cadastrar uma variedade.')
+            this.openNotificationWithIcon(
+                'warning',
+                'Falha',
+                'Selecione um gênero para cadastrar uma variedade.'
+            )
         }
         if (!this.props.form.getFieldsValue().familia) {
-            this.openNotificationWithIcon('warning', 'Falha', 'Selecione uma família para cadastrar uma variedade.')
+            this.openNotificationWithIcon(
+                'warning',
+                'Falha',
+                'Selecione uma família para cadastrar uma variedade.'
+            )
         } else {
             this.setState({
                 loading: true
             })
-            axios.post('/variedades', {
-                nome: this.props.form.getFieldsValue().campo,
-                familia_id: this.props.form.getFieldsValue().familia,
-                genero_id: this.props.form.getFieldsValue().genero,
-                especie_id: this.props.form.getFieldsValue().especie,
-                autor_id: this.props.form.getFieldsValue().autor
-            })
+            axios
+                .post('/variedades', {
+                    nome: this.props.form.getFieldsValue().campo,
+                    familia_id: this.props.form.getFieldsValue().familia,
+                    genero_id: this.props.form.getFieldsValue().genero,
+                    especie_id: this.props.form.getFieldsValue().especie,
+                    autor_id: this.props.form.getFieldsValue().autor
+                })
                 .then(response => {
                     this.setState({
                         loading: false
                     })
                     if (response.status === 204) {
-                        this.requisitaVariedades('', this.props.form.getFieldsValue().especie)
+                        this.requisitaVariedades(
+                            '',
+                            this.props.form.getFieldsValue().especie
+                        )
                         this.setState({
                             search: {
                                 variedade: 'validating'
                             }
                         })
-                        this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                        this.openNotificationWithIcon(
+                            'success',
+                            'Sucesso',
+                            'O cadastro foi realizado com sucesso.'
+                        )
                     }
                     this.props.form.setFields({
                         campo: {
@@ -1554,10 +1902,21 @@ class NovoTomboScreen extends Component {
                     })
                     const { response } = err
                     if (response && response.data) {
-                        if (response.status === 400 || response.status === 422) {
-                            this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                        if (
+                            response.status === 400
+                            || response.status === 422
+                        ) {
+                            this.openNotificationWithIcon(
+                                'warning',
+                                'Falha',
+                                response.data.error.message
+                            )
                         } else {
-                            this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar a nova variedade, tente novamente.')
+                            this.openNotificationWithIcon(
+                                'error',
+                                'Falha',
+                                'Houve um problema ao cadastrar a nova variedade, tente novamente.'
+                            )
                         }
                         const { error } = response.data
                         throw new Error(error.message)
@@ -1594,10 +1953,11 @@ class NovoTomboScreen extends Component {
     }
 
     cadastraNovoAutor = () => {
-        axios.post('/autores', {
-            nome: this.props.form.getFieldsValue().campo,
-            iniciais: ''
-        })
+        axios
+            .post('/autores', {
+                nome: this.props.form.getFieldsValue().campo,
+                iniciais: ''
+            })
             .then(response => {
                 if (response.status === 204) {
                     this.requisitaAutores()
@@ -1606,11 +1966,23 @@ class NovoTomboScreen extends Component {
                             autor: 'validating'
                         }
                     })
-                    this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                    this.openNotificationWithIcon(
+                        'success',
+                        'Sucesso',
+                        'O cadastro foi realizado com sucesso.'
+                    )
                 } else if (response.status === 400) {
-                    this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                    this.openNotificationWithIcon(
+                        'warning',
+                        'Falha',
+                        response.data.error.message
+                    )
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar o novo autor, tente novamente.')
+                    this.openNotificationWithIcon(
+                        'error',
+                        'Falha',
+                        'Houve um problema ao cadastrar o novo autor, tente novamente.'
+                    )
                 }
                 this.props.form.setFields({
                     campo: {
@@ -1657,9 +2029,10 @@ class NovoTomboScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.post('/solos', {
-            nome: this.props.form.getFieldsValue().campo
-        })
+        axios
+            .post('/solos', {
+                nome: this.props.form.getFieldsValue().campo
+            })
             .then(response => {
                 if (response.status === 204) {
                     this.requisitaSolos('')
@@ -1669,7 +2042,11 @@ class NovoTomboScreen extends Component {
                         },
                         loading: false
                     })
-                    this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                    this.openNotificationWithIcon(
+                        'success',
+                        'Sucesso',
+                        'O cadastro foi realizado com sucesso.'
+                    )
                 }
                 this.props.form.setFields({
                     campo: {
@@ -1684,9 +2061,17 @@ class NovoTomboScreen extends Component {
                 const { response } = err
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                        this.openNotificationWithIcon(
+                            'warning',
+                            'Falha',
+                            response.data.error.message
+                        )
                     } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar o novo solo, tente novamente.')
+                        this.openNotificationWithIcon(
+                            'error',
+                            'Falha',
+                            'Houve um problema ao cadastrar o novo solo, tente novamente.'
+                        )
                     }
                     const { error } = response.data
                     throw new Error(error.message)
@@ -1701,9 +2086,10 @@ class NovoTomboScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.post('/relevos', {
-            nome: this.props.form.getFieldsValue().campo
-        })
+        axios
+            .post('/relevos', {
+                nome: this.props.form.getFieldsValue().campo
+            })
             .then(response => {
                 this.setState({
                     loading: false
@@ -1715,11 +2101,23 @@ class NovoTomboScreen extends Component {
                             relevo: 'validating'
                         }
                     })
-                    this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                    this.openNotificationWithIcon(
+                        'success',
+                        'Sucesso',
+                        'O cadastro foi realizado com sucesso.'
+                    )
                 } else if (response.status === 400) {
-                    this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                    this.openNotificationWithIcon(
+                        'warning',
+                        'Falha',
+                        response.data.error.message
+                    )
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar o novo relevo, tente novamente.')
+                    this.openNotificationWithIcon(
+                        'error',
+                        'Falha',
+                        'Houve um problema ao cadastrar o novo relevo, tente novamente.'
+                    )
                 }
                 this.props.form.setFields({
                     campo: {
@@ -1734,9 +2132,17 @@ class NovoTomboScreen extends Component {
                 const { response } = err
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                        this.openNotificationWithIcon(
+                            'warning',
+                            'Falha',
+                            response.data.error.message
+                        )
                     } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar o novo relevo, tente novamente.')
+                        this.openNotificationWithIcon(
+                            'error',
+                            'Falha',
+                            'Houve um problema ao cadastrar o novo relevo, tente novamente.'
+                        )
                     }
                     const { error } = response.data
                     throw new Error(error.message)
@@ -1751,9 +2157,10 @@ class NovoTomboScreen extends Component {
         this.setState({
             loading: true
         })
-        axios.post('/vegetacoes', {
-            nome: this.props.form.getFieldsValue().campo
-        })
+        axios
+            .post('/vegetacoes', {
+                nome: this.props.form.getFieldsValue().campo
+            })
             .then(response => {
                 this.setState({
                     loading: false
@@ -1765,7 +2172,11 @@ class NovoTomboScreen extends Component {
                             vegetacao: 'validating'
                         }
                     })
-                    this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                    this.openNotificationWithIcon(
+                        'success',
+                        'Sucesso',
+                        'O cadastro foi realizado com sucesso.'
+                    )
                 }
                 this.props.form.setFields({
                     campo: {
@@ -1780,9 +2191,71 @@ class NovoTomboScreen extends Component {
                 const { response } = err
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                        this.openNotificationWithIcon(
+                            'warning',
+                            'Falha',
+                            response.data.error.message
+                        )
                     } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar a nova vegetação, tente novamente.')
+                        this.openNotificationWithIcon(
+                            'error',
+                            'Falha',
+                            'Houve um problema ao cadastrar a nova vegetação, tente novamente.'
+                        )
+                    }
+                    const { error } = response.data
+                    throw new Error(error.message)
+                } else {
+                    throw err
+                }
+            })
+            .catch(this.catchRequestError)
+    }
+
+    cadastraNovoIdentificador = () => {
+        this.setState({
+            loading: true
+        })
+        axios
+            .post('/identificadores', {
+                nome: this.props.form.getFieldsValue().campo
+            })
+            .then(response => {
+                this.setState({
+                    loading: false
+                })
+                if (response.status === 204 || response.status === 201) {
+                    this.requisitaIdentificadores('')
+                    this.openNotificationWithIcon(
+                        'success',
+                        'Sucesso',
+                        'O cadastro foi realizado com sucesso.'
+                    )
+                }
+                this.props.form.setFields({
+                    campo: {
+                        value: ''
+                    }
+                })
+            })
+            .catch(err => {
+                this.setState({
+                    loading: false
+                })
+                const { response } = err
+                if (response && response.data) {
+                    if (response.status === 400 || response.status === 422) {
+                        this.openNotificationWithIcon(
+                            'warning',
+                            'Falha',
+                            response.data.error.message
+                        )
+                    } else {
+                        this.openNotificationWithIcon(
+                            'error',
+                            'Falha',
+                            'Houve um problema ao cadastrar o novo identificador, tente novamente.'
+                        )
                     }
                     const { error } = response.data
                     throw new Error(error.message)
@@ -1838,11 +2311,12 @@ class NovoTomboScreen extends Component {
             formColetor: false,
             loading: true
         })
-        axios.post('/coletores', {
-            nome: this.props.form.getFieldsValue().nomeColetor,
-            email: this.props.form.getFieldsValue().emailColetor,
-            numero: this.props.form.getFieldsValue().numeroColetor
-        })
+        axios
+            .post('/coletores', {
+                nome: this.props.form.getFieldsValue().nomeColetor,
+                email: this.props.form.getFieldsValue().emailColetor,
+                numero: this.props.form.getFieldsValue().numeroColetor
+            })
             .then(response => {
                 this.setState({
                     loading: false
@@ -1854,7 +2328,11 @@ class NovoTomboScreen extends Component {
                             coletor: 'validating'
                         }
                     })
-                    this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                    this.openNotificationWithIcon(
+                        'success',
+                        'Sucesso',
+                        'O cadastro foi realizado com sucesso.'
+                    )
                 }
                 this.props.form.setFields({
                     nomeColetor: { value: '' },
@@ -1867,9 +2345,17 @@ class NovoTomboScreen extends Component {
                 const { response } = err
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                        this.openNotificationWithIcon(
+                            'warning',
+                            'Falha',
+                            response.data.error.message
+                        )
                     } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar o novo coletor, tente novamente.')
+                        this.openNotificationWithIcon(
+                            'error',
+                            'Falha',
+                            'Houve um problema ao cadastrar o novo coletor, tente novamente.'
+                        )
                     }
                     const { error } = response.data
                     throw new Error(error.message)
@@ -1889,7 +2375,11 @@ class NovoTomboScreen extends Component {
         const faseSucessionalId = getFieldValue('fases')
 
         if (!cidadeId) {
-            this.openNotificationWithIcon('warning', 'Atenção', 'Selecione uma cidade para cadastrar um local de coleta.')
+            this.openNotificationWithIcon(
+                'warning',
+                'Atenção',
+                'Selecione uma cidade para cadastrar um local de coleta.'
+            )
             this.setState({ loading: false })
             return
         }
@@ -1903,11 +2393,16 @@ class NovoTomboScreen extends Component {
             payload.fase_sucessional_id = faseSucessionalId
         }
 
-        axios.post('/locais-coleta', payload)
+        axios
+            .post('/locais-coleta', payload)
             .then(response => {
                 if (response.status === 201) {
                     this.requisitaLocaisColeta('')
-                    this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                    this.openNotificationWithIcon(
+                        'success',
+                        'Sucesso',
+                        'O cadastro foi realizado com sucesso.'
+                    )
                 }
                 form.setFields({
                     descricaoLocalColeta: { value: '' }
@@ -1916,9 +2411,18 @@ class NovoTomboScreen extends Component {
             .catch(err => {
                 const { response } = err
                 if (response && response.data) {
-                    this.openNotificationWithIcon('error', 'Falha', response.data.error?.message || 'Houve um problema ao cadastrar o novo local de coleta.')
+                    this.openNotificationWithIcon(
+                        'error',
+                        'Falha',
+                        response.data.error?.message
+                            || 'Houve um problema ao cadastrar o novo local de coleta.'
+                    )
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar o novo local de coleta, tente novamente.')
+                    this.openNotificationWithIcon(
+                        'error',
+                        'Falha',
+                        'Houve um problema ao cadastrar o novo local de coleta, tente novamente.'
+                    )
                 }
             })
             .finally(() => {
@@ -1940,19 +2444,28 @@ class NovoTomboScreen extends Component {
     }
 
     requisitaCadastroTombo = json => {
-        axios.post('/tombos', { json })
+        axios
+            .post('/tombos', { json })
             .then(response => {
                 if (response.status === 201) {
                     const tombo = response.data
-                    const photoSourceArg = (codigo) => this.barcodeRef?.getPhotosOfCode?.(codigo) || [];
-                    this.criarCodigoBarras(tombo.hcf, this.state.codigosBarrasForm, photoSourceArg)
+                    const photoSourceArg = codigo => this.barcodeRef?.getPhotosOfCode?.(codigo) || []
+                    this.criarCodigoBarras(
+                        tombo.hcf,
+                        this.state.codigosBarrasForm,
+                        photoSourceArg
+                    )
                 }
             })
             .then(response => {
                 this.setState({
                     loading: false
                 })
-                this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                this.openNotificationWithIcon(
+                    'success',
+                    'Sucesso',
+                    'O cadastro foi realizado com sucesso.'
+                )
                 this.props.history.push('/tombos')
             })
             .catch(err => {
@@ -1962,9 +2475,17 @@ class NovoTomboScreen extends Component {
                 const { response } = err
 
                 if (response.status === 400) {
-                    this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                    this.openNotificationWithIcon(
+                        'warning',
+                        'Falha',
+                        response.data.error.message
+                    )
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar o novo tombo tente novamente.')
+                    this.openNotificationWithIcon(
+                        'error',
+                        'Falha',
+                        'Houve um problema ao cadastrar o novo tombo tente novamente.'
+                    )
                 }
                 if (response && response.data) {
                     const { error } = response.data
@@ -1993,8 +2514,7 @@ class NovoTomboScreen extends Component {
             onOk: () => {
                 this.excluirFotoTombo(foto, indice)
             },
-            onCancel: () => {
-            }
+            onCancel: () => {}
         })
     }
 
@@ -2058,9 +2578,16 @@ class NovoTomboScreen extends Component {
             ...insereState
         })
 
-        if (dados.retorno && dados.retorno.identificadores && dados.retorno.identificadores.length > 0) {
+        if (
+            dados.retorno
+            && dados.retorno.identificadores
+            && dados.retorno.identificadores.length > 0
+        ) {
             const identificadoresParaFormulario = dados.retorno.identificadores
-                .sort((a, b) => a.tombos_identificadores.ordem - b.tombos_identificadores.ordem)
+                .sort(
+                    (a, b) => a.tombos_identificadores.ordem
+                        - b.tombos_identificadores.ordem
+                )
                 .map(identificador => ({
                     key: identificador.id,
                     label: identificador.nome
@@ -2080,7 +2607,9 @@ class NovoTomboScreen extends Component {
                 value: dados.hcf
             },
             dataTombo: {
-                value: `${date.getUTCDate()}/${date.getUTCMonth() + 1}/${date.getUTCFullYear()}`
+                value: `${date.getUTCDate()}/${
+                    date.getUTCMonth() + 1
+                }/${date.getUTCFullYear()}`
             },
             altitude: {
                 value: dados.localizacao.altitude
@@ -2149,14 +2678,15 @@ class NovoTomboScreen extends Component {
     mostraMensagemVerificaPendencia = () => {
         confirm({
             title: 'Pendência',
-            content: 'Este tombo possui pendências não resolvidas, deseja continuar alterando?',
+            content:
+                'Este tombo possui pendências não resolvidas, deseja continuar alterando?',
             okText: 'SIM',
             okType: 'danger',
             cancelText: 'NÃO',
-            onOk: () => {
-            },
+            onOk: () => {},
             onCancel: () => {
                 ''
+
                 window.history.go(-1)
             }
         })
@@ -2166,8 +2696,26 @@ class NovoTomboScreen extends Component {
         e.preventDefault()
         const { form } = this.props
         form.validateFields((err, values) => {
+            if (
+                !(
+                    form.getFieldsValue().dataColetaDia
+                    || form.getFieldsValue().dataColetaMes
+                    || form.getFieldsValue().dataColetaAno
+                )
+            ) {
+                this.openNotificationWithIcon(
+                    'warning',
+                    'Falha',
+                    'É necessário pelo menos o dia ou o mês ou o ano da data de coleta para o cadastro.'
+                )
+                return false
+            }
             if (err != null) {
-                this.openNotificationWithIcon('warning', 'Falha', 'Preencha todos os dados requiridos.')
+                this.openNotificationWithIcon(
+                    'warning',
+                    'Falha',
+                    'Preencha todos os dados requiridos.'
+                )
             } else {
                 this.handleRequisicao(values)
                 this.setState({
@@ -2187,11 +2735,44 @@ class NovoTomboScreen extends Component {
 
     montaFormularioJsonEdicao = values => {
         const {
-            altitude, autorEspecie, autorVariedade, autoresSubespecie, cidade, coletores, coletoresComplementares, complemento,
-            dataColetaAno, dataColetaDia, dataColetaMes, dataIdentAno, dataIdentDia, dataIdentMes,
-            especie, reino, familia, fases, genero, identificador, latitude, longitude,
-            nomePopular, numColeta, observacoesColecaoAnexa, observacoesTombo, relevo, solo,
-            subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao, unicata, dataTombo
+            altitude,
+            autorEspecie,
+            autorVariedade,
+            autoresSubespecie,
+            cidade,
+            coletores,
+            coletoresComplementares,
+            complemento,
+            dataColetaAno,
+            dataColetaDia,
+            dataColetaMes,
+            dataIdentAno,
+            dataIdentDia,
+            dataIdentMes,
+            especie,
+            reino,
+            familia,
+            fases,
+            genero,
+            identificador,
+            latitude,
+            longitude,
+            nomePopular,
+            numColeta,
+            observacoesColecaoAnexa,
+            observacoesTombo,
+            relevo,
+            solo,
+            subespecie,
+            subfamilia,
+            tipo,
+            tipoColecaoAnexa,
+            variedade,
+            vegetacao,
+            entidade,
+            relevoDescricao,
+            unicata,
+            dataTombo
         } = values
 
         const isUserIdentificador = isIdentificador()
@@ -2271,8 +2852,12 @@ class NovoTomboScreen extends Component {
 
         json.localidade = {
             cidade_id: parseInt(cidade),
-            latitude: latitude ? converteDecimalParaGrausMinutosSegundos(latitude, false, true) : null,
-            longitude: longitude ? converteDecimalParaGrausMinutosSegundos(longitude, true, true) : null,
+            latitude: latitude
+                ? converteDecimalParaGrausMinutosSegundos(latitude, false, true)
+                : null,
+            longitude: longitude
+                ? converteDecimalParaGrausMinutosSegundos(longitude, true, true)
+                : null,
             altitude: altitude ? parseInt(altitude) : null,
             local_coleta_id: localColetaId
         }
@@ -2325,11 +2910,44 @@ class NovoTomboScreen extends Component {
 
     montaFormularioJsonCadastro = values => {
         const {
-            altitude, autorEspecie, autorVariedade, autoresSubespecie, cidade, coletores, coletoresComplementares, complemento,
-            dataColetaAno, dataColetaDia, dataColetaMes, dataIdentAno, dataIdentDia, dataIdentMes,
-            especie, reino, familia, fases, genero, identificador, latitude, longitude,
-            nomePopular, numColeta, observacoesColecaoAnexa, observacoesTombo, relevo, solo,
-            subespecie, subfamilia, tipo, tipoColecaoAnexa, variedade, vegetacao, entidade, relevoDescricao, unicata, dataTombo
+            altitude,
+            autorEspecie,
+            autorVariedade,
+            autoresSubespecie,
+            cidade,
+            coletores,
+            coletoresComplementares,
+            complemento,
+            dataColetaAno,
+            dataColetaDia,
+            dataColetaMes,
+            dataIdentAno,
+            dataIdentDia,
+            dataIdentMes,
+            especie,
+            reino,
+            familia,
+            fases,
+            genero,
+            identificador,
+            latitude,
+            longitude,
+            nomePopular,
+            numColeta,
+            observacoesColecaoAnexa,
+            observacoesTombo,
+            relevo,
+            solo,
+            subespecie,
+            subfamilia,
+            tipo,
+            tipoColecaoAnexa,
+            variedade,
+            vegetacao,
+            entidade,
+            relevoDescricao,
+            unicata,
+            dataTombo
         } = values
         const json = {}
 
@@ -2385,7 +3003,10 @@ class NovoTomboScreen extends Component {
         if (altitude) json.localidade = { ...json.localidade, altitude }
         json.localidade = { ...json.localidade, cidade_id: parseInt(cidade) }
         if (localColetaId) {
-            json.localidade = { ...json.localidade, local_coleta_id: localColetaId }
+            json.localidade = {
+                ...json.localidade,
+                local_coleta_id: localColetaId
+            }
         }
         if (solo) json.paisagem = { ...json.paisagem, solo_id: soloId }
         if (relevoDescricao) json.paisagem = { ...json.paisagem, descricao: relevoDescricao }
@@ -2421,9 +3042,18 @@ class NovoTomboScreen extends Component {
         }
 
         json.coletor = coletores.key
-        if (coletoresComplementares) json.coletor_complementar = { complementares: coletoresComplementares }
+        if (coletoresComplementares) {
+            json.coletor_complementar = {
+                complementares: coletoresComplementares
+            }
+        }
         if (tipoColecaoAnexa) json.colecoes_anexas = { tipo: tipoColecaoAnexa }
-        if (observacoesColecaoAnexa) json.colecoes_anexas = { ...json.colecoes_anexas, observacoes: observacoesColecaoAnexa }
+        if (observacoesColecaoAnexa) {
+            json.colecoes_anexas = {
+                ...json.colecoes_anexas,
+                observacoes: observacoesColecaoAnexa
+            }
+        }
         if (observacoesTombo) json.observacoes = observacoesTombo
         if (autorEspecie) json.autores = { especie: autorEspecie }
         if (autoresSubespecie) json.autores = { ...json.autores, subespecie: autoresSubespecie }
@@ -2434,7 +3064,7 @@ class NovoTomboScreen extends Component {
 
     handleSubmitForm = e => {
         e.preventDefault()
-        this.props.form.validateFields((err, values) => { })
+        this.props.form.validateFields((err, values) => {})
     }
 
     optionEntidades = () => this.state.herbarios.map(item => (
@@ -2442,7 +3072,6 @@ class NovoTomboScreen extends Component {
             {item.sigla}
             {' '}
             -
-            {' '}
             {item.nome}
         </Option>
     ))
@@ -2470,11 +3099,8 @@ class NovoTomboScreen extends Component {
             okText: 'SIM',
             okType: 'danger',
             cancelText: 'NÃO',
-            onOk: () => {
-
-            },
-            onCancel: () => {
-            }
+            onOk: () => {},
+            onCancel: () => {}
         })
     }
 
@@ -2496,15 +3122,22 @@ class NovoTomboScreen extends Component {
 
     ajustaColetores = value => {
         if (value) {
-            axios.get(`/tombos/numeroColetor/${value.key}`)
+            axios
+                .get(`/tombos/numeroColetor/${value.key}`)
                 .then(response => {
                     if (response.status === 200) {
                         const todosNumeros = response.data
-                        todosNumeros.sort((a, b) => b.numero_coleta - a.numero_coleta)
+                        todosNumeros.sort(
+                            (a, b) => b.numero_coleta - a.numero_coleta
+                        )
 
                         this.props.form.setFields({
                             numColeta: {
-                                value: todosNumeros.length === 0 || todosNumeros[0].numero_coleta === null ? 1 : todosNumeros[0].numero_coleta + 1
+                                value:
+                                    todosNumeros.length === 0
+                                    || todosNumeros[0].numero_coleta === null
+                                        ? 1
+                                        : todosNumeros[0].numero_coleta + 1
                             }
                         })
                     }
@@ -2517,7 +3150,9 @@ class NovoTomboScreen extends Component {
         this.setState({ fetchingColetores: true })
 
         try {
-            const response = await axios.get(`/coletores-predicao?nome=${searchText || ''}`)
+            const response = await axios.get(
+                `/coletores-predicao?nome=${searchText || ''}`
+            )
 
             if (response.status === 200) {
                 this.setState({
@@ -2626,7 +3261,11 @@ class NovoTomboScreen extends Component {
         const cidade = cidadeId || this.props.form.getFieldValue('cidade')
 
         if (!cidade) {
-            this.openNotificationWithIcon('warning', 'Atenção', 'Por favor, selecione uma cidade primeiro.')
+            this.openNotificationWithIcon(
+                'warning',
+                'Atenção',
+                'Por favor, selecione uma cidade primeiro.'
+            )
             return
         }
 
@@ -2745,7 +3384,9 @@ class NovoTomboScreen extends Component {
         this.setState({ fetchingIdentificadores: true })
 
         try {
-            const response = await axios.get(`/identificadores-predicao?nome=${searchText || ''}`)
+            const response = await axios.get(
+                `/identificadores-predicao?nome=${searchText || ''}`
+            )
 
             if (response.status === 200) {
                 this.setState({
@@ -2759,23 +3400,88 @@ class NovoTomboScreen extends Component {
         }
     }
 
+    verifyCoordenada = async (cidadeId = null, lat = null, lng = null) => {
+        try {
+            const { form } = this.props
+
+            if (cidadeId == null) {
+                cidadeId = form.getFieldValue('cidade')
+            }
+
+            const latitude = lat ?? form.getFieldValue('latitude')
+            const longitude = lng ?? form.getFieldValue('longitude')
+
+            // Clear status first
+            this.setState({
+                cidadeStatus: '',
+                cidadeHelp: ''
+            })
+
+            const paisId = this.state.paisInicial || form.getFieldValue('pais')
+            if (String(paisId) !== '76') return
+
+            if (!cidadeId || !latitude || !longitude) return
+            if (Number.isNaN(Number(latitude)) || Number.isNaN(Number(longitude))) return
+
+            const payload = {
+                cidade_id: Number(cidadeId),
+                latitude: Number(latitude),
+                longitude: Number(longitude)
+            }
+
+            console.log('Verificando coordenada:', payload)
+
+            const response = await axios.post('/tombos/verificarCoordenada', payload)
+            console.log('Resposta verificação:', response?.data)
+
+            if (response?.data && response.data.dentro === false) {
+                this.setState({
+                    cidadeStatus: 'warning',
+                    cidadeHelp: 'A coordenada não pertence à cidade'
+                })
+            } else if (response?.data && response.data.dentro === true) {
+                this.setState({
+                    cidadeStatus: 'success',
+                    cidadeHelp: ''
+                })
+            }
+        } catch (err) {
+            console.error('Falha ao verificar coordenada:', err)
+        }
+    }
+
     validacaoModal = () => {
         if (this.state.formColetor) {
-            if (!this.props.form.getFieldsValue().nomeColetor || !this.props.form.getFieldsValue().numeroColetor) {
-                this.openNotificationWithIcon('warning', 'Falha', 'O nome e o número do coletor são obrigatórios.')
+            if (
+                !this.props.form.getFieldsValue().nomeColetor
+                || !this.props.form.getFieldsValue().numeroColetor
+            ) {
+                this.openNotificationWithIcon(
+                    'warning',
+                    'Falha',
+                    'O nome e o número do coletor são obrigatórios.'
+                )
                 return false
             }
             return true
         }
         if (this.state.formLocalColeta) {
             if (!this.props.form.getFieldsValue().descricaoLocalColeta) {
-                this.openNotificationWithIcon('warning', 'Falha', 'A descrição do local de coleta é obrigatória.')
+                this.openNotificationWithIcon(
+                    'warning',
+                    'Falha',
+                    'A descrição do local de coleta é obrigatória.'
+                )
                 return false
             }
             return true
         }
         if (!this.props.form.getFieldsValue().campo) {
-            this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome para o cadastro.')
+            this.openNotificationWithIcon(
+                'warning',
+                'Falha',
+                'Informe o nome para o cadastro.'
+            )
             return false
         }
         return true
@@ -2783,7 +3489,11 @@ class NovoTomboScreen extends Component {
 
     renderColetores = (getFieldDecorator, getFieldError) => {
         const {
-            coletoresInicial, coletores, search, fetchingColetores, valoresColetores
+            coletoresInicial,
+            coletores,
+            search,
+            fetchingColetores,
+            valoresColetores
         } = this.state
         return (
             <div>
@@ -2807,7 +3517,9 @@ class NovoTomboScreen extends Component {
                                 })
                             }}
                             style={{ width: '100%' }}
-                            notFoundContent={fetchingColetores ? <Spin size="small" /> : null}
+                            notFoundContent={
+                                fetchingColetores ? <Spin size="small" /> : null
+                            }
                             labelInValue
                             value={valoresColetores}
                             placeholder="Selecione os coletores"
@@ -2825,17 +3537,15 @@ class NovoTomboScreen extends Component {
                     <Col span={12}>
                         <Row gutter={8}>
                             <Col span={24}>
-                                <span>
-                                    Coletores complementares:
-                                </span>
+                                <span>Coletores complementares:</span>
                             </Col>
                         </Row>
                         <Row gutter={8}>
                             <Col span={24}>
                                 <FormItem>
-                                    {getFieldDecorator('coletoresComplementares')(
-                                        <Input placeholder="" type="text" />
-                                    )}
+                                    {getFieldDecorator(
+                                        'coletoresComplementares'
+                                    )(<Input placeholder="" type="text" />)}
                                 </FormItem>
                             </Col>
                         </Row>
@@ -2844,7 +3554,6 @@ class NovoTomboScreen extends Component {
             </div>
         )
     }
-
 
     renderColecoesAnexas = getFieldDecorator => {
         const { colecaoInicial, value } = this.state
@@ -2917,7 +3626,7 @@ class NovoTomboScreen extends Component {
                     <Row gutter={8}>
                         <Col span={24}>
                             <span>
-                                Informe o nome{" "}
+                                Informe o nome
                                 {this.state.formulario.desc}
                                 :
                             </span>
@@ -2949,7 +3658,11 @@ class NovoTomboScreen extends Component {
                                 }}
                                 others={{
                                     loading: fetchingAutores,
-                                    notFoundContent: fetchingAutores ? <Spin size="small" /> : 'Nenhum resultado encontrado'
+                                    notFoundContent: fetchingAutores ? (
+                                        <Spin size="small" />
+                                    ) : (
+                                        'Nenhum resultado encontrado'
+                                    )
                                 }}
                                 debounceDelay={100}
                                 xs={24}
@@ -2971,7 +3684,7 @@ class NovoTomboScreen extends Component {
                 <Row gutter={8}>
                     <Col span={24}>
                         <span>
-                            Informe o nome{" "}
+                            Informe o nome
                             {this.state.formulario.desc}
                             :
                         </span>
@@ -2999,15 +3712,13 @@ class NovoTomboScreen extends Component {
                         title="Edição"
                         visibleModal={this.state.visibleModal}
                         loadingModal={this.state.loadingModal}
-                        onCancel={
-                            () => {
-                                this.setState({
-                                    visibleModal: false,
-                                    formColetor: 0,
-                                    formComAutor: false
-                                })
-                            }
-                        }
+                        onCancel={() => {
+                            this.setState({
+                                visibleModal: false,
+                                formColetor: 0,
+                                formComAutor: false
+                            })
+                        }}
                         onOk={() => {
                             if (this.validacaoModal()) {
                                 switch (this.state.formulario.tipo) {
@@ -3047,9 +3758,7 @@ class NovoTomboScreen extends Component {
                             })
                         }}
                     >
-
                         {this.renderFormulario(getFieldDecorator)}
-
                     </ModalCadastroComponent>
                 </Form>
                 <Form onSubmit={this.handleSubmitIdentificador}>
@@ -3073,9 +3782,16 @@ class NovoTomboScreen extends Component {
 
     renderLocalTombo = (getFieldDecorator, getFieldError) => {
         const {
-            paisInicial, estadoInicial, cidadeInicial,
-            paises, estados, cidades,
-            fetchingPaises, fetchingEstados, fetchingCidades, fetchingLocaisColeta
+            paisInicial,
+            estadoInicial,
+            cidadeInicial,
+            paises,
+            estados,
+            cidades,
+            fetchingPaises,
+            fetchingEstados,
+            fetchingCidades,
+            fetchingLocaisColeta
         } = this.state
         return (
             <div>
@@ -3088,10 +3804,12 @@ class NovoTomboScreen extends Component {
                         initialValue={String(paisInicial)}
                         paises={paises}
                         getFieldDecorator={getFieldDecorator}
-                        rules={[{
-                            required: true,
-                            message: 'Escolha um país'
-                        }]}
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Escolha um país'
+                            }
+                        ]}
                         onChange={value => {
                             if (value) {
                                 this.requisitaEstados('', value)
@@ -3119,10 +3837,12 @@ class NovoTomboScreen extends Component {
                         initialValue={String(estadoInicial)}
                         estados={estados}
                         getFieldDecorator={getFieldDecorator}
-                        rules={[{
-                            required: true,
-                            message: 'Escolha um estado'
-                        }]}
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Escolha um estado'
+                            }
+                        ]}
                         disabled={!this.props.form.getFieldValue('pais')}
                         onChange={value => {
                             if (value) {
@@ -3141,7 +3861,10 @@ class NovoTomboScreen extends Component {
                         onSearch={searchText => {
                             const paisSelecionado = this.props.form.getFieldValue('pais')
                             if (paisSelecionado) {
-                                this.requisitaEstados(searchText || '', paisSelecionado)
+                                this.requisitaEstados(
+                                    searchText || '',
+                                    paisSelecionado
+                                )
                             }
                         }}
                         loading={fetchingEstados}
@@ -3154,8 +3877,19 @@ class NovoTomboScreen extends Component {
                         getFieldDecorator={getFieldDecorator}
                         disabled={!this.props.form.getFieldValue('estados')}
                         onChange={value => {
+                            const latitude = this.props.form.getFieldValue('latitude')
+                            const longitude = this.props.form.getFieldValue('longitude')
+                            try {
+                                if (value && latitude && longitude) {
+                                    this.verifyCoordenada(value)
+                                }
+                            } catch (err) {
+                                console.error('Falha ao verificar coordenada:', err)
+                            }
                             if (value) {
-                                this.props.form.setFieldsValue({ complemento: undefined })
+                                this.props.form.setFieldsValue({
+                                    complemento: undefined
+                                })
                                 this.requisitaLocaisColeta('', value)
                             } else {
                                 this.setState({ locaisColeta: [] })
@@ -3167,7 +3901,10 @@ class NovoTomboScreen extends Component {
                         onSearch={searchText => {
                             const estadoSelecionado = this.props.form.getFieldValue('estados')
                             if (estadoSelecionado) {
-                                this.requisitaCidades(searchText || '', estadoSelecionado)
+                                this.requisitaCidades(
+                                    searchText || '',
+                                    estadoSelecionado
+                                )
                             }
                         }}
                         loading={fetchingCidades}
@@ -3186,7 +3923,10 @@ class NovoTomboScreen extends Component {
                         onSearch={searchText => {
                             const cidadeSelecionada = this.props.form.getFieldValue('cidade')
                             if (cidadeSelecionada) {
-                                this.requisitaLocaisColeta(searchText || '', cidadeSelecionada)
+                                this.requisitaLocaisColeta(
+                                    searchText || '',
+                                    cidadeSelecionada
+                                )
                             }
                         }}
                         onClickAddMore={() => {
@@ -3220,11 +3960,28 @@ class NovoTomboScreen extends Component {
 
     renderFamiliaTombo = (getFieldDecorator, getFieldError) => {
         const {
-            reinoInicial, familiaInicial, reinos, familias, generoInicial, generos, search,
-            especieInicial, especies, subespecieInicial, subespecies,
-            variedadeInicial, variedades, subfamiliaInicial, subfamilias,
-            fetchingReinos, fetchingFamilias, fetchingSubfamilias,
-            fetchingGeneros, fetchingEspecies, fetchingSubespecies, fetchingVariedades
+            reinoInicial,
+            familiaInicial,
+            reinos,
+            familias,
+            generoInicial,
+            generos,
+            search,
+            especieInicial,
+            especies,
+            subespecieInicial,
+            subespecies,
+            variedadeInicial,
+            variedades,
+            subfamiliaInicial,
+            subfamilias,
+            fetchingReinos,
+            fetchingFamilias,
+            fetchingSubfamilias,
+            fetchingGeneros,
+            fetchingEspecies,
+            fetchingSubespecies,
+            fetchingVariedades
         } = this.state
 
         const { form } = this.props
@@ -3259,12 +4016,19 @@ class NovoTomboScreen extends Component {
                         <Col span={24}>
                             <FormItem>
                                 {getFieldDecorator('dataTombo', {
-                                    rules: [{ validator: this.validateDataTombo }]
+                                    rules: [
+                                        { validator: this.validateDataTombo }
+                                    ]
                                 })(
                                     <Input
                                         placeholder="DD/MM/AAAA"
                                         type="text"
-                                        status={getFieldError && getFieldError('dataTombo') ? 'error' : ''}
+                                        status={
+                                            getFieldError
+                                            && getFieldError('dataTombo')
+                                                ? 'error'
+                                                : ''
+                                        }
                                     />
                                 )}
                             </FormItem>
@@ -3354,7 +4118,10 @@ class NovoTomboScreen extends Component {
                         onSearch={searchText => {
                             const reinoSelecionado = this.props.form.getFieldValue('reino')
                             if (reinoSelecionado) {
-                                this.requisitaFamilias(searchText || '', reinoSelecionado)
+                                this.requisitaFamilias(
+                                    searchText || '',
+                                    reinoSelecionado
+                                )
                             }
                         }}
                         loading={fetchingFamilias}
@@ -3380,7 +4147,11 @@ class NovoTomboScreen extends Component {
                         disabled={!familiaSelecionada}
                         onChange={value => {
                             if (value) {
-                                this.encontraAutor(subfamilias, value, 'autorSubfamilia')
+                                this.encontraAutor(
+                                    subfamilias,
+                                    value,
+                                    'autorSubfamilia'
+                                )
                             } else {
                                 this.setState({ autorSubfamilia: '' })
                             }
@@ -3389,7 +4160,10 @@ class NovoTomboScreen extends Component {
                         onSearch={searchText => {
                             const familiaSelecionada = this.props.form.getFieldValue('familia')
                             if (familiaSelecionada) {
-                                this.requisitaSubfamilias(searchText || '', familiaSelecionada)
+                                this.requisitaSubfamilias(
+                                    searchText || '',
+                                    familiaSelecionada
+                                )
                             }
                         }}
                         loading={fetchingSubfamilias}
@@ -3433,7 +4207,10 @@ class NovoTomboScreen extends Component {
                         onSearch={searchText => {
                             const familiaSelecionada = this.props.form.getFieldValue('familia')
                             if (familiaSelecionada) {
-                                this.requisitaGeneros(searchText || '', familiaSelecionada)
+                                this.requisitaGeneros(
+                                    searchText || '',
+                                    familiaSelecionada
+                                )
                             }
                         }}
                         loading={fetchingGeneros}
@@ -3456,13 +4233,17 @@ class NovoTomboScreen extends Component {
                         especies={especies}
                         validateStatus={search.especie}
                         getFieldDecorator={getFieldDecorator}
-                        disabled={(!generoSelecionado || !familiaSelecionada)}
+                        disabled={!generoSelecionado || !familiaSelecionada}
                         autor={this.state.autorEspecie}
                         onChange={value => {
                             if (value) {
                                 this.requisitaSubespecies('', value)
                                 this.requisitaVariedades('', value)
-                                this.encontraAutor(especies, value, 'autorEspecie')
+                                this.encontraAutor(
+                                    especies,
+                                    value,
+                                    'autorEspecie'
+                                )
                                 this.setState({ formComAutor: true })
                             } else {
                                 this.setState({
@@ -3482,7 +4263,10 @@ class NovoTomboScreen extends Component {
                         onSearch={searchText => {
                             const generoSelecionado = this.props.form.getFieldValue('genero')
                             if (generoSelecionado) {
-                                this.requisitaEspecies(searchText || '', generoSelecionado)
+                                this.requisitaEspecies(
+                                    searchText || '',
+                                    generoSelecionado
+                                )
                             }
                         }}
                         loading={fetchingEspecies}
@@ -3503,11 +4287,19 @@ class NovoTomboScreen extends Component {
                         subespecies={subespecies}
                         validateStatus={search.subespecie}
                         getFieldDecorator={getFieldDecorator}
-                        disabled={(!especieSelecionada || !generoSelecionado || !familiaSelecionada)}
+                        disabled={
+                            !especieSelecionada
+                            || !generoSelecionado
+                            || !familiaSelecionada
+                        }
                         autor={this.state.autorSubespecie}
                         onChange={value => {
                             if (value) {
-                                this.encontraAutor(subespecies, value, 'autorSubespecie')
+                                this.encontraAutor(
+                                    subespecies,
+                                    value,
+                                    'autorSubespecie'
+                                )
                             } else {
                                 this.setState({ autorSubespecie: '' })
                             }
@@ -3515,7 +4307,10 @@ class NovoTomboScreen extends Component {
                         onSearch={searchText => {
                             const especieSelecionada = this.props.form.getFieldValue('especie')
                             if (especieSelecionada) {
-                                this.requisitaSubespecies(searchText || '', especieSelecionada)
+                                this.requisitaSubespecies(
+                                    searchText || '',
+                                    especieSelecionada
+                                )
                             }
                         }}
                         loading={fetchingSubespecies}
@@ -3539,11 +4334,19 @@ class NovoTomboScreen extends Component {
                         variedades={variedades}
                         validateStatus={search.variedade}
                         getFieldDecorator={getFieldDecorator}
-                        disabled={(!especieSelecionada || !generoSelecionado || !familiaSelecionada)}
+                        disabled={
+                            !especieSelecionada
+                            || !generoSelecionado
+                            || !familiaSelecionada
+                        }
                         autor={this.state.autorVariedade}
                         onChange={value => {
                             if (value) {
-                                this.encontraAutor(variedades, value, 'autorVariedade')
+                                this.encontraAutor(
+                                    variedades,
+                                    value,
+                                    'autorVariedade'
+                                )
                             } else {
                                 this.setState({ autorVariedade: '' })
                             }
@@ -3551,7 +4354,10 @@ class NovoTomboScreen extends Component {
                         onSearch={searchText => {
                             const especieSelecionada = this.props.form.getFieldValue('especie')
                             if (especieSelecionada) {
-                                this.requisitaVariedades(searchText || '', especieSelecionada)
+                                this.requisitaVariedades(
+                                    searchText || '',
+                                    especieSelecionada
+                                )
                             }
                         }}
                         loading={fetchingVariedades}
@@ -3574,20 +4380,37 @@ class NovoTomboScreen extends Component {
 
     renderTipoSoloTombo = getFieldDecorator => {
         const {
-            soloInicial, search, solos, relevos, faseInicial,
-            relevoInicial, vegetacaoInicial, vegetacoes, fases,
-            idSoloInicial, idRelevoInicial, idVegetacaoInicial, idFaseInicial,
-            fetchingSolos, fetchingRelevos, fetchingVegetacoes, fetchingFases
+            soloInicial,
+            search,
+            solos,
+            relevos,
+            faseInicial,
+            relevoInicial,
+            vegetacaoInicial,
+            vegetacoes,
+            fases,
+            idSoloInicial,
+            idRelevoInicial,
+            idVegetacaoInicial,
+            idFaseInicial,
+            fetchingSolos,
+            fetchingRelevos,
+            fetchingVegetacoes,
+            fetchingFases
         } = this.state
 
         return (
             <div>
                 <Row gutter={8}>
                     <SoloFormField
-                        initialValue={idSoloInicial ? {
-                            key: idSoloInicial,
-                            label: soloInicial
-                        } : undefined}
+                        initialValue={
+                            idSoloInicial
+                                ? {
+                                    key: idSoloInicial,
+                                    label: soloInicial
+                                }
+                                : undefined
+                        }
                         solos={solos}
                         validateStatus={search.solo}
                         getFieldDecorator={getFieldDecorator}
@@ -3607,10 +4430,14 @@ class NovoTomboScreen extends Component {
                         debounceDelay={100}
                     />
                     <RelevoFormField
-                        initialValue={idRelevoInicial ? {
-                            key: idRelevoInicial,
-                            label: relevoInicial
-                        } : undefined}
+                        initialValue={
+                            idRelevoInicial
+                                ? {
+                                    key: idRelevoInicial,
+                                    label: relevoInicial
+                                }
+                                : undefined
+                        }
                         relevos={relevos}
                         validateStatus={search.relevo}
                         getFieldDecorator={getFieldDecorator}
@@ -3633,10 +4460,14 @@ class NovoTomboScreen extends Component {
                 <br />
                 <Row gutter={8}>
                     <VegetacaoFormField
-                        initialValue={idVegetacaoInicial ? {
-                            key: idVegetacaoInicial,
-                            label: vegetacaoInicial
-                        } : undefined}
+                        initialValue={
+                            idVegetacaoInicial
+                                ? {
+                                    key: idVegetacaoInicial,
+                                    label: vegetacaoInicial
+                                }
+                                : undefined
+                        }
                         vegetacoes={vegetacoes}
                         validateStatus={search.vegetacao}
                         getFieldDecorator={getFieldDecorator}
@@ -3656,10 +4487,14 @@ class NovoTomboScreen extends Component {
                         debounceDelay={100}
                     />
                     <FaseFormField
-                        initialValue={idFaseInicial ? {
-                            key: idFaseInicial,
-                            label: faseInicial
-                        } : undefined}
+                        initialValue={
+                            idFaseInicial
+                                ? {
+                                    key: idFaseInicial,
+                                    label: faseInicial
+                                }
+                                : undefined
+                        }
                         fases={fases}
                         validateStatus={search.fase}
                         getFieldDecorator={getFieldDecorator}
@@ -3684,8 +4519,15 @@ class NovoTomboScreen extends Component {
     }
 
     renderIdentificador = (getFieldDecorator, getFieldError) => {
-        const { identificadores, identificadorInicial, identificadorNome, fetchingIdentificadores } = this.state
-        const initialValue = identificadorInicial ? { key: String(identificadorInicial), label: identificadorNome } : undefined
+        const {
+            identificadores,
+            identificadorInicial,
+            identificadorNome,
+            fetchingIdentificadores
+        } = this.state
+        const initialValue = identificadorInicial
+            ? { key: String(identificadorInicial), label: identificadorNome }
+            : undefined
 
         return (
             <div>
@@ -3704,7 +4546,16 @@ class NovoTomboScreen extends Component {
                         }}
                         filterOption={false}
                         loading={fetchingIdentificadores}
-                        debounceDelay={100}
+                        debounceDelay={200}
+                        onClickAddMore={() => {
+                            this.setState({
+                                formulario: {
+                                    desc: ' do novo identificador',
+                                    tipo: 14
+                                },
+                                visibleModal: true
+                            })
+                        }}
                     />
                     <DataIdentificacaoFormField
                         getFieldDecorator={getFieldDecorator}
@@ -3725,16 +4576,14 @@ class NovoTomboScreen extends Component {
                         title="Cadastro"
                         visibleModal={this.state.visibleModal}
                         loadingModal={this.state.loadingModal}
-                        onCancel={
-                            () => {
-                                this.setState({
-                                    visibleModal: false,
-                                    formColetor: 0,
-                                    formComAutor: false,
-                                    formLocalColeta: false
-                                })
-                            }
-                        }
+                        onCancel={() => {
+                            this.setState({
+                                visibleModal: false,
+                                formColetor: 0,
+                                formComAutor: false,
+                                formLocalColeta: false
+                            })
+                        }}
                         onOk={() => {
                             if (this.validacaoModal()) {
                                 switch (this.state.formulario.tipo) {
@@ -3781,6 +4630,9 @@ class NovoTomboScreen extends Component {
                                         this.cadastraNovoLocalColeta()
                                         break
                                     case 14:
+                                        this.cadastraNovoIdentificador()
+                                        break
+                                    case 15:
                                         this.cadastraNovaFase()
                                         break
                                     default:
@@ -3796,9 +4648,7 @@ class NovoTomboScreen extends Component {
                             })
                         }}
                     >
-
                         {this.renderFormulario(getFieldDecorator)}
-
                     </ModalCadastroComponent>
                 </Form>
                 <Form onSubmit={this.handleSubmit}>
@@ -3811,7 +4661,10 @@ class NovoTomboScreen extends Component {
                     <Divider dashed />
                     {this.renderColetores(getFieldDecorator, getFieldError)}
                     <Divider dashed />
-                    {this.renderPrincipaisCaracteristicas(getFieldDecorator, getFieldError)}
+                    {this.renderPrincipaisCaracteristicas(
+                        getFieldDecorator,
+                        getFieldError
+                    )}
                     <Divider dashed />
                     {this.renderLocalTombo(getFieldDecorator, getFieldError)}
                     <Divider dashed />
@@ -3842,22 +4695,127 @@ class NovoTomboScreen extends Component {
                     <Divider />
                     <Row gutter={8}>
                         <BarcodeTableComponent
-                            ref={(el) => (this.barcodeRef = el)}
+                            ref={el => (this.barcodeRef = el)}
                             barcodePhotos={this.state.barcodePhotosFromServer}
                             barcodeEditList={this.state.codigosBarrasForm}
                             onDeletedBarcode={this.handleDeletedBarcode}
                             onChangeBarcodeList={this.handleChangeBarcodeList}
                             isEditing={this.state.isEditing}
-                            onChangeBarcodePhotos={this.handleChangeBarcodePhotos}
+                            onChangeBarcodePhotos={
+                                this.handleChangeBarcodePhotos
+                            }
                             onInitBarcodePhotos={this.handleInitBarcodePhotos}
                         />
                     </Row>
                     <br />
-                    {' '}
+                    <Row gutter={8}>
+                        {/* <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+                            <Col span={24}>
+                                <span> Fotos da exsicata: </span>
+                            </Col>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('fotosExsicata')(
+                                        <UploadPicturesComponent
+                                            fileList={this.state.fotosExsicata}
+                                            beforeUpload={foto => {
+                                                this.setState(({ fotosExsicata }) => ({
+                                                    fotosExsicata: [
+                                                        ...fotosExsicata,
+                                                        foto
+                                                    ]
+                                                }))
+
+                                                return false
+                                            }}
+                                            onRemove={foto => {
+                                                this.setState(({ fotosExsicata: listaAntiga }) => {
+                                                    const index = listaAntiga.indexOf(foto)
+
+                                                    const fotosExsicata = listaAntiga
+                                                        .filter((item, i) => i !== index)
+
+                                                    return { fotosExsicata }
+                                                })
+                                            }}
+                                        />
+                                    )}
+                                </FormItem>
+                            </Col>
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+                            <Col span={24}>
+                                <span> Fotos em vivo: </span>
+                            </Col>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('fotosVivo')(
+                                        <UploadPicturesComponent
+                                            fileList={this.state.fotosEmVivo}
+                                            beforeUpload={foto => {
+                                                this.setState(({ fotosEmVivo }) => ({
+                                                    fotosEmVivo: [
+                                                        ...fotosEmVivo,
+                                                        foto
+                                                    ]
+                                                }))
+
+                                                return false
+                                            }}
+                                            onRemove={foto => {
+                                                this.setState(({ fotosEmVivo: listaAntiga }) => {
+                                                    const index = listaAntiga.indexOf(foto)
+
+                                                    const fotosEmVivo = listaAntiga
+                                                        .filter((item, i) => i !== index)
+
+                                                    return { fotosEmVivo }
+                                                })
+                                            }}
+                                        />
+                                    )}
+                                </FormItem>
+                            </Col>
+                        </Col>
+                    </Row>
                     <br />
+                    <br />
+                    <Row gutter={8}>
+                        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+                            <Col span={24}>
+                                <span> Exsicata sem foto: </span>
+                            </Col>
+                            <Col span={8}>
+                                <Button onClick={() => this.criaCodigoBarrasSemFotos(false)}>
+                                    <UploadOutlined />
+                                    {' '}
+                                    Enviar
+                                </Button>
+                            </Col>
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+                            <Col span={24}>
+                                <span> Em vivo sem foto: </span>
+                            </Col>
+                            <Col span={8}>
+                                <Button onClick={() => this.criaCodigoBarrasSemFotos(true)}>
+                                    <UploadOutlined />
+                                    {' '}
+                                    Enviar
+                                </Button>
+                            </Col>
+                        </Col> */}
+                    </Row>
                     <Divider dashed />
                     <Row type="flex" justify="start" gutter={8}>
-                        <Col style={{ marginLeft: 'auto' }} xs={24} sm={8} md={3} lg={3} xl={3}>
+                        <Col
+                            style={{ marginLeft: 'auto' }}
+                            xs={24}
+                            sm={8}
+                            md={3}
+                            lg={3}
+                            xl={3}
+                        >
                             <ButtonComponent titleButton="Salvar" />
                         </Col>
                     </Row>
@@ -3879,13 +4837,19 @@ class NovoTomboScreen extends Component {
                         <Col span={24}>
                             <FormItem>
                                 {getFieldDecorator('numColeta', {
-                                    initialValue: null,
+                                    initialValue: String(
+                                        this.state.numero_coleta
+                                    )
                                 })(
                                     <Input
                                         type="text"
                                         placeholder="785"
                                         style={{ width: '100%' }}
-                                        status={getFieldError('numColeta') ? 'error' : ''}
+                                        status={
+                                            getFieldError('numColeta')
+                                                ? 'error'
+                                                : ''
+                                        }
                                     />
                                 )}
                             </FormItem>
@@ -3899,26 +4863,54 @@ class NovoTomboScreen extends Component {
                             <Row type="flex" gutter={4}>
                                 <Col span={8}>
                                     <FormItem>
-                                        {getFieldDecorator('dataColetaDia')(
+                                        {getFieldDecorator('dataColetaDia', {
+                                            rules: [
+                                                {
+                                                    required: true,
+                                                    message:
+                                                        'Insira o dia da coleta'
+                                                }
+                                            ]
+                                        })(
                                             <InputNumber
                                                 min={1}
                                                 max={31}
                                                 initialValue={17}
                                                 style={{ width: '100%' }}
-                                                status={getFieldError('dataColetaDia') ? 'error' : ''}
+                                                status={
+                                                    getFieldError(
+                                                        'dataColetaDia'
+                                                    )
+                                                        ? 'error'
+                                                        : ''
+                                                }
                                             />
                                         )}
                                     </FormItem>
                                 </Col>
                                 <Col span={8}>
                                     <FormItem>
-                                        {getFieldDecorator('dataColetaMes')(
+                                        {getFieldDecorator('dataColetaMes', {
+                                            rules: [
+                                                {
+                                                    required: true,
+                                                    message:
+                                                        'Insira o mês da coleta'
+                                                }
+                                            ]
+                                        })(
                                             <InputNumber
                                                 min={1}
                                                 max={12}
                                                 initialValue={11}
                                                 style={{ width: '100%' }}
-                                                status={getFieldError('dataColetaMes') ? 'error' : ''}
+                                                status={
+                                                    getFieldError(
+                                                        'dataColetaMes'
+                                                    )
+                                                        ? 'error'
+                                                        : ''
+                                                }
                                             />
                                         )}
                                     </FormItem>
@@ -3926,14 +4918,31 @@ class NovoTomboScreen extends Component {
                                 <Col span={8}>
                                     <FormItem>
                                         {getFieldDecorator('dataColetaAno', {
-                                            rules: [{ validator: this.validateAnoNaoFuturo }]
+                                            rules: [
+                                                {
+                                                    required: true,
+                                                    message:
+                                                        'Insira o ano da coleta'
+                                                },
+                                                {
+                                                    validator:
+                                                        this
+                                                            .validateAnoNaoFuturo
+                                                }
+                                            ]
                                         })(
                                             <InputNumber
                                                 min={500}
                                                 max={5000}
                                                 initialValue={2018}
                                                 style={{ width: '100%' }}
-                                                status={getFieldError('dataColetaAno') ? 'error' : ''}
+                                                status={
+                                                    getFieldError(
+                                                        'dataColetaAno'
+                                                    )
+                                                        ? 'error'
+                                                        : ''
+                                                }
                                             />
                                         )}
                                     </FormItem>
@@ -3951,13 +4960,20 @@ class NovoTomboScreen extends Component {
                         <Col span={24}>
                             <FormItem>
                                 {getFieldDecorator('nomePopular')(
-                                    <Input placeholder="Maracujá Doce" type="text" />
+                                    <Input
+                                        placeholder="Maracujá Doce"
+                                        type="text"
+                                    />
                                 )}
                             </FormItem>
                         </Col>
                     </Col>
                     <HerbarioFormField
-                        initialValue={String(!this.props.match.params.tombo_id ? this.state.herbarioInicial?.value || '' : this.state.herbarioInicial)}
+                        initialValue={String(
+                            !this.props.match.params.tombo_id
+                                ? this.state.herbarioInicial?.value || ''
+                                : this.state.herbarioInicial
+                        )}
                         herbarios={herbarios}
                         getFieldDecorator={getFieldDecorator}
                         onSearch={searchText => {
@@ -3977,7 +4993,9 @@ class NovoTomboScreen extends Component {
                         <Col xs={22} sm={22} md={12} lg={12} xl={12}>
                             <FormItem>
                                 {getFieldDecorator('tipo', {
-                                    initialValue: String(this.state.tipoInicial)
+                                    initialValue: String(
+                                        this.state.tipoInicial
+                                    )
                                 })(
                                     <Select
                                         showSearch
@@ -4033,15 +5051,9 @@ class NovoTomboScreen extends Component {
 
     render() {
         if (this.state.loading) {
-            return (
-                <Spin tip="Carregando...">
-                    {this.renderPorTipo()}
-                </Spin>
-            )
+            return <Spin tip="Carregando...">{this.renderPorTipo()}</Spin>
         }
-        return (
-            this.renderPorTipo()
-        )
+        return this.renderPorTipo()
     }
 }
 

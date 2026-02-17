@@ -498,3 +498,16 @@ export const requisitaIdentificadoresService = (getResponse, nome) => {
             catchError(error)
         })
 }
+
+export const verificarCoordenada = async (getResponse, cidadeId, latitude, longitude) => {
+    try {
+        const response = await axios.post('/tombos/verificarCoordenada', {
+            cidade_id: cidadeId,
+            latitude,
+            longitude
+        })
+        getResponse(response)
+    } catch (error) {
+        catchError(error)
+    }
+}
