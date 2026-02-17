@@ -15,8 +15,6 @@ import {
 
 import InicioScreen from './features/login/InicioScreen'
 import {
-    setUsuario,
-    setTokenUsuario,
     isCurador,
     isCuradorOuOperador,
     isCuradorOuOperadorOuIdentificador,
@@ -27,7 +25,9 @@ import DetalhesTomboScreen from './pages/DetalhesTomboScreen'
 import ExportaçãoScreen from './pages/ExportaçãoScreen'
 import FichaTomboScreen from './pages/FichaTomboScreen'
 import filtrosMapa from './pages/FiltrosMapa'
+import ListaCidadesScreen from './pages/ListaCidadesScreen'
 import ListaColetoresScreen from './pages/ListaColetoresScreen'
+import ListaEstadosScreen from './pages/ListaEstadosScreen'
 import ListaHerbariosScreen from './pages/ListaHerbariosScreen'
 import ListaIdentificadoresScreen from './pages/ListaIdentificadoresScreen'
 import ListaLocalColetaScreen from './pages/ListaLocalColetaScreen'
@@ -68,8 +68,6 @@ import NovoTomboScreen from './pages/tombos/NovoTomboScreen'
 import PendenciaPagina from './pages/VerPendenciaScreen'
 // import ExportaçãoScreen from './pages/ExportaçãoScreen'
 // import ListaLocalColetaScreen from './pages/ListaLocalColetaScreen'
-import ListaEstadosScreen from './pages/ListaEstadosScreen'
-import ListaCidadesScreen from './pages/ListaCidadesScreen'
 
 const PrivateRoute = ({ component: Component, authed, ...rest }) => {
     return (
@@ -83,20 +81,8 @@ const PrivateRoute = ({ component: Component, authed, ...rest }) => {
 }
 
 export default class App extends Component {
-    constructor() {
-        super()
-
-        const token = localStorage.getItem('token')
-        setTokenUsuario(token)
-
-        const usuario = localStorage.getItem('usuario')
-        if (usuario) {
-            setUsuario(JSON.parse(usuario))
-        }
-    }
-
     renderContent = () => (
-        <MainLayout>
+        <MainLayout {...this.props}>
             <Switch>
                 <Route path="/tombos/detalhes/:tombo_id" component={DetalhesTomboScreen} />
                 <PrivateRoute authed={isCuradorOuOperador()} path="/tombos/novo" component={NovoTomboScreen} />
