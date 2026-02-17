@@ -18,9 +18,7 @@ import { baseUrl } from '../config/api'
 import {
     isCurador,
     isCuradorOuOperador,
-    isLogado,
-    isCuradorOuOperadorOuIdentificador,
-    setTokenUsuario, setUsuario, getTokenUsuario
+    isLogado
 } from '../helpers/usuarios'
 
 const { Header, Content, Sider } = Layout
@@ -33,34 +31,6 @@ export default class MainLayout extends Component {
             collapsed: false,
             loading: false,
             userName: ''
-        }
-    }
-
-    componentDidMount() {
-        this.updateUserNameFromLocalStorage()
-
-        window.addEventListener('userNameUpdated', this.updateUserNameFromLocalStorage)
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        const userInfo = localStorage.getItem('usuario')
-        if (userInfo) {
-            const user = JSON.parse(userInfo)
-            if (user.nome !== prevState.userName) {
-                this.setState({ userName: user.nome })
-            }
-        }
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('userNameUpdated', this.updateUserNameFromLocalStorage)
-    }
-
-    updateUserNameFromLocalStorage = () => {
-        const userInfo = localStorage.getItem('usuario')
-        if (userInfo) {
-            const user = JSON.parse(userInfo)
-            this.setState({ userName: user.nome })
         }
     }
 
@@ -100,19 +70,6 @@ export default class MainLayout extends Component {
             .catch(() => {
                 this.notificacao('error', 'Falha', 'Houve um problema ao requisitar o arquivo Darwin Core, tente novamente.')
             })
-    }
-
-    fazLogout = () => {
-        setTokenUsuario('')
-        localStorage.setItem('token', '')
-
-        setUsuario('')
-        localStorage.setItem('usuario', '')
-
-        // Limpa as credenciais salvas do "Lembrar-me"
-        localStorage.removeItem('hcf_saved_email')
-        localStorage.removeItem('hcf_saved_password')
-        localStorage.removeItem('hcf_remember_me')
     }
 
     renderFormulario() {
@@ -341,7 +298,7 @@ export default class MainLayout extends Component {
                             <Menu.Item key="22">
                                 <Link
                                     to="/inicio"
-                                    onClick={this.fazLogout}
+                                    onClick={this.props.logOut}
                                 >
                                     <LogoutOutlined />
                                     <span>Sair</span>
@@ -356,13 +313,9 @@ export default class MainLayout extends Component {
                             <div style={{ cursor: 'pointer' }}>
                                 <MenuUnfoldOutlined onClick={this.toggle} />
                             </div>
-                            {!isCuradorOuOperadorOuIdentificador() ? (
-                                <Link to="/inicio">
-                                    <Button>Entrar</Button>
-                                </Link>
-                            ) : (
+                            {this.props.user?.id ? (
                                 <div>
-                                    {this.state.userName}
+                                    {this.props.user?.nome}
 
                                     <Divider type="vertical" />
 
@@ -374,11 +327,15 @@ export default class MainLayout extends Component {
 
                                     <Link
                                         to="/inicio"
-                                        onClick={this.fazLogout}
+                                        onClick={this.props.logOut}
                                     >
                                         <Button size="small">Sair</Button>
                                     </Link>
                                 </div>
+                            ) : (
+                                <Link to="/inicio">
+                                    <Button>Entrar</Button>
+                                </Link>
                             )}
                         </Row>
                     </Header>
