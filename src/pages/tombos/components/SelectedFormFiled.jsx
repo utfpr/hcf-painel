@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useEffect } from 'react'
-import debounce from 'lodash.debounce'
 
 import {
     Col, Select, Button, Spin
 } from 'antd'
+import debounce from 'lodash.debounce'
 
 import { Form } from '@ant-design/compatible'
 import {
@@ -16,13 +16,14 @@ const SelectedFormField = ({
     title, validateStatus, initialValue, rules,
     placeholder, children, fieldName, onClickAddMore,
     getFieldDecorator, getFieldError, onChange, autor,
-    xs, sm, md, lg, xl, onSearch, others, debounceDelay = 800, disabled = false, extra
+    xs, sm, md, lg, xl, onSearch, others, debounceDelay = 200,
+    disabled = false, extra
 }) => {
     const [searchLoading, setSearchLoading] = useState(false)
     const [lastSearchValue, setLastSearchValue] = useState('')
 
     const debouncedSearch = useCallback(
-        debounce((value) => {
+        debounce(value => {
             if (onSearch) {
                 setSearchLoading(true)
                 onSearch(value)
@@ -32,9 +33,9 @@ const SelectedFormField = ({
         [onSearch, debounceDelay]
     )
 
-    const handleSearch = (value) => {
+    const handleSearch = value => {
         const normalizedValue = value || ''
-        
+
         if (normalizedValue !== lastSearchValue) {
             setLastSearchValue(normalizedValue)
             debouncedSearch(normalizedValue)

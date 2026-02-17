@@ -1,11 +1,12 @@
 import axios, { AxiosError } from 'axios'
 
+import { getCookie, removeCookie } from './helpers/cookie'
+
 axios.defaults.baseURL = import.meta.env.VITE_API_URL
 
 axios.interceptors.request.use(
     request => {
-        const token = localStorage.getItem('token')
-
+        const token = getCookie<string>('Access_Token')
         if (token) {
             request.headers.Authorization = `Bearer ${token}`
         }
@@ -20,14 +21,8 @@ axios.interceptors.response.use(
         const err: {error: {code: number}} = error.response?.data as {error: {code: number}}
 
         if (err.error.code === 401) {
-            localStorage.removeItem('token')
-            localStorage.removeItem('usuario')
-            
-            // Limpa as credenciais salvas do "Lembrar-me"
-            localStorage.removeItem('hcf_saved_email')
-            localStorage.removeItem('hcf_saved_password')
-            localStorage.removeItem('hcf_remember_me')
-            
+            removeCookie('Access_Token')
+            window.localStorage.removeItem('Logged_User')
             window.location.href = '/inicio'
         }
         return Promise.reject(error)

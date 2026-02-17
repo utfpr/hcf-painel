@@ -48,7 +48,7 @@ class NovoHerbarioScreen extends Component {
             }
 
             const response = await axios.get('/paises', { params })
-            
+
             if (response.status === 200) {
                 this.setState({
                     paises: response.data,
@@ -78,7 +78,7 @@ class NovoHerbarioScreen extends Component {
             }
 
             const response = await axios.get('/estados', { params })
-            
+
             if (response.status === 200) {
                 this.setState({
                     estados: response.data,
@@ -108,7 +108,7 @@ class NovoHerbarioScreen extends Component {
             }
 
             const response = await axios.get('/cidades', { params })
-            
+
             if (response.status === 200) {
                 this.setState({
                     cidades: response.data,
@@ -143,6 +143,10 @@ class NovoHerbarioScreen extends Component {
             message,
             description
         })
+    }
+
+    handleCancelar = () => {
+        this.props.history.push('/herbarios')
     }
 
     handleSubmit = (err, valores) => {
@@ -222,10 +226,10 @@ class NovoHerbarioScreen extends Component {
         this.setState({
             loading: true
         })
-        
+
         try {
             const response = await axios.get(`/herbarios/${this.props.match.params.herbario_id}`)
-            
+
             if (response.status === 200) {
                 const {
                     nome, email, sigla, endereco
@@ -237,14 +241,14 @@ class NovoHerbarioScreen extends Component {
                     estados,
                     paises
                 })
-                
+
                 if (endereco !== null) {
                     const paisId = endereco.cidade.estado.paise.id
                     const estadoId = endereco.cidade.estado.id
-                    
+
                     await this.requisitaEstados('', paisId)
                     await this.requisitaCidades('', estadoId)
-                    
+
                     this.setState({
                         paisInicial: paisId,
                         estadoInicial: estadoId,
@@ -252,7 +256,7 @@ class NovoHerbarioScreen extends Component {
                         paisSelecionado: paisId,
                         estadoSelecionado: estadoId
                     })
-                    
+
                     this.props.form.setFieldsValue({
                         pais: paisId,
                         estado: estadoId,
@@ -268,7 +272,7 @@ class NovoHerbarioScreen extends Component {
                     email: email,
                     sigla: sigla
                 })
-                
+
                 this.setState({
                     loading: false
                 })
@@ -411,7 +415,7 @@ class NovoHerbarioScreen extends Component {
                         </Col>
                     </Col>
                 </Row>
-                
+
                 <Row gutter={8}>
                     <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                         <Col span={24}>
@@ -448,7 +452,7 @@ class NovoHerbarioScreen extends Component {
                         </Col>
                     </Col>
                 </Row>
-                
+
                 <Row gutter={8}>
                     <SelectedFormField
                         title="País:"
@@ -459,7 +463,7 @@ class NovoHerbarioScreen extends Component {
                             this.requisitaPaises(searchText || '')
                         }}
                         onChange={async value => {
-                            this.setState({ 
+                            this.setState({
                                 paisSelecionado: value,
                                 estadoSelecionado: null,
                                 estados: [],
@@ -506,7 +510,7 @@ class NovoHerbarioScreen extends Component {
                             }
                         }}
                         onChange={async value => {
-                            this.setState({ 
+                            this.setState({
                                 estadoSelecionado: value,
                                 cidades: []
                             })
@@ -570,7 +574,7 @@ class NovoHerbarioScreen extends Component {
                         ))}
                     </SelectedFormField>
                 </Row>
-                
+
                 <Row gutter={8}>
                     <Col xs={24} sm={16} md={16} lg={16} xl={16}>
                         <Col span={24}>
@@ -586,14 +590,24 @@ class NovoHerbarioScreen extends Component {
                     </Col>
                 </Row>
 
-                <Row type="flex" justify="end">
-                    <Col xs={24} sm={8} md={8} lg={4} xl={4}>
-                        {' '}
+                <Row type="flex" justify="end" gutter={8}>
+                    <Col xs={24} sm={8} md={4} lg={4} xl={4}>
+                        <FormItem>
+                            <Button
+                                style={{ width: '100%' }}
+                                onClick={this.handleCancelar}
+                            >
+                                Cancelar
+                            </Button>
+                        </FormItem>
+                    </Col>
+
+                    <Col xs={24} sm={8} md={4} lg={4} xl={4}>
                         <FormItem>
                             <Button
                                 type="primary"
                                 htmlType="submit"
-                                className="login-form-button"
+                                style={{ width: '100%' }}
                             >
                                 Salvar
                             </Button>

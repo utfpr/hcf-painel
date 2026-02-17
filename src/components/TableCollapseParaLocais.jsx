@@ -1,6 +1,8 @@
 import { Collapse, Skeleton, Table } from 'antd'
 
-const columns = [
+import converteDecimalParaGrausMinutosSegundos from '@/helpers/conversoes/Coordenadas'
+
+const columnsWithCoordenadas = [
     {
         title: 'Data Coleta',
         dataIndex: 'datacoleta',
@@ -14,7 +16,13 @@ const columns = [
     {
         title: 'Espécie',
         dataIndex: 'especie',
-        key: 'especie'
+        key: 'especie',
+        render: (text, record) => (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <p style={{ fontStyle: 'italic', margin: 0 }}>{record?.especie}</p>
+                <p style={{ margin: 0 }}>{record?.autor}</p>
+            </div>
+        ) || '-'
     },
     {
         title: 'Latitude',
@@ -33,7 +41,36 @@ const columns = [
     }
 ]
 
-const TableCollapseParaLocais = ({ data, loading }) => {
+const columnsWithoutCoordenadas = [
+    {
+        title: 'Data Coleta',
+        dataIndex: 'datacoleta',
+        key: 'datacoleta'
+    },
+    {
+        title: 'Família',
+        dataIndex: 'familia',
+        key: 'familia'
+    },
+    {
+        title: 'Espécie',
+        dataIndex: 'especie',
+        key: 'especie',
+        render: (text, record) => (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <p style={{ fontStyle: 'italic', margin: 0 }}>{record?.especie}</p>
+                <p style={{ margin: 0 }}>{record?.autor}</p>
+            </div>
+        ) || '-'
+    },
+    {
+        title: 'Nº Tombo',
+        dataIndex: 'hcf',
+        key: 'hcf'
+    }
+]
+
+const TableCollapseParaLocais = ({ data, loading, showCoordenadas }) => {
     if (!data) return <div />
     if (data.length === 0) return <div />
     if (loading) {
@@ -98,18 +135,17 @@ const TableCollapseParaLocais = ({ data, loading }) => {
                 >
                     <Table
                         dataSource={item.registros.map(registro => {
-                            const [latitude, longitude] = registro?.coordenadasFormatadas?.split(',') || []
                             const dataColeta = `${registro.data_coleta_dia}/${mesesRomanos[registro.data_coleta_mes - 1]}/${registro.data_coleta_ano}`
                             return {
                                 ...registro,
-                                latitude: latitude ? latitude.trim() : null,
-                                longitude: longitude ? longitude.trim() : null,
+                                latitude: registro.latitude ? converteDecimalParaGrausMinutosSegundos(registro.latitude, false, true) : null,
+                                longitude: registro.longitude ? converteDecimalParaGrausMinutosSegundos(registro.longitude, false, true) : null,
                                 datacoleta: dataColeta,
                                 familia: registro?.familia?.nome || '-',
                                 especie: registro?.especy?.nome || '-'
                             }
                         })}
-                        columns={columns}
+                        columns={showCoordenadas ? columnsWithCoordenadas : columnsWithoutCoordenadas}
                     />
                 </Collapse.Panel>
             ))}

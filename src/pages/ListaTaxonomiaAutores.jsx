@@ -214,7 +214,16 @@ class ListaTaxonomiaAutores extends Component {
                 valores,
                 loading: true
             })
-            this.requisitaListaAutores(valores, this.state.pagina)
+            this.setState(
+                {
+                    valores,
+                    pagina: 1,
+                    loading: true
+                },
+                () => {
+                    this.requisitaListaAutores(valores, 1)
+                }
+            )
         }
     }
 
@@ -236,7 +245,10 @@ class ListaTaxonomiaAutores extends Component {
                     loading: false
                 })
                 if (response.status === 204) {
-                    this.requisitaListaAutores()
+                    this.requisitaListaAutores(
+                        this.state.valores || {},
+                        this.state.pagina
+                    )
                     this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
                 } else if (response.status === 400) {
                     this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
@@ -297,7 +309,10 @@ class ListaTaxonomiaAutores extends Component {
                     loading: false
                 })
                 if (response.status === 204) {
-                    this.requisitaListaAutores()
+                    this.requisitaListaAutores(
+                        this.state.valores || {},
+                        this.state.pagina
+                    )
                     this.openNotificationWithIcon('success', 'Sucesso', 'A atualização foi realizada com sucesso.')
                 } else if (response.status === 400) {
                     this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)

@@ -6,7 +6,7 @@ const { Option } = Select
 
 const RelevoFormField = ({
     initialValue, relevos, getFieldDecorator, onClickAddMore, onChange, validateStatus,
-    onSearch, loading = false, debounceDelay = 600
+    onSearch, loading = false, debounceDelay = 200
 }) => {
     const optionRelevos = () => relevos.map(item => (
         <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>

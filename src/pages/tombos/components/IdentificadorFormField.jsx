@@ -1,12 +1,14 @@
 import React from 'react'
+
 import { Select, Spin } from 'antd'
+
 import SelectedFormFiled from './SelectedFormFiled'
 
 const { Option } = Select
 
 const IdentificadorFormField = ({
     initialValue, identificadores, getFieldDecorator, onChange, onSearch,
-    loading = false, debounceDelay = 600, getFieldError, onClickAddMore
+    onClickAddMore, loading = false, debounceDelay = 200, getFieldError
 }) => {
     const optionIdentificadores = () => identificadores?.map(item => (
         <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
@@ -31,7 +33,7 @@ const IdentificadorFormField = ({
             others={{
                 allowClear: true,
                 mode: 'multiple',
-                loading: loading,
+                loading,
                 notFoundContent: loading ? <Spin size="small" /> : 'Nenhum identificador encontrado',
                 filterOption: false,
                 labelInValue: true,

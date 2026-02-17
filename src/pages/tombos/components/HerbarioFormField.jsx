@@ -6,7 +6,7 @@ const { Option } = Select
 
 const HerbarioFormField = ({
     initialValue, herbarios, getFieldDecorator, onChange,
-    onSearch, loading = false, debounceDelay = 600, getFieldError
+    onSearch, loading = false, debounceDelay = 200, getFieldError
 }) => {
     const optionHerbarios = () => herbarios.map(item => (
         <Option key={item.id} value={`${item.id}`}>

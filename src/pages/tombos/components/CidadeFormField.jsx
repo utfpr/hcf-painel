@@ -7,14 +7,20 @@ import SelectedFormFiled from './SelectedFormFiled'
 const { Option } = Select
 
 const CidadeFormField = ({
-    initialValue, cidades, getFieldDecorator, onClickAddMore, onChange, validateStatus, help, getFieldError, onSearch, loading = false, debounceDelay = 600, disabled = false
+    initialValue, cidades, getFieldDecorator, onClickAddMore, onChange, validateStatus, getFieldError, onSearch,
+    loading = false, debounceDelay = 200, disabled = false, help
 }) => {
     const errorList = getFieldError && getFieldError('cidade')
     const hasError = errorList && errorList.length > 0
     const finalStatus = hasError ? 'error' : (validateStatus || '')
     const warningMessage = (!hasError && help) ? (
-        <span style={{ color: '#faad14', fontSize: '12px', marginTop: '6px', display: 'block', fontWeight: '500' }}>
-            ⚠️ {help}
+        <span style={{
+            color: '#faad14', fontSize: '12px', marginTop: '6px', display: 'block', fontWeight: '500'
+        }}
+        >
+            ⚠️
+            {' '}
+            {help}
         </span>
     ) : null
 
@@ -47,7 +53,7 @@ const CidadeFormField = ({
             disabled={disabled}
             others={{
                 allowClear: true,
-                loading: loading,
+                loading,
                 notFoundContent: loading ? <Spin size="small" /> : 'Nenhum país encontrado',
                 filterOption: onSearch ? false : undefined,
                 status: finalStatus

@@ -6,7 +6,7 @@ const { Option } = Select
 
 const FaseFormField = ({
     initialValue, fases, getFieldDecorator, onClickAddMore, onChange, validateStatus,
-    onSearch, loading = false, debounceDelay = 600
+    onSearch, loading = false, debounceDelay = 200
 }) => {
     const optionFases = () => fases.map(item => (
         <Option key={item.numero} value={`${item.numero}`}>{item.nome}</Option>

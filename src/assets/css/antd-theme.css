@@ -779,3 +779,7 @@
 .ant-menu-dark .ant-menu-submenu-inline .ant-menu-item-selected span {
   color: #ffffff !important;
 }
+
+.grecaptcha-badge { 
+    visibility: hidden !important;
+}
