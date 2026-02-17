@@ -7,8 +7,23 @@ import SelectedFormFiled from './SelectedFormFiled'
 const { Option } = Select
 
 const CidadeFormField = ({
-    initialValue, cidades, getFieldDecorator, onClickAddMore, onChange, validateStatus, getFieldError, onSearch, loading = false, debounceDelay = 200, disabled = false
+    initialValue, cidades, getFieldDecorator, onClickAddMore, onChange, validateStatus, getFieldError, onSearch,
+    loading = false, debounceDelay = 200, disabled = false, help
 }) => {
+    const errorList = getFieldError && getFieldError('cidade')
+    const hasError = errorList && errorList.length > 0
+    const finalStatus = hasError ? 'error' : (validateStatus || '')
+    const warningMessage = (!hasError && help) ? (
+        <span style={{
+            color: '#faad14', fontSize: '12px', marginTop: '6px', display: 'block', fontWeight: '500'
+        }}
+        >
+            ⚠️
+            {' '}
+            {help}
+        </span>
+    ) : null
+
     const optionCidades = () => cidades.map(item => (
         <Option value={`${item.id}`}>{item.nome}</Option>
     ))
@@ -27,7 +42,8 @@ const CidadeFormField = ({
             getFieldError={getFieldError}
             onClickAddMore={onClickAddMore}
             onChange={onChange}
-            validateStatus={validateStatus}
+            validateStatus={finalStatus}
+            extra={hasError ? null : warningMessage}
             rules={[{
                 required: true,
                 message: 'Escolha uma cidade'
@@ -37,10 +53,10 @@ const CidadeFormField = ({
             disabled={disabled}
             others={{
                 allowClear: true,
-                loading: loading,
+                loading,
                 notFoundContent: loading ? <Spin size="small" /> : 'Nenhum país encontrado',
                 filterOption: onSearch ? false : undefined,
-                status: getFieldError && getFieldError('cidade') ? 'error' : ''
+                status: finalStatus
             }}
         >
             {optionCidades()}
