@@ -485,14 +485,6 @@ class NovoTomboScreen extends Component {
                 ? this.makeFileGetter(currentPhotosMap)
                 : () => []
 
-            const initialSet = new Set(
-                initialList.map(it => it.codigo_barra)
-            )
-            const newBarcodes = currentBarcodes.filter(
-                it => !initialSet.has(it.codigo_barra)
-            )
-            const existingBarcodes = currentBarcodes.filter(it => initialSet.has(it.codigo_barra))
-
             const initialSet = new Set(initialList.map(it => it.codigo_barra))
             const newBarcodes = currentBarcodes.filter(it => !initialSet.has(it.codigo_barra))
             const existingBarcodes = currentBarcodes.filter(it => initialSet.has(it.codigo_barra))
