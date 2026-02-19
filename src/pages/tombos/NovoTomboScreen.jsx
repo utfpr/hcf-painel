@@ -1121,10 +1121,10 @@ class NovoTomboScreen extends Component {
                             this.props.match.params.tombo_id
                         )
                     } else {
-                        this.setState({ numeroHcf: response.data.hcf + 1 })
+                        this.setState({ numeroHcf: Number(response.data.hcf) + 1 })
                         this.props.form.setFields({
                             numeroTombo: {
-                                value: response.data.hcf + 1
+                                value: Number(response.data.hcf) + 1
                             }
                         })
                         const date = new Date()
