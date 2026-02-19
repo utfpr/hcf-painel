@@ -35,6 +35,10 @@ export default class MainLayout extends Component {
         }
     }
 
+    onOpenChange = (openKeys) => {
+        this.setState({ openKeys })
+    }
+
     toggle = () => {
         this.setState({
             collapsed: !this.state.collapsed
