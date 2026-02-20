@@ -789,7 +789,7 @@ class NovoTomboScreen extends Component {
         if ((!valorSelecionado && !lista) || Number.isNaN(valorSelecionado)) return
 
         const itemEncontrado = lista.find(
-            item => item.id === Number(valorSelecionado)
+            item => Number(item.id) === Number(valorSelecionado)
         )
 
         this.setState({
