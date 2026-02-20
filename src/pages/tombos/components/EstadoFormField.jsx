@@ -33,7 +33,7 @@ const EstadoFormField = ({
             others={{
                 allowClear: true,
                 loading: loading,
-                notFoundContent: loading ? <Spin size="small" /> : 'Nenhum país encontrado',
+                notFoundContent: loading ? <Spin size="small" /> : 'Nenhum estado encontrado',
                 filterOption: onSearch ? false : undefined
             }}
         >
