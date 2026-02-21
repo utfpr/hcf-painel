@@ -18,7 +18,7 @@ export function useCookie(name: string): UseCookieReturn {
             setCookie(name, newValue, options)
             setCookieValue(newValue)
 
-            const event: CustomEvent<{ name: string }> = new CustomEvent('cookie.changed', {
+            const event: CustomEvent<{ name: string }> = new CustomEvent('cookie.updated', {
                 cancelable: false,
                 detail: { name }
             })
@@ -44,10 +44,10 @@ export function useCookie(name: string): UseCookieReturn {
                 setCookieValue(getCookie(name))
             }
         }
-        window.addEventListener('cookie.changed', handleCookieChange)
+        window.addEventListener('cookie.updated', handleCookieChange)
 
         return () => {
-            window.removeEventListener('cookie.changed', handleCookieChange)
+            window.removeEventListener('cookie.updated', handleCookieChange)
         }
     }, [])
 

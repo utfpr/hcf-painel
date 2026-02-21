@@ -35,7 +35,7 @@ export function useLocalStorage<T>(key: string, initialValue?: T): UseLocalStora
                 })
             } else {
                 window.localStorage.setItem(key, JSON.stringify(newValue))
-                event = new CustomEvent('local_storage.changed', {
+                event = new CustomEvent('local_storage.updated', {
                     cancelable: false,
                     detail: { key }
                 })
@@ -56,10 +56,10 @@ export function useLocalStorage<T>(key: string, initialValue?: T): UseLocalStora
                 setStoredValue(readValue())
             }
         }
-        window.addEventListener('local_storage.changed', handleLocalStorageChange)
+        window.addEventListener('local_storage.updated', handleLocalStorageChange)
 
         return () => {
-            window.removeEventListener('local_storage.changed', handleLocalStorageChange)
+            window.removeEventListener('local_storage.updated', handleLocalStorageChange)
         }
     }, [])
 
