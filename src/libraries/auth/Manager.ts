@@ -13,18 +13,18 @@ export class Manager<R extends string, A extends string> {
 
     readonly rules: Rule<R, A>[]
 
-    constructor(rules: Rule<R, A>[]) {
+    constructor(params: { rules: Rule<R, A>[] }) {
         const builder = new AbilityBuilder(createMongoAbility)
 
         // eslint-disable-next-line no-restricted-syntax
-        for (const rule of rules) {
+        for (const rule of params.rules) {
             const action = rule.action as string
             const resource = rule.resource as string
             builder.can(action, resource)
         }
 
         this.ability = builder.build()
-        this.rules = rules
+        this.rules = params.rules
     }
 
     can(action: A, resource: R): boolean {

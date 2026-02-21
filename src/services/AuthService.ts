@@ -7,6 +7,8 @@ import {
 } from '../@types/components'
 import rateLimiter from '../helpers/rateLimiter'
 import { setTokenUsuario, setUsuario } from '../helpers/usuarios'
+import type { Broker } from '../libraries/events/Broker'
+import type { Events } from '../resources/events'
 
 export class AuthService {
     private static instance: AuthService
@@ -65,7 +67,7 @@ export class AuthService {
         }
     }
 
-    public saveUserCredentials(data: LoginResponse): void {
+    public saveUserCredentials(data: LoginResponse, broker: Broker<Events>): void {
         setTokenUsuario(data.token)
         localStorage.setItem('token', data.token)
 
@@ -73,8 +75,6 @@ export class AuthService {
         const usuario = JSON.stringify(data.usuario)
         localStorage.setItem('usuario', usuario)
 
-        // Dispatch event to notify UI components
-        const event = new Event('userNameUpdated')
-        window.dispatchEvent(event)
+        broker.emit('userNameUpdated')
     }
 }

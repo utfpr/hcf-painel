@@ -1,4 +1,5 @@
 import { TipoUsuario, Usuario } from '@/@types/components'
+import { broker } from '@/libraries/events/Broker'
 
 import { getCookie } from './cookie'
 
@@ -47,13 +48,13 @@ export const setUsuario = (usuario: Usuario) => {
     storage.usuario = usuario
 }
 
-window.addEventListener('cookie.updated', (event: Event) => {
-    if (event instanceof CustomEvent && (event as CustomEvent<{ name: string }>).detail.name === 'Access_Token') {
+broker.subscribe('cookie.updated', event => {
+    if (event.name === 'Access_Token') {
         storage.token = getCookie<string>('Access_Token')
     }
 })
-window.addEventListener('local_storage.updated', (event: Event) => {
-    if (event instanceof CustomEvent && (event as CustomEvent<{ key: string }>).detail.key === 'Logged_User') {
+broker.subscribe('local_storage.updated', event => {
+    if (event.key === 'Logged_User') {
         storage.usuario = JSON.parse(window.localStorage.getItem('Logged_User') ?? '{}') as Usuario
     }
 })
