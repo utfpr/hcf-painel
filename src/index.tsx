@@ -17,9 +17,9 @@ declare global {
     }
 }
 
-function AppWrapper() {
-    const { token, user, logOut } = useAuth()
-    return <App token={token} user={user} logOut={logOut} />
+function AuthWrapper() {
+    const auth = useAuth()
+    return <App auth={auth} />
 }
 
 function Root() {
@@ -38,7 +38,7 @@ function Root() {
         <ConfigProvider>
             <AnalyticsProvider appId={analyticsAppId}>
                 <AuthProvider>
-                    <AppWrapper />
+                    <AuthWrapper />
                 </AuthProvider>
             </AnalyticsProvider>
         </ConfigProvider>

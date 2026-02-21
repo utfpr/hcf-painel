@@ -7,23 +7,15 @@ const storage: { token?: string; usuario?: Usuario } = {
     usuario: JSON.parse(window.localStorage.getItem('Logged_User') ?? '{}') as Usuario
 }
 
+/** @deprecated Use `useAuth` hook with `token` and `user` properties instead */
 export default storage
 
-export const getTokenUsuario = () => storage.token
-
+/** @deprecated Use `useAuth` hook with `logIn` method instead */
 export const setTokenUsuario = (token: string) => {
     storage.token = token
 }
 
-export const isLogado = () => Boolean(storage.usuario?.id)
-
-export const isCurador = () => {
-    if (!storage.usuario?.tipo_usuario_id) {
-        return false
-    }
-    return Number(storage.usuario?.tipo_usuario_id) as TipoUsuario === TipoUsuario.Curador
-}
-
+/** @deprecated Use `useAuth` hook with `canAny` method instead */
 export const isCuradorOuOperador = () => {
     if (!storage.usuario?.tipo_usuario_id) {
         return false
@@ -32,6 +24,7 @@ export const isCuradorOuOperador = () => {
     || Number(storage.usuario?.tipo_usuario_id) as TipoUsuario === TipoUsuario.Operador
 }
 
+/** @deprecated Use `useAuth` hook with `canAny` method instead */
 export const isCuradorOuOperadorOuIdentificador = () => {
     if (!storage.usuario?.tipo_usuario_id) {
         return false
@@ -41,6 +34,7 @@ export const isCuradorOuOperadorOuIdentificador = () => {
     || Number(storage.usuario?.tipo_usuario_id) as TipoUsuario === TipoUsuario.Identificador
 }
 
+/** @deprecated Use `useAuth` hook with `can` method instead */
 export const isIdentificador = () => {
     if (!storage.usuario?.tipo_usuario_id) {
         return false
@@ -48,8 +42,7 @@ export const isIdentificador = () => {
     return Number(storage.usuario?.tipo_usuario_id) as TipoUsuario === TipoUsuario.Identificador
 }
 
-export const getUsuario = () => storage.usuario
-
+/** @deprecated Use `useAuth` hook with `logIn` method instead */
 export const setUsuario = (usuario: Usuario) => {
     storage.usuario = usuario
 }

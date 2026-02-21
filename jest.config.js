@@ -13,6 +13,7 @@ module.exports = {
         'node_modules/'
     ],
     moduleNameMapper: {
+        '^@/(.*)$': '<rootDir>/src/$1',
         '\\.(css|less|sass|scss)$': '<rootDir>/test/__mocks__/style-mock.ts'
     },
     snapshotResolver: '<rootDir>/.config/jest.snapshot-resolver.ts',

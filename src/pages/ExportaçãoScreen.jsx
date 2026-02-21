@@ -10,7 +10,6 @@ import moment from 'moment'
 import { Form } from '@ant-design/compatible'
 
 import HeaderServicesComponent from '../components/HeaderServicesComponent'
-import { getTokenUsuario } from '../helpers/usuarios'
 
 const FormItem = Form.Item
 const { Option } = Select

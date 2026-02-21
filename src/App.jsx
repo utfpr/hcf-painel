@@ -15,10 +15,8 @@ import {
 
 import InicioScreen from './features/login/InicioScreen'
 import {
-    isCurador,
     isCuradorOuOperador,
-    isCuradorOuOperadorOuIdentificador,
-    isLogado
+    isCuradorOuOperadorOuIdentificador
 } from './helpers/usuarios'
 import MainLayout from './layouts/MainLayout'
 import DetalhesTomboScreen from './pages/DetalhesTomboScreen'
@@ -55,7 +53,6 @@ import PerfilScreen from './pages/PerfilScreen'
 import RecuperarSenhaScreen from './pages/recuperacaoSenha/RecuperarSenhaScreen'
 import ResetSenhaScreen from './pages/recuperacaoSenha/ResetSenhaScreen'
 import RelatorioCodigoBarrasScreen from './pages/RelatorioCodigoBarrasScreen'
-import RelatorioColetaLocalPeriodoScreen from './pages/RelatorioColetaLocalPeriodoScreen'
 import RelatorioColetaPeriodoScreen from './pages/RelatorioColetaPeriodoScreen'
 import RelatorioColetorPeriodoScreen from './pages/RelatorioColetorPeriodoScreen'
 import RelatorioFamiliasGeneroScreen from './pages/RelatorioFamiliasGeneroScreen'
@@ -66,8 +63,6 @@ import ServicosRefloraScreen from './pages/ServicosRefloraScreen'
 import ServicosSpeciesLinkScreen from './pages/ServicosSpeciesLinkScreen'
 import NovoTomboScreen from './pages/tombos/NovoTomboScreen'
 import PendenciaPagina from './pages/VerPendenciaScreen'
-// import ExportaçãoScreen from './pages/ExportaçãoScreen'
-// import ListaLocalColetaScreen from './pages/ListaLocalColetaScreen'
 
 const PrivateRoute = ({ component: Component, authed, ...rest }) => {
     return (
@@ -110,25 +105,101 @@ export default class App extends Component {
                     component={NovaRemessaScreen}
                 />
                 <PrivateRoute authed={isCuradorOuOperador()} path="/remessas" component={ListaRemessasScreen} />
-                <PrivateRoute authed={isCurador()} path="/usuarios/novo" component={NovoUsuarioScreen} />
-                <PrivateRoute authed={isCurador()} path="/usuarios/:usuario_id" component={NovoUsuarioScreen} />
-                <PrivateRoute authed={isCurador()} path="/usuarios" component={ListaUsuariosScreen} />
-                <PrivateRoute authed={isCurador()} path="/identificadores/novo" component={NovoIdentificadorScreen} />
-                <PrivateRoute authed={isCurador()} path="/identificadores/:identificador_id" component={NovoIdentificadorScreen} />
-                <PrivateRoute authed={isCurador()} path="/identificadores" component={ListaIdentificadoresScreen} />
-                <PrivateRoute authed={isCurador()} path="/herbarios/novo" component={NovoHerbarioScreen} />
-                <PrivateRoute authed={isCurador()} path="/herbarios/:herbario_id" component={NovoHerbarioScreen} />
-                <PrivateRoute authed={isCurador()} path="/coletores/novo" component={NovoColetorScreen} />
-                <PrivateRoute authed={isCurador()} path="/coletores/:coletor_id" component={NovoColetorScreen} />
-                <PrivateRoute authed={isCurador()} path="/coletores" component={ListaColetoresScreen} />
-                <PrivateRoute authed={isLogado()} path="/herbarios" component={ListaHerbariosScreen} />
-                <PrivateRoute authed={isLogado()} path="/fichas/tombos" component={FichaTomboScreen} />
-                <PrivateRoute authed={isLogado()} path="/locais-coleta" component={ListaLocalColetaScreen} />
-                <PrivateRoute authed={isLogado()} path="/estados" component={ListaEstadosScreen} />
-                <PrivateRoute authed={isLogado()} path="/cidades" component={ListaCidadesScreen} />
-                <PrivateRoute authed={isCurador()} path="/reflora" component={ServicosRefloraScreen} />
-                <PrivateRoute authed={isCurador()} path="/specieslink" component={ServicosSpeciesLinkScreen} />
-                <PrivateRoute authed={isCurador()} path="/exportacao" component={ExportaçãoScreen} />
+                <PrivateRoute
+                    authed={this.props.auth.can('create', 'Usuario')}
+                    path="/usuarios/novo"
+                    component={NovoUsuarioScreen}
+                />
+                <PrivateRoute
+                    authed={this.props.auth.can('update', 'Usuario')}
+                    path="/usuarios/:usuario_id"
+                    component={NovoUsuarioScreen}
+                />
+                <PrivateRoute
+                    authed={this.props.auth.can('read', 'Usuario')}
+                    path="/usuarios"
+                    component={ListaUsuariosScreen}
+                />
+                <PrivateRoute
+                    authed={this.props.auth.can('create', 'Identificador')}
+                    path="/identificadores/novo"
+                    component={NovoIdentificadorScreen}
+                />
+                <PrivateRoute
+                    authed={this.props.auth.can('update', 'Identificador')}
+                    path="/identificadores/:identificador_id"
+                    component={NovoIdentificadorScreen}
+                />
+                <PrivateRoute
+                    authed={this.props.auth.can('read', 'Identificador')}
+                    path="/identificadores"
+                    component={ListaIdentificadoresScreen}
+                />
+                <PrivateRoute
+                    authed={this.props.auth.can('create', 'Herbario')}
+                    path="/herbarios/novo"
+                    component={NovoHerbarioScreen}
+                />
+                <PrivateRoute
+                    authed={this.props.auth.can('update', 'Herbario')}
+                    path="/herbarios/:herbario_id"
+                    component={NovoHerbarioScreen}
+                />
+                <PrivateRoute
+                    authed={this.props.auth.can('create', 'Coletor')}
+                    path="/coletores/novo"
+                    component={NovoColetorScreen}
+                />
+                <PrivateRoute
+                    authed={this.props.auth.can('update', 'Coletor')}
+                    path="/coletores/:coletor_id"
+                    component={NovoColetorScreen}
+                />
+                <PrivateRoute
+                    authed={this.props.auth.can('read', 'Coletor')}
+                    path="/coletores"
+                    component={ListaColetoresScreen}
+                />
+                <PrivateRoute
+                    authed={Boolean(this.props.auth.user?.id)}
+                    path="/herbarios"
+                    component={ListaHerbariosScreen}
+                />
+                <PrivateRoute
+                    authed={Boolean(this.props.auth.user?.id)}
+                    path="/fichas/tombos"
+                    component={FichaTomboScreen}
+                />
+                <PrivateRoute
+                    authed={Boolean(this.props.auth.user?.id)}
+                    path="/locais-coleta"
+                    component={ListaLocalColetaScreen}
+                />
+                <PrivateRoute
+                    authed={Boolean(this.props.auth.user?.id)}
+                    path="/estados"
+                    component={ListaEstadosScreen}
+                />
+                <PrivateRoute
+                    authed={Boolean(this.props.auth.user?.id)}
+                    path="/cidades"
+                    component={ListaCidadesScreen}
+                />
+                <PrivateRoute
+                    authed={this.props.auth.can('read', 'Reflora')}
+                    path="/reflora"
+                    component={ServicosRefloraScreen}
+                />
+                <PrivateRoute
+                    authed={this.props.auth.can('read', 'SpeciesLink')}
+                    path="/specieslink"
+                    component={ServicosSpeciesLinkScreen}
+                />
+                <PrivateRoute
+                    authed={this.props.auth.can('export', 'Tombo')}
+                    path="/exportacao"
+                    component={ExportaçãoScreen}
+                />
 
                 <Route path="/livro-tombo" component={LivroTomboScreen} />
                 <Route path="/especies" component={ListaTaxonomiaEspecie} />
@@ -143,13 +214,41 @@ export default class App extends Component {
                 <Route path="/filtros" component={filtrosMapa} />
                 <Route path="/perfil" component={PerfilScreen} />
 
-                <PrivateRoute authed={isLogado()} path="/relatorio-coleta-data" component={RelatorioColetaPeriodoScreen} />
-                <PrivateRoute authed={isLogado()} path="/relatorio-inventario-especies" component={RelatorioInventarioEspeciesScreen} />
-                <PrivateRoute authed={isLogado()} path="/relatorio-coletor-data" component={RelatorioColetorPeriodoScreen} />
-                <PrivateRoute authed={isLogado()} path="/relatorio-codigo-barras" component={RelatorioCodigoBarrasScreen} />
-                <PrivateRoute authed={isLogado()} path="/relatorio-familias-genero" component={RelatorioFamiliasGeneroScreen} />
-                <PrivateRoute authed={isLogado()} path="/relatorio-locais-coleta" component={RelatorioLocalColetaScreen} />
-                <PrivateRoute authed={isLogado()} path="/relatorio-quantidade-familia-generos" component={RelatorioQuantidadeScreen} />
+                <PrivateRoute
+                    authed={Boolean(this.props.auth.user?.id)}
+                    path="/relatorio-coleta-data"
+                    component={RelatorioColetaPeriodoScreen}
+                />
+                <PrivateRoute
+                    authed={Boolean(this.props.auth.user?.id)}
+                    path="/relatorio-inventario-especies"
+                    component={RelatorioInventarioEspeciesScreen}
+                />
+                <PrivateRoute
+                    authed={Boolean(this.props.auth.user?.id)}
+                    path="/relatorio-coletor-data"
+                    component={RelatorioColetorPeriodoScreen}
+                />
+                <PrivateRoute
+                    authed={Boolean(this.props.auth.user?.id)}
+                    path="/relatorio-codigo-barras"
+                    component={RelatorioCodigoBarrasScreen}
+                />
+                <PrivateRoute
+                    authed={Boolean(this.props.auth.user?.id)}
+                    path="/relatorio-familias-genero"
+                    component={RelatorioFamiliasGeneroScreen}
+                />
+                <PrivateRoute
+                    authed={Boolean(this.props.auth.user?.id)}
+                    path="/relatorio-locais-coleta"
+                    component={RelatorioLocalColetaScreen}
+                />
+                <PrivateRoute
+                    authed={Boolean(this.props.auth.user?.id)}
+                    path="/relatorio-quantidade-familia-generos"
+                    component={RelatorioQuantidadeScreen}
+                />
             </Switch>
         </MainLayout>
     )
