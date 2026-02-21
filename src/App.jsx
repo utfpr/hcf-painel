@@ -8,10 +8,7 @@ import './assets/css/Main.css'
 import './assets/css/Search.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
 
-import {
-    BrowserRouter, Switch, Route,
-    Redirect
-} from 'react-router-dom'
+import { BrowserRouter, Switch, Route } from 'react-router-dom'
 
 import InicioScreen from './features/login/InicioScreen'
 import {
@@ -62,15 +59,16 @@ import RelatorioQuantidadeScreen from './pages/RelatorioQtdPeriodoScreen'
 import ServicosRefloraScreen from './pages/ServicosRefloraScreen'
 import ServicosSpeciesLinkScreen from './pages/ServicosSpeciesLinkScreen'
 import NovoTomboScreen from './pages/tombos/NovoTomboScreen'
+import UnauthorizedScreen from './pages/UnauthorizedScreen'
 import PendenciaPagina from './pages/VerPendenciaScreen'
 
 const PrivateRoute = ({ component: Component, authed, ...rest }) => {
+    if (!authed) return <UnauthorizedScreen />
+
     return (
         <Route
             {...rest}
-            render={props => (authed === true
-                ? <Component {...props} />
-                : <Redirect to={{ pathname: '/inicio', state: { from: props.location } }} />)}
+            render={props => <Component {...props} />}
         />
     )
 }
