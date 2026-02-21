@@ -5,6 +5,8 @@ import {
 import { Usuario } from '@/@types/components'
 import { useCookie } from '@/hooks/useCookie'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
+import { Manager } from '@/libraries/auth/Manager'
+import { Action, createRules, Resource } from '@/resources/permissions'
 
 import { AuthContext } from './AuthContext'
 
@@ -26,6 +28,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return undefined
     })
 
+    const manager = useMemo(() => {
+        return new Manager<Resource, Action>(createRules(attributes?.user))
+    }, [loggedUser])
+
+    const can = useCallback((action: Action, resource: Resource) => {
+        return manager.can(action, resource)
+    }, [manager])
+
+    const canAny = useCallback((actions: Action[], resource: Resource) => {
+        return manager.canAny(actions, resource)
+    }, [manager])
+
+    const canAll = useCallback((actions: Action[], resource: Resource) => {
+        return manager.canAll(actions, resource)
+    }, [manager])
+
     const logIn = useCallback((params: {token: string; user: Usuario}) => {
         setAccessToken(params.token)
         setOldAccessToken(params.token)
@@ -43,6 +61,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const contextValue = useMemo(() => {
         return {
             ...attributes,
+            can,
+            canAny,
+            canAll,
             logIn,
             logOut
         }

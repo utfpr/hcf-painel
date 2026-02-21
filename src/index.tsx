@@ -18,8 +18,10 @@ declare global {
 }
 
 function AppWrapper() {
-    const { token, user, logOut } = useAuth()
-    return <App token={token} user={user} logOut={logOut} />
+    const {
+        token, user, can, canAny, logOut
+    } = useAuth()
+    return <App token={token} user={user} can={can} canAny={canAny} logOut={logOut} />
 }
 
 function Root() {
