@@ -47,12 +47,12 @@ export const setUsuario = (usuario: Usuario) => {
     storage.usuario = usuario
 }
 
-window.addEventListener('cookie.changed', (event: Event) => {
+window.addEventListener('cookie.updated', (event: Event) => {
     if (event instanceof CustomEvent && (event as CustomEvent<{ name: string }>).detail.name === 'Access_Token') {
         storage.token = getCookie<string>('Access_Token')
     }
 })
-window.addEventListener('local_storage.changed', (event: Event) => {
+window.addEventListener('local_storage.updated', (event: Event) => {
     if (event instanceof CustomEvent && (event as CustomEvent<{ key: string }>).detail.key === 'Logged_User') {
         storage.usuario = JSON.parse(window.localStorage.getItem('Logged_User') ?? '{}') as Usuario
     }
