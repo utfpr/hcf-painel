@@ -15,7 +15,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     /** @deprecated This is used to support the old access token */
     const [, setOldAccessToken, removeOldAccessToken] = useLocalStorage<string>('token')
 
-    const [authValue, setAuthValue] = useState<{ token?: string; user?: Usuario } | undefined>(() => {
+    const [attributes, setAttributes] = useState<{ token?: string; user?: Usuario } | undefined>(() => {
         if (accessToken && loggedUser) {
             return {
                 token: accessToken,
@@ -30,11 +30,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setAccessToken(params.token)
         setOldAccessToken(params.token)
         setLoggedUser(params.user)
-        setAuthValue(params)
+        setAttributes(params)
     }, [])
 
     const logOut = useCallback(() => {
-        setAuthValue(undefined)
+        setAttributes(undefined)
         removeAccessToken()
         removeLoggedUser()
         removeOldAccessToken()
@@ -42,11 +42,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const contextValue = useMemo(() => {
         return {
-            ...authValue,
+            ...attributes,
             logIn,
             logOut
         }
-    }, [authValue, logIn, logOut])
+    }, [attributes, logIn, logOut])
 
     return (
         <AuthContext.Provider value={contextValue}>
