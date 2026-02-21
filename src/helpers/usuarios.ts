@@ -10,15 +10,10 @@ const storage: { token?: string; usuario?: Usuario } = {
 /** @deprecated Use `useAuth` hook with `token` and `user` properties instead */
 export default storage
 
-/** @deprecated Use `useAuth` hook with `token` property instead */
-export const getTokenUsuario = () => storage.token
-
 /** @deprecated Use `useAuth` hook with `logIn` method instead */
 export const setTokenUsuario = (token: string) => {
     storage.token = token
 }
-
-export const isLogado = () => Boolean(storage.usuario?.id)
 
 /** @deprecated Use `useAuth` hook with `can` method instead */
 export const isCurador = () => {
@@ -53,9 +48,6 @@ export const isIdentificador = () => {
     }
     return Number(storage.usuario?.tipo_usuario_id) as TipoUsuario === TipoUsuario.Identificador
 }
-
-/** @deprecated Use `useAuth` hook with `user` property instead */
-export const getUsuario = () => storage.usuario
 
 /** @deprecated Use `useAuth` hook with `logIn` method instead */
 export const setUsuario = (usuario: Usuario) => {
