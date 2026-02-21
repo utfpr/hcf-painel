@@ -14,7 +14,6 @@ import {
 } from '@ant-design/icons'
 
 import logoImage from '../assets/img/logo_branca.png'
-import { baseUrl } from '../config/api'
 
 const { Header, Content, Sider } = Layout
 const { SubMenu } = Menu
@@ -36,7 +35,6 @@ export default class MainLayout extends Component {
         this.state = {
             collapsed: false,
             loading: false,
-            userName: '',
             openKeys: []
         }
     }
