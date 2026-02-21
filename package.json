@@ -13,7 +13,7 @@
         "build": "tsc && vite build",
         "preview": "vite preview",
         "postinstall": "husky install",
-        "test": "jest",
+        "test": "jest --silent",
         "audit": "npm audit --audit-level=moderate",
         "audit:fix": "npm audit fix"
     },

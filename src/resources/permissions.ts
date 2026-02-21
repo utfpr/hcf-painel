@@ -14,21 +14,57 @@ const RESOURCES = [
     'Autor',
     'Pais',
     'Estado',
-    'Cidade'
+    'Cidade',
+    'Usuario',
+    'Identificador',
+    'Herbario',
+    'Coletor',
+    'Reflora',
+    'SpeciesLink'
 ] as const
 
 const ACTIONS = [
     'read',
+    'export',
     'create',
     'update',
     'delete'
-]
+] as const
 
 export type Resource = typeof RESOURCES[number]
 export type Action = typeof ACTIONS[number]
 
 const ruleSpecificMapping: Record<TipoUsuario, (user: Usuario) => Rule<Resource, Action>[]> = {
-    [TipoUsuario.Curador]: () => [],
+    [TipoUsuario.Curador]: () => [
+        {
+            resource: 'Tombo',
+            action: ['export']
+        },
+        {
+            resource: 'Usuario',
+            action: ['read', 'create', 'update', 'delete']
+        },
+        {
+            resource: 'Identificador',
+            action: ['read', 'create', 'update', 'delete']
+        },
+        {
+            resource: 'Herbario',
+            action: ['read', 'create', 'update', 'delete']
+        },
+        {
+            resource: 'Coletor',
+            action: ['read', 'create', 'update', 'delete']
+        },
+        {
+            resource: 'Reflora',
+            action: ['read', 'update']
+        },
+        {
+            resource: 'SpeciesLink',
+            action: ['read', 'update']
+        }
+    ],
     [TipoUsuario.Operador]: () => [],
     [TipoUsuario.Identificador]: () => []
 } as const

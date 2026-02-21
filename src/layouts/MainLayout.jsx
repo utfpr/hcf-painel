@@ -29,6 +29,11 @@ const TAXONOMIA_RESOURCES = [
     'Autor'
 ]
 
+const SERVICOS_RESOURCES = [
+    'Reflora',
+    'SpeciesLink'
+]
+
 export default class MainLayout extends Component {
     constructor(props) {
         super(props)
@@ -107,7 +112,7 @@ export default class MainLayout extends Component {
                         openKeys={this.state.openKeys}
                         onOpenChange={this.onOpenChange}
                     >
-                        {this.props.can('read', 'Tombo') ? (
+                        {this.props.auth.can('read', 'Tombo') ? (
                             <Menu.Item key="tomboMenuItem">
                                 <Link to="/tombos">
                                     <DesktopOutlined />
@@ -115,7 +120,7 @@ export default class MainLayout extends Component {
                                 </Link>
                             </Menu.Item>
                         ) : null}
-                        {TAXONOMIA_RESOURCES.some(resource => this.props.can('read', resource)) ? (
+                        {TAXONOMIA_RESOURCES.some(resource => this.props.auth.can('read', resource)) ? (
                             <SubMenu
                                 key="taxonomiaSubmenu"
                                 title={(
@@ -125,42 +130,42 @@ export default class MainLayout extends Component {
                                     </span>
                                 )}
                             >
-                                {this.props.can('read', 'Reino') ? (
+                                {this.props.auth.can('read', 'Reino') ? (
                                     <Menu.Item key="reinoMenuItem">
                                         <Link to="/reinos">Reinos</Link>
                                     </Menu.Item>
                                 ) : null}
-                                {this.props.can('read', 'Familia') ? (
+                                {this.props.auth.can('read', 'Familia') ? (
                                     <Menu.Item key="familiaMenuItem">
                                         <Link to="/familias">Famílias</Link>
                                     </Menu.Item>
                                 ) : null}
-                                {this.props.can('read', 'Subfamilia') ? (
+                                {this.props.auth.can('read', 'Subfamilia') ? (
                                     <Menu.Item key="subfamiliaMenuItem">
                                         <Link to="/subfamilias">Subfamílias</Link>
                                     </Menu.Item>
                                 ) : null}
-                                {this.props.can('read', 'Genero') ? (
+                                {this.props.auth.can('read', 'Genero') ? (
                                     <Menu.Item key="generoMenuItem">
                                         <Link to="/generos">Gêneros</Link>
                                     </Menu.Item>
                                 ) : null}
-                                {this.props.can('read', 'Especie') ? (
+                                {this.props.auth.can('read', 'Especie') ? (
                                     <Menu.Item key="especieMenuItem">
                                         <Link to="/especies">Espécies</Link>
                                     </Menu.Item>
                                 ) : null}
-                                {this.props.can('read', 'Subespecie') ? (
+                                {this.props.auth.can('read', 'Subespecie') ? (
                                     <Menu.Item key="subespecieMenuItem">
                                         <Link to="/subespecies">Subespécies</Link>
                                     </Menu.Item>
                                 ) : null}
-                                {this.props.can('read', 'Variedade') ? (
+                                {this.props.auth.can('read', 'Variedade') ? (
                                     <Menu.Item key="variedadeMenuItem">
                                         <Link to="/variedades">Variedades</Link>
                                     </Menu.Item>
                                 ) : null}
-                                {this.props.can('read', 'Autor') ? (
+                                {this.props.auth.can('read', 'Autor') ? (
                                     <Menu.Item key="autorMenuItem">
                                         <Link to="/autores">Autores</Link>
                                     </Menu.Item>
@@ -182,7 +187,7 @@ export default class MainLayout extends Component {
                             <Menu.Item key="cidadeMenuItem">
                                 <Link to="/cidades">Cidades</Link>
                             </Menu.Item>
-                            {this.props.user?.id ? (
+                            {this.props.auth.loggedIn ? (
                                 <Menu.Item key="localColetaMenuItem">
                                     <Link to="/locais-coleta">
                                         <span>Local de Coleta</span>
@@ -190,7 +195,7 @@ export default class MainLayout extends Component {
                                 </Menu.Item>
                             ) : null}
                         </SubMenu>
-                        {this.props.can(['read'], 'Remessa') ? (
+                        {this.props.auth.can(['read'], 'Remessa') ? (
                             <Menu.Item key="remessaMenuItem">
                                 <Link to="/remessas">
                                     <DatabaseOutlined />
@@ -198,7 +203,7 @@ export default class MainLayout extends Component {
                                 </Link>
                             </Menu.Item>
                         ) : null}
-                        {this.props.can('read', 'Pendencia') ? (
+                        {this.props.auth.can('read', 'Pendencia') ? (
                             <Menu.Item key="pendenciaMenuItem">
                                 <Link to="/pendencias">
                                     <BarsOutlined />
@@ -206,7 +211,7 @@ export default class MainLayout extends Component {
                                 </Link>
                             </Menu.Item>
                         ) : null}
-                        {this.props.can('read', 'Usuario') ? (
+                        {this.props.auth.can('read', 'Usuario') ? (
                             <Menu.Item key="usuarioMenuItem">
                                 <Link to="/usuarios">
                                     <TeamOutlined />
@@ -214,7 +219,7 @@ export default class MainLayout extends Component {
                                 </Link>
                             </Menu.Item>
                         ) : null}
-                        {this.props.can('read', 'Identificador') ? (
+                        {this.props.auth.can('read', 'Identificador') ? (
                             <Menu.Item key="identificadorMenuItem">
                                 <Link to="/identificadores">
                                     <TeamOutlined />
@@ -222,7 +227,7 @@ export default class MainLayout extends Component {
                                 </Link>
                             </Menu.Item>
                         ) : null}
-                        {this.props.can('read', 'Coletor') ? (
+                        {this.props.auth.can('read', 'Coletor') ? (
                             <Menu.Item key="coletorMenuItem">
                                 <Link to="/coletores">
                                     <TeamOutlined />
@@ -230,7 +235,7 @@ export default class MainLayout extends Component {
                                 </Link>
                             </Menu.Item>
                         ) : null}
-                        {this.props.user?.id ? (
+                        {this.props.auth.loggedIn ? (
                             <Menu.Item key="herbarioMenuItem">
                                 <Link to="/herbarios">
                                     <FlagOutlined />
@@ -238,7 +243,7 @@ export default class MainLayout extends Component {
                                 </Link>
                             </Menu.Item>
                         ) : null}
-                        {this.props.user?.id ? (
+                        {this.props.auth.loggedIn ? (
                             <SubMenu
                                 key="fichasSubmenu"
                                 title={(
@@ -272,7 +277,7 @@ export default class MainLayout extends Component {
                                 <Link to="/filtros">Filtros Avançados</Link>
                             </Menu.Item>
                         </SubMenu>
-                        {this.props.user?.id ? (
+                        {this.props.auth.loggedIn ? (
                             <SubMenu
                                 key="relatorios"
                                 title={(
@@ -307,7 +312,7 @@ export default class MainLayout extends Component {
                                 </Menu.Item>
                             </SubMenu>
                         ) : null}
-                        {this.props.canAny(['read', 'create'], 'Exportacao') ? (
+                        {this.props.auth.can('export', 'Tombo') ? (
                             <Menu.Item key="exportacaoMenuItem">
                                 <Link to="/exportacao">
                                     <DesktopOutlined />
@@ -315,9 +320,9 @@ export default class MainLayout extends Component {
                                 </Link>
                             </Menu.Item>
                         ) : null}
-                        {this.props.canAny(['read', 'create'], 'Servico') ? (
+                        {SERVICOS_RESOURCES.some(resource => this.props.auth.can('read', resource)) ? (
                             <SubMenu
-                                key="servicos"
+                                key="servicoSubmenu"
                                 title={(
                                     <span>
                                         {' '}
@@ -328,15 +333,19 @@ export default class MainLayout extends Component {
                                     </span>
                                 )}
                             >
-                                <Menu.Item key="refloraMenuItem">
-                                    <Link to="/reflora">Reflora</Link>
-                                </Menu.Item>
-                                <Menu.Item key="specieslinkMenuItem">
-                                    <Link to="/specieslink">speciesLink</Link>
-                                </Menu.Item>
+                                {this.props.auth.can('read', 'Reflora') ? (
+                                    <Menu.Item key="refloraMenuItem">
+                                        <Link to="/reflora">Reflora</Link>
+                                    </Menu.Item>
+                                ) : null}
+                                {this.props.auth.can('read', 'SpeciesLink') ? (
+                                    <Menu.Item key="specieslinkMenuItem">
+                                        <Link to="/specieslink">speciesLink</Link>
+                                    </Menu.Item>
+                                ) : null}
                             </SubMenu>
                         ) : null}
-                        {this.props.user?.id ? (
+                        {this.props.auth.loggedIn ? (
                             <Menu.Item key="sairMenuItem">
                                 <Link
                                     to="/inicio"
@@ -355,9 +364,9 @@ export default class MainLayout extends Component {
                             <div style={{ cursor: 'pointer' }}>
                                 <MenuUnfoldOutlined onClick={this.toggle} />
                             </div>
-                            {this.props.user?.id ? (
+                            {this.props.auth.loggedIn ? (
                                 <div>
-                                    {this.props.user?.nome}
+                                    {this.props.auth.user?.nome}
 
                                     <Divider type="vertical" />
 

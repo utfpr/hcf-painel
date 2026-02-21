@@ -17,8 +17,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     /** @deprecated This is used to support the old access token */
     const [, setOldAccessToken, removeOldAccessToken] = useLocalStorage<string>('token')
 
+    const loggedIn = Boolean(accessToken) && Boolean(loggedUser?.id)
+
     const [attributes, setAttributes] = useState<{ token?: string; user?: Usuario } | undefined>(() => {
-        if (accessToken && loggedUser) {
+        if (loggedIn) {
             return {
                 token: accessToken,
                 user: loggedUser
@@ -30,7 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const manager = useMemo(() => {
         return new Manager<Resource, Action>(createRules(attributes?.user))
-    }, [loggedUser])
+    }, [attributes?.user])
 
     const can = useCallback((action: Action, resource: Resource) => {
         return manager.can(action, resource)
@@ -61,6 +63,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const contextValue = useMemo(() => {
         return {
             ...attributes,
+            loggedIn,
             can,
             canAny,
             canAll,

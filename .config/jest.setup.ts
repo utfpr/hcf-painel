@@ -1,5 +1,8 @@
 /* eslint-disable import/no-extraneous-dependencies */
+import React from 'react'
 import '@testing-library/jest-dom'
+
+;(global as unknown as Record<string, unknown>).React = React
 
 // https://jestjs.io/docs/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom
 Object.defineProperty(window, 'matchMedia', {

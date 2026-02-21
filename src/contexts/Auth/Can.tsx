@@ -12,7 +12,7 @@ export function Can({
     not, action, resource, children
 }: CanProps) {
     const { can } = useAuth()
-    if (not ? !can(action, resource) : can(action, resource)) return null
+    if (not ? can(action, resource) : !can(action, resource)) return null
     return children
 }
 

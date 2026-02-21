@@ -6,6 +6,7 @@ import { Action, Resource } from '@/resources/permissions'
 export interface AuthContextValue {
     token?: string
     user?: Usuario
+    loggedIn: boolean
     can(action: Action, resource: Resource): boolean
     canAny(actions: Action[], resource: Resource): boolean
     canAll(actions: Action[], resource: Resource): boolean

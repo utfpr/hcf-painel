@@ -269,7 +269,15 @@
                 "@typescript-eslint/quotes": ["error", "single"],
                 "@typescript-eslint/comma-dangle": ["error", "never"],
                 "@typescript-eslint/semi": ["error", "never"],
-                "@typescript-eslint/indent": ["error", 2]
+                "@typescript-eslint/indent": ["error", 2],
+                "react/jsx-indent": [
+                    "error",
+                    2
+                ],
+                "react/jsx-indent-props": [
+                    "error",
+                2
+                ]
             }
         },
         {

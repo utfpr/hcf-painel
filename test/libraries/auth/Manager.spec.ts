@@ -73,6 +73,31 @@ describe('Manager', () => {
     expect(manager.can('delete', 'Especie')).toBe(false)
   })
 
+  it('manage returns true when user has any action on resource', () => {
+    const rules: Rule<string, string>[] = [
+      { resource: 'Usuario', action: ['read', 'create', 'update', 'delete'] }
+    ]
+    const manager = new Manager(rules)
+
+    expect(manager.can('manage', 'Usuario')).toBe(true)
+    expect(manager.can('read', 'Usuario')).toBe(true)
+    expect(manager.can('create', 'Usuario')).toBe(true)
+    expect(manager.can('update', 'Usuario')).toBe(true)
+    expect(manager.can('delete', 'Usuario')).toBe(true)
+    expect(manager.can('manage', 'Tombo')).toBe(false)
+  })
+
+  it('manage returns false when user lacks all actions', () => {
+    const rules: Rule<string, string>[] = [
+      { resource: 'Usuario', action: ['read', 'update'] }
+    ]
+    const manager = new Manager(rules)
+
+    expect(manager.can('manage', 'Tombo')).toBe(false)
+    expect(manager.can('read', 'Usuario')).toBe(true)
+    expect(manager.can('update', 'Usuario')).toBe(true)
+  })
+
   describe('canAny', () => {
     it('returns true when any action is allowed', () => {
       const rules: Rule<string, string>[] = [
@@ -123,6 +148,14 @@ describe('Manager', () => {
       const manager = new Manager([{ resource: 'Tombo', action: 'read' }])
 
       expect(manager.canAll([], 'Tombo')).toBe(false)
+    })
+
+    it('returns true for all actions when resource has full CRUD', () => {
+      const manager = new Manager([
+        { resource: 'Usuario', action: ['read', 'create', 'update', 'delete'] }
+      ])
+
+      expect(manager.canAll(['read', 'create', 'update', 'delete'], 'Usuario')).toBe(true)
     })
   })
 })
