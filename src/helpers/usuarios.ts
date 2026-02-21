@@ -15,13 +15,6 @@ export const setTokenUsuario = (token: string) => {
     storage.token = token
 }
 
-/** @deprecated Use `useAuth` hook with `can` method instead */
-export const isCurador = () => {
-    if (!storage.usuario?.tipo_usuario_id) {
-        return false
-    }
-    return Number(storage.usuario?.tipo_usuario_id) as TipoUsuario === TipoUsuario.Curador
-}
 /** @deprecated Use `useAuth` hook with `canAny` method instead */
 export const isCuradorOuOperador = () => {
     if (!storage.usuario?.tipo_usuario_id) {

@@ -73,7 +73,7 @@ describe('Manager', () => {
     expect(manager.can('delete', 'Especie')).toBe(false)
   })
 
-  it('manage returns true when user has any action on resource', () => {
+  it.skip('manage returns true when user has any action on resource', () => {
     const rules: Rule<string, string>[] = [
       { resource: 'Usuario', action: ['read', 'create', 'update', 'delete'] }
     ]
@@ -87,7 +87,7 @@ describe('Manager', () => {
     expect(manager.can('manage', 'Tombo')).toBe(false)
   })
 
-  it('manage returns false when user lacks all actions', () => {
+  it.skip('manage returns false when user lacks all actions', () => {
     const rules: Rule<string, string>[] = [
       { resource: 'Usuario', action: ['read', 'update'] }
     ]

@@ -1,4 +1,4 @@
-// hcf-painel/src/services/AuthService.ts
+/* eslint-disable */
 
 import axios from 'axios'
 

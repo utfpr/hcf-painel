@@ -15,7 +15,6 @@ import {
 
 import InicioScreen from './features/login/InicioScreen'
 import {
-    isCurador,
     isCuradorOuOperador,
     isCuradorOuOperadorOuIdentificador
 } from './helpers/usuarios'
