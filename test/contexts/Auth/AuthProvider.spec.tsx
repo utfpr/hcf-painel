@@ -45,37 +45,43 @@ function AuthConsumer() {
 }
 
 describe('AuthProvider', () => {
-  const mockSetAccessToken = jest.fn()
-  const mockRemoveAccessToken = jest.fn()
-  const mockSetLoggedUser = jest.fn()
-  const mockRemoveLoggedUser = jest.fn()
-  const mockSetOldAccessToken = jest.fn()
-  const mockRemoveOldAccessToken = jest.fn()
-
-  beforeEach(() => {
+  it('renders children', () => {
+    // arrange
+    const mockSetAccessToken = jest.fn()
+    const mockRemoveAccessToken = jest.fn();
     (useCookie as jest.Mock).mockReturnValue([undefined, mockSetAccessToken, mockRemoveAccessToken]);
     (useLocalStorage as jest.Mock)
-      .mockReturnValueOnce([undefined, mockSetLoggedUser, mockRemoveLoggedUser])
-      .mockReturnValueOnce([undefined, mockSetOldAccessToken, mockRemoveOldAccessToken])
-  })
+      .mockReturnValueOnce([undefined, jest.fn(), jest.fn()])
+      .mockReturnValueOnce([undefined, jest.fn(), jest.fn()])
 
-  it('renders children', () => {
+    // act
     render(
       <AuthProvider>
         <span>Child content</span>
       </AuthProvider>
     )
 
+    // assert
     expect(screen.getByText('Child content')).toBeInTheDocument()
   })
 
   it('provides context with default permissions when logged out', () => {
+    // arrange
+    const mockSetAccessToken = jest.fn()
+    const mockRemoveAccessToken = jest.fn();
+    (useCookie as jest.Mock).mockReturnValue([undefined, mockSetAccessToken, mockRemoveAccessToken]);
+    (useLocalStorage as jest.Mock)
+      .mockReturnValueOnce([undefined, jest.fn(), jest.fn()])
+      .mockReturnValueOnce([undefined, jest.fn(), jest.fn()])
+
+    // act
     render(
       <AuthProvider>
         <AuthConsumer />
       </AuthProvider>
     )
 
+    // assert
     expect(screen.getByTestId('token')).toHaveTextContent('none')
     expect(screen.getByTestId('user')).toHaveTextContent('none')
     expect(screen.getByTestId('can-read-tombo')).toHaveTextContent('yes')
@@ -85,37 +91,59 @@ describe('AuthProvider', () => {
   })
 
   it('logIn updates context', async () => {
+    // arrange
+    const mockSetAccessToken = jest.fn()
+    const mockRemoveAccessToken = jest.fn()
+    const mockSetLoggedUser = jest.fn()
+    const mockRemoveLoggedUser = jest.fn()
+    const mockSetOldAccessToken = jest.fn()
+    const mockRemoveOldAccessToken = jest.fn();
+    (useCookie as jest.Mock).mockReturnValue([undefined, mockSetAccessToken, mockRemoveAccessToken]);
+    (useLocalStorage as jest.Mock)
+      .mockReturnValueOnce([undefined, mockSetLoggedUser, mockRemoveLoggedUser])
+      .mockReturnValueOnce([undefined, mockSetOldAccessToken, mockRemoveOldAccessToken])
     const user = userEvent.setup()
 
+    // act
     render(
       <AuthProvider>
         <AuthConsumer />
       </AuthProvider>
     )
-
     expect(screen.getByTestId('token')).toHaveTextContent('none')
-
     await user.click(screen.getByTestId('log-in-button'))
 
+    // assert
     expect(mockSetAccessToken).toHaveBeenCalledWith('new-token')
     expect(mockSetLoggedUser).toHaveBeenCalledWith(mockUser)
     expect(mockSetOldAccessToken).toHaveBeenCalledWith('new-token')
   })
 
   it('logOut clears context and calls remove functions', async () => {
+    // arrange
+    const mockSetAccessToken = jest.fn()
+    const mockRemoveAccessToken = jest.fn()
+    const mockSetLoggedUser = jest.fn()
+    const mockRemoveLoggedUser = jest.fn()
+    const mockSetOldAccessToken = jest.fn()
+    const mockRemoveOldAccessToken = jest.fn();
+    (useCookie as jest.Mock).mockReturnValue([undefined, mockSetAccessToken, mockRemoveAccessToken]);
+    (useLocalStorage as jest.Mock)
+      .mockReturnValueOnce([undefined, mockSetLoggedUser, mockRemoveLoggedUser])
+      .mockReturnValueOnce([undefined, mockSetOldAccessToken, mockRemoveOldAccessToken])
     const user = userEvent.setup()
 
+    // act
     render(
       <AuthProvider>
         <AuthConsumer />
       </AuthProvider>
     )
-
     await user.click(screen.getByTestId('log-in-button'))
     expect(screen.getByTestId('token')).toHaveTextContent('new-token')
-
     await user.click(screen.getByTestId('log-out-button'))
 
+    // assert
     expect(mockRemoveAccessToken).toHaveBeenCalled()
     expect(mockRemoveLoggedUser).toHaveBeenCalled()
     expect(mockRemoveOldAccessToken).toHaveBeenCalled()
@@ -125,6 +153,7 @@ describe('AuthProvider', () => {
 
 describe('useAuth', () => {
   it('throws when used outside AuthProvider', () => {
+    // arrange & act & assert
     expect(() => {
       render(
         <div>

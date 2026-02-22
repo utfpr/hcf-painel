@@ -12,14 +12,14 @@ jest.mock('@/hooks/useLocalStorage', () => ({
 }))
 
 describe('Can', () => {
-  beforeEach(() => {
+  it('renders children when user can perform action', () => {
+    // arrange
     (useCookie as jest.Mock).mockReturnValue([undefined, jest.fn(), jest.fn()]);
     (useLocalStorage as jest.Mock)
       .mockReturnValueOnce([undefined, jest.fn(), jest.fn()])
       .mockReturnValueOnce([undefined, jest.fn(), jest.fn()])
-  })
 
-  it('renders children when user can perform action', () => {
+    // act
     render(
       <AuthProvider>
         <Can action="read" resource="Tombo">
@@ -28,10 +28,18 @@ describe('Can', () => {
       </AuthProvider>
     )
 
+    // assert
     expect(screen.getByTestId('visible-content')).toBeInTheDocument()
   })
 
   it('renders null when user cannot perform action', () => {
+    // arrange
+    (useCookie as jest.Mock).mockReturnValue([undefined, jest.fn(), jest.fn()]);
+    (useLocalStorage as jest.Mock)
+      .mockReturnValueOnce([undefined, jest.fn(), jest.fn()])
+      .mockReturnValueOnce([undefined, jest.fn(), jest.fn()])
+
+    // act
     render(
       <AuthProvider>
         <Can action="create" resource="Tombo">
@@ -40,10 +48,18 @@ describe('Can', () => {
       </AuthProvider>
     )
 
+    // assert
     expect(screen.queryByTestId('hidden-content')).not.toBeInTheDocument()
   })
 
   it('with not prop renders children when user cannot perform action', () => {
+    // arrange
+    (useCookie as jest.Mock).mockReturnValue([undefined, jest.fn(), jest.fn()]);
+    (useLocalStorage as jest.Mock)
+      .mockReturnValueOnce([undefined, jest.fn(), jest.fn()])
+      .mockReturnValueOnce([undefined, jest.fn(), jest.fn()])
+
+    // act
     render(
       <AuthProvider>
         <Can not action="create" resource="Tombo">
@@ -52,10 +68,18 @@ describe('Can', () => {
       </AuthProvider>
     )
 
+    // assert
     expect(screen.getByTestId('shown-when-cannot-create')).toBeInTheDocument()
   })
 
   it('with not prop renders null when user can perform action', () => {
+    // arrange
+    (useCookie as jest.Mock).mockReturnValue([undefined, jest.fn(), jest.fn()]);
+    (useLocalStorage as jest.Mock)
+      .mockReturnValueOnce([undefined, jest.fn(), jest.fn()])
+      .mockReturnValueOnce([undefined, jest.fn(), jest.fn()])
+
+    // act
     render(
       <AuthProvider>
         <Can not action="read" resource="Tombo">
@@ -64,6 +88,7 @@ describe('Can', () => {
       </AuthProvider>
     )
 
+    // assert
     expect(screen.queryByText('Hidden when can read')).not.toBeInTheDocument()
   })
 })

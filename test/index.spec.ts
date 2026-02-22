@@ -1,3 +1,10 @@
 it('should be ok', () => {
-    expect(true).toBe(true)
+  // arrange
+  const expected = true
+
+  // act
+  const actual = true
+
+  // assert
+  expect(actual).toBe(expected)
 })
