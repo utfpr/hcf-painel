@@ -7,14 +7,14 @@ import {
 import axios from 'axios'
 
 import TotalRecordFound from '@/components/TotalRecordsFound'
+import { recaptchaKey } from '@/config/api'
 import { Form } from '@ant-design/compatible'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
-import SelectedFormField from './tombos/components/SelectedFormFiled'
 import { isCuradorOuOperador } from '../helpers/usuarios'
-import { recaptchaKey } from '@/config/api'
+import SelectedFormField from './tombos/components/SelectedFormFiled'
 
 const { confirm } = Modal
 const FormItem = Form.Item
@@ -111,6 +111,7 @@ class ListaTaxonomiaSubfamilia extends Component {
     }
 
     mostraMensagemDelete(id) {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this
         confirm({
             title: 'Você tem certeza que deseja excluir esta subfamília?',
@@ -294,7 +295,7 @@ class ListaTaxonomiaSubfamilia extends Component {
 
         const formValues = this.props.form.getFieldsValue()
 
-        const extrairId = (valor) => {
+        const extrairId = valor => {
             if (typeof valor === 'object' && valor.key) {
                 return valor.key
             }
@@ -524,11 +525,11 @@ class ListaTaxonomiaSubfamilia extends Component {
     }
 
     optionFamilia = () => this.state.familias.map(item => (
-        <Option value={item.id}>{item.nome}</Option>
+        <Option key={item.id} value={item.id}>{item.nome}</Option>
     ))
 
     optionReino = () => this.state.reinos.map(item => (
-        <Option value={item.id}>{item.nome}</Option>
+        <Option key={item.id} value={item.id}>{item.nome}</Option>
     ))
 
     renderFormulario() {
@@ -612,7 +613,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                             <Row gutter={8} style={{ marginTop: 16 }}>
                                 <SelectedFormField
                                     title="Nome da família:"
-                                    placeholder={reinoSelecionado ? "Selecione uma família" : "Selecione um reino primeiro"}
+                                    placeholder={reinoSelecionado ? 'Selecione uma família' : 'Selecione um reino primeiro'}
                                     fieldName="nomeFamilia"
                                     getFieldDecorator={getFieldDecorator}
                                     onSearch={searchText => {

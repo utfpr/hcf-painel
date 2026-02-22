@@ -1,5 +1,7 @@
 import React from 'react'
+
 import { Select, Spin } from 'antd'
+
 import SelectedFormFiled from './SelectedFormFiled'
 
 const { Option } = Select
@@ -10,10 +12,13 @@ const HerbarioFormField = ({
 }) => {
     const optionHerbarios = () => herbarios.map(item => (
         <Option key={item.id} value={`${item.id}`}>
-            {item.sigla} - {item.nome}
+            {item.sigla}
+            {' '}
+            -
+            {item.nome}
         </Option>
     ))
-    
+
     return (
         <SelectedFormFiled
             xs={24}

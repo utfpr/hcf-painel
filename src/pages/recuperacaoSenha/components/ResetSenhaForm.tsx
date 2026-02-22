@@ -1,5 +1,8 @@
 import { useMemo, useState } from 'react'
-import { Form, Input, Button, Typography, message, Progress, Space } from 'antd'
+
+import {
+  Form, Input, Button, Typography, message, Progress, Space
+} from 'antd'
 
 const { Title, Paragraph } = Typography
 
@@ -8,17 +11,27 @@ type CatchError = { message: string }
 
 function usePasswordStrength(pwd: string) {
   return useMemo(() => {
-    if (!pwd) return { score: 0, label: '', percent: 0 }
+    if (!pwd) return {
+      score: 0, label: '', percent: 0
+    }
     const checks = [
       /[a-z]/.test(pwd),
       /[A-Z]/.test(pwd),
       /\d/.test(pwd),
       /[^\w\s]/.test(pwd),
-      pwd.length >= 8,
+      pwd.length >= 8
     ]
     const score = checks.filter(Boolean).length
-    const labels = ['Muito fraca', 'Fraca', 'Ok', 'Boa', 'Forte']
-    return { score, label: labels[score - 1] || '', percent: (score / 5) * 100 }
+    const labels = [
+      'Muito fraca',
+      'Fraca',
+      'Ok',
+      'Boa',
+      'Forte'
+    ]
+    return {
+      score, label: labels[score - 1] || '', percent: (score / 5) * 100
+    }
   }, [pwd])
 }
 
@@ -50,12 +63,12 @@ export default function ResetSenhaForm({ onSuccess }: Props) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           token,
-          novaSenha: values.password,
-        }),
+          novaSenha: values.password
+        })
       })
 
       if (!response.ok) {
-        const data = await response.json().catch(() => ({}))
+        const data = await response.json().catch(() => ({})) as { mensagem?: string }
         throw new Error(data.mensagem || 'Erro ao redefinir senha.')
       }
       await message.success('Senha redefinida com sucesso! Faça login com a nova senha.')
@@ -83,7 +96,7 @@ export default function ResetSenhaForm({ onSuccess }: Props) {
           label="Nova senha"
           rules={[
             { required: true, message: 'Informe a nova senha.' },
-            { min: 8, message: 'Mínimo de 8 caracteres.' },
+            { min: 8, message: 'Mínimo de 8 caracteres.' }
           ]}
           hasFeedback
         >
@@ -94,7 +107,9 @@ export default function ResetSenhaForm({ onSuccess }: Props) {
           <Space direction="vertical" style={{ width: '100%' }}>
             <Progress percent={Math.round(strength.percent)} showInfo={false} />
             <Paragraph type="secondary" style={{ margin: 0 }}>
-              Força: {strength.label || '—'}
+              Força:
+              {' '}
+              {strength.label || '—'}
             </Paragraph>
           </Space>
         </Form.Item>
@@ -110,8 +125,8 @@ export default function ResetSenhaForm({ onSuccess }: Props) {
               validator(_, value) {
                 if (!value || getFieldValue('password') === value) return Promise.resolve()
                 return Promise.reject(new Error('As senhas não coincidem.'))
-              },
-            }),
+              }
+            })
           ]}
         >
           <Input.Password placeholder="••••••••" autoComplete="new-password" />

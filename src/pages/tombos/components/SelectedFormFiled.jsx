@@ -93,15 +93,16 @@ const SelectedFormField = ({
                     {extra}
                 </Col>
             )}
-            {autor ? (
-                <Col span={24}>
-                    <span>
-                        <b>Autor:</b>
-                        {' '}
-                        {autor}
-                    </span>
-                </Col>
-            )
+            {autor
+                ? (
+                        <Col span={24}>
+                            <span>
+                                <b>Autor:</b>
+                                {' '}
+                                {autor}
+                            </span>
+                        </Col>
+                    )
                 : null}
             {onClickAddMore && !disabled && (
                 <Col span={2}>

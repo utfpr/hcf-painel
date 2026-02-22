@@ -1,16 +1,19 @@
 import React, { Component } from 'react'
+
 import {
     Card, Col, Row, Input, Button, Divider, notification, Modal, Spin, Select
 } from 'antd'
+import axios from 'axios'
+import { Link } from 'react-router-dom'
+
+import TotalRecordsFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons'
-import { Link } from 'react-router-dom'
-import axios from 'axios'
-import SimpleTableComponent from '../components/SimpleTableComponent'
-import { isCuradorOuOperador } from '../helpers/usuarios'
+
 import HeaderListComponent from '../components/HeaderListComponent'
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
-import TotalRecordsFound from '@/components/TotalRecordsFound'
+import SimpleTableComponent from '../components/SimpleTableComponent'
+import { isCuradorOuOperador } from '../helpers/usuarios'
 import SelectedFormField from './tombos/components/SelectedFormFiled'
 
 const { confirm } = Modal
@@ -76,7 +79,6 @@ class ListaLocaisColeta extends Component {
         await this.requisitaEstados()
         await this.requisitaCidades()
     }
-
 
     notificacao = (type, titulo, descricao) => {
         notification[type]({
@@ -177,7 +179,7 @@ class ListaLocaisColeta extends Component {
         return null
     }
 
-    editarLocal = async (id) => {
+    editarLocal = async id => {
         try {
             const response = await axios.get(`/locais-coleta/${id}`)
 
@@ -321,7 +323,7 @@ class ListaLocaisColeta extends Component {
         }
     }
 
-    requisitaExclusao = async (id) => {
+    requisitaExclusao = async id => {
         try {
             const response = await axios.delete(`/locais-coleta/${id}`)
 
@@ -334,7 +336,7 @@ class ListaLocaisColeta extends Component {
         }
     }
 
-    mostraMensagemDelete = (id) => {
+    mostraMensagemDelete = id => {
         confirm({
             title: 'Você tem certeza que deseja excluir este local de coleta?',
             content: 'Ao clicar em SIM, o local será excluído.',
@@ -388,7 +390,7 @@ class ListaLocaisColeta extends Component {
         return null
     }
 
-    renderPainelBusca = (getFieldDecorator) => {
+    renderPainelBusca = getFieldDecorator => {
         const { paises, estados, cidades, fetchingPaises, fetchingEstados, fetchingCidades } = this.state
         const paisSelecionadoBusca = this.props.form.getFieldValue('pais')
         const estadoSelecionadoBusca = this.props.form.getFieldValue('estado')
@@ -448,7 +450,7 @@ class ListaLocaisColeta extends Component {
 
                         <SelectedFormField
                             title="Estado:"
-                            placeholder={paisSelecionadoBusca ? "Selecione um estado" : "Selecione um país primeiro"}
+                            placeholder={paisSelecionadoBusca ? 'Selecione um estado' : 'Selecione um país primeiro'}
                             fieldName="estado"
                             getFieldDecorator={getFieldDecorator}
                             disabled={false}
@@ -484,7 +486,7 @@ class ListaLocaisColeta extends Component {
 
                         <SelectedFormField
                             title="Cidade:"
-                            placeholder={estadoSelecionadoBusca ? "Selecione uma cidade" : "Selecione um estado primeiro"}
+                            placeholder={estadoSelecionadoBusca ? 'Selecione uma cidade' : 'Selecione um estado primeiro'}
                             fieldName="cidade"
                             getFieldDecorator={getFieldDecorator}
                             disabled={false}
@@ -692,7 +694,7 @@ class ListaLocaisColeta extends Component {
                 <Row gutter={8} style={{ marginTop: 16 }}>
                     <SelectedFormField
                         title="Estado:"
-                        placeholder={paisSelecionado ? "Selecione um estado" : "Selecione um país primeiro"}
+                        placeholder={paisSelecionado ? 'Selecione um estado' : 'Selecione um país primeiro'}
                         fieldName="estadoModal"
                         getFieldDecorator={getFieldDecorator}
                         disabled={!paisSelecionado}
@@ -735,7 +737,7 @@ class ListaLocaisColeta extends Component {
                 <Row gutter={8} style={{ marginTop: 16 }}>
                     <SelectedFormField
                         title="Cidade:"
-                        placeholder={estadoSelecionado ? "Selecione uma cidade" : "Selecione um estado primeiro"}
+                        placeholder={estadoSelecionado ? 'Selecione uma cidade' : 'Selecione um estado primeiro'}
                         fieldName="cidadeModal"
                         getFieldDecorator={getFieldDecorator}
                         disabled={!estadoSelecionado}

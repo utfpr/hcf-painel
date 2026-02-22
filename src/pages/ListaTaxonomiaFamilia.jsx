@@ -8,20 +8,19 @@ import {
 import axios from 'axios'
 
 import TotalRecordFound from '@/components/TotalRecordsFound'
+import { recaptchaKey } from '@/config/api'
 import { Form } from '@ant-design/compatible'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
-import SelectedFormField from './tombos/components/SelectedFormFiled'
 import { isCuradorOuOperador } from '../helpers/usuarios'
-import { recaptchaKey } from '@/config/api'
+import SelectedFormField from './tombos/components/SelectedFormFiled'
 
 const { confirm } = Modal
 const FormItem = Form.Item
 
 const { Option } = Select
-
 
 const columns = [
     {
@@ -105,6 +104,7 @@ class ListaTaxonomiaFamilia extends Component {
     }
 
     mostraMensagemDelete(id) {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this
         confirm({
             title: 'Você tem certeza que deseja excluir esta família?',
@@ -221,6 +221,7 @@ class ListaTaxonomiaFamilia extends Component {
                 }
             })
     }
+
     handleSubmit = (err, valores) => {
         if (!err) {
             this.setState({
@@ -440,7 +441,7 @@ class ListaTaxonomiaFamilia extends Component {
     }
 
     optionReino = () => this.state.reinos.map(item => (
-        <Option value={item.id}>{item.nome}</Option>
+        <Option key={item.id} value={item.id}>{item.nome}</Option>
     ))
 
     renderFormulario() {

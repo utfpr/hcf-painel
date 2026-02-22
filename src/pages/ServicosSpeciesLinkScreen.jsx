@@ -41,7 +41,7 @@ class ServicosSpeciesLinkScreen extends Component {
      * a serem montados. Nessa função mudamos o valor da variável de estado permitindo
      * assim que futuramente sejam mudado os valores das demais variáveis de estado.
      */
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.setState({ estaMontado: true })
     }
 
@@ -124,6 +124,7 @@ class ServicosSpeciesLinkScreen extends Component {
      */
     trocaEstadoCamposAtualizacaoProgramada() {
         if (this.state.estaMontado) {
+            // eslint-disable-next-line react-x/no-access-state-in-setstate
             this.setState({ desabilitaCamposAtualizacaoProgramada: !this.state.desabilitaCamposAtualizacaoProgramada })
         }
     }

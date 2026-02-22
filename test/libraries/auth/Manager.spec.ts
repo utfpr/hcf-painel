@@ -3,9 +3,7 @@ import { Manager, type Rule } from '@/libraries/auth/Manager'
 describe('Manager', () => {
   it('returns a manager with the given rules', () => {
     // arrange
-    const rules: Rule<string, string>[] = [
-      { resource: 'Tombo', action: 'read' }
-    ]
+    const rules: Rule<string, string>[] = [{ resource: 'Tombo', action: 'read' }]
 
     // act
     const manager = new Manager({ rules })
@@ -18,9 +16,7 @@ describe('Manager', () => {
 
   it('returns can=true when action and resource match a rule', () => {
     // arrange
-    const rules: Rule<string, string>[] = [
-      { resource: 'Tombo', action: 'read' }
-    ]
+    const rules: Rule<string, string>[] = [{ resource: 'Tombo', action: 'read' }]
     const manager = new Manager({ rules })
 
     // act
@@ -32,9 +28,7 @@ describe('Manager', () => {
 
   it('returns can=false when action is not allowed', () => {
     // arrange
-    const rules: Rule<string, string>[] = [
-      { resource: 'Tombo', action: 'read' }
-    ]
+    const rules: Rule<string, string>[] = [{ resource: 'Tombo', action: 'read' }]
     const manager = new Manager({ rules })
 
     // act
@@ -50,9 +44,7 @@ describe('Manager', () => {
 
   it('returns can=false when resource does not match', () => {
     // arrange
-    const rules: Rule<string, string>[] = [
-      { resource: 'Tombo', action: 'read' }
-    ]
+    const rules: Rule<string, string>[] = [{ resource: 'Tombo', action: 'read' }]
     const manager = new Manager({ rules })
 
     // act
@@ -98,7 +90,14 @@ describe('Manager', () => {
   it('supports rules with multiple actions as array', () => {
     // arrange
     const rules: Rule<string, string>[] = [
-      { resource: 'Especie', action: ['read', 'create', 'update'] }
+      {
+        resource: 'Especie',
+        action: [
+          'read',
+          'create',
+          'update'
+        ]
+      }
     ]
     const manager = new Manager({ rules })
 
@@ -118,7 +117,15 @@ describe('Manager', () => {
   it.skip('manage returns true when user has any action on resource', () => {
     // arrange
     const rules: Rule<string, string>[] = [
-      { resource: 'Usuario', action: ['read', 'create', 'update', 'delete'] }
+      {
+        resource: 'Usuario',
+        action: [
+          'read',
+          'create',
+          'update',
+          'delete'
+        ]
+      }
     ]
     const manager = new Manager({ rules })
 
@@ -137,9 +144,7 @@ describe('Manager', () => {
 
   it.skip('manage returns false when user lacks all actions', () => {
     // arrange
-    const rules: Rule<string, string>[] = [
-      { resource: 'Usuario', action: ['read', 'update'] }
-    ]
+    const rules: Rule<string, string>[] = [{ resource: 'Usuario', action: ['read', 'update'] }]
     const manager = new Manager({ rules })
 
     // act
@@ -156,9 +161,7 @@ describe('Manager', () => {
   describe('canAny', () => {
     it('returns true when any action is allowed', () => {
       // arrange
-      const rules: Rule<string, string>[] = [
-        { resource: 'Tombo', action: 'read' }
-      ]
+      const rules: Rule<string, string>[] = [{ resource: 'Tombo', action: 'read' }]
       const manager = new Manager({ rules })
 
       // act
@@ -172,9 +175,7 @@ describe('Manager', () => {
 
     it('returns false when no action is allowed', () => {
       // arrange
-      const rules: Rule<string, string>[] = [
-        { resource: 'Tombo', action: 'read' }
-      ]
+      const rules: Rule<string, string>[] = [{ resource: 'Tombo', action: 'read' }]
       const manager = new Manager({ rules })
 
       // act
@@ -199,9 +200,7 @@ describe('Manager', () => {
   describe('canAll', () => {
     it('returns true when all actions are allowed', () => {
       // arrange
-      const rules: Rule<string, string>[] = [
-        { resource: 'Familia', action: ['read', 'create'] }
-      ]
+      const rules: Rule<string, string>[] = [{ resource: 'Familia', action: ['read', 'create'] }]
       const manager = new Manager({ rules })
 
       // act
@@ -213,9 +212,7 @@ describe('Manager', () => {
 
     it('returns false when any action is not allowed', () => {
       // arrange
-      const rules: Rule<string, string>[] = [
-        { resource: 'Tombo', action: 'read' }
-      ]
+      const rules: Rule<string, string>[] = [{ resource: 'Tombo', action: 'read' }]
       const manager = new Manager({ rules })
 
       // act
@@ -228,9 +225,7 @@ describe('Manager', () => {
     it('returns false for empty actions array', () => {
       // arrange
       const manager = new Manager({
-        rules: [
-          { resource: 'Tombo', action: 'read' }
-        ]
+        rules: [{ resource: 'Tombo', action: 'read' }]
       })
 
       // act
@@ -244,12 +239,25 @@ describe('Manager', () => {
       // arrange
       const manager = new Manager({
         rules: [
-          { resource: 'Usuario', action: ['read', 'create', 'update', 'delete'] }
+          {
+            resource: 'Usuario',
+            action: [
+              'read',
+              'create',
+              'update',
+              'delete'
+            ]
+          }
         ]
       })
 
       // act
-      const result = manager.canAll(['read', 'create', 'update', 'delete'], 'Usuario')
+      const result = manager.canAll([
+        'read',
+        'create',
+        'update',
+        'delete'
+      ], 'Usuario')
 
       // assert
       expect(result).toBe(true)

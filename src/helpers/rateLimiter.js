@@ -5,12 +5,12 @@
 
 class RateLimiter {
     constructor() {
-        this.storageKey = 'hcf_rate_limit';
+        this.storageKey = 'hcf_rate_limit'
         this.defaultLimits = {
             login: { max: 5, window: 15 * 60 * 1000 }, // 5 tentativas em 15 minutos
             api: { max: 100, window: 15 * 60 * 1000 }, // 100 requisições em 15 minutos
             upload: { max: 10, window: 60 * 1000 } // 10 uploads por minuto
-        };
+        }
     }
 
     /**
@@ -20,26 +20,27 @@ class RateLimiter {
      * @returns {object} - { allowed: boolean, remaining: number, resetTime: number }
      */
     checkLimit(action, identifier = 'default') {
-        const limits = this.defaultLimits[action];
+        const limits = this.defaultLimits[action]
         if (!limits) {
-            return { allowed: true, remaining: Infinity, resetTime: 0 };
+            return { allowed: true, remaining: Infinity, resetTime: 0 }
         }
 
-        const key = `${action}_${identifier}`;
-        const now = Date.now();
-        const data = this.getStoredData(key);
-        
+        const key = `${action}_${identifier}`
+        const now = Date.now()
+        const data = this.getStoredData(key)
+
         // Remove tentativas antigas
-        const validAttempts = data.attempts.filter(timestamp => 
+        const validAttempts = data.attempts.filter(timestamp =>
             now - timestamp < limits.window
-        );
+        )
 
-        const remaining = Math.max(0, limits.max - validAttempts.length);
-        const allowed = validAttempts.length < limits.max;
-        const resetTime = validAttempts.length > 0 ? 
-            validAttempts[0] + limits.window : now;
+        const remaining = Math.max(0, limits.max - validAttempts.length)
+        const allowed = validAttempts.length < limits.max
+        const resetTime = validAttempts.length > 0
+            ? validAttempts[0] + limits.window
+            : now
 
-        return { allowed, remaining, resetTime };
+        return { allowed, remaining, resetTime }
     }
 
     /**
@@ -49,30 +50,30 @@ class RateLimiter {
      * @returns {boolean} - Se a tentativa foi registrada
      */
     recordAttempt(action, identifier = 'default') {
-        const limits = this.defaultLimits[action];
+        const limits = this.defaultLimits[action]
         if (!limits) {
-            return true;
+            return true
         }
 
-        const key = `${action}_${identifier}`;
-        const now = Date.now();
-        const data = this.getStoredData(key);
-        
+        const key = `${action}_${identifier}`
+        const now = Date.now()
+        const data = this.getStoredData(key)
+
         // Remove tentativas antigas
-        data.attempts = data.attempts.filter(timestamp => 
+        data.attempts = data.attempts.filter(timestamp =>
             now - timestamp < limits.window
-        );
+        )
 
         // Verifica se ainda pode fazer tentativas
         if (data.attempts.length >= limits.max) {
-            return false;
+            return false
         }
 
         // Adiciona nova tentativa
-        data.attempts.push(now);
-        this.setStoredData(key, data);
-        
-        return true;
+        data.attempts.push(now)
+        this.setStoredData(key, data)
+
+        return true
     }
 
     /**
@@ -81,20 +82,20 @@ class RateLimiter {
      * @param {string} identifier - Identificador único
      */
     clearAttempts(action, identifier = 'default') {
-        const key = `${action}_${identifier}`;
-        localStorage.removeItem(key);
+        const key = `${action}_${identifier}`
+        localStorage.removeItem(key)
     }
 
     /**
      * Limpa todas as tentativas
      */
     clearAllAttempts() {
-        const keys = Object.keys(localStorage);
+        const keys = Object.keys(localStorage)
         keys.forEach(key => {
             if (key.startsWith('hcf_rate_limit_')) {
-                localStorage.removeItem(key);
+                localStorage.removeItem(key)
             }
-        });
+        })
     }
 
     /**
@@ -104,11 +105,11 @@ class RateLimiter {
      */
     getStoredData(key) {
         try {
-            const stored = localStorage.getItem(`${this.storageKey}_${key}`);
-            return stored ? JSON.parse(stored) : { attempts: [] };
+            const stored = localStorage.getItem(`${this.storageKey}_${key}`)
+            return stored ? JSON.parse(stored) : { attempts: [] }
         } catch (error) {
-            console.error('Erro ao ler dados de rate limit:', error);
-            return { attempts: [] };
+            console.error('Erro ao ler dados de rate limit:', error)
+            return { attempts: [] }
         }
     }
 
@@ -119,9 +120,9 @@ class RateLimiter {
      */
     setStoredData(key, data) {
         try {
-            localStorage.setItem(`${this.storageKey}_${key}`, JSON.stringify(data));
+            localStorage.setItem(`${this.storageKey}_${key}`, JSON.stringify(data))
         } catch (error) {
-            console.error('Erro ao armazenar dados de rate limit:', error);
+            console.error('Erro ao armazenar dados de rate limit:', error)
         }
     }
 
@@ -131,19 +132,19 @@ class RateLimiter {
      * @returns {string} - Tempo formatado
      */
     formatResetTime(resetTime) {
-        const now = Date.now();
-        const remaining = Math.max(0, resetTime - now);
-        
+        const now = Date.now()
+        const remaining = Math.max(0, resetTime - now)
+
         if (remaining === 0) {
-            return 'agora';
+            return 'agora'
         }
-        
-        const minutes = Math.ceil(remaining / (60 * 1000));
-        return `${minutes} minuto${minutes > 1 ? 's' : ''}`;
+
+        const minutes = Math.ceil(remaining / (60 * 1000))
+        return `${minutes} minuto${minutes > 1 ? 's' : ''}`
     }
 }
 
 // Instância singleton
-const rateLimiter = new RateLimiter();
+const rateLimiter = new RateLimiter()
 
-export default rateLimiter;
+export default rateLimiter

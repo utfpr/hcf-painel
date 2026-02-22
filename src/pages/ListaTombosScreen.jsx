@@ -125,6 +125,7 @@ class ListaTombosScreen extends Component {
     }
 
     mostraMensagemDelete(id) {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this
         confirm({
             title: 'Você tem certeza que deseja excluir este tombo?',
@@ -177,7 +178,7 @@ class ListaTombosScreen extends Component {
     gerarAcao(id) {
         if (isCuradorOuOperador()) {
             return [
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div key={id} style={{ display: 'flex', alignItems: 'center' }}>
                     <FichaTomboActions hcf={id} />
                     {this.renderDetalhes(id)}
                     {this.renderEditar(id)}
@@ -197,19 +198,26 @@ class ListaTombosScreen extends Component {
     retornaDataColeta(dia, mes, ano) {
         if (dia == null && mes == null && ano == null) {
             return ''
-        } if (dia != null && mes == null && ano == null) {
+        }
+        if (dia != null && mes == null && ano == null) {
             return dia
-        } if (dia == null && mes != null && ano == null) {
+        }
+        if (dia == null && mes != null && ano == null) {
             return mes
-        } if (dia == null && mes == null && ano != null) {
+        }
+        if (dia == null && mes == null && ano != null) {
             return ano
-        } if (dia != null && mes != null && ano == null) {
+        }
+        if (dia != null && mes != null && ano == null) {
             return `${dia}/${mes}`
-        } if (dia != null && mes == null && ano != null) {
+        }
+        if (dia != null && mes == null && ano != null) {
             return `${dia}/${ano}`
-        } if (dia == null && mes != null && ano != null) {
+        }
+        if (dia == null && mes != null && ano != null) {
             return `${mes}/${ano}`
-        } if (dia != null && mes != null && ano != null) {
+        }
+        if (dia != null && mes != null && ano != null) {
             return `${dia}/${mes}/${ano}`
         }
     }
@@ -225,69 +233,68 @@ class ListaTombosScreen extends Component {
     }))
 
     requisitaListaTombos = async (valores = {}, pg = 1, pageSize) => {
-        this.setState({ loading: true });
+        this.setState({ loading: true })
 
         try {
-            await new Promise((resolve) => window.grecaptcha.ready(resolve));
-            const token = await window.grecaptcha.execute(recaptchaKey, { action: "tombos" });
+            await new Promise(resolve => window.grecaptcha.ready(resolve))
+            const token = await window.grecaptcha.execute(recaptchaKey, { action: 'tombos' })
 
             const params = {
                 pagina: pg,
                 limite: pageSize || 20,
-                recaptchaToken: token,
-            };
+                recaptchaToken: token
+            }
 
-            const rawIdent = valores?.identificador_id;
-            const identificadorId = rawIdent ? Number(String(rawIdent).trim()) : null;
+            const rawIdent = valores?.identificador_id
+            const identificadorId = rawIdent ? Number(String(rawIdent).trim()) : null
 
             if (identificadorId && !Number.isNaN(identificadorId)) {
-                const response = await axios.get(`/tombos/identificadores/${identificadorId}`, { params });
+                const response = await axios.get(`/tombos/identificadores/${identificadorId}`, { params })
 
                 if (response.status === 200) {
-                    const data = response.data;
+                    const data = response.data
 
                     this.setState({
                         tombos: this.formataDadosTombo(data.tombos || []),
                         metadados: data.metadados || { total: (data.tombos || []).length },
-                        loading: false,
-                    });
-                    return;
+                        loading: false
+                    })
+                    return
                 }
             }
 
-            const { nomeCientifico, numeroHcf, tipo, nomePopular, situacao } = valores;
+            const { nomeCientifico, numeroHcf, tipo, nomePopular, situacao } = valores
 
-            if (nomeCientifico) params.nome_cientifico = nomeCientifico;
-            if (numeroHcf) params.hcf = numeroHcf;
-            if (tipo && tipo !== -1) params.tipo = tipo;
-            if (nomePopular) params.nome_popular = nomePopular;
-            if (situacao && situacao !== -1) params.situacao = situacao;
+            if (nomeCientifico) params.nome_cientifico = nomeCientifico
+            if (numeroHcf) params.hcf = numeroHcf
+            if (tipo && tipo !== -1) params.tipo = tipo
+            if (nomePopular) params.nome_popular = nomePopular
+            if (situacao && situacao !== -1) params.situacao = situacao
 
-            const response = await axios.get("/tombos", { params });
+            const response = await axios.get('/tombos', { params })
 
             if (response.status === 200) {
-                const { data } = response;
+                const { data } = response
                 this.setState({
                     tombos: this.formataDadosTombo(data.tombos),
                     metadados: data.metadados,
-                    loading: false,
-                });
+                    loading: false
+                })
             } else {
-                this.notificacao("warning", "Buscar tombos", "Erro ao buscar os tombos.");
-                this.setState({ loading: false });
+                this.notificacao('warning', 'Buscar tombos', 'Erro ao buscar os tombos.')
+                this.setState({ loading: false })
             }
         } catch (err) {
-            this.setState({ loading: false });
-            this.notificacao("error", "Erro", "Falha ao buscar tombos.");
+            this.setState({ loading: false })
+            this.notificacao('error', 'Erro', 'Falha ao buscar tombos.')
         }
-    };
-
+    }
 
     handleSubmit = (err, valoresForm) => {
         if (!err) {
             const valores = {
                 ...valoresForm,
-                ...this.state.filtrosExtras,
+                ...this.state.filtrosExtras
             }
 
             this.setState({ valores, loading: true, pagina: 1 })
@@ -311,11 +318,11 @@ class ListaTombosScreen extends Component {
         this.props.form.validateFields(this.handleSubmit)
     }
 
-    onExtraFiltersChange = (values) => {
+    onExtraFiltersChange = values => {
         this.onExtraFiltersChangeDebounced(values)
     }
 
-    onExtraFiltersChangeDebounced = (values) => {
+    onExtraFiltersChangeDebounced = values => {
         this.setState({ filtrosExtras: values || {} })
     }
 

@@ -1,19 +1,20 @@
-import React from 'react';
+import React from 'react'
+
 import {
     Divider, Card, Row, Col, Input, Button, notification, Form, Select
-} from 'antd';
-import TotalRecordFound from '@/components/TotalRecordsFound';
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
+} from 'antd'
 
-import ModalCadastroComponent from '@/components/ModalCadastroComponent';
-import SimpleTableComponent from '@/components/SimpleTableComponent';
+import ModalCadastroComponent from '@/components/ModalCadastroComponent'
+import SimpleTableComponent from '@/components/SimpleTableComponent'
+import TotalRecordFound from '@/components/TotalRecordsFound'
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
 const columns = [
     { title: 'Estado', dataIndex: 'nome', key: 'nome' },
     { title: 'Sigla', dataIndex: 'sigla', key: 'sigla' },
     { title: 'País', dataIndex: 'paisNome', key: 'paisNome' },
     { title: 'Ação', key: 'acao' }
-];
+]
 
 const ListaEstadosComponent = ({
     form,
@@ -31,10 +32,10 @@ const ListaEstadosComponent = ({
     onAbrirModal,
     onFecharModal,
     onSalvar,
-    isCuradorOuOperador,
+    isCuradorOuOperador
 }) => {
-    const renderActionButtons = (item) => {
-        if (!isCuradorOuOperador) return null;
+    const renderActionButtons = item => {
+        if (!isCuradorOuOperador) return null
         return (
             <span>
                 <a onClick={() => onAbrirModal(item)}>
@@ -45,42 +46,42 @@ const ListaEstadosComponent = ({
                     <DeleteOutlined style={{ color: '#e30613' }} />
                 </a>
             </span>
-        );
-    };
+        )
+    }
 
     const formattedEstados = (estados || []).map(item => ({
         ...item,
         key: item.id,
         paisNome: item.pais?.nome || '-',
-        acao: renderActionButtons(item),
-    }));
+        acao: renderActionButtons(item)
+    }))
 
     const finalColumns = isCuradorOuOperador
         ? columns
-        : columns.filter(col => col.key !== 'acao');
+        : columns.filter(col => col.key !== 'acao')
 
     const handleSearch = () => {
-        const valores = form.getFieldsValue();
-        onBusca(valores);
-    };
+        const valores = form.getFieldsValue()
+        onBusca(valores)
+    }
 
     const handleModalOk = async () => {
         try {
-            const values = await form.validateFields();
+            const values = await form.validateFields()
             if (values.nomeEstado && values.nomeEstado.trim() !== '') {
                 onSalvar({
                     nome: values.nomeEstado,
                     sigla: values.ufEstado,
                     pais_id: parseInt(values.paisId, 10)
-                });
+                })
             }
         } catch {
             notification.warning({
                 message: 'Falha',
-                description: 'Preencha os campos obrigatórios.',
-            });
+                description: 'Preencha os campos obrigatórios.'
+            })
         }
-    };
+    }
 
     return (
         <div>
@@ -97,7 +98,7 @@ const ListaEstadosComponent = ({
                             style={{
                                 backgroundColor: '#5CB85C',
                                 borderColor: '#5CB85C',
-                                width: '100%',
+                                width: '100%'
                             }}
                         >
                             Adicionar
@@ -126,8 +127,7 @@ const ListaEstadosComponent = ({
                                         placeholder="Selecione um país (opcional)"
                                         optionFilterProp="children"
                                         filterOption={(input, option) =>
-                                            (option?.children ?? '').toLowerCase().includes(input.toLowerCase())
-                                        }
+                                            (option?.children ?? '').toLowerCase().includes(input.toLowerCase())}
                                     >
                                         {paises.map(pais => (
                                             <Select.Option key={pais.id} value={pais.id}>
@@ -218,11 +218,9 @@ const ListaEstadosComponent = ({
                                     placeholder="Selecione ou pesquise o país"
                                     optionFilterProp="children"
                                     filterOption={(input, option) =>
-                                        (option?.children ?? '').toLowerCase().includes(input.toLowerCase())
-                                    }
+                                        (option?.children ?? '').toLowerCase().includes(input.toLowerCase())}
                                     filterSort={(optionA, optionB) =>
-                                        (optionA?.children ?? '').toLowerCase().localeCompare((optionB?.children ?? '').toLowerCase())
-                                    }
+                                        (optionA?.children ?? '').toLowerCase().localeCompare((optionB?.children ?? '').toLowerCase())}
                                 >
                                     {paises.map(pais => (
                                         <Select.Option key={pais.id} value={pais.id}>
@@ -236,7 +234,7 @@ const ListaEstadosComponent = ({
                 </Form>
             </ModalCadastroComponent>
         </div>
-    );
-};
+    )
+}
 
-export default ListaEstadosComponent;
+export default ListaEstadosComponent

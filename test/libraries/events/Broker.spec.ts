@@ -1,3 +1,5 @@
+import { vi } from 'vitest'
+
 import { Broker } from '@/libraries/events/Broker'
 
 type TestEvents = {
@@ -10,7 +12,7 @@ describe('Broker', () => {
     it('registers a listener for an event', () => {
       // arrange
       const broker = new Broker<TestEvents>()
-      const callback = jest.fn()
+      const callback = vi.fn()
 
       // act
       broker.subscribe('test.event', callback)
@@ -24,7 +26,7 @@ describe('Broker', () => {
     it('returns this for chaining', () => {
       // arrange
       const broker = new Broker<TestEvents>()
-      const callback = jest.fn()
+      const callback = vi.fn()
 
       // act
       const result = broker.subscribe('test.event', callback)
@@ -36,8 +38,8 @@ describe('Broker', () => {
     it('supports multiple listeners for the same event', () => {
       // arrange
       const broker = new Broker<TestEvents>()
-      const callback1 = jest.fn()
-      const callback2 = jest.fn()
+      const callback1 = vi.fn()
+      const callback2 = vi.fn()
 
       // act
       broker.subscribe('test.event', callback1)
@@ -52,7 +54,7 @@ describe('Broker', () => {
     it('passes correct arguments to listeners', () => {
       // arrange
       const broker = new Broker<TestEvents>()
-      const callback = jest.fn()
+      const callback = vi.fn()
 
       // act
       broker.subscribe('test.numeric', callback)
@@ -67,7 +69,7 @@ describe('Broker', () => {
     it('removes a listener', () => {
       // arrange
       const broker = new Broker<TestEvents>()
-      const callback = jest.fn()
+      const callback = vi.fn()
       broker.subscribe('test.event', callback)
 
       // act
@@ -81,7 +83,7 @@ describe('Broker', () => {
     it('returns this for chaining', () => {
       // arrange
       const broker = new Broker<TestEvents>()
-      const callback = jest.fn()
+      const callback = vi.fn()
       broker.subscribe('test.event', callback)
 
       // act
@@ -94,8 +96,8 @@ describe('Broker', () => {
     it('does not affect other listeners when unsubscribing one', () => {
       // arrange
       const broker = new Broker<TestEvents>()
-      const callback1 = jest.fn()
-      const callback2 = jest.fn()
+      const callback1 = vi.fn()
+      const callback2 = vi.fn()
       broker.subscribe('test.event', callback1)
       broker.subscribe('test.event', callback2)
 
@@ -111,7 +113,7 @@ describe('Broker', () => {
     it('handles unsubscribe of non-existent listener gracefully', () => {
       // arrange
       const broker = new Broker<TestEvents>()
-      const callback = jest.fn()
+      const callback = vi.fn()
 
       // act & assert
       expect(() => broker.unsubscribe('test.event', callback)).not.toThrow()
@@ -130,7 +132,7 @@ describe('Broker', () => {
     it('returns this for chaining', () => {
       // arrange
       const broker = new Broker<TestEvents>()
-      const callback = jest.fn()
+      const callback = vi.fn()
       broker.subscribe('test.event', callback)
 
       // act

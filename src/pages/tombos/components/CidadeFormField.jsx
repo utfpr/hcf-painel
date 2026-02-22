@@ -13,19 +13,21 @@ const CidadeFormField = ({
     const errorList = getFieldError && getFieldError('cidade')
     const hasError = errorList && errorList.length > 0
     const finalStatus = hasError ? 'error' : (validateStatus || '')
-    const warningMessage = (!hasError && help) ? (
-        <span style={{
-            color: '#faad14', fontSize: '12px', marginTop: '6px', display: 'block', fontWeight: '500'
-        }}
-        >
-            ⚠️
-            {' '}
-            {help}
-        </span>
-    ) : null
+    const warningMessage = (!hasError && help)
+        ? (
+                <span style={{
+                    color: '#faad14', fontSize: '12px', marginTop: '6px', display: 'block', fontWeight: '500'
+                }}
+                >
+                    ⚠️
+                    {' '}
+                    {help}
+                </span>
+            )
+        : null
 
     const optionCidades = () => cidades.map(item => (
-        <Option value={`${item.id}`}>{item.nome}</Option>
+        <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
     ))
     return (
         <SelectedFormFiled

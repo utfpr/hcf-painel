@@ -50,6 +50,7 @@ export default class MainLayout extends Component {
 
     toggle = () => {
         this.setState({
+            // eslint-disable-next-line react-x/no-access-state-in-setstate
             collapsed: !this.state.collapsed
         })
     }
@@ -112,66 +113,86 @@ export default class MainLayout extends Component {
                         openKeys={this.state.openKeys}
                         onOpenChange={this.onOpenChange}
                     >
-                        {this.props.auth.can('read', 'Tombo') ? (
-                            <Menu.Item key="tomboMenuItem">
-                                <Link to="/tombos">
-                                    <DesktopOutlined />
-                                    <span>Tombos</span>
-                                </Link>
-                            </Menu.Item>
-                        ) : null}
-                        {TAXONOMIA_RESOURCES.some(resource => this.props.auth.can('read', resource)) ? (
-                            <SubMenu
-                                key="taxonomiaSubmenu"
-                                title={(
-                                    <span>
-                                        <DesktopOutlined />
-                                        <span>Taxonomia</span>
-                                    </span>
-                                )}
-                            >
-                                {this.props.auth.can('read', 'Reino') ? (
-                                    <Menu.Item key="reinoMenuItem">
-                                        <Link to="/reinos">Reinos</Link>
+                        {this.props.auth.can('read', 'Tombo')
+                            ? (
+                                    <Menu.Item key="tomboMenuItem">
+                                        <Link to="/tombos">
+                                            <DesktopOutlined />
+                                            <span>Tombos</span>
+                                        </Link>
                                     </Menu.Item>
-                                ) : null}
-                                {this.props.auth.can('read', 'Familia') ? (
-                                    <Menu.Item key="familiaMenuItem">
-                                        <Link to="/familias">Famílias</Link>
-                                    </Menu.Item>
-                                ) : null}
-                                {this.props.auth.can('read', 'Subfamilia') ? (
-                                    <Menu.Item key="subfamiliaMenuItem">
-                                        <Link to="/subfamilias">Subfamílias</Link>
-                                    </Menu.Item>
-                                ) : null}
-                                {this.props.auth.can('read', 'Genero') ? (
-                                    <Menu.Item key="generoMenuItem">
-                                        <Link to="/generos">Gêneros</Link>
-                                    </Menu.Item>
-                                ) : null}
-                                {this.props.auth.can('read', 'Especie') ? (
-                                    <Menu.Item key="especieMenuItem">
-                                        <Link to="/especies">Espécies</Link>
-                                    </Menu.Item>
-                                ) : null}
-                                {this.props.auth.can('read', 'Subespecie') ? (
-                                    <Menu.Item key="subespecieMenuItem">
-                                        <Link to="/subespecies">Subespécies</Link>
-                                    </Menu.Item>
-                                ) : null}
-                                {this.props.auth.can('read', 'Variedade') ? (
-                                    <Menu.Item key="variedadeMenuItem">
-                                        <Link to="/variedades">Variedades</Link>
-                                    </Menu.Item>
-                                ) : null}
-                                {this.props.auth.can('read', 'Autor') ? (
-                                    <Menu.Item key="autorMenuItem">
-                                        <Link to="/autores">Autores</Link>
-                                    </Menu.Item>
-                                ) : null}
-                            </SubMenu>
-                        ) : null}
+                                )
+                            : null}
+                        {TAXONOMIA_RESOURCES.some(resource => this.props.auth.can('read', resource))
+                            ? (
+                                    <SubMenu
+                                        key="taxonomiaSubmenu"
+                                        title={(
+                                            <span>
+                                                <DesktopOutlined />
+                                                <span>Taxonomia</span>
+                                            </span>
+                                        )}
+                                    >
+                                        {this.props.auth.can('read', 'Reino')
+                                            ? (
+                                                    <Menu.Item key="reinoMenuItem">
+                                                        <Link to="/reinos">Reinos</Link>
+                                                    </Menu.Item>
+                                                )
+                                            : null}
+                                        {this.props.auth.can('read', 'Familia')
+                                            ? (
+                                                    <Menu.Item key="familiaMenuItem">
+                                                        <Link to="/familias">Famílias</Link>
+                                                    </Menu.Item>
+                                                )
+                                            : null}
+                                        {this.props.auth.can('read', 'Subfamilia')
+                                            ? (
+                                                    <Menu.Item key="subfamiliaMenuItem">
+                                                        <Link to="/subfamilias">Subfamílias</Link>
+                                                    </Menu.Item>
+                                                )
+                                            : null}
+                                        {this.props.auth.can('read', 'Genero')
+                                            ? (
+                                                    <Menu.Item key="generoMenuItem">
+                                                        <Link to="/generos">Gêneros</Link>
+                                                    </Menu.Item>
+                                                )
+                                            : null}
+                                        {this.props.auth.can('read', 'Especie')
+                                            ? (
+                                                    <Menu.Item key="especieMenuItem">
+                                                        <Link to="/especies">Espécies</Link>
+                                                    </Menu.Item>
+                                                )
+                                            : null}
+                                        {this.props.auth.can('read', 'Subespecie')
+                                            ? (
+                                                    <Menu.Item key="subespecieMenuItem">
+                                                        <Link to="/subespecies">Subespécies</Link>
+                                                    </Menu.Item>
+                                                )
+                                            : null}
+                                        {this.props.auth.can('read', 'Variedade')
+                                            ? (
+                                                    <Menu.Item key="variedadeMenuItem">
+                                                        <Link to="/variedades">Variedades</Link>
+                                                    </Menu.Item>
+                                                )
+                                            : null}
+                                        {this.props.auth.can('read', 'Autor')
+                                            ? (
+                                                    <Menu.Item key="autorMenuItem">
+                                                        <Link to="/autores">Autores</Link>
+                                                    </Menu.Item>
+                                                )
+                                            : null}
+                                    </SubMenu>
+                                )
+                            : null}
                         <SubMenu
                             key="locaisSubmenu"
                             title={(
@@ -187,79 +208,95 @@ export default class MainLayout extends Component {
                             <Menu.Item key="cidadeMenuItem">
                                 <Link to="/cidades">Cidades</Link>
                             </Menu.Item>
-                            {this.props.auth.loggedIn ? (
-                                <Menu.Item key="localColetaMenuItem">
-                                    <Link to="/locais-coleta">
-                                        <span>Local de Coleta</span>
-                                    </Link>
-                                </Menu.Item>
-                            ) : null}
+                            {this.props.auth.loggedIn
+                                ? (
+                                        <Menu.Item key="localColetaMenuItem">
+                                            <Link to="/locais-coleta">
+                                                <span>Local de Coleta</span>
+                                            </Link>
+                                        </Menu.Item>
+                                    )
+                                : null}
                         </SubMenu>
-                        {this.props.auth.can(['read'], 'Remessa') ? (
-                            <Menu.Item key="remessaMenuItem">
-                                <Link to="/remessas">
-                                    <DatabaseOutlined />
-                                    <span>Remessas</span>
-                                </Link>
-                            </Menu.Item>
-                        ) : null}
-                        {this.props.auth.can('read', 'Pendencia') ? (
-                            <Menu.Item key="pendenciaMenuItem">
-                                <Link to="/pendencias">
-                                    <BarsOutlined />
-                                    <span>Pendências</span>
-                                </Link>
-                            </Menu.Item>
-                        ) : null}
-                        {this.props.auth.can('read', 'Usuario') ? (
-                            <Menu.Item key="usuarioMenuItem">
-                                <Link to="/usuarios">
-                                    <TeamOutlined />
-                                    <span>Usuários</span>
-                                </Link>
-                            </Menu.Item>
-                        ) : null}
-                        {this.props.auth.can('read', 'Identificador') ? (
-                            <Menu.Item key="identificadorMenuItem">
-                                <Link to="/identificadores">
-                                    <TeamOutlined />
-                                    <span>Identificadores</span>
-                                </Link>
-                            </Menu.Item>
-                        ) : null}
-                        {this.props.auth.can('read', 'Coletor') ? (
-                            <Menu.Item key="coletorMenuItem">
-                                <Link to="/coletores">
-                                    <TeamOutlined />
-                                    <span>Coletores</span>
-                                </Link>
-                            </Menu.Item>
-                        ) : null}
-                        {this.props.auth.loggedIn ? (
-                            <Menu.Item key="herbarioMenuItem">
-                                <Link to="/herbarios">
-                                    <FlagOutlined />
-                                    <span>Herbários</span>
-                                </Link>
-                            </Menu.Item>
-                        ) : null}
-                        {this.props.auth.loggedIn ? (
-                            <SubMenu
-                                key="fichasSubmenu"
-                                title={(
-                                    <span>
-                                        <FileTextOutlined />
-                                        <span>Fichas</span>
-                                    </span>
-                                )}
-                            >
-                                <Menu.Item key="fichaTomboMenuItem">
-                                    {' '}
-                                    <Link to="/fichas/tombos">Ficha tombo</Link>
-                                    {' '}
-                                </Menu.Item>
-                            </SubMenu>
-                        ) : null}
+                        {this.props.auth.can(['read'], 'Remessa')
+                            ? (
+                                    <Menu.Item key="remessaMenuItem">
+                                        <Link to="/remessas">
+                                            <DatabaseOutlined />
+                                            <span>Remessas</span>
+                                        </Link>
+                                    </Menu.Item>
+                                )
+                            : null}
+                        {this.props.auth.can('read', 'Pendencia')
+                            ? (
+                                    <Menu.Item key="pendenciaMenuItem">
+                                        <Link to="/pendencias">
+                                            <BarsOutlined />
+                                            <span>Pendências</span>
+                                        </Link>
+                                    </Menu.Item>
+                                )
+                            : null}
+                        {this.props.auth.can('read', 'Usuario')
+                            ? (
+                                    <Menu.Item key="usuarioMenuItem">
+                                        <Link to="/usuarios">
+                                            <TeamOutlined />
+                                            <span>Usuários</span>
+                                        </Link>
+                                    </Menu.Item>
+                                )
+                            : null}
+                        {this.props.auth.can('read', 'Identificador')
+                            ? (
+                                    <Menu.Item key="identificadorMenuItem">
+                                        <Link to="/identificadores">
+                                            <TeamOutlined />
+                                            <span>Identificadores</span>
+                                        </Link>
+                                    </Menu.Item>
+                                )
+                            : null}
+                        {this.props.auth.can('read', 'Coletor')
+                            ? (
+                                    <Menu.Item key="coletorMenuItem">
+                                        <Link to="/coletores">
+                                            <TeamOutlined />
+                                            <span>Coletores</span>
+                                        </Link>
+                                    </Menu.Item>
+                                )
+                            : null}
+                        {this.props.auth.loggedIn
+                            ? (
+                                    <Menu.Item key="herbarioMenuItem">
+                                        <Link to="/herbarios">
+                                            <FlagOutlined />
+                                            <span>Herbários</span>
+                                        </Link>
+                                    </Menu.Item>
+                                )
+                            : null}
+                        {this.props.auth.loggedIn
+                            ? (
+                                    <SubMenu
+                                        key="fichasSubmenu"
+                                        title={(
+                                            <span>
+                                                <FileTextOutlined />
+                                                <span>Fichas</span>
+                                            </span>
+                                        )}
+                                    >
+                                        <Menu.Item key="fichaTomboMenuItem">
+                                            {' '}
+                                            <Link to="/fichas/tombos">Ficha tombo</Link>
+                                            {' '}
+                                        </Menu.Item>
+                                    </SubMenu>
+                                )
+                            : null}
 
                         <SubMenu
                             key="geolocalizacaoSubmenu"
@@ -277,85 +314,97 @@ export default class MainLayout extends Component {
                                 <Link to="/filtros">Filtros Avançados</Link>
                             </Menu.Item>
                         </SubMenu>
-                        {this.props.auth.loggedIn ? (
-                            <SubMenu
-                                key="relatorios"
-                                title={(
-                                    <span>
-                                        <SnippetsOutlined />
-                                        <span>Relatórios</span>
-                                    </span>
-                                )}
-                            >
-                                <Menu.Item key="relatorioInventarioEspeciesMenuItem">
-                                    <Link to="/relatorio-inventario-especies">Inventário de Espécies</Link>
-                                </Menu.Item>
-                                <Menu.Item key="relatorioColetaDataMenuItem">
-                                    <Link to="/relatorio-coleta-data">Coleta por intervalo de data</Link>
-                                </Menu.Item>
-                                <Menu.Item key="relatorioColetorDataMenuItem">
-                                    <Link to="/relatorio-coletor-data">Coleta por coletor e intervalo de data</Link>
-                                </Menu.Item>
-                                <Menu.Item key="relatorioFamiliasGeneroMenuItem">
-                                    <Link to="/relatorio-familias-genero">Famílias e Gêneros</Link>
-                                </Menu.Item>
-                                <Menu.Item key="relatorioLocaisColetaMenuItem">
-                                    <Link to="/relatorio-locais-coleta">Locais de Coleta</Link>
-                                </Menu.Item>
-                                <Menu.Item key="relatorioQuantidadeFamiliaGenerosMenuItem">
-                                    <Link to="/relatorio-quantidade-familia-generos">
-                                        Quantidade por Família e Gênero
-                                    </Link>
-                                </Menu.Item>
-                                <Menu.Item key="relatorioCodigoBarrasMenuItem">
-                                    <Link to="/relatorio-codigo-barras">Código de Barras</Link>
-                                </Menu.Item>
-                            </SubMenu>
-                        ) : null}
-                        {this.props.auth.can('export', 'Tombo') ? (
-                            <Menu.Item key="exportacaoMenuItem">
-                                <Link to="/exportacao">
-                                    <DesktopOutlined />
-                                    <span>Exportação</span>
-                                </Link>
-                            </Menu.Item>
-                        ) : null}
-                        {SERVICOS_RESOURCES.some(resource => this.props.auth.can('read', resource)) ? (
-                            <SubMenu
-                                key="servicoSubmenu"
-                                title={(
-                                    <span>
-                                        {' '}
-                                        <SearchOutlined />
-                                        {' '}
-                                        <span>Serviços</span>
-                                        {' '}
-                                    </span>
-                                )}
-                            >
-                                {this.props.auth.can('read', 'Reflora') ? (
-                                    <Menu.Item key="refloraMenuItem">
-                                        <Link to="/reflora">Reflora</Link>
+                        {this.props.auth.loggedIn
+                            ? (
+                                    <SubMenu
+                                        key="relatorios"
+                                        title={(
+                                            <span>
+                                                <SnippetsOutlined />
+                                                <span>Relatórios</span>
+                                            </span>
+                                        )}
+                                    >
+                                        <Menu.Item key="relatorioInventarioEspeciesMenuItem">
+                                            <Link to="/relatorio-inventario-especies">Inventário de Espécies</Link>
+                                        </Menu.Item>
+                                        <Menu.Item key="relatorioColetaDataMenuItem">
+                                            <Link to="/relatorio-coleta-data">Coleta por intervalo de data</Link>
+                                        </Menu.Item>
+                                        <Menu.Item key="relatorioColetorDataMenuItem">
+                                            <Link to="/relatorio-coletor-data">Coleta por coletor e intervalo de data</Link>
+                                        </Menu.Item>
+                                        <Menu.Item key="relatorioFamiliasGeneroMenuItem">
+                                            <Link to="/relatorio-familias-genero">Famílias e Gêneros</Link>
+                                        </Menu.Item>
+                                        <Menu.Item key="relatorioLocaisColetaMenuItem">
+                                            <Link to="/relatorio-locais-coleta">Locais de Coleta</Link>
+                                        </Menu.Item>
+                                        <Menu.Item key="relatorioQuantidadeFamiliaGenerosMenuItem">
+                                            <Link to="/relatorio-quantidade-familia-generos">
+                                                Quantidade por Família e Gênero
+                                            </Link>
+                                        </Menu.Item>
+                                        <Menu.Item key="relatorioCodigoBarrasMenuItem">
+                                            <Link to="/relatorio-codigo-barras">Código de Barras</Link>
+                                        </Menu.Item>
+                                    </SubMenu>
+                                )
+                            : null}
+                        {this.props.auth.can('export', 'Tombo')
+                            ? (
+                                    <Menu.Item key="exportacaoMenuItem">
+                                        <Link to="/exportacao">
+                                            <DesktopOutlined />
+                                            <span>Exportação</span>
+                                        </Link>
                                     </Menu.Item>
-                                ) : null}
-                                {this.props.auth.can('read', 'SpeciesLink') ? (
-                                    <Menu.Item key="specieslinkMenuItem">
-                                        <Link to="/specieslink">speciesLink</Link>
+                                )
+                            : null}
+                        {SERVICOS_RESOURCES.some(resource => this.props.auth.can('read', resource))
+                            ? (
+                                    <SubMenu
+                                        key="servicoSubmenu"
+                                        title={(
+                                            <span>
+                                                {' '}
+                                                <SearchOutlined />
+                                                {' '}
+                                                <span>Serviços</span>
+                                                {' '}
+                                            </span>
+                                        )}
+                                    >
+                                        {this.props.auth.can('read', 'Reflora')
+                                            ? (
+                                                    <Menu.Item key="refloraMenuItem">
+                                                        <Link to="/reflora">Reflora</Link>
+                                                    </Menu.Item>
+                                                )
+                                            : null}
+                                        {this.props.auth.can('read', 'SpeciesLink')
+                                            ? (
+                                                    <Menu.Item key="specieslinkMenuItem">
+                                                        <Link to="/specieslink">speciesLink</Link>
+                                                    </Menu.Item>
+                                                )
+                                            : null}
+                                    </SubMenu>
+                                )
+                            : null}
+                        {this.props.auth.loggedIn
+                            ? (
+                                    <Menu.Item key="sairMenuItem">
+                                        <Link
+                                            to="/inicio"
+                                            onClick={this.props.logOut}
+                                        >
+                                            <LogoutOutlined />
+                                            <span>Sair</span>
+                                        </Link>
                                     </Menu.Item>
-                                ) : null}
-                            </SubMenu>
-                        ) : null}
-                        {this.props.auth.loggedIn ? (
-                            <Menu.Item key="sairMenuItem">
-                                <Link
-                                    to="/inicio"
-                                    onClick={this.props.logOut}
-                                >
-                                    <LogoutOutlined />
-                                    <span>Sair</span>
-                                </Link>
-                            </Menu.Item>
-                        ) : null}
+                                )
+                            : null}
                     </Menu>
                 </Sider>
                 <Layout>
@@ -364,30 +413,32 @@ export default class MainLayout extends Component {
                             <div style={{ cursor: 'pointer' }}>
                                 <MenuUnfoldOutlined onClick={this.toggle} />
                             </div>
-                            {this.props.auth.loggedIn ? (
-                                <div>
-                                    {this.props.auth.user?.nome}
+                            {this.props.auth.loggedIn
+                                ? (
+                                        <div>
+                                            {this.props.auth.user?.nome}
 
-                                    <Divider type="vertical" />
+                                            <Divider type="vertical" />
 
-                                    <Link to="/perfil">
-                                        <Button size="small">Perfil</Button>
-                                    </Link>
+                                            <Link to="/perfil">
+                                                <Button size="small">Perfil</Button>
+                                            </Link>
 
-                                    <Divider type="vertical" />
+                                            <Divider type="vertical" />
 
-                                    <Link
-                                        to="/inicio"
-                                        onClick={this.props.logOut}
-                                    >
-                                        <Button size="small">Sair</Button>
-                                    </Link>
-                                </div>
-                            ) : (
-                                <Link to="/inicio">
-                                    <Button>Entrar</Button>
-                                </Link>
-                            )}
+                                            <Link
+                                                to="/inicio"
+                                                onClick={this.props.logOut}
+                                            >
+                                                <Button size="small">Sair</Button>
+                                            </Link>
+                                        </div>
+                                    )
+                                : (
+                                        <Link to="/inicio">
+                                            <Button>Entrar</Button>
+                                        </Link>
+                                    )}
                         </Row>
                     </Header>
                     <Content

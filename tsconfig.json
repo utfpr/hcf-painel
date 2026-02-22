@@ -20,7 +20,11 @@
       "moduleResolution": "node",
       "resolveJsonModule": true,
       "isolatedModules": true,
-      "baseUrl": "./",
+      "types": [
+          "vitest/globals",
+          "@testing-library/jest-dom/vitest"
+      ],
+      "baseUrl": ".",
       "paths": {
           "@/*": [
               "./src/*"
@@ -31,11 +35,12 @@
       },
   },
   "include": [
-      "src/",
-      "test/",
-      ".config/",
+      "src/**/*",
+      "test/**/*",
+      ".config/**/*",
       "vite.config.ts",
-      "jest.config.js"
+      "eslint.config.mts",
+      "vitest.config.mts"
   ],
   "exclude": [
       "build/",

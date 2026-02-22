@@ -1,17 +1,17 @@
 import { Component } from 'react'
 
 import {
-    Divider, Modal, Spin, Card, Row, Col, Select, Input, Button, notification
+    Divider, Modal, Card, Row, Col, Select, Input, Button, notification
 } from 'antd'
 import axios from 'axios'
 
 import TotalRecordFound from '@/components/TotalRecordsFound'
+import { recaptchaKey } from '@/config/api'
 import { Form } from '@ant-design/compatible'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
-import { recaptchaKey } from '@/config/api'
 import {
     isCuradorOuOperador
 } from '../helpers/usuarios'
@@ -93,6 +93,7 @@ class ListaTaxonomiaAutores extends Component {
     }
 
     mostraMensagemDelete(id) {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this
         confirm({
             title: 'Você tem certeza que deseja excluir este autor?',
@@ -408,7 +409,7 @@ class ListaTaxonomiaAutores extends Component {
     }
 
     optionAutores = () => this.state.autores.map(item => (
-        <Option value={item.id}>{item.nome}</Option>
+        <Option key={item.id} value={item.id}>{item.nome}</Option>
     ))
 
     renderFormulario() {

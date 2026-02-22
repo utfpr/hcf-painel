@@ -26,7 +26,7 @@ class ExportaçãoScreen extends Component {
         }
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.setState({ estaMontado: true })
     }
 

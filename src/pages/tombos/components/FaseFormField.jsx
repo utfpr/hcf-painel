@@ -1,5 +1,7 @@
 import React from 'react'
+
 import { Select, Spin } from 'antd'
+
 import SelectedFormFiled from './SelectedFormFiled'
 
 const { Option } = Select
@@ -11,7 +13,7 @@ const FaseFormField = ({
     const optionFases = () => fases.map(item => (
         <Option key={item.numero} value={`${item.numero}`}>{item.nome}</Option>
     ))
-    
+
     return (
         <SelectedFormFiled
             xs={24}
