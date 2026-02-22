@@ -106,7 +106,9 @@ describe('useLocalStorage', () => {
     window.localStorage.clear()
     window.localStorage.setItem('test-key', JSON.stringify('value'))
     const { result } = renderHook(() => useLocalStorage<string>('test-key'), { wrapper })
-    const [, , removeValue] = result.current
+    const [
+      , , removeValue
+    ] = result.current
 
     // act
     act(() => {

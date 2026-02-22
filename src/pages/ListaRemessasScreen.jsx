@@ -131,6 +131,7 @@ class ListaRemessasScreen extends Component {
     }
 
     mostraMensagemDelete(id) {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this
         confirm({
             title: 'Você tem certeza que deseja excluir esta remessa?',
@@ -147,6 +148,7 @@ class ListaRemessasScreen extends Component {
     }
 
     mostraMensagemDevolucao(idRemessa, idTombo) {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this
         confirm({
             title: 'Você tem certeza que deseja devolver este tombo?',
@@ -233,12 +235,14 @@ class ListaRemessasScreen extends Component {
         const subdata = item.tombos.map(item => ({
             tombo: item.hcf,
             tipo: item.retirada_exsiccata_tombos.tipo,
+            // eslint-disable-next-line no-constant-binary-expression
             dataVencimento: item.retirada_exsiccata_tombos.data_vencimento !== (null && undefined) ? formatarDataBDtoDataHora(item.retirada_exsiccata_tombos.data_vencimento) : '',
             acao: item.retirada_exsiccata_tombos.tipo === 'EMPRESTIMO' && item.retirada_exsiccata_tombos.devolvido === false ? this.gerarAcaoRetirada(item.retirada_exsiccata_tombos.retirada_exsiccata_id, item.hcf) : ''
         }))
 
         return ({
             codigo: item.id,
+            // eslint-disable-next-line no-constant-binary-expression
             dataEnvio: item.data_envio !== (null && undefined) ? formatarDataBDtoDataHora(item.data_envio) : '',
             receptor: `${receptor.sigla} - ${receptor.nome}`,
             doador: `${doador.sigla} - ${doador.nome}`,
@@ -299,7 +303,7 @@ class ListaRemessasScreen extends Component {
     }
 
     optionHerbario = () => this.state.herbarios.map(item => (
-        <Option value={item.id}>{item.nome}</Option>
+        <Option key={item.id} value={item.id}>{item.nome}</Option>
     ))
 
     renderPainelBusca() {

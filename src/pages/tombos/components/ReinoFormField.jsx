@@ -1,11 +1,13 @@
 import React from 'react'
+
 import { Select, Spin } from 'antd'
+
 import SelectedFormFiled from './SelectedFormFiled'
 
 const { Option } = Select
 
 const ReinoFormField = ({
-    initialValue, reinos, getFieldDecorator, onClickAddMore, onChange, 
+    initialValue, reinos, getFieldDecorator, onClickAddMore, onChange,
     onSearch, loading = false, debounceDelay = 200
 }) => {
     const optionReino = () => reinos?.map(item => (

@@ -1,23 +1,45 @@
+import { type Mock, vi } from 'vitest'
+
 import { AuthProvider } from '@/contexts/Auth/AuthProvider'
 import { Can } from '@/contexts/Auth/Can'
 import { useCookie } from '@/hooks/useCookie'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
 import { render, screen } from '@testing-library/react'
 
-jest.mock('@/hooks/useCookie', () => ({
-  useCookie: jest.fn(() => [undefined, jest.fn(), jest.fn()])
+vi.mock('@/hooks/useCookie', () => ({
+  useCookie: vi.fn(() => [
+    undefined,
+    vi.fn(),
+    vi.fn()
+  ])
 }))
-jest.mock('@/hooks/useLocalStorage', () => ({
-  useLocalStorage: jest.fn(() => [undefined, jest.fn(), jest.fn()])
+vi.mock('@/hooks/useLocalStorage', () => ({
+  useLocalStorage: vi.fn(() => [
+    undefined,
+    vi.fn(),
+    vi.fn()
+  ])
 }))
 
 describe('Can', () => {
   it('renders children when user can perform action', () => {
     // arrange
-    (useCookie as jest.Mock).mockReturnValue([undefined, jest.fn(), jest.fn()]);
-    (useLocalStorage as jest.Mock)
-      .mockReturnValueOnce([undefined, jest.fn(), jest.fn()])
-      .mockReturnValueOnce([undefined, jest.fn(), jest.fn()])
+    (useCookie as Mock).mockReturnValue([
+      undefined,
+      vi.fn(),
+      vi.fn()
+    ]);
+    (useLocalStorage as Mock)
+      .mockReturnValueOnce([
+        undefined,
+        vi.fn(),
+        vi.fn()
+      ])
+      .mockReturnValueOnce([
+        undefined,
+        vi.fn(),
+        vi.fn()
+      ])
 
     // act
     render(
@@ -34,10 +56,22 @@ describe('Can', () => {
 
   it('renders null when user cannot perform action', () => {
     // arrange
-    (useCookie as jest.Mock).mockReturnValue([undefined, jest.fn(), jest.fn()]);
-    (useLocalStorage as jest.Mock)
-      .mockReturnValueOnce([undefined, jest.fn(), jest.fn()])
-      .mockReturnValueOnce([undefined, jest.fn(), jest.fn()])
+    (useCookie as Mock).mockReturnValue([
+      undefined,
+      vi.fn(),
+      vi.fn()
+    ]);
+    (useLocalStorage as Mock)
+      .mockReturnValueOnce([
+        undefined,
+        vi.fn(),
+        vi.fn()
+      ])
+      .mockReturnValueOnce([
+        undefined,
+        vi.fn(),
+        vi.fn()
+      ])
 
     // act
     render(
@@ -54,10 +88,22 @@ describe('Can', () => {
 
   it('with not prop renders children when user cannot perform action', () => {
     // arrange
-    (useCookie as jest.Mock).mockReturnValue([undefined, jest.fn(), jest.fn()]);
-    (useLocalStorage as jest.Mock)
-      .mockReturnValueOnce([undefined, jest.fn(), jest.fn()])
-      .mockReturnValueOnce([undefined, jest.fn(), jest.fn()])
+    (useCookie as Mock).mockReturnValue([
+      undefined,
+      vi.fn(),
+      vi.fn()
+    ]);
+    (useLocalStorage as Mock)
+      .mockReturnValueOnce([
+        undefined,
+        vi.fn(),
+        vi.fn()
+      ])
+      .mockReturnValueOnce([
+        undefined,
+        vi.fn(),
+        vi.fn()
+      ])
 
     // act
     render(
@@ -74,10 +120,22 @@ describe('Can', () => {
 
   it('with not prop renders null when user can perform action', () => {
     // arrange
-    (useCookie as jest.Mock).mockReturnValue([undefined, jest.fn(), jest.fn()]);
-    (useLocalStorage as jest.Mock)
-      .mockReturnValueOnce([undefined, jest.fn(), jest.fn()])
-      .mockReturnValueOnce([undefined, jest.fn(), jest.fn()])
+    (useCookie as Mock).mockReturnValue([
+      undefined,
+      vi.fn(),
+      vi.fn()
+    ]);
+    (useLocalStorage as Mock)
+      .mockReturnValueOnce([
+        undefined,
+        vi.fn(),
+        vi.fn()
+      ])
+      .mockReturnValueOnce([
+        undefined,
+        vi.fn(),
+        vi.fn()
+      ])
 
     // act
     render(

@@ -1,19 +1,23 @@
 import React from 'react'
 
+import { type Mock, vi } from 'vitest'
+
 import { ContainerProvider } from '@/contexts/Container/ContainerProvider'
-import { getCookie, removeCookie, setCookie } from '@/helpers/cookie'
+import {
+  getCookie, removeCookie, setCookie
+} from '@/helpers/cookie'
 import { useCookie } from '@/hooks/useCookie'
 import { renderHook, act } from '@testing-library/react'
 
-jest.mock('@/helpers/cookie', () => ({
-  getCookie: jest.fn(),
-  setCookie: jest.fn(),
-  removeCookie: jest.fn()
+vi.mock('@/helpers/cookie', () => ({
+  getCookie: vi.fn(),
+  setCookie: vi.fn(),
+  removeCookie: vi.fn()
 }))
 
-const mockGetCookie = getCookie as jest.Mock
-const mockSetCookie = setCookie as jest.Mock
-const mockRemoveCookie = removeCookie as jest.Mock
+const mockGetCookie = getCookie as Mock
+const mockSetCookie = setCookie as Mock
+const mockRemoveCookie = removeCookie as Mock
 
 function wrapper({ children }: { children: React.ReactNode }) {
   return (
@@ -85,7 +89,9 @@ describe('useCookie', () => {
     // arrange
     mockGetCookie.mockReturnValue('existing-token')
     const { result } = renderHook(() => useCookie('access_token'), { wrapper })
-    const [, , removeValue] = result.current
+    const [
+      , , removeValue
+    ] = result.current
 
     // act
     act(() => {

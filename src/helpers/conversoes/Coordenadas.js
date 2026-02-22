@@ -27,7 +27,7 @@ export default function converteDecimalParaGrausMinutosSegundos(gDec, x, formata
         else direcao = 'E'
     } else {
         // Eixo Y
-        // eslint-disable-next-line no-lonely-if
+
         if (graus >= 0) direcao = 'N'
         else direcao = 'S'
     }

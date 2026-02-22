@@ -1,7 +1,7 @@
 import React from 'react'
 
 import {
-    Row, Col, Spin, Layout
+  Row, Col, Spin, Layout
 } from 'antd'
 
 import { InicioScreenProps } from '../../@types/components'
@@ -13,56 +13,56 @@ import { useInicioScreenViewModel } from './view-models/useInicioScreenViewModel
 const { Content } = Layout
 
 const InicioScreen: React.FC<InicioScreenProps> = props => {
-    const viewModel = useInicioScreenViewModel(props)
+  const viewModel = useInicioScreenViewModel(props)
 
-    const renderLoginView = () => (
-        <LoginLayout
-            redirect={viewModel.handleRedirect}
-            load={viewModel.handleLoad}
-            requisicao={viewModel.handleRequestError}
-        />
-    )
+  const renderLoginView = () => (
+    <LoginLayout
+      redirect={viewModel.handleRedirect}
+      load={viewModel.handleLoad}
+      requisicao={viewModel.handleRequestError}
+    />
+  )
 
-    const renderForm = () => (
-        <Layout>
-            <Header onShowMobileMenu={viewModel.showMobileMenu} />
-            <Content>
-                <div className="container">
-                    <div className="divOpaca">
-                        <Row justify="center" style={{ width: '100%', padding: '20px' }}>
-                            <Col
-                                xs={24}
-                                sm={20}
-                                md={16}
-                                lg={12}
-                                xl={10}
-                                xxl={8}
-                            >
-                                <div className="contentForm">
-                                    {renderLoginView()}
-                                </div>
-                            </Col>
-                        </Row>
-                    </div>
+  const renderForm = () => (
+    <Layout>
+      <Header onShowMobileMenu={viewModel.showMobileMenu} />
+      <Content>
+        <div className="container">
+          <div className="divOpaca">
+            <Row justify="center" style={{ width: '100%', padding: '20px' }}>
+              <Col
+                xs={24}
+                sm={20}
+                md={16}
+                lg={12}
+                xl={10}
+                xxl={8}
+              >
+                <div className="contentForm">
+                  {renderLoginView()}
                 </div>
-            </Content>
+              </Col>
+            </Row>
+          </div>
+        </div>
+      </Content>
 
-            <MobileMenu
-                visible={viewModel.mobileMenuVisible}
-                onClose={viewModel.closeMobileMenu}
-            />
-        </Layout>
+      <MobileMenu
+        visible={viewModel.mobileMenuVisible}
+        onClose={viewModel.closeMobileMenu}
+      />
+    </Layout>
+  )
+
+  if (viewModel.loading) {
+    return (
+      <Spin tip="Carregando...">
+        {renderForm()}
+      </Spin>
     )
+  }
 
-    if (viewModel.loading) {
-        return (
-            <Spin tip="Carregando...">
-                {renderForm()}
-            </Spin>
-        )
-    }
-
-    return renderForm()
+  return renderForm()
 }
 
 export default InicioScreen

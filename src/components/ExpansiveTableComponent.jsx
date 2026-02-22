@@ -17,7 +17,7 @@ export default class ExpansiveTableComponent extends Component {
         this.columns = this.buildColumns(props, this.state)
     }
 
-    componentWillReceiveProps(props) {
+    UNSAFE_componentWillReceiveProps(props) {
         if (props.metadados) {
             this.setState({
                 pagina: {
@@ -72,14 +72,6 @@ export default class ExpansiveTableComponent extends Component {
 
         this.props.changePage(pagination.current, pagination.pageSize)
     }
-
-    renderSubdados = dados => dados.map(item => (
-        <Table
-            columns={this.props.subColumns}
-            dataSource={item.subdata}
-            pagination={false}
-        />
-    ))
 
     render() {
         return (

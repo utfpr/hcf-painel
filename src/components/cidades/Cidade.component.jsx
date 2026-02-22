@@ -1,15 +1,15 @@
-import React from 'react';
+import React from 'react'
+
 import {
     Divider, Card, Row, Col, Input, Button, notification, Form, Select
-} from 'antd';
-import TotalRecordFound from '@/components/TotalRecordsFound';
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
+} from 'antd'
 
-import ModalCadastroComponent from '@/components/ModalCadastroComponent';
-import SimpleTableComponent from '@/components/SimpleTableComponent';
-import CoordenadaInputText from '@/components/CoordenadaInputText';
+import CoordenadaInputText from '@/components/CoordenadaInputText'
+import ModalCadastroComponent from '@/components/ModalCadastroComponent'
+import SimpleTableComponent from '@/components/SimpleTableComponent'
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
-const { Option } = Select;
+const { Option } = Select
 
 const columns = [
     { title: 'Cidade', dataIndex: 'nome', key: 'nome' },
@@ -17,7 +17,7 @@ const columns = [
     { title: 'Latitude', dataIndex: 'latitude', key: 'latitude' },
     { title: 'Longitude', dataIndex: 'longitude', key: 'longitude' },
     { title: 'Ação', key: 'acao' }
-];
+]
 
 const CidadesComponent = ({
     form,
@@ -38,10 +38,10 @@ const CidadesComponent = ({
     onAbrirModal,
     onFecharModal,
     onSalvar,
-    isCuradorOuOperador,
+    isCuradorOuOperador
 }) => {
-    const renderActionButtons = (item) => {
-        if (!isCuradorOuOperador) return null;
+    const renderActionButtons = item => {
+        if (!isCuradorOuOperador) return null
         return (
             <span>
                 <a onClick={() => onAbrirModal(item)}>
@@ -52,54 +52,55 @@ const CidadesComponent = ({
                     <DeleteOutlined style={{ color: '#e30613' }} />
                 </a>
             </span>
-        );
-    };
+        )
+    }
 
     const formattedCidades = (cidades || []).map(item => ({
         ...item,
         key: item.id,
         estadoNome: item.estado?.nome || '-',
-        acao: renderActionButtons(item),
-    }));
+        acao: renderActionButtons(item)
+    }))
 
     const finalColumns = isCuradorOuOperador
         ? columns
-        : columns.filter(col => col.key !== 'acao');
+        : columns.filter(col => col.key !== 'acao')
 
     const handleSearch = () => {
-        const valores = form.getFieldsValue();
-        onBusca(valores);
-    };
+        const valores = form.getFieldsValue()
+        onBusca(valores)
+    }
 
-
-    const handleBusca = (valores) => {
+    const handleBusca = valores => {
+        // eslint-disable-next-line no-undef
         const filtradas = cidadesOriginais.filter(c =>
-            (!valores.nome || c.nome.toLowerCase().includes(valores.nome.toLowerCase())) &&
-            (!valores.estadoId || c.estado_id === parseInt(valores.estadoId)) &&
-            (!valores.paisId || c.estado?.pais_id === parseInt(valores.paisId))
-        );
+            (!valores.nome || c.nome.toLowerCase().includes(valores.nome.toLowerCase()))
+            && (!valores.estadoId || c.estado_id === parseInt(valores.estadoId))
+            && (!valores.paisId || c.estado?.pais_id === parseInt(valores.paisId))
+        )
 
-        setPagina(1);
-        atualizaPagina(1, pageSize, filtradas);
-    };
-
+        // eslint-disable-next-line no-undef
+        setPagina(1)
+        // eslint-disable-next-line no-undef
+        atualizaPagina(1, pageSize, filtradas)
+    }
 
     const handleModalOk = async () => {
         try {
-            const values = await form.validateFields();
+            const values = await form.validateFields()
 
-            const latitude = values.latitude;
-            const longitude = values.longitude;
+            const latitude = values.latitude
+            const longitude = values.longitude
 
-            const isLatitudeValida = latitude >= -90 && latitude <= 90;
-            const isLongitudeValida = longitude >= -180 && longitude <= 180;
+            const isLatitudeValida = latitude >= -90 && latitude <= 90
+            const isLongitudeValida = longitude >= -180 && longitude <= 180
 
             if (!isLatitudeValida || !isLongitudeValida) {
                 notification.error({
                     message: 'Erro de validação',
-                    description: `Latitude deve estar entre -90° e +90°, e longitude entre -180° e +180°.`,
-                });
-                return;
+                    description: 'Latitude deve estar entre -90° e +90°, e longitude entre -180° e +180°.'
+                })
+                return
             }
 
             if (values.nomeCidade && values.nomeCidade.trim() !== '') {
@@ -107,17 +108,16 @@ const CidadesComponent = ({
                     nome: values.nomeCidade,
                     estado_id: values.estadoId,
                     latitude: latitude,
-                    longitude: longitude,
-                });
+                    longitude: longitude
+                })
             }
         } catch {
             notification.warning({
                 message: 'Falha',
-                description: 'Preencha os campos obrigatórios.',
-            });
+                description: 'Preencha os campos obrigatórios.'
+            })
         }
-    };
-
+    }
 
     return (
         <div>
@@ -134,7 +134,7 @@ const CidadesComponent = ({
                             style={{
                                 backgroundColor: '#5CB85C',
                                 borderColor: '#5CB85C',
-                                width: '100%',
+                                width: '100%'
                             }}
                         >
                             Adicionar
@@ -161,15 +161,14 @@ const CidadesComponent = ({
                                     <Select
                                         showSearch
                                         placeholder="Selecione um país (opcional)"
-                                        onChange={(paisId) => {
-                                            form.setFieldsValue({ estadoId: undefined });
-                                            const novosEstados = estados.filter(e => e.pais_id === paisId);
-                                            setEstadosFiltrados(novosEstados);
+                                        onChange={paisId => {
+                                            form.setFieldsValue({ estadoId: undefined })
+                                            const novosEstados = estados.filter(e => e.pais_id === paisId)
+                                            setEstadosFiltrados(novosEstados)
                                         }}
                                         optionFilterProp="children"
                                         filterOption={(input, option) =>
-                                            (option?.children ?? '').toLowerCase().includes(input.toLowerCase())
-                                        }
+                                            (option?.children ?? '').toLowerCase().includes(input.toLowerCase())}
                                     >
                                         {paises.map(pais => (
                                             <Option key={pais.id} value={pais.id}>{pais.nome}</Option>
@@ -188,8 +187,7 @@ const CidadesComponent = ({
                                         disabled={!form.getFieldValue('paisId')}
                                         optionFilterProp="children"
                                         filterOption={(input, option) =>
-                                            (option?.children ?? '').toLowerCase().includes(input.toLowerCase())
-                                        }
+                                            (option?.children ?? '').toLowerCase().includes(input.toLowerCase())}
                                     >
                                         {estadosFiltrados.map(estado => (
                                             <Option key={estado.id} value={estado.id}>{estado.nome}</Option>
@@ -264,11 +262,9 @@ const CidadesComponent = ({
                                     placeholder="Selecione ou pesquise o estado"
                                     optionFilterProp="children"
                                     filterOption={(input, option) =>
-                                        (option?.children ?? '').toLowerCase().includes(input.toLowerCase())
-                                    }
+                                        (option?.children ?? '').toLowerCase().includes(input.toLowerCase())}
                                     filterSort={(optionA, optionB) =>
-                                        (optionA?.children ?? '').toLowerCase().localeCompare((optionB?.children ?? '').toLowerCase())
-                                    }
+                                        (optionA?.children ?? '').toLowerCase().localeCompare((optionB?.children ?? '').toLowerCase())}
                                 >
                                     {estados.map(estado => (
                                         <Option key={estado.id} value={`${estado.id}`}>
@@ -297,7 +293,7 @@ const CidadesComponent = ({
                 </Form>
             </ModalCadastroComponent>
         </div>
-    );
-};
+    )
+}
 
-export default CidadesComponent;
+export default CidadesComponent

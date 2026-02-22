@@ -129,7 +129,6 @@ const FiltrosMapa = () => {
                 return
             }
 
-            // eslint-disable-next-line max-len
             if (taxonomiaOptions.some(option => filters[`taxonomia_${option}`] && filters[`taxonomia_${option}`].trim() !== '')) {
                 const taxonomyParams = {}
 

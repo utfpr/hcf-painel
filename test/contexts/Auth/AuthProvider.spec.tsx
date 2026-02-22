@@ -1,3 +1,5 @@
+import { type Mock, vi } from 'vitest'
+
 import { TipoUsuario, Usuario } from '@/@types/components'
 import { AuthProvider } from '@/contexts/Auth/AuthProvider'
 import { useAuth } from '@/contexts/Auth/useAuth'
@@ -6,11 +8,19 @@ import { useLocalStorage } from '@/hooks/useLocalStorage'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-jest.mock('@/hooks/useCookie', () => ({
-  useCookie: jest.fn(() => [undefined, jest.fn(), jest.fn()])
+vi.mock('@/hooks/useCookie', () => ({
+  useCookie: vi.fn(() => [
+    undefined,
+    vi.fn(),
+    vi.fn()
+  ])
 }))
-jest.mock('@/hooks/useLocalStorage', () => ({
-  useLocalStorage: jest.fn(() => [undefined, jest.fn(), jest.fn()])
+vi.mock('@/hooks/useLocalStorage', () => ({
+  useLocalStorage: vi.fn(() => [
+    undefined,
+    vi.fn(),
+    vi.fn()
+  ])
 }))
 
 const mockUser: Usuario = {
@@ -47,12 +57,24 @@ function AuthConsumer() {
 describe('AuthProvider', () => {
   it('renders children', () => {
     // arrange
-    const mockSetAccessToken = jest.fn()
-    const mockRemoveAccessToken = jest.fn();
-    (useCookie as jest.Mock).mockReturnValue([undefined, mockSetAccessToken, mockRemoveAccessToken]);
-    (useLocalStorage as jest.Mock)
-      .mockReturnValueOnce([undefined, jest.fn(), jest.fn()])
-      .mockReturnValueOnce([undefined, jest.fn(), jest.fn()])
+    const mockSetAccessToken = vi.fn()
+    const mockRemoveAccessToken = vi.fn();
+    (useCookie as Mock).mockReturnValue([
+      undefined,
+      mockSetAccessToken,
+      mockRemoveAccessToken
+    ]);
+    (useLocalStorage as Mock)
+      .mockReturnValueOnce([
+        undefined,
+        vi.fn(),
+        vi.fn()
+      ])
+      .mockReturnValueOnce([
+        undefined,
+        vi.fn(),
+        vi.fn()
+      ])
 
     // act
     render(
@@ -67,12 +89,24 @@ describe('AuthProvider', () => {
 
   it('provides context with default permissions when logged out', () => {
     // arrange
-    const mockSetAccessToken = jest.fn()
-    const mockRemoveAccessToken = jest.fn();
-    (useCookie as jest.Mock).mockReturnValue([undefined, mockSetAccessToken, mockRemoveAccessToken]);
-    (useLocalStorage as jest.Mock)
-      .mockReturnValueOnce([undefined, jest.fn(), jest.fn()])
-      .mockReturnValueOnce([undefined, jest.fn(), jest.fn()])
+    const mockSetAccessToken = vi.fn()
+    const mockRemoveAccessToken = vi.fn();
+    (useCookie as Mock).mockReturnValue([
+      undefined,
+      mockSetAccessToken,
+      mockRemoveAccessToken
+    ]);
+    (useLocalStorage as Mock)
+      .mockReturnValueOnce([
+        undefined,
+        vi.fn(),
+        vi.fn()
+      ])
+      .mockReturnValueOnce([
+        undefined,
+        vi.fn(),
+        vi.fn()
+      ])
 
     // act
     render(
@@ -92,16 +126,28 @@ describe('AuthProvider', () => {
 
   it('logIn updates context', async () => {
     // arrange
-    const mockSetAccessToken = jest.fn()
-    const mockRemoveAccessToken = jest.fn()
-    const mockSetLoggedUser = jest.fn()
-    const mockRemoveLoggedUser = jest.fn()
-    const mockSetOldAccessToken = jest.fn()
-    const mockRemoveOldAccessToken = jest.fn();
-    (useCookie as jest.Mock).mockReturnValue([undefined, mockSetAccessToken, mockRemoveAccessToken]);
-    (useLocalStorage as jest.Mock)
-      .mockReturnValueOnce([undefined, mockSetLoggedUser, mockRemoveLoggedUser])
-      .mockReturnValueOnce([undefined, mockSetOldAccessToken, mockRemoveOldAccessToken])
+    const mockSetAccessToken = vi.fn()
+    const mockRemoveAccessToken = vi.fn()
+    const mockSetLoggedUser = vi.fn()
+    const mockRemoveLoggedUser = vi.fn()
+    const mockSetOldAccessToken = vi.fn()
+    const mockRemoveOldAccessToken = vi.fn();
+    (useCookie as Mock).mockReturnValue([
+      undefined,
+      mockSetAccessToken,
+      mockRemoveAccessToken
+    ]);
+    (useLocalStorage as Mock)
+      .mockReturnValueOnce([
+        undefined,
+        mockSetLoggedUser,
+        mockRemoveLoggedUser
+      ])
+      .mockReturnValueOnce([
+        undefined,
+        mockSetOldAccessToken,
+        mockRemoveOldAccessToken
+      ])
     const user = userEvent.setup()
 
     // act
@@ -121,16 +167,28 @@ describe('AuthProvider', () => {
 
   it('logOut clears context and calls remove functions', async () => {
     // arrange
-    const mockSetAccessToken = jest.fn()
-    const mockRemoveAccessToken = jest.fn()
-    const mockSetLoggedUser = jest.fn()
-    const mockRemoveLoggedUser = jest.fn()
-    const mockSetOldAccessToken = jest.fn()
-    const mockRemoveOldAccessToken = jest.fn();
-    (useCookie as jest.Mock).mockReturnValue([undefined, mockSetAccessToken, mockRemoveAccessToken]);
-    (useLocalStorage as jest.Mock)
-      .mockReturnValueOnce([undefined, mockSetLoggedUser, mockRemoveLoggedUser])
-      .mockReturnValueOnce([undefined, mockSetOldAccessToken, mockRemoveOldAccessToken])
+    const mockSetAccessToken = vi.fn()
+    const mockRemoveAccessToken = vi.fn()
+    const mockSetLoggedUser = vi.fn()
+    const mockRemoveLoggedUser = vi.fn()
+    const mockSetOldAccessToken = vi.fn()
+    const mockRemoveOldAccessToken = vi.fn();
+    (useCookie as Mock).mockReturnValue([
+      undefined,
+      mockSetAccessToken,
+      mockRemoveAccessToken
+    ]);
+    (useLocalStorage as Mock)
+      .mockReturnValueOnce([
+        undefined,
+        mockSetLoggedUser,
+        mockRemoveLoggedUser
+      ])
+      .mockReturnValueOnce([
+        undefined,
+        mockSetOldAccessToken,
+        mockRemoveOldAccessToken
+      ])
     const user = userEvent.setup()
 
     // act

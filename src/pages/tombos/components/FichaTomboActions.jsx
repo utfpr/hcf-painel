@@ -40,7 +40,9 @@ const FichaTomboActions = ({ hcf }) => {
             setLoadingCodigos(true)
             try {
                 let response = null
-                const getResponse = resp => { response = resp }
+                const getResponse = resp => {
+                    response = resp
+                }
                 await requisitaCodigoBarrasService(getResponse, hcf)
 
                 const lista = response?.data?.map(c => c.codigo_barra) ?? []
@@ -72,7 +74,8 @@ const FichaTomboActions = ({ hcf }) => {
             const valores = await form.validateFields()
 
             message.success('Impressão iniciada!')
-            const url = state.comCodigo ? `${fichaTomboUrl}/fichas/tombos/${hcf}/1`
+            const url = state.comCodigo
+                ? `${fichaTomboUrl}/fichas/tombos/${hcf}/1`
                 + `?qtd=${valores.copias}&code=${valores.codigoSelecionado}`
                 : `${fichaTomboUrl}/fichas/tombos/${hcf}/0?qtd=${valores.copias}`
             window.open(url, '_blank')
@@ -168,42 +171,44 @@ const FichaTomboActions = ({ hcf }) => {
             />
             <Divider type="vertical" />
 
-            {state.comCodigo && (!codigos || !codigos.length) ? (
-                <Modal
-                    title={
-                        state.comCodigo
-                            ? 'Imprimir Ficha Tombo (com código de barras)'
-                            : 'Imprimir Ficha Tombo (sem código de barras)'
-                    }
-                    open={state.open}
-                    onOk={fechar}
-                    onCancel={fechar}
-                    okText="Cancelar"
-                    destroyOnClose
-                    maskClosable={false}
-                    cancelButtonProps={{ style: { display: 'none' } }}
-                >
-                    {modalContent()}
-                </Modal>
-            ) : (
-                <Modal
-                    title={
-                        state.comCodigo
-                            ? 'Imprimir Ficha Tombo (com código de barras)'
-                            : 'Imprimir Ficha Tombo (sem código de barras)'
-                    }
-                    open={state.open}
-                    onOk={confirmarImpressao}
-                    onCancel={fechar}
-                    okText="Imprimir"
-                    cancelText="Cancelar"
-                    confirmLoading={printing}
-                    destroyOnClose
-                    maskClosable={false}
-                >
-                    {modalContent()}
-                </Modal>
-            )}
+            {state.comCodigo && (!codigos || !codigos.length)
+                ? (
+                        <Modal
+                            title={
+                                state.comCodigo
+                                    ? 'Imprimir Ficha Tombo (com código de barras)'
+                                    : 'Imprimir Ficha Tombo (sem código de barras)'
+                            }
+                            open={state.open}
+                            onOk={fechar}
+                            onCancel={fechar}
+                            okText="Cancelar"
+                            destroyOnClose
+                            maskClosable={false}
+                            cancelButtonProps={{ style: { display: 'none' } }}
+                        >
+                            {modalContent()}
+                        </Modal>
+                    )
+                : (
+                        <Modal
+                            title={
+                                state.comCodigo
+                                    ? 'Imprimir Ficha Tombo (com código de barras)'
+                                    : 'Imprimir Ficha Tombo (sem código de barras)'
+                            }
+                            open={state.open}
+                            onOk={confirmarImpressao}
+                            onCancel={fechar}
+                            okText="Imprimir"
+                            cancelText="Cancelar"
+                            confirmLoading={printing}
+                            destroyOnClose
+                            maskClosable={false}
+                        >
+                            {modalContent()}
+                        </Modal>
+                    )}
         </div>
     )
 }

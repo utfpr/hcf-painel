@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { Component } from 'react'
 
 import {
@@ -6,20 +7,17 @@ import {
     Divider,
     Select,
     InputNumber,
-    Tag,
     Input,
     Button,
     notification,
     Spin,
     Modal,
     Radio,
-    Table,
     Tooltip,
     Upload,
     Image
 } from 'antd'
 import axios from 'axios'
-import debounce from 'lodash.debounce'
 import { Link } from 'react-router-dom'
 
 import { formatarDataBRtoEN } from '@/helpers/conversoes/ConversoesData'
@@ -28,15 +26,13 @@ import { Form } from '@ant-design/compatible'
 import {
     DeleteOutlined,
     EditOutlined,
-    PlusOutlined,
-    UploadOutlined
+    PlusOutlined
 } from '@ant-design/icons'
 
 import BarcodeTableComponent from '../../components/BarcodeTableComponent'
 import ButtonComponent from '../../components/ButtonComponent'
 import ModalCadastroComponent from '../../components/ModalCadastroComponent'
-import UploadPicturesComponent from '../../components/UploadPicturesComponent'
-import { fotosBaseUrl, baseUrl } from '../../config/api'
+import { fotosBaseUrl } from '../../config/api'
 import { isIdentificador } from '../../helpers/usuarios'
 import CidadeFormField from './components/CidadeFormField'
 import ColecoesAnexasFormField from './components/ColecoesAnexasFormField'
@@ -548,10 +544,10 @@ class NovoTomboScreen extends Component {
                                 const row = currentBarcodes.find(
                                     r => r.codigo_barra === code
                                 )
-                                    || initialList.find(
-                                        r => r.codigo_barra === code
-                                    )
-                                    || null
+                                || initialList.find(
+                                    r => r.codigo_barra === code
+                                )
+                                || null
 
                                 const numeroCodigo = row?.num_barra ?? parseInt(String(code).replace(/\D/g, ''), 10)
                                 if (!Number.isFinite(numeroCodigo)) return null
@@ -886,6 +882,7 @@ class NovoTomboScreen extends Component {
 
         const { match } = this.props
         this.setState({
+            // eslint-disable-next-line react-x/no-access-state-in-setstate
             ...this.state,
             ...dados
         })
@@ -2407,7 +2404,7 @@ class NovoTomboScreen extends Component {
                         'error',
                         'Falha',
                         response.data.error?.message
-                            || 'Houve um problema ao cadastrar o novo local de coleta.'
+                        || 'Houve um problema ao cadastrar o novo local de coleta.'
                     )
                 } else {
                     this.openNotificationWithIcon(
@@ -3060,7 +3057,7 @@ class NovoTomboScreen extends Component {
     }
 
     optionEntidades = () => this.state.herbarios.map(item => (
-        <Option value={`${item.id}`}>
+        <Option key={item.id} value={`${item.id}`}>
             {item.sigla}
             {' '}
             -
@@ -3069,11 +3066,11 @@ class NovoTomboScreen extends Component {
     ))
 
     optionTipo = () => this.state.tipos.map(item => (
-        <Option value={`${item.id}`}>{item.nome}</Option>
+        <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
     ))
 
     optionAutores = () => this.state.autores.map(item => (
-        <Option value={`${item.id}`}>{item.nome}</Option>
+        <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
     ))
 
     openNotificationWithIcon = (type, message, description) => {
@@ -3650,11 +3647,13 @@ class NovoTomboScreen extends Component {
                                 }}
                                 others={{
                                     loading: fetchingAutores,
-                                    notFoundContent: fetchingAutores ? (
-                                        <Spin size="small" />
-                                    ) : (
-                                        'Nenhum resultado encontrado'
-                                    )
+                                    notFoundContent: fetchingAutores
+                                        ? (
+                                                <Spin size="small" />
+                                            )
+                                        : (
+                                                'Nenhum resultado encontrado'
+                                            )
                                 }}
                                 debounceDelay={100}
                                 xs={24}
@@ -4398,9 +4397,9 @@ class NovoTomboScreen extends Component {
                         initialValue={
                             idSoloInicial
                                 ? {
-                                    key: idSoloInicial,
-                                    label: soloInicial
-                                }
+                                        key: idSoloInicial,
+                                        label: soloInicial
+                                    }
                                 : undefined
                         }
                         solos={solos}
@@ -4425,9 +4424,9 @@ class NovoTomboScreen extends Component {
                         initialValue={
                             idRelevoInicial
                                 ? {
-                                    key: idRelevoInicial,
-                                    label: relevoInicial
-                                }
+                                        key: idRelevoInicial,
+                                        label: relevoInicial
+                                    }
                                 : undefined
                         }
                         relevos={relevos}
@@ -4455,9 +4454,9 @@ class NovoTomboScreen extends Component {
                         initialValue={
                             idVegetacaoInicial
                                 ? {
-                                    key: idVegetacaoInicial,
-                                    label: vegetacaoInicial
-                                }
+                                        key: idVegetacaoInicial,
+                                        label: vegetacaoInicial
+                                    }
                                 : undefined
                         }
                         vegetacoes={vegetacoes}
@@ -4482,9 +4481,9 @@ class NovoTomboScreen extends Component {
                         initialValue={
                             idFaseInicial
                                 ? {
-                                    key: idFaseInicial,
-                                    label: faseInicial
-                                }
+                                        key: idFaseInicial,
+                                        label: faseInicial
+                                    }
                                 : undefined
                         }
                         fases={fases}

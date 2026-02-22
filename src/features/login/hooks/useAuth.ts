@@ -7,21 +7,21 @@ import { useContainer } from '../../../contexts/Container/useContainer'
 import { AuthService } from '../../../services/AuthService'
 
 export const useAuth = () => {
-    const { broker } = useContainer()
-    const authService = AuthService.getInstance()
+  const { broker } = useContainer()
+  const authService = AuthService.getInstance()
 
-    const login = useCallback((credentials: LoginRequest): Promise<LoginResponse> => {
-        return authService.login(credentials)
-    }, [authService])
+  const login = useCallback((credentials: LoginRequest): Promise<LoginResponse> => {
+    return authService.login(credentials)
+  }, [authService])
 
-    const saveCredentials = useCallback((data: LoginResponse): void => {
-        authService.saveUserCredentials(data, broker)
-    }, [authService, broker])
+  const saveCredentials = useCallback((data: LoginResponse): void => {
+    authService.saveUserCredentials(data, broker)
+  }, [authService, broker])
 
-    return {
-        login,
-        saveCredentials
-    }
+  return {
+    login,
+    saveCredentials
+  }
 }
 
 export default null

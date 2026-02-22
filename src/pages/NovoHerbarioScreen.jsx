@@ -14,6 +14,7 @@ import {
 import axios from 'axios'
 
 import { Form } from '@ant-design/compatible'
+
 import SelectedFormField from './tombos/components/SelectedFormFiled'
 
 const FormItem = Form.Item
@@ -500,7 +501,7 @@ class NovoHerbarioScreen extends Component {
 
                     <SelectedFormField
                         title="Estado:"
-                        placeholder={paisSelecionado ? "Selecione um estado" : "Selecione um país primeiro"}
+                        placeholder={paisSelecionado ? 'Selecione um estado' : 'Selecione um país primeiro'}
                         fieldName="estado"
                         getFieldDecorator={getFieldDecorator}
                         disabled={!paisSelecionado}
@@ -544,7 +545,7 @@ class NovoHerbarioScreen extends Component {
 
                     <SelectedFormField
                         title="Cidade:"
-                        placeholder={estadoSelecionado ? "Selecione uma cidade" : "Selecione um estado primeiro"}
+                        placeholder={estadoSelecionado ? 'Selecione uma cidade' : 'Selecione um estado primeiro'}
                         fieldName="cidade"
                         getFieldDecorator={getFieldDecorator}
                         disabled={!estadoSelecionado}

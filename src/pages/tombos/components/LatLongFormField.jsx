@@ -20,7 +20,7 @@ const LatLongFormField = ({ getFieldDecorator, form }) => {
     // Validador customizado para latitude
     const validadorLatitude = (rule, value, callback) => {
         const longitude = form?.getFieldValue('longitude')
-        
+
         // Se latitude está vazia
         if (value === undefined || value === null || value === '') {
             // Longitude também deve estar vazia
@@ -31,20 +31,20 @@ const LatLongFormField = ({ getFieldDecorator, form }) => {
             callback()
             return
         }
-        
+
         // Valida o valor
         if (!validaCoordenadaDecimal(value, false)) {
             callback('Latitude inválida (deve estar entre -90 e 90)')
             return
         }
-        
+
         callback()
     }
 
     // Validador customizado para longitude
     const validadorLongitude = (rule, value, callback) => {
         const latitude = form?.getFieldValue('latitude')
-        
+
         // Se longitude está vazia
         if (value === undefined || value === null || value === '') {
             // Latitude também deve estar vazia
@@ -55,13 +55,13 @@ const LatLongFormField = ({ getFieldDecorator, form }) => {
             callback()
             return
         }
-        
+
         // Valida o valor
         if (!validaCoordenadaDecimal(value, true)) {
             callback('Longitude inválida (deve estar entre -180 e 180)')
             return
         }
-        
+
         callback()
     }
 

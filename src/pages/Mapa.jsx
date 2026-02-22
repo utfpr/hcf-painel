@@ -74,7 +74,7 @@ function MapLogic({ setLoading }) {
                     const params = {
                         recaptchaToken: token
                     }
-    
+
                     axios.get('/pontos', { params })
                         .then(response => {
                             setPontos(Object.values(response.data).map(ponto => ({
@@ -192,6 +192,7 @@ function MapLogic({ setLoading }) {
 function debounce(func, wait) {
     let timeout
     return function (...args) {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         const context = this
         clearTimeout(timeout)
         timeout = setTimeout(() => func.apply(context, args), wait)
@@ -207,7 +208,7 @@ function Mapa() {
             setTimeout(() => {
                 const mapContainer = document.querySelector('.leaflet-container')
                 if (mapContainer) {
-                    const mapInstance = mapContainer._leaflet_map // eslint-disable-line
+                    const mapInstance = mapContainer._leaflet_map
                     if (mapInstance) {
                         mapInstance.invalidateSize()
                     }

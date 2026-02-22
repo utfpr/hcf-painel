@@ -4,91 +4,98 @@ import { useState, useCallback } from 'react'
 
 import { useAuth } from '@/contexts/Auth/useAuth'
 
-import { LoginLayoutProps, LoginRequest, ApiError } from '../../../@types/components'
+import {
+  LoginLayoutProps, LoginRequest, ApiError
+} from '../../../@types/components'
 import { useAuth as useOldAuth } from '../hooks/useAuth'
 
 export interface LoginLayoutViewModel {
-    // State
-    message: string | null
+  // State
+  message: string | null
 
-    // Actions
-    handleSubmit: (err: any, valores: LoginRequest, lembrar?: boolean) => void
-    onCloseMessage: () => void
+  // Actions
+  handleSubmit: (err: unknown, valores: LoginRequest, lembrar?: boolean) => void
+  onCloseMessage: () => void
 }
 
 export const useLoginLayoutViewModel = (props: LoginLayoutProps): LoginLayoutViewModel => {
-    const [message, setMessage] = useState<string | null>(null)
+  const [message, setMessage] = useState<string | null>(null)
 
-    const { logIn } = useAuth()
-    const { login, saveCredentials } = useOldAuth()
+  const { logIn } = useAuth()
+  const { login, saveCredentials } = useOldAuth()
 
-    const handleRequestError = useCallback(({ message }: { message: string }) => {
-        const error: ApiError = {
-            mensagem: '',
-            codigo: 500
-        }
-        props.requisicao(error)
-        setMessage(message)
-    }, [props.requisicao])
-
-    const requestUserLogin = useCallback(async (values: LoginRequest, shouldRemember: boolean) => {
-        try {
-            props.load(true)
-            const response = await login(values)
-            saveCredentials(response)
-            logIn({ token: response.token, user: response.usuario })
-
-            // Salva credenciais do "Lembrar-me" apenas após login bem-sucedido
-            if (shouldRemember) {
-                try {
-                    localStorage.setItem('hcf_saved_email', values.email)
-                    localStorage.setItem('hcf_saved_password', values.senha)
-                    localStorage.setItem('hcf_remember_me', 'true')
-                } catch (storageError) {
-                    console.warn('Erro ao salvar credenciais de lembrar-me:', storageError)
-                }
-            } else {
-                // Se não marcou lembrar-me, limpa credenciais salvas
-                try {
-                    localStorage.removeItem('hcf_saved_email')
-                    localStorage.removeItem('hcf_saved_password')
-                    localStorage.removeItem('hcf_remember_me')
-                } catch (storageError) {
-                    console.warn('Erro ao limpar credenciais de lembrar-me:', storageError)
-                }
-            }
-
-            props.load(false)
-            props.redirect()
-        } catch (error: any) {
-            props.load(false)
-
-            if (error.codigo) {
-                // É um erro da API
-                props.requisicao(error)
-            } else {
-                // É um erro de rede ou outro
-                handleRequestError({ message: error.message || 'Erro desconhecido' })
-            }
-        }
-    }, [props, login, saveCredentials, handleRequestError])
-
-    const handleSubmit = useCallback((err: any, valores: LoginRequest, lembrar: boolean = false) => {
-        if (!err) {
-            requestUserLogin(valores, lembrar)
-        }
-    }, [requestUserLogin])
-
-    const onCloseMessage = useCallback(() => {
-        setMessage(null)
-    }, [])
-
-    return {
-    // State
-        message,
-
-        // Actions
-        handleSubmit,
-        onCloseMessage
+  const handleRequestError = useCallback(({ message }: { message: string }) => {
+    const error: ApiError = {
+      mensagem: '',
+      codigo: 500
     }
+    props.requisicao(error)
+    setMessage(message)
+  }, [props.requisicao])
+
+  const requestUserLogin = useCallback(async (values: LoginRequest, shouldRemember: boolean) => {
+    try {
+      props.load(true)
+      const response = await login(values)
+      saveCredentials(response)
+      logIn({ token: response.token, user: response.usuario })
+
+      // Salva credenciais do "Lembrar-me" apenas após login bem-sucedido
+      if (shouldRemember) {
+        try {
+          localStorage.setItem('hcf_saved_email', values.email)
+          localStorage.setItem('hcf_saved_password', values.senha)
+          localStorage.setItem('hcf_remember_me', 'true')
+        } catch (storageError) {
+          console.warn('Erro ao salvar credenciais de lembrar-me:', storageError)
+        }
+      } else {
+        // Se não marcou lembrar-me, limpa credenciais salvas
+        try {
+          localStorage.removeItem('hcf_saved_email')
+          localStorage.removeItem('hcf_saved_password')
+          localStorage.removeItem('hcf_remember_me')
+        } catch (storageError) {
+          console.warn('Erro ao limpar credenciais de lembrar-me:', storageError)
+        }
+      }
+
+      props.load(false)
+      props.redirect()
+    } catch (error: unknown) {
+      props.load(false)
+
+      if ((error as ApiError).codigo) {
+        // É um erro da API
+        props.requisicao(error as ApiError)
+      } else {
+        // É um erro de rede ou outro
+        handleRequestError({ message: (error as Error).message || 'Erro desconhecido' })
+      }
+    }
+  }, [
+    props,
+    login,
+    saveCredentials,
+    handleRequestError
+  ])
+
+  const handleSubmit = useCallback((err: unknown, valores: LoginRequest, lembrar: boolean = false) => {
+    if (!err) {
+      void requestUserLogin(valores, lembrar)
+    }
+  }, [requestUserLogin])
+
+  const onCloseMessage = useCallback(() => {
+    setMessage(null)
+  }, [])
+
+  return {
+    // State
+    message,
+
+    // Actions
+    handleSubmit,
+    onCloseMessage
+  }
 }
