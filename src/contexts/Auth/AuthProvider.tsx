@@ -31,7 +31,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     })
 
     const manager = useMemo(() => {
-        return new Manager<Resource, Action>(createRules(attributes?.user))
+        return new Manager<Resource, Action>({ rules: createRules(attributes?.user) })
     }, [attributes?.user])
 
     const can = useCallback((action: Action, resource: Resource) => {

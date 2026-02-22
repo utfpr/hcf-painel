@@ -2,11 +2,14 @@ import { useCallback, useEffect, useState } from 'react'
 
 import type { CookieSetOptions } from 'universal-cookie'
 
+import { useContainer } from '@/contexts/Container/useContainer'
 import { getCookie, removeCookie, setCookie } from '@/helpers/cookie'
 
 type UseCookieReturn = [value: string | undefined, (value: string, options?: CookieSetOptions) => void, () => void]
 
 export function useCookie(name: string): UseCookieReturn {
+    const { broker } = useContainer()
+
     const [cookieValue, setCookieValue] = useState<string | undefined>(() => {
         const value = getCookie<string>(name) ?? undefined
         return value
@@ -18,38 +21,31 @@ export function useCookie(name: string): UseCookieReturn {
             setCookie(name, newValue, options)
             setCookieValue(newValue)
 
-            const event: CustomEvent<{ name: string }> = new CustomEvent('cookie.updated', {
-                cancelable: false,
-                detail: { name }
-            })
-            window.dispatchEvent(event)
+            broker.emit('cookie.updated', { name })
         },
-        [name]
+        [broker, name]
         )
 
     const removeValueFn = useCallback(() => {
         removeCookie(name)
         setCookieValue(undefined)
 
-        const event: CustomEvent<{ name: string }> = new CustomEvent('cookie.removed', {
-            cancelable: false,
-            detail: { name }
-        })
-        window.dispatchEvent(event)
-    }, [name])
+        broker.emit('cookie.removed', { name })
+    }, [broker, name])
 
     useEffect(() => {
-        const handleCookieChange = (event: Event): void => {
-            if (event instanceof CustomEvent && (event as CustomEvent<{ name: string }>).detail.name === name) {
+        const handleCookieUpdate = (detail: unknown): void => {
+            const { name: eventName } = detail as { name: string }
+            if (eventName === name) {
                 setCookieValue(getCookie(name))
             }
         }
-        window.addEventListener('cookie.updated', handleCookieChange)
+        broker.subscribe('cookie.updated', handleCookieUpdate)
 
         return () => {
-            window.removeEventListener('cookie.updated', handleCookieChange)
+            broker.unsubscribe('cookie.updated', handleCookieUpdate)
         }
-    }, [])
+    }, [broker, name])
 
     return [cookieValue, setValueFn, removeValueFn]
 }

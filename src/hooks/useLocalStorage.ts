@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
+import { useContainer } from '@/contexts/Container/useContainer'
+
 export type UseLocalStorageReturn<T> = [
   value: T | undefined,
   React.Dispatch<T>,
@@ -7,6 +9,8 @@ export type UseLocalStorageReturn<T> = [
 ]
 
 export function useLocalStorage<T>(key: string, initialValue?: T): UseLocalStorageReturn<T> {
+    const { broker } = useContainer()
+
     const readValue = (): T | undefined => {
         try {
             const value = window.localStorage.getItem(key)
@@ -26,23 +30,15 @@ export function useLocalStorage<T>(key: string, initialValue?: T): UseLocalStora
     const setStorageValue = useCallback<React.Dispatch<T>>(
         newValue => {
             setStoredValue(newValue)
-            let event: CustomEvent<{ key: string }>
             if (newValue === undefined) {
                 window.localStorage.removeItem(key)
-                event = new CustomEvent('local_storage.removed', {
-                    cancelable: false,
-                    detail: { key }
-                })
+                broker.emit('local_storage.removed', { key })
             } else {
                 window.localStorage.setItem(key, JSON.stringify(newValue))
-                event = new CustomEvent('local_storage.updated', {
-                    cancelable: false,
-                    detail: { key }
-                })
+                broker.emit('local_storage.updated', { key })
             }
-            window.dispatchEvent(event)
         },
-        [key]
+        [broker, key]
     )
 
     const removeStorageValue = useCallback(() => {
@@ -51,17 +47,18 @@ export function useLocalStorage<T>(key: string, initialValue?: T): UseLocalStora
     }, [key])
 
     useEffect(() => {
-        const handleLocalStorageChange = (event: Event): void => {
-            if (event instanceof CustomEvent && (event as CustomEvent<{ key: string }>).detail.key === key) {
+        const handleLocalStorageUpdate = (detail: unknown): void => {
+            const { key: eventKey } = detail as { key: string }
+            if (eventKey === key) {
                 setStoredValue(readValue())
             }
         }
-        window.addEventListener('local_storage.updated', handleLocalStorageChange)
+        broker.subscribe('local_storage.updated', handleLocalStorageUpdate)
 
         return () => {
-            window.removeEventListener('local_storage.updated', handleLocalStorageChange)
+            broker.unsubscribe('local_storage.updated', handleLocalStorageUpdate)
         }
-    }, [])
+    }, [broker, key])
 
     return [storedValue, setStorageValue, removeStorageValue]
 }

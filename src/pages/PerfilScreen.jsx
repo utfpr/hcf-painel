@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { Button, Card, Col, Divider, Form, Input, Modal, Row, Spin, notification } from 'antd'
 import axios from 'axios'
 
+import { broker } from '@/libraries/events/Broker'
+
 export default class PerfilScreen extends Component {
     constructor(props) {
         super(props)
@@ -107,8 +109,7 @@ export default class PerfilScreen extends Component {
                 const updatedUser = { ...user, nome: values.nome, telefone: values.telefone }
                 localStorage.setItem('usuario', JSON.stringify(updatedUser))
 
-                const event = new Event('userNameUpdated')
-                window.dispatchEvent(event)
+                broker.emit('userNameUpdated', undefined)
 
                 this.setState({
                     user: updatedUser,
