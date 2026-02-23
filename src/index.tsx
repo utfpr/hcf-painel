@@ -4,23 +4,17 @@ import { useEffect } from 'react'
 import { ConfigProvider } from 'antd'
 import ReactDOM from 'react-dom/client'
 
-import App from './App'
+import { App } from './App'
 import { AnalyticsProvider } from './components/Analytics/AnalyticsContext'
 import { analyticsAppId } from './config/analytics'
 import { recaptchaKey } from './config/api'
 import { AuthProvider } from './contexts/Auth/AuthProvider'
-import { useAuth } from './contexts/Auth/useAuth'
 import { ContainerProvider } from './contexts/Container/ContainerProvider'
 
 declare global {
   interface Window {
     grecaptcha?: unknown
   }
-}
-
-function AuthWrapper() {
-  const auth = useAuth()
-  return <App auth={auth} />
 }
 
 function Root() {
@@ -40,7 +34,7 @@ function Root() {
       <ConfigProvider>
         <AnalyticsProvider appId={analyticsAppId}>
           <AuthProvider>
-            <AuthWrapper />
+            <App />
           </AuthProvider>
         </AnalyticsProvider>
       </ConfigProvider>
