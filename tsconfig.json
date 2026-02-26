@@ -1,45 +1,49 @@
 {
   "compilerOptions": {
-      "target": "es2020",
-      "lib": [
-          "dom",
-          "dom.iterable",
-          "esnext"
+    "target": "es2020",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "allowJs": true,
+    "checkJs": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "types": [
+      "vitest/globals",
+      "@testing-library/jest-dom/vitest"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
       ],
-      "jsx": "react-jsx",
-      "noEmit": true,
-      "allowJs": true,
-      "checkJs": false,
-      "skipLibCheck": true,
-      "esModuleInterop": true,
-      "allowSyntheticDefaultImports": true,
-      "strict": true,
-      "forceConsistentCasingInFileNames": true,
-      "noFallthroughCasesInSwitch": true,
-      "module": "esnext",
-      "moduleResolution": "node",
-      "resolveJsonModule": true,
-      "isolatedModules": true,
-      "baseUrl": "./",
-      "paths": {
-          "@/*": [
-              "./src/*"
-          ],
-          "#/*": [
-              "./test/*"
-          ]
-      },
+      "#/*": [
+        "./test/*"
+      ]
+    },
   },
   "include": [
-      "src/",
-      "test/",
-      ".config/",
-      "vite.config.ts",
-      "jest.config.js"
+    "src/**/*",
+    ".config/**/*",
+    "vite.config.ts",
+    "eslint.config.mts",
+    "vitest.config.mts",
   ],
   "exclude": [
-      "build/",
-      "node_modules/",
-      "examples/"
+    "build/",
+    "node_modules/",
+    "examples/"
   ]
 }

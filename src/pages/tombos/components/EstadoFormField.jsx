@@ -10,7 +10,7 @@ const EstadoFormField = ({
     initialValue, estados, getFieldDecorator, onClickAddMore, onChange, validateStatus, onSearch, loading = false, debounceDelay = 200, disabled = false
 }) => {
     const optionEstados = () => estados.map(item => (
-        <Option value={`${item.id}`}>{item.nome}</Option>
+        <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
     ))
     return (
         <SelectedFormFiled
@@ -33,7 +33,7 @@ const EstadoFormField = ({
             others={{
                 allowClear: true,
                 loading: loading,
-                notFoundContent: loading ? <Spin size="small" /> : 'Nenhum país encontrado',
+                notFoundContent: loading ? <Spin size="small" /> : 'Nenhum estado encontrado',
                 filterOption: onSearch ? false : undefined
             }}
         >

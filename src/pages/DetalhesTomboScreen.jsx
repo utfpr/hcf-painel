@@ -134,12 +134,12 @@ export default class DetalhesTomboScreen extends Component {
                 <div>
                     {isCuradorOuOperadorOuIdentificador()
                         ? (
-                            <Link to={`/tombos/${this.props.match.params.tombo_id}`}>
-                                <Button type="primary">
-                                    Editar Tombo
-                                </Button>
-                            </Link>
-                        )
+                                <Link to={`/tombos/${this.props.match.params.tombo_id}`}>
+                                    <Button type="primary">
+                                        Editar Tombo
+                                    </Button>
+                                </Link>
+                            )
                         : null}
                     <Row gutter={8} style={{ margin: '20px 0' }}>
 

@@ -1,40 +1,43 @@
-/* eslint-disable import/no-extraneous-dependencies */
-import '@testing-library/jest-dom'
+import React from 'react'
 
-// https://jestjs.io/docs/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom
+import '@testing-library/jest-dom/vitest'
+import { vi } from 'vitest'
+
+;(global as unknown as Record<string, unknown>).React = React
+
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
-  value: jest.fn().mockImplementation(query => ({
+  value: vi.fn().mockImplementation((query: string) => ({
     matches: false,
     media: query,
     onchange: null,
-    addListener: jest.fn(), // deprecated
-    removeListener: jest.fn(), // deprecated
-    addEventListener: jest.fn(),
-    removeEventListener: jest.fn(),
-    dispatchEvent: jest.fn(),
-  })),
-});
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn()
+  }))
+})
 
 Object.defineProperty(window, 'location', {
   writable: true,
   value: {
-    search: '',
+    search: ''
   }
 })
 
 function createLocalStorageMock(): Storage {
-  const store = new Map<string, string>();
+  const store = new Map<string, string>()
 
   return {
     get length(): number {
       return store.size
     },
     getItem(key) {
-      return store.get(key) || null;
+      return store.get(key) || null
     },
     setItem(key, value) {
-      store.set(key, value);
+      store.set(key, value)
     },
     removeItem(key) {
       store.delete(key)
@@ -46,7 +49,7 @@ function createLocalStorageMock(): Storage {
       const entry = Array.from(store.entries())
         .find((_, keyIndex) => keyIndex === index)
       return entry ? entry[0] : null
-    },
+    }
   }
 }
 

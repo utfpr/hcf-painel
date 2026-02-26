@@ -20,7 +20,7 @@ const ColetorFormField = ({
     ...selectProps
 }) => {
     const optionColetor = () => coletores.map(item => (
-        <Option value={`${item.id}`}>{item.nome}</Option>
+        <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
     ))
 
     const mergedOthers = { ...others, ...selectProps }

@@ -4,7 +4,8 @@ export function formatarDataBRtoEN(valor) {
     if (valor) {
         if (valor.includes('/')) {
             return moment(valor, 'DD/MM/YYYY').format('YYYY-MM-DD')
-        } if (valor.includes('-') && !(/[\d]{4}-[\d]{2}-[\d]{2}/i.test(valor))) {
+        }
+        if (valor.includes('-') && !(/[\d]{4}-[\d]{2}-[\d]{2}/i.test(valor))) {
             return moment(valor, 'DD-MM-YYYY').format('YYYY-MM-DD')
         }
     }
@@ -15,7 +16,8 @@ export function formatarDataENtoBR(valor) {
     if (valor) {
         if (valor.includes('-')) {
             return moment(valor, 'YYYY-MM-DD').format('DD/MM/YYYY')
-        } if (valor.includes('/')) {
+        }
+        if (valor.includes('/')) {
             return moment(valor, 'YYYY/MM/DD').format('DD/MM/YYYY')
         }
     } else {

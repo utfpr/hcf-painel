@@ -1,57 +1,57 @@
-import DOMPurify from 'dompurify';
+import DOMPurify from 'dompurify'
 
 /**
  * Sanitiza strings para prevenir XSS
  * @param {string} input - String a ser sanitizada
  * @returns {string} - String sanitizada
  */
-export const sanitizeString = (input) => {
+export const sanitizeString = input => {
     if (typeof input !== 'string') {
-        return input;
+        return input
     }
-    return DOMPurify.sanitize(input, { 
+    return DOMPurify.sanitize(input, {
         ALLOWED_TAGS: [],
         ALLOWED_ATTR: []
-    });
-};
+    })
+}
 
 /**
  * Sanitiza objetos recursivamente
  * @param {any} obj - Objeto a ser sanitizado
  * @returns {any} - Objeto sanitizado
  */
-export const sanitizeObject = (obj) => {
+export const sanitizeObject = obj => {
     if (obj === null || obj === undefined) {
-        return obj;
+        return obj
     }
-    
+
     if (typeof obj === 'string') {
-        return sanitizeString(obj);
+        return sanitizeString(obj)
     }
-    
+
     if (Array.isArray(obj)) {
-        return obj.map(item => sanitizeObject(item));
+        return obj.map(item => sanitizeObject(item))
     }
-    
+
     if (typeof obj === 'object') {
-        const sanitized = {};
+        const sanitized = {}
         for (const [key, value] of Object.entries(obj)) {
-            sanitized[key] = sanitizeObject(value);
+            sanitized[key] = sanitizeObject(value)
         }
-        return sanitized;
+        return sanitized
     }
-    
-    return obj;
-};
+
+    return obj
+}
 
 /**
  * Valida e sanitiza input de formulário
  * @param {object} formData - Dados do formulário
  * @returns {object} - Dados sanitizados
  */
-export const sanitizeFormData = (formData) => {
-    return sanitizeObject(formData);
-};
+export const sanitizeFormData = formData => {
+    return sanitizeObject(formData)
+}
 
 /**
  * Valida se uma string contém apenas caracteres seguros
@@ -61,9 +61,9 @@ export const sanitizeFormData = (formData) => {
  */
 export const validateSafeString = (input, fieldName = 'Campo') => {
     if (typeof input !== 'string') {
-        return { isValid: false, error: `${fieldName} deve ser uma string` };
+        return { isValid: false, error: `${fieldName} deve ser uma string` }
     }
-    
+
     // Verifica se contém tags HTML perigosas
     const dangerousPatterns = [
         /<script/i,
@@ -77,42 +77,42 @@ export const validateSafeString = (input, fieldName = 'Campo') => {
         /onload/i,
         /onerror/i,
         /onclick/i
-    ];
-    
+    ]
+
     for (const pattern of dangerousPatterns) {
         if (pattern.test(input)) {
-            return { 
-                isValid: false, 
-                error: `${fieldName} contém conteúdo não permitido` 
-            };
+            return {
+                isValid: false,
+                error: `${fieldName} contém conteúdo não permitido`
+            }
         }
     }
-    
-    return { isValid: true };
-};
+
+    return { isValid: true }
+}
 
 /**
  * Sanitiza URL para prevenir ataques
  * @param {string} url - URL a ser sanitizada
  * @returns {string} - URL sanitizada
  */
-export const sanitizeUrl = (url) => {
+export const sanitizeUrl = url => {
     if (typeof url !== 'string') {
-        return '';
+        return ''
     }
-    
+
     // Remove protocolos perigosos
-    const dangerousProtocols = ['javascript:', 'vbscript:', 'data:', 'file:'];
-    const lowerUrl = url.toLowerCase();
-    
+    const dangerousProtocols = ['javascript:', 'vbscript:', 'data:', 'file:']
+    const lowerUrl = url.toLowerCase()
+
     for (const protocol of dangerousProtocols) {
         if (lowerUrl.startsWith(protocol)) {
-            return '';
+            return ''
         }
     }
-    
-    return DOMPurify.sanitize(url);
-};
+
+    return DOMPurify.sanitize(url)
+}
 
 export default {
     sanitizeString,
@@ -120,4 +120,4 @@ export default {
     sanitizeFormData,
     validateSafeString,
     sanitizeUrl
-};
+}

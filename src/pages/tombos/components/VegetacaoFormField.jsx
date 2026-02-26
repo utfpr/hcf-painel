@@ -1,5 +1,7 @@
 import React from 'react'
+
 import { Select, Spin } from 'antd'
+
 import SelectedFormFiled from './SelectedFormFiled'
 
 const { Option } = Select
@@ -11,7 +13,7 @@ const VegetacaoFormField = ({
     const optionVegetacoes = () => vegetacoes.map(item => (
         <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
     ))
-    
+
     return (
         <SelectedFormFiled
             xs={24}

@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import axios from 'axios'
 
 import {
     Card,
@@ -11,6 +10,7 @@ import {
     Select,
     Spin
 } from 'antd'
+import axios from 'axios'
 
 import { PlusCircleOutlined, MinusCircleOutlined } from '@ant-design/icons'
 
@@ -88,8 +88,7 @@ const FilterTombos = ({ onChange }) => {
                     allowClear
                     loading={loadingIdentificador}
                     onClear={() =>
-                        handleFilterChange('identificador_id', undefined)
-                    }
+                        handleFilterChange('identificador_id', undefined)}
                     notFoundContent={
                         loadingIdentificador
                             ? <Spin size="small" />
@@ -128,7 +127,7 @@ const FilterTombos = ({ onChange }) => {
     return (
         <Card>
             <Dropdown
-                overlay={
+                overlay={(
                     <Menu>
                         {availableFilters.map(filter => (
                             <Menu.Item
@@ -139,7 +138,7 @@ const FilterTombos = ({ onChange }) => {
                             </Menu.Item>
                         ))}
                     </Menu>
-                }
+                )}
                 trigger={['click']}
             >
                 <Button icon={<PlusCircleOutlined />}>
@@ -155,7 +154,7 @@ const FilterTombos = ({ onChange }) => {
                         <Panel
                             key={key}
                             header={filter?.label}
-                            extra={
+                            extra={(
                                 <Button
                                     type="text"
                                     danger
@@ -167,7 +166,7 @@ const FilterTombos = ({ onChange }) => {
                                     <MinusCircleOutlined style={{ marginRight: -3 }} />
                                     Remover
                                 </Button>
-                            }
+                            )}
                         >
                             <Form.Item>
                                 {filter?.component}

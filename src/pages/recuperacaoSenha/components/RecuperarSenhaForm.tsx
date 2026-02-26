@@ -1,7 +1,12 @@
 import { useState } from 'react'
-import { Form, Input, Button, Typography, message } from 'antd'
 
-const { Title, Paragraph, Text } = Typography
+import {
+  Form, Input, Button, Typography, message
+} from 'antd'
+
+const {
+  Title, Paragraph, Text
+} = Typography
 
 type Props = { onSuccess?: () => void }
 type CatchError = { message: string }
@@ -17,13 +22,13 @@ export default function RecuperarSenhaForm({ onSuccess }: Props) {
       const response = await fetch(`${apiUrl}/usuarios/solicitar-reset-senha`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify(values)
       })
 
       if (!response.ok) {
-        const data = await response.json().catch(() => ({}))
+        const data = await response.json().catch(() => ({})) as { mensagem?: string }
         throw new Error(data.mensagem || 'Erro ao solicitar recuperação de senha.')
       }
 
@@ -51,7 +56,7 @@ export default function RecuperarSenhaForm({ onSuccess }: Props) {
           label="E-mail"
           rules={[
             { required: true, message: 'Informe o e-mail.' },
-            { type: 'email', message: 'E-mail inválido.' },
+            { type: 'email', message: 'E-mail inválido.' }
           ]}
         >
           <Input placeholder="seuemail@exemplo.com" autoComplete="email" />

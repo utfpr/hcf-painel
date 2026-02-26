@@ -1,0 +1,19 @@
+language: en,pt-BR
+words:
+  - postgresql
+  - postgres
+  - herbario
+  - distro
+  - caprover
+  - certbot
+  - lineinfile
+  - blockinfile
+  - familias
+  - subfamilia
+  - subfamilias
+  - genero
+  - generos
+  - subespecie
+  - subespecies
+  - usuario
+  - familia

@@ -10,6 +10,7 @@ export default class DashboardScreen extends Component {
 
     toggle = () => {
         this.setState({
+            // eslint-disable-next-line react-x/no-access-state-in-setstate
             collapsed: !this.state.collapsed
         })
     }

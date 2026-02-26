@@ -29,19 +29,19 @@ class CoordenadaInputText extends Component {
         return this.props.longitude ? 180 : 90
     }
 
-    validaGraus = (valor) => {
+    validaGraus = valor => {
         if (valor === '' || valor === undefined) return true
         const num = Number(valor)
         return !isNaN(num) && num >= 0 && num <= this.getMaxGraus()
     }
 
-    validaMinutos = (valor) => {
+    validaMinutos = valor => {
         if (valor === '' || valor === undefined) return true
         const num = Number(valor)
         return !isNaN(num) && num >= 0 && num < 60
     }
 
-    validaSegundos = (valor) => {
+    validaSegundos = valor => {
         if (valor === '' || valor === undefined) return true
         const num = Number(valor.replace(',', '.'))
         return !isNaN(num) && num >= 0 && num < 60
@@ -49,8 +49,8 @@ class CoordenadaInputText extends Component {
 
     aplicaMascaraNoCampo = (campo, mascara, valor) => {
         const valorMascarado = masker.toPattern(valor, mascara)
-        
-        let erroState = {}
+
+        const erroState = {}
         if (campo === 'graus') {
             erroState.erroGraus = !this.validaGraus(valorMascarado)
         } else if (campo === 'minutos') {
@@ -58,7 +58,7 @@ class CoordenadaInputText extends Component {
         } else if (campo === 'segundos') {
             erroState.erroSegundos = !this.validaSegundos(valorMascarado)
         }
-        
+
         this.setState({ [campo]: valorMascarado, ...erroState }, this.onStateChanged)
     }
 
@@ -135,7 +135,7 @@ class CoordenadaInputText extends Component {
                                 this.aplicaMascaraNoCampo('segundos', '99,99', value)
                             }}
                         />
-                        </Col>
+                    </Col>
                     <Col span={6}>
                         <Select
                             onChange={value => {
@@ -145,19 +145,25 @@ class CoordenadaInputText extends Component {
                             placeholder={this.props.longitude ? 'E' : 'N'}
                             options={this.props.longitude
                                 ? [
-                                    { value: 'W', label: 'W' },
-                                    { value: 'E', label: 'E' }
-                                ]
+                                        { value: 'W', label: 'W' },
+                                        { value: 'E', label: 'E' }
+                                    ]
                                 : [
-                                    { value: 'N', label: 'N' },
-                                    { value: 'S', label: 'S' }
-                                ]}
+                                        { value: 'N', label: 'N' },
+                                        { value: 'S', label: 'S' }
+                                    ]}
                         />
                     </Col>
                 </Row>
                 {(erroGraus || erroMinutos || erroSegundos) && (
                     <div style={{ color: '#ff4d4f', fontSize: '12px', marginTop: '4px' }}>
-                        {erroGraus && <div>Graus inválidos (0-{maxGraus})</div>}
+                        {erroGraus && (
+                            <div>
+                                Graus inválidos (0-
+                                {maxGraus}
+                                )
+                            </div>
+                        )}
                         {erroMinutos && <div>Minutos inválidos (0-59)</div>}
                         {erroSegundos && <div>Segundos inválidos (0-59.99)</div>}
                     </div>
@@ -167,6 +173,7 @@ class CoordenadaInputText extends Component {
     }
 }
 
+// eslint-disable-next-line react-x/no-default-props
 CoordenadaInputText.defaultProps = {
     onChange: () => { }
 }

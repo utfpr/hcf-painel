@@ -1,5 +1,7 @@
 import React from 'react'
+
 import { Select, Spin } from 'antd'
+
 import SelectedFormFiled from './SelectedFormFiled'
 
 const { Option } = Select
@@ -41,7 +43,7 @@ const LocalColetaFormField = ({
                 notFoundContent: loading ? <Spin size="small" /> : 'Nenhum país encontrado',
                 filterOption: onSearch ? false : undefined
             }}
-            
+
         >
             {optionLocalColeta()}
         </SelectedFormFiled>

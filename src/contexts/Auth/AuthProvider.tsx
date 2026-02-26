@@ -1,58 +1,99 @@
 import {
-    useCallback, useMemo, useState
+  useCallback, useMemo, useState
 } from 'react'
 
 import { Usuario } from '@/@types/components'
 import { useCookie } from '@/hooks/useCookie'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
+import { Manager } from '@/libraries/auth/Manager'
+import {
+  Action, createRules, Resource
+} from '@/resources/permissions'
 
 import { AuthContext } from './AuthContext'
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [accessToken, setAccessToken, removeAccessToken] = useCookie('Access_Token')
-    const [loggedUser, setLoggedUser, removeLoggedUser] = useLocalStorage<Usuario>('Logged_User')
-    // TODO: remove this when all components are updated to use the new access token
-    /** @deprecated This is used to support the old access token */
-    const [, setOldAccessToken, removeOldAccessToken] = useLocalStorage<string>('token')
+  const [
+    accessToken,
+    setAccessToken,
+    removeAccessToken
+  ] = useCookie('Access_Token')
+  const [
+    loggedUser,
+    setLoggedUser,
+    removeLoggedUser
+  ] = useLocalStorage<Usuario>('Logged_User')
+  // TODO: remove this when all components are updated to use the new access token
+  /** @deprecated This is used to support the old access token */
+  const [
+    , setOldAccessToken,
+    removeOldAccessToken
+  ] = useLocalStorage<string>('token')
 
-    const [authValue, setAuthValue] = useState<{ token?: string; user?: Usuario } | undefined>(() => {
-        if (accessToken && loggedUser) {
-            return {
-                token: accessToken,
-                user: loggedUser
-            }
-        }
+  const loggedIn = Boolean(accessToken) && Boolean(loggedUser?.id)
 
-        return undefined
-    })
+  const [attributes, setAttributes] = useState<{ token?: string; user?: Usuario } | undefined>(() => {
+    if (loggedIn) {
+      return {
+        token: accessToken,
+        user: loggedUser
+      }
+    }
 
-    const logIn = useCallback((params: {token: string; user: Usuario}) => {
-        setAccessToken(params.token)
-        setOldAccessToken(params.token)
-        setLoggedUser(params.user)
-        setAuthValue(params)
-    }, [])
+    return undefined
+  })
 
-    const logOut = useCallback(() => {
-        setAuthValue(undefined)
-        removeAccessToken()
-        removeLoggedUser()
-        removeOldAccessToken()
-    }, [])
+  const manager = useMemo(() => {
+    return new Manager<Resource, Action>({ rules: createRules(attributes?.user) })
+  }, [attributes?.user])
 
-    const contextValue = useMemo(() => {
-        return {
-            ...authValue,
-            logIn,
-            logOut
-        }
-    }, [authValue, logIn, logOut])
+  const can = useCallback((action: Action, resource: Resource) => {
+    return manager.can(action, resource)
+  }, [manager])
 
-    return (
-        <AuthContext.Provider value={contextValue}>
-            {children}
-        </AuthContext.Provider>
-    )
+  const canAny = useCallback((actions: Action[], resource: Resource) => {
+    return manager.canAny(actions, resource)
+  }, [manager])
+
+  const canAll = useCallback((actions: Action[], resource: Resource) => {
+    return manager.canAll(actions, resource)
+  }, [manager])
+
+  const logIn = useCallback((params: { token: string; user: Usuario }) => {
+    setAccessToken(params.token)
+    setOldAccessToken(params.token)
+    setLoggedUser(params.user)
+    setAttributes(params)
+  }, [])
+
+  const logOut = useCallback(() => {
+    setAttributes(undefined)
+    removeAccessToken()
+    removeLoggedUser()
+    removeOldAccessToken()
+  }, [])
+
+  const contextValue = useMemo(() => {
+    return {
+      ...attributes,
+      loggedIn,
+      can,
+      canAny,
+      canAll,
+      logIn,
+      logOut
+    }
+  }, [
+    attributes,
+    logIn,
+    logOut
+  ])
+
+  return (
+    <AuthContext.Provider value={contextValue}>
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
 export default null

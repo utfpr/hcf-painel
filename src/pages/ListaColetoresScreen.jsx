@@ -110,6 +110,7 @@ class ListaColetoresScreen extends Component {
     }))
 
     mostraMensagemDelete(id) {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this
         confirm({
             title: 'Você tem certeza que deseja excluir este coletor?',

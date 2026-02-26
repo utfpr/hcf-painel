@@ -1,4 +1,3 @@
-/* eslint-disable react/destructuring-assignment */
 import { Component } from 'react'
 
 import {
@@ -295,7 +294,6 @@ class RelatorioInventarioEspeciesScreen extends Component {
                             <Row align="middle" type="flex" justify="end" gutter={16}>
                                 <Col xs={24} sm={8} md={12} lg={16} xl={16}>
                                     <TotalRecordFound
-                                        // eslint-disable-next-line react/destructuring-assignment
                                         total={this.state.metadados?.total}
                                     />
                                 </Col>

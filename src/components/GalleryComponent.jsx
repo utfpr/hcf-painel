@@ -43,11 +43,11 @@ export default class GalleryComponent extends Component {
                 style={
                     isFullscreen
                         ? {
-                            maxHeight: '100vh',
-                            overflow: 'auto',
-                            position: 'relative',
-                            textAlign: 'center'
-                        }
+                                maxHeight: '100vh',
+                                overflow: 'auto',
+                                position: 'relative',
+                                textAlign: 'center'
+                            }
                         : {}
                 }
             >

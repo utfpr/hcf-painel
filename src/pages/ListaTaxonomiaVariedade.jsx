@@ -7,14 +7,14 @@ import {
 import axios from 'axios'
 
 import TotalRecordFound from '@/components/TotalRecordsFound'
+import { recaptchaKey } from '@/config/api'
 import { Form } from '@ant-design/compatible'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
-import SelectedFormField from './tombos/components/SelectedFormFiled'
 import { isCuradorOuOperador } from '../helpers/usuarios'
-import { recaptchaKey } from '@/config/api'
+import SelectedFormField from './tombos/components/SelectedFormFiled'
 
 const { confirm } = Modal
 const FormItem = Form.Item
@@ -133,6 +133,7 @@ class ListaTaxonomiaVariedade extends Component {
     }
 
     mostraMensagemDelete(id) {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this
         confirm({
             title: 'Você tem certeza que deseja excluir esta variedade?',
@@ -591,7 +592,7 @@ class ListaTaxonomiaVariedade extends Component {
 
         const formValues = this.props.form.getFieldsValue()
 
-        const extrairId = (valor) => {
+        const extrairId = valor => {
             if (typeof valor === 'object' && valor.key) {
                 return valor.key
             }
@@ -867,7 +868,7 @@ class ListaTaxonomiaVariedade extends Component {
                             <Row gutter={8} style={{ marginTop: 16 }}>
                                 <SelectedFormField
                                     title="Nome da família:"
-                                    placeholder={reinoSelecionado ? "Selecione uma família" : "Selecione um reino primeiro"}
+                                    placeholder={reinoSelecionado ? 'Selecione uma família' : 'Selecione um reino primeiro'}
                                     fieldName="nomeFamilia"
                                     getFieldDecorator={getFieldDecorator}
                                     onSearch={searchText => {
@@ -909,7 +910,7 @@ class ListaTaxonomiaVariedade extends Component {
                             <Row gutter={8} style={{ marginTop: 16 }}>
                                 <SelectedFormField
                                     title="Nome do gênero:"
-                                    placeholder={familiaSelecionada ? "Selecione um gênero" : "Selecione uma família primeiro"}
+                                    placeholder={familiaSelecionada ? 'Selecione um gênero' : 'Selecione uma família primeiro'}
                                     fieldName="nomeGenero"
                                     getFieldDecorator={getFieldDecorator}
                                     onSearch={searchText => {
@@ -946,7 +947,7 @@ class ListaTaxonomiaVariedade extends Component {
                             <Row gutter={8} style={{ marginTop: 16 }}>
                                 <SelectedFormField
                                     title="Nome da espécie:"
-                                    placeholder={generoSelecionado ? "Selecione uma espécie" : "Selecione um gênero primeiro"}
+                                    placeholder={generoSelecionado ? 'Selecione uma espécie' : 'Selecione um gênero primeiro'}
                                     fieldName="nomeEspecie"
                                     getFieldDecorator={getFieldDecorator}
                                     onSearch={searchText => {

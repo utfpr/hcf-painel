@@ -26,7 +26,7 @@ export default class SimpleTableComponent extends Component {
         this.columns = this.buildColumns(props, this.state)
     }
 
-    componentWillReceiveProps(props) {
+    UNSAFE_componentWillReceiveProps(props) {
         if (props.metadados) {
             this.setState({
                 paginacao: {
@@ -98,7 +98,6 @@ export default class SimpleTableComponent extends Component {
 
     render() {
         return (
-            // eslint-disable-next-line react/jsx-no-useless-fragment
             <>
                 {this.state.isLoaded && (
                     <Table

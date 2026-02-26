@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
+
 import { Button, Card, Col, Divider, Form, Input, Modal, Row, Spin, notification } from 'antd'
 import axios from 'axios'
+
+import { broker } from '@/libraries/events/Broker'
 
 export default class PerfilScreen extends Component {
     constructor(props) {
@@ -15,9 +18,9 @@ export default class PerfilScreen extends Component {
     }
 
     componentDidMount() {
-        const userInfo = localStorage.getItem('usuario');
+        const userInfo = localStorage.getItem('usuario')
         if (userInfo) {
-            const user = JSON.parse(userInfo);
+            const user = JSON.parse(userInfo)
 
             axios.get(`/usuarios/${user.id}`)
                 .then(response => {
@@ -25,22 +28,22 @@ export default class PerfilScreen extends Component {
                         this.setState({
                             user: response.data,
                             loading: false
-                        });
+                        })
                     } else {
                         notification.error({
                             message: 'Erro',
                             description: 'Não foi possível carregar as informações do usuário.'
-                        });
-                        this.setState({ loading: false });
+                        })
+                        this.setState({ loading: false })
                     }
                 })
                 .catch(() => {
                     notification.error({
                         message: 'Erro',
                         description: 'Houve um problema ao buscar os dados do usuário. Tente novamente.'
-                    });
-                    this.setState({ loading: false });
-                });
+                    })
+                    this.setState({ loading: false })
+                })
         }
     }
 
@@ -53,11 +56,11 @@ export default class PerfilScreen extends Component {
     }
 
     handleOpenUpdateProfileModal = () => {
-        this.setState({ updateProfileModalVisible: true });
+        this.setState({ updateProfileModalVisible: true })
     }
 
     handleCloseUpdateProfileModal = () => {
-        this.setState({ updateProfileModalVisible: false });
+        this.setState({ updateProfileModalVisible: false })
     }
 
     handleUpdatePassword = values => {
@@ -107,8 +110,7 @@ export default class PerfilScreen extends Component {
                 const updatedUser = { ...user, nome: values.nome, telefone: values.telefone }
                 localStorage.setItem('usuario', JSON.stringify(updatedUser))
 
-                const event = new Event('userNameUpdated')
-                window.dispatchEvent(event)
+                broker.emit('userNameUpdated', undefined)
 
                 this.setState({
                     user: updatedUser,
@@ -127,10 +129,10 @@ export default class PerfilScreen extends Component {
     }
 
     render() {
-        const { user, loading, modalVisible, confirmLoading, updateProfileModalVisible } = this.state;
+        const { user, loading, modalVisible, confirmLoading, updateProfileModalVisible } = this.state
 
         if (loading) {
-            return <Spin tip="Carregando..." />;
+            return <Spin tip="Carregando..." />
         }
 
         return (
@@ -252,6 +254,6 @@ export default class PerfilScreen extends Component {
                     </Form>
                 </Modal>
             </Card>
-        );
+        )
     }
 }

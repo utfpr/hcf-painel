@@ -1,4 +1,3 @@
-/* eslint-disable react/destructuring-assignment */
 import { Component } from 'react'
 
 import {
@@ -171,7 +170,7 @@ class RelatorioFamiliasGeneroScreen extends Component {
     }
 
     optionFamilia = () => this.state.familias.map(item => (
-        <Option value={item.nome}>{item.nome}</Option>
+        <Option key={item.id} value={item.nome}>{item.nome}</Option>
     ))
 
     handleSubmit = (err, valores) => {
@@ -240,7 +239,6 @@ class RelatorioFamiliasGeneroScreen extends Component {
                             <Row align="middle" type="flex" justify="end" gutter={16}>
                                 <Col xs={24} sm={8} md={12} lg={16} xl={16}>
                                     <TotalRecordFound
-                                        // eslint-disable-next-line react/destructuring-assignment
                                         total={this.state.metadados?.total}
                                     />
                                 </Col>

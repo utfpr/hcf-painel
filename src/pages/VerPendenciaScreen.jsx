@@ -161,7 +161,8 @@ class VerPendenciaScreen extends Component {
                     </Row>
                 </div>
             )
-        } if (this.state.fotos.novas.length > 0) {
+        }
+        if (this.state.fotos.novas.length > 0) {
             const fotos = this.state.fotos.novas.map(fotosTomboMap)
             return (
                 <div>
