@@ -1945,7 +1945,7 @@ class NovoTomboScreen extends Component {
         axios
             .post('/autores', {
                 nome: this.props.form.getFieldsValue().campo,
-                iniciais: ''
+                observacao: ''
             })
             .then(response => {
                 if (response.status === 204) {
