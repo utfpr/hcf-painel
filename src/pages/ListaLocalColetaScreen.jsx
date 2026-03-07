@@ -76,8 +76,6 @@ class ListaLocaisColeta extends Component {
     async componentDidMount() {
         this.requisitaListaLocais({}, this.state.pagina)
         await this.requisitaPaises()
-        await this.requisitaEstados()
-        await this.requisitaCidades()
     }
 
     notificacao = (type, titulo, descricao) => {
@@ -114,6 +112,7 @@ class ListaLocaisColeta extends Component {
 
         try {
             const params = {
+                ...(paisId ? { pais_id: paisId } : {}),
                 ...(searchText ? { nome: searchText } : {})
             }
 
@@ -136,6 +135,7 @@ class ListaLocaisColeta extends Component {
 
         try {
             const params = {
+                ...(estadoId ? { estado_id: estadoId } : {}),
                 ...(searchText ? { nome: searchText } : {})
             }
 
@@ -455,9 +455,15 @@ class ListaLocaisColeta extends Component {
                             getFieldDecorator={getFieldDecorator}
                             disabled={false}
                             onSearch={searchText => {
-                                this.requisitaEstados(searchText || '')
+                                const paisId = this.props.form.getFieldValue('pais')
+                                this.requisitaEstados(searchText || '', paisId)
                             }}
-                            onFocus={() => this.requisitaEstados()}
+                            onFocus={() => {
+                                const paisId = this.props.form.getFieldValue('pais')
+                                if (paisId) {
+                                    this.requisitaEstados('', paisId)
+                                }
+                            }}
                             onChange={value => {
                                 this.props.form.setFieldsValue({
                                     cidade: undefined
@@ -491,9 +497,15 @@ class ListaLocaisColeta extends Component {
                             getFieldDecorator={getFieldDecorator}
                             disabled={false}
                             onSearch={searchText => {
-                                this.requisitaCidades(searchText || '')
+                                const estadoId = this.props.form.getFieldValue('estado')
+                                this.requisitaCidades(searchText || '', estadoId)
                             }}
-                            onFocus={() => this.requisitaCidades()}
+                            onFocus={() => {
+                                const estadoId = this.props.form.getFieldValue('estado')
+                                if (estadoId) {
+                                    this.requisitaCidades('', estadoId)
+                                }
+                            }}
                             others={{
                                 loading: fetchingCidades,
                                 notFoundContent: fetchingCidades ? <Spin size="small" /> : 'Nenhum resultado encontrado',
