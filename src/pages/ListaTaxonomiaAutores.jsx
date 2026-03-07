@@ -259,6 +259,9 @@ class ListaTaxonomiaAutores extends Component {
                 this.props.form.setFields({
                     nomeAutor: {
                         value: ''
+                    },
+                    nomeIniciais: {
+                        value: ''
                     }
                 })
             })
@@ -282,6 +285,14 @@ class ListaTaxonomiaAutores extends Component {
                     type="primary"
                     icon={<PlusOutlined />}
                     onClick={() => {
+                        this.props.form.setFields({
+                            nomeAutor: {
+                                value: ''
+                            },
+                            nomeIniciais: {
+                                value: ''
+                            }
+                        })
                         this.setState({
                             visibleModal: true,
                             titulo: 'Cadastrar',
@@ -423,6 +434,14 @@ class ListaTaxonomiaAutores extends Component {
                         loadingModal={this.state.loadingModal}
                         onCancel={
                             () => {
+                                this.props.form.setFields({
+                                    nomeAutor: {
+                                        value: ''
+                                    },
+                                    nomeIniciais: {
+                                        value: ''
+                                    }
+                                })
                                 this.setState({
                                     visibleModal: false
                                 })
