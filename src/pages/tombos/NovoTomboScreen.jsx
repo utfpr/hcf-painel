@@ -1945,7 +1945,7 @@ class NovoTomboScreen extends Component {
         axios
             .post('/autores', {
                 nome: this.props.form.getFieldsValue().campo,
-                iniciais: ''
+                observacao: ''
             })
             .then(response => {
                 if (response.status === 204) {
@@ -3115,18 +3115,9 @@ class NovoTomboScreen extends Component {
                 .get(`/tombos/numeroColetor/${value.key}`)
                 .then(response => {
                     if (response.status === 200) {
-                        const todosNumeros = response.data
-                        todosNumeros.sort(
-                            (a, b) => b.numero_coleta - a.numero_coleta
-                        )
-
                         this.props.form.setFields({
                             numColeta: {
-                                value:
-                                    todosNumeros.length === 0
-                                    || todosNumeros[0].numero_coleta === null
-                                        ? 1
-                                        : todosNumeros[0].numero_coleta + 1
+                                value: response.data.proximo_numero_coleta
                             }
                         })
                     }

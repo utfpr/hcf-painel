@@ -379,7 +379,7 @@ export const requisitaVariedadesService = (getResponse, id) => {
 export const cadastraNovoAutorService = (getResponse, nome) => {
     return axios.post('/autores', {
         nome,
-        iniciais: ''
+        observacao: ''
     })
         .then(response => {
             getResponse(response)

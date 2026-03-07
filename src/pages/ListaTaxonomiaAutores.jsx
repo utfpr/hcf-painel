@@ -30,10 +30,10 @@ const columns = [
         sorter: true
     },
     {
-        title: 'Iniciais',
+        title: 'Observação',
         type: 'text',
-        key: 'iniciais',
-        dataIndex: 'iniciais',
+        key: 'observacao',
+        dataIndex: 'observacao',
         width: '46.5%',
         sorter: true
     },
@@ -124,7 +124,7 @@ class ListaTaxonomiaAutores extends Component {
                                 value: item.nome
                             },
                             nomeIniciais: {
-                                value: item.iniciais
+                                value: item.observacao
                             }
                         })
                         this.setState({
@@ -157,7 +157,7 @@ class ListaTaxonomiaAutores extends Component {
         key: item.id,
         autor: item.nome,
         acao: this.gerarAcao(item),
-        iniciais: item.iniciais
+        observacao: item.observacao
     }))
 
     requisitaListaAutores = async (valores, pg, pageSize, sorter) => {
@@ -239,7 +239,7 @@ class ListaTaxonomiaAutores extends Component {
         })
         axios.post('/autores', {
             nome: this.props.form.getFieldsValue().nomeAutor,
-            iniciais: this.props.form.getFieldsValue().nomeIniciais
+            observacao: this.props.form.getFieldsValue().nomeIniciais
         })
             .then(response => {
                 this.setState({
@@ -464,7 +464,7 @@ class ListaTaxonomiaAutores extends Component {
 
                             <Row gutter={8} style={{ marginTop: 16 }}>
                                 <Col span={24}>
-                                    <span>Iniciais:</span>
+                                    <span>Observação:</span>
                                 </Col>
                             </Row>
                             <Row gutter={8}>
