@@ -270,7 +270,7 @@ class ListaTombosScreen extends Component {
             if (nomePopular) params.nome_popular = nomePopular
             if (situacao && situacao !== -1) params.situacao = situacao
             if (codigoBarraFoto) params.codigo_barra_foto = codigoBarraFoto
-            
+
             const response = await axios.get('/tombos', { params })
 
             if (response.status === 200) {

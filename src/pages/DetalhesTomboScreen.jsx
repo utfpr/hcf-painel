@@ -636,19 +636,19 @@ export default class DetalhesTomboScreen extends Component {
         }
     }
 
-   renderIdentificador() {
+    renderIdentificador() {
         const { tombo } = this.state
         if (tombo) {
             // Verifica se existe a lista de identificadores no objeto "retorno" e extrai os nomes
-            const identificadoresArray = tombo.retorno?.identificadores || [];
-            
+            const identificadoresArray = tombo.retorno?.identificadores || []
+
             // Mapeia os nomes separados por vírgula. Faz fallback para o "identificador_nome" antigo caso a lista esteja vazia
             const nomesIdentificadores = identificadoresArray.length > 0
                 ? identificadoresArray
-                    .sort((a, b) => a.tombos_identificadores?.ordem - b.tombos_identificadores?.ordem)
-                    .map(ident => ident.nome)
-                    .join(', ')
-                : (tombo.identificador_nome || '');
+                        .sort((a, b) => a.tombos_identificadores?.ordem - b.tombos_identificadores?.ordem)
+                        .map(ident => ident.nome)
+                        .join(', ')
+                : (tombo.identificador_nome || '')
 
             return (
                 <div>
