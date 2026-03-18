@@ -639,6 +639,17 @@ export default class DetalhesTomboScreen extends Component {
     renderIdentificador() {
         const { tombo } = this.state
         if (tombo) {
+            // Verifica se existe a lista de identificadores no objeto "retorno" e extrai os nomes
+            const identificadoresArray = tombo.retorno?.identificadores || []
+
+            // Mapeia os nomes separados por vírgula. Faz fallback para o "identificador_nome" antigo caso a lista esteja vazia
+            const nomesIdentificadores = identificadoresArray.length > 0
+                ? identificadoresArray
+                        .sort((a, b) => a.tombos_identificadores?.ordem - b.tombos_identificadores?.ordem)
+                        .map(ident => ident.nome)
+                        .join(', ')
+                : (tombo.identificador_nome || '')
+
             return (
                 <div>
                     <Row gutter={8} style={{ marginBottom: '20px' }}>
@@ -649,7 +660,7 @@ export default class DetalhesTomboScreen extends Component {
                             <Col span={24}>
                                 <span>
                                     {' '}
-                                    {tombo.identificador_nome != null ? tombo.identificador_nome : ''}
+                                    {nomesIdentificadores}
                                     {' '}
                                 </span>
                             </Col>
