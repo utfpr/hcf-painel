@@ -263,14 +263,14 @@ class ListaTombosScreen extends Component {
                 }
             }
 
-            const { nomeCientifico, numeroHcf, tipo, nomePopular, situacao } = valores
-
+            const { nomeCientifico, numeroHcf, tipo, nomePopular, situacao, codigoBarraFoto } = valores
             if (nomeCientifico) params.nome_cientifico = nomeCientifico
             if (numeroHcf) params.hcf = numeroHcf
             if (tipo && tipo !== -1) params.tipo = tipo
             if (nomePopular) params.nome_popular = nomePopular
             if (situacao && situacao !== -1) params.situacao = situacao
-
+            if (codigoBarraFoto) params.codigo_barra_foto = codigoBarraFoto
+            
             const response = await axios.get('/tombos', { params })
 
             if (response.status === 200) {
@@ -401,6 +401,18 @@ class ListaTombosScreen extends Component {
                                 <FormItem>
                                     {getFieldDecorator('nomePopular')(
                                         <Input placeholder="Maracujá" type="text" />
+                                    )}
+                                </FormItem>
+                            </Col>
+                        </Col>
+                        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+                            <Col span={24}>
+                                <span>Código de barras da foto:</span>
+                            </Col>
+                            <Col span={24}>
+                                <FormItem>
+                                    {getFieldDecorator('codigoBarraFoto')(
+                                        <Input placeholder="Digite o código de barras" type="text" />
                                     )}
                                 </FormItem>
                             </Col>
