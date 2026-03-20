@@ -135,7 +135,18 @@ const TableCollapseParaLocais = ({ data, loading, showCoordenadas }) => {
                 >
                     <Table
                         dataSource={item.registros.map(registro => {
-                            const dataColeta = `${registro.data_coleta_dia}/${mesesRomanos[registro.data_coleta_mes - 1]}/${registro.data_coleta_ano}`
+                            let dataColeta = ''
+                            if (registro.data_coleta_dia !== null && registro.data_coleta_dia !== undefined) {
+                                dataColeta = String(registro.data_coleta_dia).padStart(2, '0')
+                            }
+                            if (registro.data_coleta_mes !== null && registro.data_coleta_mes !== undefined) {
+                                if (dataColeta) dataColeta += '/'
+                                dataColeta += mesesRomanos[registro.data_coleta_mes - 1]
+                            }
+                            if (registro.data_coleta_ano !== null && registro.data_coleta_ano !== undefined) {
+                                if (dataColeta) dataColeta += '/'
+                                dataColeta += registro.data_coleta_ano
+                            }
                             return {
                                 ...registro,
                                 latitude: registro.latitude ? converteDecimalParaGrausMinutosSegundos(registro.latitude, false, true) : null,
