@@ -27,6 +27,9 @@ const FilterTombos = ({ onChange }) => {
     const [coletores, setColetores] = useState([])
     const [loadingColetor, setLoadingColetor] = useState(false)
 
+    const [numerosColeta, setNumerosColeta] = useState([])
+    const [loadingNumeroColeta, setLoadingNumeroColeta] = useState(false)
+
     const handleFilterChange = (key, value) => {
         setFilterValues(prev => {
             const next = { ...prev, [key]: value }
@@ -101,6 +104,8 @@ const FilterTombos = ({ onChange }) => {
     const selecionarColetorPorNome = async nomeSelecionado => {
         if (!nomeSelecionado) {
             handleFilterChange('coletor_id', undefined)
+            setNumerosColeta([])
+            handleFilterChange('numero_coleta', undefined)
             return
         }
 
@@ -113,9 +118,30 @@ const FilterTombos = ({ onChange }) => {
 
             if (coletor) {
                 handleFilterChange('coletor_id', coletor.id)
+                buscarNumerosColetaPorColetor(coletor.id)
             }
         } catch (error) {
             console.error('Erro ao obter coletor pelo nome', error)
+        }
+    }
+
+    const buscarNumerosColetaPorColetor = async coletorId => {
+        if (!coletorId) {
+            setNumerosColeta([])
+            return
+        }
+
+        setLoadingNumeroColeta(true)
+
+        try {
+            const response = await axios.get(`/coletores/${coletorId}/numeros-coleta`)
+
+            setNumerosColeta(response.data.numerosColeta || [])
+        } catch (error) {
+            console.error('Erro ao buscar números de coleta', error)
+            setNumerosColeta([])
+        } finally {
+            setLoadingNumeroColeta(false)
         }
     }
 
@@ -182,19 +208,25 @@ const FilterTombos = ({ onChange }) => {
             key: 'numero_coleta',
             label: 'Número de Coleta',
             component: (
-                <Form.Item>
-                    <input
-                        type="text"
-                        placeholder="Digite o número de coleta"
-                        onChange={e => handleFilterChange('numero_coleta', e.target.value)}
-                        style={{
-                            width: '100%',
-                            padding: '8px',
-                            borderRadius: '4px',
-                            border: '1px solid #d9d9d9'
-                        }}
-                    />
-                </Form.Item>
+                <Select
+                    placeholder="Selecione um coletor primeiro"
+                    disabled={!filterValues.coletor_id}
+                    onChange={value => handleFilterChange('numero_coleta', value || undefined)}
+                    allowClear
+                    loading={loadingNumeroColeta}
+                    notFoundContent={
+                        loadingNumeroColeta
+                            ? <Spin size="small" />
+                            : 'Nenhum número de coleta disponível'
+                    }
+                    style={{ width: '100%' }}
+                >
+                    {numerosColeta.map(numero => (
+                        <Option key={numero.id} value={numero.numero}>
+                            {numero.numero}
+                        </Option>
+                    ))}
+                </Select>
             )
         }
     ]
