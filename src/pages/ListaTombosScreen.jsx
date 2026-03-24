@@ -263,13 +263,15 @@ class ListaTombosScreen extends Component {
                 }
             }
 
-            const { nomeCientifico, numeroHcf, tipo, nomePopular, situacao, codigoBarraFoto } = valores
+            const { nomeCientifico, numeroHcf, tipo, nomePopular, situacao, codigoBarraFoto, coletor_id, numero_coleta } = valores
             if (nomeCientifico) params.nome_cientifico = nomeCientifico
             if (numeroHcf) params.hcf = numeroHcf
             if (tipo && tipo !== -1) params.tipo = tipo
             if (nomePopular) params.nome_popular = nomePopular
             if (situacao && situacao !== -1) params.situacao = situacao
             if (codigoBarraFoto) params.codigo_barra_foto = codigoBarraFoto
+            if (coletor_id) params.coletor_id = coletor_id
+            if (numero_coleta) params.numero_coleta = numero_coleta
 
             const response = await axios.get('/tombos', { params })
 

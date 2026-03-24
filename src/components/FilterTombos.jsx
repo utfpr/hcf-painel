@@ -24,6 +24,9 @@ const FilterTombos = ({ onChange }) => {
     const [identificadores, setIdentificadores] = useState([])
     const [loadingIdentificador, setLoadingIdentificador] = useState(false)
 
+    const [coletores, setColetores] = useState([])
+    const [loadingColetor, setLoadingColetor] = useState(false)
+
     const handleFilterChange = (key, value) => {
         setFilterValues(prev => {
             const next = { ...prev, [key]: value }
@@ -74,6 +77,48 @@ const FilterTombos = ({ onChange }) => {
         }
     }
 
+    const buscarColetorPorNome = async nome => {
+        if (!nome) {
+            setColetores([])
+            return
+        }
+
+        setLoadingColetor(true)
+
+        try {
+            const response = await axios.get('/coletores', {
+                params: { nome }
+            })
+
+            setColetores(response.data.coletores || [])
+        } catch (error) {
+            console.error('Erro ao buscar coletores', error)
+        } finally {
+            setLoadingColetor(false)
+        }
+    }
+
+    const selecionarColetorPorNome = async nomeSelecionado => {
+        if (!nomeSelecionado) {
+            handleFilterChange('coletor_id', undefined)
+            return
+        }
+
+        try {
+            const response = await axios.get('/coletores', {
+                params: { nome: nomeSelecionado }
+            })
+
+            const coletor = response.data.coletores?.[0]
+
+            if (coletor) {
+                handleFilterChange('coletor_id', coletor.id)
+            }
+        } catch (error) {
+            console.error('Erro ao obter coletor pelo nome', error)
+        }
+    }
+
     const availableFilters = [
         {
             key: 'identificador_id',
@@ -102,6 +147,54 @@ const FilterTombos = ({ onChange }) => {
                         </Option>
                     ))}
                 </Select>
+            )
+        },
+        {
+            key: 'coletor_id',
+            label: 'Coletor',
+            component: (
+                <Select
+                    showSearch
+                    placeholder="Digite o nome do coletor"
+                    filterOption={false}
+                    onSearch={buscarColetorPorNome}
+                    onSelect={selecionarColetorPorNome}
+                    allowClear
+                    loading={loadingColetor}
+                    onClear={() =>
+                        handleFilterChange('coletor_id', undefined)}
+                    notFoundContent={
+                        loadingColetor
+                            ? <Spin size="small" />
+                            : 'Nenhum resultado'
+                    }
+                    style={{ width: '100%' }}
+                >
+                    {coletores.map(item => (
+                        <Option key={item.id} value={item.nome}>
+                            {item.nome}
+                        </Option>
+                    ))}
+                </Select>
+            )
+        },
+        {
+            key: 'numero_coleta',
+            label: 'Número de Coleta',
+            component: (
+                <Form.Item>
+                    <input
+                        type="text"
+                        placeholder="Digite o número de coleta"
+                        onChange={e => handleFilterChange('numero_coleta', e.target.value)}
+                        style={{
+                            width: '100%',
+                            padding: '8px',
+                            borderRadius: '4px',
+                            border: '1px solid #d9d9d9'
+                        }}
+                    />
+                </Form.Item>
             )
         }
     ]
