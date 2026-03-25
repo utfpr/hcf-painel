@@ -2685,20 +2685,6 @@ class NovoTomboScreen extends Component {
         e.preventDefault()
         const { form } = this.props
         form.validateFields((err, values) => {
-            if (
-                !(
-                    form.getFieldsValue().dataColetaDia
-                    || form.getFieldsValue().dataColetaMes
-                    || form.getFieldsValue().dataColetaAno
-                )
-            ) {
-                this.openNotificationWithIcon(
-                    'warning',
-                    'Falha',
-                    'É necessário pelo menos o dia ou o mês ou o ano da data de coleta para o cadastro.'
-                )
-                return false
-            }
             if (err != null) {
                 this.openNotificationWithIcon(
                     'warning',
@@ -4846,13 +4832,7 @@ class NovoTomboScreen extends Component {
                                 <Col span={8}>
                                     <FormItem>
                                         {getFieldDecorator('dataColetaDia', {
-                                            rules: [
-                                                {
-                                                    required: true,
-                                                    message:
-                                                        'Insira o dia da coleta'
-                                                }
-                                            ]
+                                            rules: []
                                         })(
                                             <InputNumber
                                                 min={1}
@@ -4873,13 +4853,7 @@ class NovoTomboScreen extends Component {
                                 <Col span={8}>
                                     <FormItem>
                                         {getFieldDecorator('dataColetaMes', {
-                                            rules: [
-                                                {
-                                                    required: true,
-                                                    message:
-                                                        'Insira o mês da coleta'
-                                                }
-                                            ]
+                                            rules: []
                                         })(
                                             <InputNumber
                                                 min={1}
@@ -4901,11 +4875,6 @@ class NovoTomboScreen extends Component {
                                     <FormItem>
                                         {getFieldDecorator('dataColetaAno', {
                                             rules: [
-                                                {
-                                                    required: true,
-                                                    message:
-                                                        'Insira o ano da coleta'
-                                                },
                                                 {
                                                     validator:
                                                         this

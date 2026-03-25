@@ -196,30 +196,24 @@ class ListaTombosScreen extends Component {
     }
 
     retornaDataColeta(dia, mes, ano) {
-        if (dia == null && mes == null && ano == null) {
-            return ''
+        const mesesRomanos = [
+            'I', 'II', 'III', 'IV', 'V', 'VI',
+            'VII', 'VIII', 'IX', 'X', 'XI', 'XII'
+        ]
+        
+        let data = ''
+        if (dia !== null && dia !== undefined) {
+            data = String(dia).padStart(2, '0')
         }
-        if (dia != null && mes == null && ano == null) {
-            return dia
+        if (mes !== null && mes !== undefined) {
+            if (data) data += '/'
+            data += mesesRomanos[mes - 1]
         }
-        if (dia == null && mes != null && ano == null) {
-            return mes
+        if (ano !== null && ano !== undefined) {
+            if (data) data += '/'
+            data += ano
         }
-        if (dia == null && mes == null && ano != null) {
-            return ano
-        }
-        if (dia != null && mes != null && ano == null) {
-            return `${dia}/${mes}`
-        }
-        if (dia != null && mes == null && ano != null) {
-            return `${dia}/${ano}`
-        }
-        if (dia == null && mes != null && ano != null) {
-            return `${mes}/${ano}`
-        }
-        if (dia != null && mes != null && ano != null) {
-            return `${dia}/${mes}/${ano}`
-        }
+        return data
     }
 
     formataDadosTombo = tombos => tombos.map(item => ({

@@ -94,16 +94,25 @@ class FichaTomboScreen extends Component {
         this.setState({ modalVisible: false })
     }
 
-    geraColunaDataColeta = (...args) => {
-        const saida = args.reduce((saida, arg) => {
-            if (arg) {
-                saida.push(arg)
-            }
-
-            return saida
-        }, [])
-
-        return saida.join('/')
+    geraColunaDataColeta = (dia, mes, ano) => {
+        const mesesRomanos = [
+            'I', 'II', 'III', 'IV', 'V', 'VI',
+            'VII', 'VIII', 'IX', 'X', 'XI', 'XII'
+        ]
+        
+        let data = ''
+        if (dia !== null && dia !== undefined) {
+            data = String(dia).padStart(2, '0')
+        }
+        if (mes !== null && mes !== undefined) {
+            if (data) data += '/'
+            data += mesesRomanos[mes - 1]
+        }
+        if (ano !== null && ano !== undefined) {
+            if (data) data += '/'
+            data += ano
+        }
+        return data
     }
 
     formataTomboItem = tombo => ({
