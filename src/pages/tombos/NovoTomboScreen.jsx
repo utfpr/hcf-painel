@@ -19,7 +19,7 @@ import {
 } from 'antd'
 import axios from 'axios'
 import { withTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 import { formatarDataBRtoEN } from '@/helpers/conversoes/ConversoesData'
 import converteDecimalParaGrausMinutosSegundos from '@/helpers/conversoes/Coordenadas'

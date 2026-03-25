@@ -1,8 +1,10 @@
 import { useCallback } from 'react'
 
+import { useNavigate } from 'react-router'
+
 import { useNotification } from '@/hooks/useNotification'
 
-import { InicioScreenProps, ApiError } from '../../../@types/components'
+import { ApiError } from '../../../@types/components'
 import { useLoading } from '../../../hooks/useLoading'
 import { useMobileMenu } from '../hooks/useMobileMenu'
 
@@ -19,7 +21,8 @@ export interface InicioScreenViewModel {
   closeMobileMenu: () => void
 }
 
-export const useInicioScreenViewModel = (props: InicioScreenProps): InicioScreenViewModel => {
+export const useInicioScreenViewModel = (): InicioScreenViewModel => {
+  const navigate = useNavigate()
   const {
     loading, startLoading, stopLoading
   } = useLoading()
@@ -28,9 +31,9 @@ export const useInicioScreenViewModel = (props: InicioScreenProps): InicioScreen
   } = useMobileMenu()
   const { showNotification } = useNotification()
 
-  const handleRedirect = useCallback(() => {
-    props.history.push('/tombos')
-  }, [props.history])
+  const handleRedirect = useCallback(async () => {
+    await navigate('/tombos')
+  }, [])
 
   const handleLoad = useCallback((isLoading: boolean) => {
     if (isLoading) {

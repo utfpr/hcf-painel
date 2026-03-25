@@ -2,7 +2,8 @@ import { Component } from 'react'
 
 import { Row, Col, Button } from 'antd'
 import { withTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+
+import { Link } from 'react-router'
 
 import { PlusOutlined } from '@ant-design/icons'
 
