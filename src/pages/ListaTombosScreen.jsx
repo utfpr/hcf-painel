@@ -12,6 +12,7 @@ import moment from 'moment'
 import { withTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
+import { Edvaldo } from '@/components/Edvaldo'
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import {
@@ -858,6 +859,13 @@ class ListaTombosScreen extends Component {
         return (
             <div>
                 <HeaderListComponent title={t('listaTombosScreen:titulo')} link="/tombos/novo" />
+                <Edvaldo />
+                <Button onClick={() => {
+                    window.location.href = '/users'
+                }}
+                >
+                    Users
+                </Button>
                 <Divider dashed />
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
