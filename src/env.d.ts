@@ -7,4 +7,5 @@ interface ImportMetaEnv {
   VITE_REPORT_BASE_URL: string
   VITE_SESSION_REPLAY_APP_ID?: string
   VITE_ANALYTICS_APP_ID: string
+  VITE_APP_ENV?: string
 }
