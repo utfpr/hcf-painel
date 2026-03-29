@@ -171,7 +171,7 @@ class RelatorioPorPeriodo extends Component {
         }
 
         return (
-            <Card title="Filtros do Relatório" style={{ marginBottom: '20px' }}>
+            <Card title="Relatório de Tombos por Período" style={{ marginBottom: '20px' }}>
                 <Form>
                     <Row gutter={16}>
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
@@ -356,7 +356,6 @@ class RelatorioPorPeriodo extends Component {
     render() {
         return (
             <div>
-                <HeaderListComponent title="Relatório de Tombos por Período" />
                 <Divider dashed />
                 {this.renderFiltros()}
                 <Divider dashed />
