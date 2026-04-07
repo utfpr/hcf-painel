@@ -334,6 +334,9 @@ export default class MainLayout extends Component {
                                         )}
                                     >
                                         <Menu.Item key="relatorioInventarioEspeciesMenuItem">
+                                            <Link to="/relatorio-por-periodo">Relatório por Período</Link>
+                                        </Menu.Item>
+                                        <Menu.Item key="relatorioInventarioEspeciesMenuItem">
                                             <Link to="/relatorio-inventario-especies">Inventário de Espécies</Link>
                                         </Menu.Item>
                                         <Menu.Item key="relatorioColetaDataMenuItem">
