@@ -4,14 +4,14 @@ import {
     Divider, Card, Row, Col,
     Button, notification,
     Spin,
-    DatePicker,
     Select,
     Checkbox
 } from 'antd'
 import ptbr from 'antd/es/date-picker/locale/pt_BR'
 import axios from 'axios'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
+import DatePicker from '@/components/DatePicker'
 import TableCollapseParaLocais from '@/components/TableCollapseParaLocais'
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
@@ -38,9 +38,9 @@ class RelatorioLocalColetaScreen extends Component {
             loading: false,
             loadingExport: false,
             loadingExport2: false,
-            dataInicio: moment().startOf('month')
+            dataInicio: dayjs().startOf('month')
                 .toISOString(),
-            dataFim: moment().endOf('day')
+            dataFim: dayjs().endOf('day')
                 .toISOString(),
             local: null,
             estados: [],
@@ -241,9 +241,9 @@ class RelatorioLocalColetaScreen extends Component {
                     dataFim
                 })
             } else {
-                params.dataInicio = moment().startOf('month')
+                params.dataInicio = dayjs().startOf('month')
                     .toISOString()
-                params.dataFim = moment().endOf('day')
+                params.dataFim = dayjs().endOf('day')
                     .toISOString()
             }
         }
@@ -549,13 +549,13 @@ class RelatorioLocalColetaScreen extends Component {
                                 <FormItem>
                                     {getFieldDecorator('dataInicio')(
                                         <DatePicker
-                                            defaultValue={moment().startOf('month')}
+                                            defaultValue={dayjs().startOf('month')}
                                             style={{ width: '100%' }}
                                             format="DD/MM/YYYY"
                                             locale={dateLocale}
                                             onChange={(a, b) => {
                                                 this.setState({
-                                                    dataInicio: moment(b, dateFormat).toISOString()
+                                                    dataInicio: dayjs(b, dateFormat).toISOString()
                                                 })
                                             }}
                                         />
@@ -571,7 +571,7 @@ class RelatorioLocalColetaScreen extends Component {
                                 <FormItem>
                                     {getFieldDecorator('dataFim')(
                                         <DatePicker
-                                            defaultValue={moment().endOf('day')}
+                                            defaultValue={dayjs().endOf('day')}
                                             style={{ width: '100%' }}
                                             format="DD/MM/YYYY"
                                             locale={dateLocale}
@@ -623,9 +623,9 @@ class RelatorioLocalColetaScreen extends Component {
                                                     pagina: 1,
                                                     metadados: {},
                                                     local: null,
-                                                    dataInicio: moment().startOf('month')
+                                                    dataInicio: dayjs().startOf('month')
                                                         .toISOString(),
-                                                    dataFim: moment().endOf('day')
+                                                    dataFim: dayjs().endOf('day')
                                                         .toISOString()
                                                 })
                                                 this.requisitaDadosDoRelatorio({}, 1, null, null, true)

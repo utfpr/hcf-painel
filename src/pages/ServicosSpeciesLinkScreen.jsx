@@ -5,7 +5,7 @@ import {
     notification, Button, Select, Switch, Collapse
 } from 'antd'
 import axios from 'axios'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 import { Form } from '@ant-design/compatible'
 
@@ -226,13 +226,13 @@ class ServicosSpeciesLinkScreen extends Component {
     retornaDataProximaAtualizacao = () => {
         switch (this.state.periodicidadeAtualizacao) {
             case 'SEMANAL':
-                return moment().day(moment().isoWeekday() + 7)
+                return dayjs().add(7, 'day')
                     .format('DD-MM-YYYY')
             case '1MES':
-                return moment().day(moment().isoWeekday() + 30)
+                return dayjs().add(30, 'day')
                     .format('DD-MM-YYYY')
             case '2MESES':
-                return moment().day(moment().isoWeekday() + 60)
+                return dayjs().add(60, 'day')
                     .format('DD-MM-YYYY')
             default:
                 return undefined
@@ -316,7 +316,7 @@ class ServicosSpeciesLinkScreen extends Component {
                     this.exibeNotificacao('error', 'Falha', 'Não foi possível agendar o novo horário de atualização.')
                 } else {
                     if (params.periodicidade === 2) {
-                        this.exibeNotificacao('success', 'Sucesso', this.mensagemSemanal(moment().isoWeekday()))
+                        this.exibeNotificacao('success', 'Sucesso', this.mensagemSemanal(dayjs().isoWeekday()))
                     }
                     if (params.periodicidade === 3) {
                         this.exibeNotificacao('success', 'Sucesso', this.mensagemMensal())

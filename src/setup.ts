@@ -1,6 +1,25 @@
 import axios, { AxiosError } from 'axios'
+import dayjs from 'dayjs'
+import advancedFormat from 'dayjs/plugin/advancedFormat'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+import isoWeek from 'dayjs/plugin/isoWeek'
+import localeData from 'dayjs/plugin/localeData'
+import weekday from 'dayjs/plugin/weekday'
+import weekOfYear from 'dayjs/plugin/weekOfYear'
+import weekYear from 'dayjs/plugin/weekYear'
+import 'dayjs/locale/pt-br'
 
 import { getCookie, removeCookie } from './helpers/cookie'
+
+// Same plugins as rc-picker/lib/generate/dayjs so project dayjs() values work in DatePicker/RangePicker.
+dayjs.extend(customParseFormat)
+dayjs.extend(advancedFormat)
+dayjs.extend(weekday)
+dayjs.extend(localeData)
+dayjs.extend(weekOfYear)
+dayjs.extend(weekYear)
+dayjs.extend(isoWeek)
+dayjs.locale('pt-br')
 
 axios.defaults.baseURL = import.meta.env.VITE_API_URL
 

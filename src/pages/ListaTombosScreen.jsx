@@ -4,13 +4,14 @@ import {
     Divider, Modal, Card, Row,
     Col, Select, Input, Button,
     notification, InputNumber, Collapse,
-    Tag, Checkbox, Spin, DatePicker
+    Tag, Checkbox, Spin
 } from 'antd'
 import axios from 'axios'
 import debounce from 'lodash.debounce'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { Link } from 'react-router-dom'
 
+import DatePicker from '@/components/DatePicker'
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import {
@@ -478,12 +479,12 @@ class ListaTombosScreen extends Component {
             } = valores
 
             if (dataColetaDe) {
-                dataColetaDe = moment(dataColetaDe)
+                dataColetaDe = dayjs(dataColetaDe)
                     .format('YYYY-MM-DD')
             }
 
             if (dataColetaAte) {
-                dataColetaAte = moment(dataColetaAte)
+                dataColetaAte = dayjs(dataColetaAte)
                     .format('YYYY-MM-DD')
             }
 

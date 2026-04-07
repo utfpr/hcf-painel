@@ -5,7 +5,6 @@ import {
     notification, Button, Select, Switch, Collapse
 } from 'antd'
 import axios from 'axios'
-import moment from 'moment'
 
 import { Form } from '@ant-design/compatible'
 

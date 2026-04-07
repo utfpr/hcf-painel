@@ -1,4 +1,3 @@
-import 'moment/locale/pt-br'
 import { Component } from 'react'
 
 import {
@@ -11,12 +10,12 @@ import {
     Modal,
     Row,
     Col,
-    DatePicker,
     Divider
 } from 'antd'
 import axios from 'axios'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
+import DatePicker from '@/components/DatePicker'
 import { Form } from '@ant-design/compatible'
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 
@@ -91,7 +90,7 @@ class NovaRemessaScreen extends Component {
                         value: remessa.entidade_destino_id
                     },
                     dataEnvio: {
-                        value: moment(remessa.data_envio)
+                        value: dayjs(remessa.data_envio)
                     },
                     observacoes: {
                         value: remessa.observacao
@@ -239,7 +238,7 @@ class NovaRemessaScreen extends Component {
         const tombosNormalizados = this.state.data.map(tombo => ({
             ...tombo,
             data_vencimento: tombo.data_vencimento
-                ? moment(
+                ? dayjs(
                         tombo.data_vencimento,
                         ['DD/MM/YYYY', 'DD/MM/YYYY HH:mm', 'YYYY-MM-DD']
                     ).format('YYYY-MM-DD HH:mm:ss')

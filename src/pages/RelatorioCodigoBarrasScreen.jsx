@@ -3,14 +3,14 @@ import { Component } from 'react'
 import {
     Divider, Card, Row, Col,
     Button, notification,
-    Spin,
-    DatePicker
+    Spin
 } from 'antd'
 import ptbr from 'antd/es/date-picker/locale/pt_BR'
 import axios from 'axios'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { Link } from 'react-router-dom'
 
+import DatePicker from '@/components/DatePicker'
 import GradeDeCartoes from '@/components/GradeCartoes'
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
@@ -36,9 +36,9 @@ class RelatorioCodigoBarrasScreen extends Component {
             pagina: 1,
             loadingExport: false,
             loadingExport2: false,
-            dataInicio: moment().startOf('month')
+            dataInicio: dayjs().startOf('month')
                 .toISOString(),
-            dataFim: moment().endOf('day')
+            dataFim: dayjs().endOf('day')
                 .toISOString(),
             local: null
         }
@@ -84,9 +84,9 @@ class RelatorioCodigoBarrasScreen extends Component {
                     dataFim: intervaloData[1].toISOString()
                 })
             } else {
-                params.dataInicio = moment().startOf('month')
+                params.dataInicio = dayjs().startOf('month')
                     .toISOString()
-                params.dataFim = moment().endOf('day')
+                params.dataFim = dayjs().endOf('day')
                     .toISOString()
             }
         }
@@ -167,7 +167,7 @@ class RelatorioCodigoBarrasScreen extends Component {
                             <FormItem>
                                 {getFieldDecorator('intervaloData')(
                                     <RangePicker
-                                        defaultValue={[moment().startOf('month'), moment().endOf('day')]}
+                                        defaultValue={[dayjs().startOf('month'), dayjs().endOf('day')]}
                                         format={dateFormat}
                                         locale={dateLocale}
                                         onChange={a => {
@@ -201,9 +201,9 @@ class RelatorioCodigoBarrasScreen extends Component {
                                                     valores: {},
                                                     metadados: {},
                                                     local: null,
-                                                    dataInicio: moment().startOf('month')
+                                                    dataInicio: dayjs().startOf('month')
                                                         .toISOString(),
-                                                    dataFim: moment().endOf('day')
+                                                    dataFim: dayjs().endOf('day')
                                                         .toISOString()
                                                 })
                                                 this.requisitaDadosDoRelatorio({}, 1, null, null, true)
