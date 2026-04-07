@@ -209,6 +209,8 @@ const FilterTombos = ({ onChange }) => {
             label: 'Número de Coleta',
             component: (
                 <Select
+                    showSearch
+                    optionFilterProp="children"
                     placeholder="Selecione um coletor primeiro"
                     disabled={!filterValues.coletor_id}
                     onChange={value => handleFilterChange('numero_coleta', value || undefined)}
