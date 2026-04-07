@@ -11,11 +11,14 @@ export default defineConfig({
     react(),
     {
       name: 'html-transform',
-      transformIndexHtml(html) {
-        return html.replace(
-          /%VITE_RECAPTCHA_SITE_KEY%/g,
-          process.env.VITE_RECAPTCHA_SITE_KEY ?? ''
-        )
+      transformIndexHtml: {
+        order: 'post',
+        handler(html) {
+          return html.replace(
+            /%VITE_RECAPTCHA_SITE_KEY%/g,
+            process.env.VITE_RECAPTCHA_SITE_KEY ?? ''
+          )
+        }
       }
     }
   ],

@@ -2,7 +2,7 @@ import type { ESLint } from 'eslint'
 // @ts-expect-error: No declaration file found
 import importHelpers from 'eslint-plugin-import-helpers'
 import reactX from 'eslint-plugin-react-x'
-import { defineConfig } from 'eslint/config'
+import { defineConfig, type Config } from 'eslint/config'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
@@ -49,7 +49,7 @@ export default defineConfig([
         quotes: 'single'
       }),
       tseslint.configs.recommended,
-      reactX.configs.recommended
+      reactX.configs.recommended as unknown as Config
     ],
     rules: {
       'no-console': 'warn',
