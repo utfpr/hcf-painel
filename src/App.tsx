@@ -62,6 +62,7 @@ import ServicosSpeciesLinkScreen from './pages/ServicosSpeciesLinkScreen'
 import NovoTomboScreen from './pages/tombos/NovoTomboScreen'
 import UnauthorizedScreen from './pages/UnauthorizedScreen'
 import PendenciaPagina from './pages/VerPendenciaScreen'
+import RelatorioPorPeriodo from './pages/RelatorioPorPeriodo'
 
 interface PrivateRouteProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -229,6 +230,11 @@ export function App() {
           authed={Boolean(auth.user?.id)}
           path="/relatorio-coleta-data"
           component={RelatorioColetaPeriodoScreen}
+        />
+        <PrivateRoute
+          authed={Boolean(auth.user?.id)}
+          path="/relatorio-por-periodo"
+          component={RelatorioPorPeriodo}
         />
         <PrivateRoute
           authed={Boolean(auth.user?.id)}
