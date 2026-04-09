@@ -8,6 +8,7 @@ RUN yarn install --production=false && \
   yarn cache clean
 
 ARG \
+  VITE_APP_ENV \
   VITE_BASE_URL \
   VITE_API_URL \
   VITE_IMAGE_BASE_URL \
@@ -15,6 +16,7 @@ ARG \
   VITE_ANALYTICS_APP_ID
 
 ENV \
+  VITE_APP_ENV=$VITE_APP_ENV \
   VITE_BASE_URL=$VITE_BASE_URL \
   VITE_API_URL=$VITE_API_URL \
   VITE_IMAGE_BASE_URL=$VITE_IMAGE_BASE_URL \
