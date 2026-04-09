@@ -217,7 +217,7 @@ const TombosPorIntervaloTempoComponent: React.FC<TombosPorIntervaloTempoProps> =
                   padding: '12px'
                 }}
                 cursor={{ fill: 'rgba(24, 144, 255, 0.05)' }}
-                formatter={(value: number) => [`${value} tombos`, 'Quantidade']}
+                formatter={value => [`${String(value)} tombos`, 'Quantidade']}
               />
               <Legend wrapperStyle={{ paddingTop: '20px' }} />
               <Bar
