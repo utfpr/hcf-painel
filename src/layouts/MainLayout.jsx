@@ -348,6 +348,9 @@ export default class MainLayout extends Component {
                                         <Menu.Item key="relatorioLocaisColetaMenuItem">
                                             <Link to="/relatorio-locais-coleta">Locais de Coleta</Link>
                                         </Menu.Item>
+                                        <Menu.Item key="relatorioTombosPorCidadeMenuItem">
+                                            <Link to="/relatorio-tombos-por-cidade">Tombos por Cidade</Link>
+                                        </Menu.Item>
                                         <Menu.Item key="relatorioQuantidadeFamiliaGenerosMenuItem">
                                             <Link to="/relatorio-quantidade-familia-generos">
                                                 Quantidade por Família e Gênero

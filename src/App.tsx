@@ -56,6 +56,7 @@ import RelatorioColetorPeriodoScreen from './pages/RelatorioColetorPeriodoScreen
 import RelatorioFamiliasGeneroScreen from './pages/RelatorioFamiliasGeneroScreen'
 import RelatorioInventarioEspeciesScreen from './pages/RelatorioInventarioEspeciesScreen'
 import RelatorioLocalColetaScreen from './pages/RelatorioLocalColetaPeriodoScreen'
+import RelatorioTombosPorCidadeScreen from './pages/RelatorioTombosPorCidadeScreen'
 import RelatorioQuantidadeScreen from './pages/RelatorioQtdPeriodoScreen'
 import ServicosRefloraScreen from './pages/ServicosRefloraScreen'
 import ServicosSpeciesLinkScreen from './pages/ServicosSpeciesLinkScreen'
@@ -254,6 +255,11 @@ export function App() {
           authed={Boolean(auth.user?.id)}
           path="/relatorio-locais-coleta"
           component={RelatorioLocalColetaScreen}
+        />
+        <PrivateRoute
+          authed={Boolean(auth.user?.id)}
+          path="/relatorio-tombos-por-cidade"
+          component={RelatorioTombosPorCidadeScreen}
         />
         <PrivateRoute
           authed={Boolean(auth.user?.id)}
