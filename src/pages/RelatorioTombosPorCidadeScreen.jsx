@@ -4,13 +4,10 @@ import {
     Divider, Card, Row, Col,
     Button, notification,
     Spin,
-    DatePicker,
     Select,
     Checkbox
 } from 'antd'
-import ptbr from 'antd/es/date-picker/locale/pt_BR'
 import axios from 'axios'
-import moment from 'moment'
 
 import TableCollapseParaCidades from '@/components/TableCollapseParaCidades'
 import TotalRecordFound from '@/components/TotalRecordsFound'
@@ -20,13 +17,7 @@ import { LoadingOutlined } from '@ant-design/icons'
 const FormItem = Form.Item
 const { Option } = Select
 
-const dateFormat = 'DD/MM/YYYY'
-const dateLocale = {
-    ...ptbr,
-    lang: {
-        ...ptbr.lang
-    }
-}
+
 
 class RelatorioTombosPorCidadeScreen extends Component {
     constructor(props) {
@@ -37,10 +28,6 @@ class RelatorioTombosPorCidadeScreen extends Component {
             pagina: 1,
             loading: false,
             loadingExport: false,
-            dataInicio: moment().startOf('month')
-                .toISOString(),
-            dataFim: moment().endOf('day')
-                .toISOString(),
             cidadeId: null,
             estados: [],
             cidades: [],
@@ -144,25 +131,11 @@ class RelatorioTombosPorCidadeScreen extends Component {
 
         if (valores !== undefined) {
             const { cidade } = valores
-            const { dataInicio, dataFim } = this.state
             if (cidade) {
                 params.cidade = cidade
                 this.setState({
                     cidadeId: cidade
                 })
-            }
-            if (dataInicio && dataFim) {
-                params.dataInicio = dataInicio
-                params.dataFim = dataFim
-                this.setState({
-                    dataInicio,
-                    dataFim
-                })
-            } else {
-                params.dataInicio = moment().startOf('month')
-                    .toISOString()
-                params.dataFim = moment().endOf('day')
-                    .toISOString()
             }
         }
         axios.get('/relatorio/tombos-por-cidade', { params })
@@ -204,14 +177,6 @@ class RelatorioTombosPorCidadeScreen extends Component {
 
         if (this.state.cidadeId) {
             params.cidade = this.state.cidadeId
-        }
-
-        if (this.state.dataInicio) {
-            params.dataInicio = this.state.dataInicio
-        }
-
-        if (this.state.dataFim) {
-            params.dataFim = this.state.dataFim
         }
 
         if (this.state.showCoordenadas) {
@@ -385,50 +350,6 @@ class RelatorioTombosPorCidadeScreen extends Component {
                     <Row gutter={8} style={{ marginTop: 16 }}>
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Data inicial:</span>
-                            </Col>
-                            <Col span={24}>
-                                <FormItem>
-                                    {getFieldDecorator('dataInicio')(
-                                        <DatePicker
-                                            defaultValue={moment().startOf('month')}
-                                            style={{ width: '100%' }}
-                                            format="DD/MM/YYYY"
-                                            locale={dateLocale}
-                                            onChange={(a, b) => {
-                                                this.setState({
-                                                    dataInicio: moment(b, dateFormat).toISOString()
-                                                })
-                                            }}
-                                        />
-                                    )}
-                                </FormItem>
-                            </Col>
-                        </Col>
-                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
-                            <Col span={24}>
-                                <span>Data final:</span>
-                            </Col>
-                            <Col span={24}>
-                                <FormItem>
-                                    {getFieldDecorator('dataFim')(
-                                        <DatePicker
-                                            defaultValue={moment().endOf('day')}
-                                            style={{ width: '100%' }}
-                                            format="DD/MM/YYYY"
-                                            locale={dateLocale}
-                                            onChange={a => {
-                                                this.setState({
-                                                    dataFim: a.toISOString()
-                                                })
-                                            }}
-                                        />
-                                    )}
-                                </FormItem>
-                            </Col>
-                        </Col>
-                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
-                            <Col span={24}>
                                 <span>Outras opções:</span>
                             </Col>
                             <Col span={24}>
@@ -443,7 +364,6 @@ class RelatorioTombosPorCidadeScreen extends Component {
                                     )}
                                 </FormItem>
                             </Col>
-
                         </Col>
                     </Row>
 
@@ -464,11 +384,7 @@ class RelatorioTombosPorCidadeScreen extends Component {
                                                 this.setState({
                                                     pagina: 1,
                                                     metadados: {},
-                                                    cidadeId: null,
-                                                    dataInicio: moment().startOf('month')
-                                                        .toISOString(),
-                                                    dataFim: moment().endOf('day')
-                                                        .toISOString()
+                                                    cidadeId: null
                                                 })
                                                 this.requisitaDadosDoRelatorio({}, 1, null, null, true)
                                             }}
