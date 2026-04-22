@@ -1093,7 +1093,7 @@ class NovoTomboScreen extends Component {
 
     requisitaNumeroHcf = () => {
         axios
-            .get('/tombos/filtrar_ultimo_numero')
+            .get('/tombos/proximo_numero')
             .then(response => {
                 if (response.status === 200) {
                     if (this.props.match.params.tombo_id) {
@@ -1118,10 +1118,10 @@ class NovoTomboScreen extends Component {
                             this.props.match.params.tombo_id
                         )
                     } else {
-                        this.setState({ numeroHcf: Number(response.data.hcf) + 1 })
+                        this.setState({ numeroHcf: response.data.hcf})
                         this.props.form.setFields({
                             numeroTombo: {
-                                value: Number(response.data.hcf) + 1
+                                value: Number(response.data.hcf)
                             }
                         })
                         const date = new Date()
