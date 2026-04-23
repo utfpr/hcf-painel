@@ -359,6 +359,11 @@ export default class MainLayout extends Component {
                                         <Menu.Item key="relatorioCodigoBarrasMenuItem">
                                             <Link to="/relatorio-codigo-barras">Código de Barras</Link>
                                         </Menu.Item>
+                                        <Menu.Item key="relatorioCoordenadaForaPoligonoMenuItem">
+                                            <Link to="/relatorio-coordenadas-fora-poligono">
+                                                Coordenadas Fora do Polígono
+                                            </Link>
+                                        </Menu.Item>
                                     </SubMenu>
                                 )
                             : null}
