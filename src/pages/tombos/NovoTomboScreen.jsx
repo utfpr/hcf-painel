@@ -3877,6 +3877,9 @@ class NovoTomboScreen extends Component {
                         }}
                         loading={fetchingCidades}
                         debounceDelay={100}
+                        getFieldError={getFieldError}
+                        validateStatus={this.state.cidadeStatus}
+                        help={this.state.cidadeHelp}
                     />
                 </Row>
                 <br />
