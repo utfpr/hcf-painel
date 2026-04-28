@@ -25,6 +25,32 @@ const columnsWithCoordenadas = [
         ) || '-'
     },
     {
+        title: 'Subespécie',
+        dataIndex: 'subespecie',
+        key: 'subespecie',
+        render: (text, record) => record?.subespecie
+            ? (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <p style={{ fontStyle: 'italic', margin: 0 }}>{record?.subespecie}</p>
+                    <p style={{ margin: 0 }}>{record?.subespecieAutor}</p>
+                </div>
+            )
+            : '-'
+    },
+    {
+        title: 'Variedade',
+        dataIndex: 'variedade',
+        key: 'variedade',
+        render: (text, record) => record?.variedade
+            ? (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <p style={{ fontStyle: 'italic', margin: 0 }}>{record?.variedade}</p>
+                    <p style={{ margin: 0 }}>{record?.variedadeAutor}</p>
+                </div>
+            )
+            : '-'
+    },
+    {
         title: 'Latitude',
         dataIndex: 'latitude',
         key: 'latitude'
@@ -62,6 +88,32 @@ const columnsWithoutCoordenadas = [
                 <p style={{ margin: 0 }}>{record?.autor}</p>
             </div>
         ) || '-'
+    },
+    {
+        title: 'Subespécie',
+        dataIndex: 'subespecie',
+        key: 'subespecie',
+        render: (text, record) => record?.subespecie
+            ? (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <p style={{ fontStyle: 'italic', margin: 0 }}>{record?.subespecie}</p>
+                    <p style={{ margin: 0 }}>{record?.subespecieAutor}</p>
+                </div>
+            )
+            : '-'
+    },
+    {
+        title: 'Variedade',
+        dataIndex: 'variedade',
+        key: 'variedade',
+        render: (text, record) => record?.variedade
+            ? (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <p style={{ fontStyle: 'italic', margin: 0 }}>{record?.variedade}</p>
+                    <p style={{ margin: 0 }}>{record?.variedadeAutor}</p>
+                </div>
+            )
+            : '-'
     },
     {
         title: 'Nº Tombo',
@@ -153,7 +205,12 @@ const TableCollapseParaLocais = ({ data, loading, showCoordenadas }) => {
                                 longitude: registro.longitude ? converteDecimalParaGrausMinutosSegundos(registro.longitude, false, true) : null,
                                 datacoleta: dataColeta,
                                 familia: registro?.familia?.nome || '-',
-                                especie: registro?.especy?.nome || '-'
+                                especie: registro?.especy?.nome || '-',
+                                autor: registro?.especy?.autor?.nome || '',
+                                subespecie: registro?.sub_especy?.nome || registro?.sub_especie?.nome || null,
+                                subespecieAutor: registro?.sub_especy?.autor?.nome || registro?.sub_especie?.autor?.nome || '',
+                                variedade: registro?.variedade?.nome || null,
+                                variedadeAutor: registro?.variedade?.autor?.nome || ''
                             }
                         })}
                         columns={showCoordenadas ? columnsWithCoordenadas : columnsWithoutCoordenadas}
