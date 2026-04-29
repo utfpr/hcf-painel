@@ -272,7 +272,7 @@ class RelatorioCoordenadaForaPoligonoScreen extends Component {
                     }}
                 >
                     <Col xs={24} sm={14} md={18} lg={20} xl={20}>
-                        <h2 style={{ fontWeight: 200 }}>Relatório de Coordenadas Fora do Polígono</h2>
+                        <h2 style={{ fontWeight: 200 }}>Relatório de Coordenadas Fora do Município</h2>
                     </Col>
                 </Row>
 
