@@ -316,7 +316,8 @@ class NovoTomboScreen extends Component {
             await Promise.all([
                 this.requisitaDadosFormulario(),
                 this.requisitaReinos(''),
-                this.requisitaFamilias('', this.state.reinoInicial)
+                this.requisitaFamilias('', this.state.reinoInicial),
+                this.requisitaHerbarios('')
             ])
         } catch (error) {
             console.error(error)
@@ -4927,9 +4928,6 @@ class NovoTomboScreen extends Component {
                         )}
                         herbarios={herbarios}
                         getFieldDecorator={getFieldDecorator}
-                        onSearch={searchText => {
-                            this.requisitaHerbarios(searchText || '')
-                        }}
                         loading={fetchingHerbarios}
                         debounceDelay={100}
                         getFieldError={getFieldError}
