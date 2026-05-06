@@ -22,6 +22,7 @@ class RelatorioCoordenadaForaPoligonoScreen extends Component {
             dados: [],
             metadados: {},
             loading: false,
+            loadingExport: false,
             incluirSemCoordenadas: false
         }
     }
@@ -81,6 +82,69 @@ class RelatorioCoordenadaForaPoligonoScreen extends Component {
         if (!err) {
             this.requisitaDadosDoRelatorio()
         }
+    }
+
+    requisitaExportarPDF = async () => {
+        this.setState({
+            loadingExport: true
+        })
+        const params = {
+            incluirSemCoordenadas: this.state.incluirSemCoordenadas,
+            pagina: 1,
+            limite: 99999
+        }
+
+        await axios.post('/relatorio/coordenadas-fora-poligono', null, {
+            params,
+            responseType: 'arraybuffer'
+        }).then(response => {
+            if (response.status === 200) {
+                this.notificacao('success', 'Exportar PDF', 'PDF gerado com sucesso.')
+                const file = new Blob([response.data], { type: 'application/pdf' })
+                const fileUrl = URL.createObjectURL(file)
+                const anchor = document.createElement('a')
+                anchor.href = fileUrl
+                const formattedDate = new Date().toISOString()
+                    .substring(0, 19)
+                    .replace(/\D/g, '')
+                anchor.download = `coordenadas-fora-municipio-${formattedDate}.pdf`
+                anchor.click()
+                URL.revokeObjectURL(fileUrl)
+            } else if (response.status === 400) {
+                this.notificacao('warning', 'Exportar PDF', 'Erro ao exportar o PDF.')
+            } else {
+                this.notificacao('error', 'Error', 'Erro de servidor ao exportar o PDF.')
+            }
+        })
+            .catch(err => {
+                const { response } = err
+                if (response && response.data) {
+                    // eslint-disable-next-line no-console
+                    console.error('Erro ao exportar PDF:', err)
+                }
+                this.notificacao('error', 'Erro', 'Falha ao exportar o PDF.')
+            })
+            .finally(() => {
+                this.setState({
+                    loadingExport: false
+                })
+            })
+    }
+
+    renderBotaoPDF() {
+        return (
+            <Button
+                type="primary"
+                className="login-form-button"
+                onClick={() => this.requisitaExportarPDF()}
+                disabled={this.state.loadingExport}
+            >
+                {this.state.loadingExport
+                    ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ marginRight: 8 }} />
+                    : ''}
+                Gerar PDF
+            </Button>
+        )
     }
 
     onSubmit = event => {
@@ -273,6 +337,11 @@ class RelatorioCoordenadaForaPoligonoScreen extends Component {
                 >
                     <Col xs={24} sm={14} md={18} lg={20} xl={20}>
                         <h2 style={{ fontWeight: 200 }}>Relatório de Coordenadas Fora do Município</h2>
+                    </Col>
+                    <Col xs={24} sm={10} md={6} lg={4} xl={4} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                            {this.renderBotaoPDF()}
+                        </div>
                     </Col>
                 </Row>
 
