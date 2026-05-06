@@ -333,7 +333,7 @@ export default class MainLayout extends Component {
                                             </span>
                                         )}
                                     >
-                                        <Menu.Item key="relatorioInventarioEspeciesMenuItem">
+                                        <Menu.Item key="relatorioPorPeriodoMenuItem">
                                             <Link to="/relatorio-por-periodo">Relatório por Período</Link>
                                         </Menu.Item>
                                         <Menu.Item key="relatorioInventarioEspeciesMenuItem">
