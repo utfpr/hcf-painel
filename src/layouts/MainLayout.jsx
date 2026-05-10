@@ -361,7 +361,7 @@ export default class MainLayout extends Component {
                                         </Menu.Item>
                                         <Menu.Item key="relatorioCoordenadaForaPoligonoMenuItem">
                                             <Link to="/relatorio-coordenadas-fora-poligono">
-                                                Coordenadas Fora do Município
+                                                 Diagnóstico Erros Posicionamento
                                             </Link>
                                         </Menu.Item>
                                     </SubMenu>
