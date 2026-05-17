@@ -63,6 +63,7 @@ import NovoTomboScreen from './pages/tombos/NovoTomboScreen'
 import UnauthorizedScreen from './pages/UnauthorizedScreen'
 import PendenciaPagina from './pages/VerPendenciaScreen'
 import RelatorioPorPeriodo from './pages/RelatorioPorPeriodo'
+import RelatorioCoordenadaForaPoligonoScreen from './pages/RelatorioCoordenadaForaPoligonoScreen'
 
 interface PrivateRouteProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -265,6 +266,11 @@ export function App() {
           authed={Boolean(auth.user?.id)}
           path="/relatorio-quantidade-familia-generos"
           component={RelatorioQuantidadeScreen}
+        />
+        <PrivateRoute
+          authed={Boolean(auth.user?.id)}
+          path="/relatorio-coordenadas-fora-poligono"
+          component={RelatorioCoordenadaForaPoligonoScreen}
         />
       </Switch>
     </MainLayout>
