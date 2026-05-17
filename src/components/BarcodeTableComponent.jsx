@@ -752,10 +752,17 @@ export default class BarcodeTableComponent extends Component {
                         }}
                     >
                         <Button
-                            type="primary"
                             icon={<PlusOutlined />}
                             loading={isGenerating}
                             onClick={this.handleOpenGenerationModal}
+                            style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                backgroundColor: 'transparent',
+                                color: '#007A33',      
+                                borderColor: '#007A33',  
+                                borderStyle: 'solid'
+                            }}
                         >
                             Gerar código
                         </Button>
