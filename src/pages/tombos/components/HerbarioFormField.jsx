@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Select, Spin } from 'antd'
+import { Select } from 'antd'
 
 import SelectedFormFiled from './SelectedFormFiled'
 
@@ -8,7 +8,7 @@ const { Option } = Select
 
 const HerbarioFormField = ({
     initialValue, herbarios, getFieldDecorator, onChange,
-    onSearch, loading = false, debounceDelay = 200, getFieldError
+    loading = false, getFieldError
 }) => {
     const optionHerbarios = () => herbarios.map(item => (
         <Option key={item.id} value={`${item.id}`}>
@@ -32,15 +32,12 @@ const HerbarioFormField = ({
             fieldName="entidade"
             getFieldDecorator={getFieldDecorator}
             onChange={onChange}
-            onSearch={onSearch}
-            debounceDelay={debounceDelay}
             getFieldError={getFieldError}
             others={{
                 allowClear: true,
                 showSearch: true,
                 loading: loading,
-                notFoundContent: loading ? <Spin size="small" /> : 'Nenhum herbário encontrado',
-                filterOption: false,
+                notFoundContent: 'Nenhum herbário encontrado',
                 status: getFieldError && getFieldError('entidade') ? 'error' : ''
             }}
         >
