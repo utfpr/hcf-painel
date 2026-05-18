@@ -70,6 +70,21 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+.botao-gerar-codigo {
+    display: inline-flex;
+    align-items: center;
+
+    background: transparent;
+    color: #007A33;
+    border-color: #007A33;
+
+    &:hover,
+    &:focus {
+        color: #009944;
+        border-color: #009944;
+    }
+}
+
 /* Responsividade para diferentes tamanhos de tela */
 @media (max-width: 768px) {
   .contentForm {
