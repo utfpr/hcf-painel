@@ -510,7 +510,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                                         <Button
                                             type="primary"
                                             htmlType="submit"
-                                            className="login-form-button ant-btn-pesquisar"
+                                            className="login-form-button"
                                         >
                                             Pesquisar
                                         </Button>
