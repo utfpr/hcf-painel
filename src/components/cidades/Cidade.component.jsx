@@ -7,6 +7,7 @@ import {
 import CoordenadaInputText from '@/components/CoordenadaInputText'
 import ModalCadastroComponent from '@/components/ModalCadastroComponent'
 import SimpleTableComponent from '@/components/SimpleTableComponent'
+import converteDecimalParaGrausMinutosSegundos from '@/helpers/conversoes/Coordenadas'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
 const { Option } = Select
@@ -59,6 +60,8 @@ const CidadesComponent = ({
         ...item,
         key: item.id,
         estadoNome: item.estado?.nome || '-',
+        latitude: converteDecimalParaGrausMinutosSegundos(item.latitude, false, true),
+        longitude: converteDecimalParaGrausMinutosSegundos(item.longitude, true, true),
         acao: renderActionButtons(item)
     }))
 
