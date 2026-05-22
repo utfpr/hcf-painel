@@ -752,7 +752,7 @@ export default class BarcodeTableComponent extends Component {
                         }}
                     >
                         <Button
-                            type="primary"
+                            className="botao-gerar-codigo"
                             icon={<PlusOutlined />}
                             loading={isGenerating}
                             onClick={this.handleOpenGenerationModal}
