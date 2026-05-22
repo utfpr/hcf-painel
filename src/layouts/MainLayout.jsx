@@ -14,13 +14,9 @@ import {
 } from '@ant-design/icons'
 
 import logoImage from '../assets/img/logo_branca.png'
-import { EnvBadge } from '../components/EnvBadge'
 
 const { Header, Content, Sider } = Layout
 const { SubMenu } = Menu
-
-const APP_ENV = import.meta.env.VITE_APP_ENV ?? 'development'
-const IS_PROD = APP_ENV === 'production'
 
 const TAXONOMIA_RESOURCES = [
     'Reino',
@@ -46,10 +42,6 @@ export default class MainLayout extends Component {
             loading: false,
             openKeys: []
         }
-    }
-
-    componentDidMount() {
-        document.title = IS_PROD ? 'HCF' : `HCF — ${APP_ENV.toUpperCase()}`
     }
 
     onOpenChange = openKeys => {
@@ -420,11 +412,10 @@ export default class MainLayout extends Component {
                 </Sider>
                 <Layout>
                     <Header style={{ background: '#fff' }}>
-                        <Row type="flex" justify="space-between" align="middle">
+                        <Row type="flex" justify="space-between">
                             <div style={{ cursor: 'pointer' }}>
                                 <MenuUnfoldOutlined onClick={this.toggle} />
                             </div>
-                            {!IS_PROD && <EnvBadge env={APP_ENV} />}
                             {this.props.auth.loggedIn
                                 ? (
                                         <div>
@@ -464,7 +455,6 @@ export default class MainLayout extends Component {
                         {this.props.children}
                     </Content>
                 </Layout>
-
             </Layout>
         )
     }
