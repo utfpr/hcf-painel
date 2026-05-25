@@ -562,6 +562,53 @@
   color: #000000 !important;
 }
 
+.ant-input:hover, 
+.ant-input-affix-wrapper:hover,
+.ant-input-number:hover,
+.ant-btn:hover,            
+.ant-btn:focus,
+.ant-btn:active,
+.ant-btn-primary:hover,    
+.ant-btn-primary:focus,
+.ant-btn-primary:active,
+.ant-btn-dashed:hover,
+.ant-btn-dashed:focus,
+.ant-btn-dashed:active,
+.ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+    border-color: #5CB85C !important;
+}
+
+.ant-btn-dashed .anticon-plus {
+    transition: color 0.3s ease-in-out !important;
+}
+
+.ant-btn-dashed:hover .anticon-plus {
+    color: #5CB85C !important;
+}
+
+.ant-btn-dashed:focus .anticon-plus,
+.ant-btn-dashed:active .anticon-plus {
+  color: #5CB85C !important;
+}
+
+.ant-btn > span,
+.ant-btn:hover > span,
+.ant-btn:focus > span,
+.ant-btn:active > span,
+.ant-btn-dashed > span,
+.ant-btn-dashed:hover > span,
+.ant-btn-dashed:focus > span,
+.ant-btn-dashed:active > span {
+    color: #5CB85C !important;
+    
+    transition: color 0.3s ease-in-out !important;
+}
+
+.ant-btn:not(:hover):not(:focus):not(:active) > span,
+.ant-btn-dashed:not(:hover):not(:focus):not(:active) > span {
+    color: inherit !important; 
+}
+
 /* Botão Pesquisar - Cor Secundária Escura */
 .ant-btn-pesquisar {
   background-color: #B8860B !important;
