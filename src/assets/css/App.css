@@ -33,6 +33,7 @@
   width: 100%;
   border-radius: 0;
   border-right: 0;
+
 }
 
 .buttons-main:active {
@@ -68,6 +69,29 @@
   max-width: 500px;
   margin: 0 auto;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.ant-input:hover, 
+.ant-input-affix-wrapper:hover,
+.ant-input-number:hover,
+.ant-btn-dashed:hover,
+.ant-btn-dashed:focus,
+.ant-btn-dashed:active,
+.ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+    border-color: #5CB85C !important;
+}
+
+.ant-btn-dashed .anticon-plus {
+    transition: color 0.3s ease-in-out !important;
+}
+
+.ant-btn-dashed:hover .anticon-plus {
+    color: #5CB85C !important;
+}
+
+.ant-btn-dashed:focus .anticon-plus,
+.ant-btn-dashed:active .anticon-plus {
+  color: #5CB85C !important;
 }
 
 .botao-gerar-codigo {
