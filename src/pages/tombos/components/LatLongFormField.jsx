@@ -16,7 +16,7 @@ const validaCoordenadaDecimal = (valor, isLongitude) => {
     return valor >= -maxValor && valor <= maxValor
 }
 
-const LatLongFormField = ({ getFieldDecorator, form }) => {
+const LatLongFormField = ({ getFieldDecorator, form, onCoordenadaChange }) => {
     // Validador customizado para latitude
     const validadorLatitude = (rule, value, callback) => {
         const longitude = form?.getFieldValue('longitude')
@@ -76,7 +76,12 @@ const LatLongFormField = ({ getFieldDecorator, form }) => {
                         {getFieldDecorator('latitude', {
                             rules: [
                                 { validator: validadorLatitude }
-                            ]
+                            ],
+                            onChange: () => {
+                                if (typeof onCoordenadaChange === 'function') {
+                                    onCoordenadaChange()
+                                }
+                            }
                         })(
                             <CoordenadaInputText
                                 placeholder={'48°40\'30"O'}
@@ -94,7 +99,12 @@ const LatLongFormField = ({ getFieldDecorator, form }) => {
                         {getFieldDecorator('longitude', {
                             rules: [
                                 { validator: validadorLongitude }
-                            ]
+                            ],
+                            onChange: () => {
+                                if (typeof onCoordenadaChange === 'function') {
+                                    onCoordenadaChange()
+                                }
+                            }
                         })(
                             <CoordenadaInputText
                                 longitude
