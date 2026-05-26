@@ -394,6 +394,13 @@ class RelatorioCoordenadaForaPoligonoScreen extends Component {
                 ellipsis: true
             },
             {
+                title: 'Coletor Principal',
+                dataIndex: 'coletor_nome',
+                key: 'coletor_nome',
+                ellipsis: true,
+                render: val => val || '—'
+            },
+            {
                 title: 'Latitude',
                 dataIndex: 'latitude',
                 key: 'latitude',
