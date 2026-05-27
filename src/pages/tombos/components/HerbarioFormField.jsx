@@ -15,6 +15,7 @@ const HerbarioFormField = ({
             {item.sigla}
             {' '}
             -
+            {' '}
             {item.nome}
         </Option>
     ))
