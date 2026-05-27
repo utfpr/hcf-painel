@@ -562,71 +562,199 @@
   color: #000000 !important;
 }
 
-.ant-input:hover, 
-.ant-input-affix-wrapper:hover,
-.ant-input-number:hover,
-.ant-btn:hover,            
-.ant-btn:focus,
-.ant-btn:active,
-.ant-btn-primary:hover,    
-.ant-btn-primary:focus,
-.ant-btn-primary:active,
-.ant-btn-dashed:hover,
-.ant-btn-dashed:focus,
-.ant-btn-dashed:active,
-.ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+/* ==========================================================================
+   1. PADRONIZAÇÃO DE INPUTS, SELECTS, PICKERS E TEXTOS DE BOTÕES PADRÃO
+   ========================================================================== */
+
+/* Estado NORMAL (Garante que a transição de SAÍDA do hover não use azul) */
+:is(.ant-input, .ant-input-affix-wrapper, .ant-input-number, .ant-picker),
+:is(.ant-btn-default, .ant-btn-dashed),
+.ant-select .ant-select-selector {
+    transition: border-color 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out !important;
+}
+
+:is(.ant-btn-default, .ant-btn-dashed) :is(span, .anticon) {
+    transition: color 0.3s ease-in-out !important;
+}
+
+/* Estado HOVER / FOCUS / ACTIVE (Garante a borda e efeitos em verde) */
+:is(.ant-input, .ant-input-affix-wrapper, .ant-input-number):hover,
+:is(.ant-btn-default, .ant-btn-dashed):is(:hover, :focus, :active),
+.ant-select:not(.ant-select-disabled):hover .ant-select-selector,
+.ant-picker:not(.ant-picker-disabled):hover {
     border-color: #5CB85C !important;
 }
 
-.ant-btn-dashed .anticon-plus {
-    transition: color 0.3s ease-in-out !important;
+/* Estado focado específico para o Picker (Range/Date) e inputs */
+:is(.ant-input, .ant-input-affix-wrapper, .ant-input-number):focus,
+.ant-picker-focused,
+.ant-select-focused .ant-select-selector {
+    border-color: #5CB85C !important;
+    box-shadow: 0 0 0 2px rgba(92, 184, 92, 0.2) !important; /* Sombra sutil verde ao focar */
 }
 
-.ant-btn-dashed:hover .anticon-plus {
+/* Aplica o texto e ícones verdes no hover/focus/active dos botões padrão */
+:is(.ant-btn-default, .ant-btn-dashed):is(:hover, :focus, :active) :is(span, .anticon) {
     color: #5CB85C !important;
 }
 
-.ant-btn-dashed:focus .anticon-plus,
-.ant-btn-dashed:active .anticon-plus {
-  color: #5CB85C !important;
-}
+/* ==========================================================================
+   AJUSTE PARA BOTÕES COM LINKS (Ex: Sair/Cancelar) E TIPOS CUSTOMIZADOS
+   ========================================================================== */
 
-.ant-btn > span,
-.ant-btn:hover > span,
-.ant-btn:focus > span,
-.ant-btn:active > span,
-.ant-btn-dashed > span,
-.ant-btn-dashed:hover > span,
-.ant-btn-dashed:focus > span,
-.ant-btn-dashed:active > span {
-    color: #5CB85C !important;
-    
+/* Inclui o estado normal para a transição do link interno */
+.ant-btn a {
     transition: color 0.3s ease-in-out !important;
 }
 
-.ant-btn:not(:hover):not(:focus):not(:active) > span,
-.ant-btn-dashed:not(:hover):not(:focus):not(:active) > span {
-    color: inherit !important; 
+/* Força a borda verde no botão genérico/secondary e o texto verde no Link interno */
+.ant-btn:is(:hover, :focus, :active) {
+    border-color: #5CB85C !important;
+}
+
+.ant-btn:is(:hover, :focus, :active) a {
+    color: #5CB85C !important;
+}
+
+/* ==========================================================================
+   3. CUSTOMIZAÇÃO INTERNA DO PICKER E CALENDÁRIO (ANT DESIGN)
+   ========================================================================= */
+
+/* A barra indicadora de foco ativa no RangePicker */
+.ant-picker .ant-picker-active-bar {
+    background: #5CB85C !important;
+}
+
+/* O fundo do intervalo de dias selecionados (Tons mais claros de verde) */
+.ant-picker-cell-in-view.ant-picker-cell-in-range::before {
+    background: #eaf7ea !important; /* Verde bem claro para o meio do período */
+}
+
+/* Hover ao passar o mouse sobre os dias do intervalo */
+.ant-picker-cell-in-view.ant-picker-cell-range-hover::before,
+.ant-picker-cell-in-view.ant-picker-cell-range-hover-start::before,
+.ant-picker-cell-in-view.ant-picker-cell-range-hover-end::before {
+    background: #d4eed4 !important;
+}
+
+/* O dia de início e o dia de fim do período selecionado (Verde principal) */
+.ant-picker-cell-in-view.ant-picker-cell-range-start .ant-picker-cell-inner,
+.ant-picker-cell-in-view.ant-picker-cell-range-end .ant-picker-cell-inner,
+.ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner {
+    background: #5CB85C !important;
+    color: #fff !important;
+}
+
+/* O link/botão de "Hoje" (Today) e textos de ações em verde */
+.ant-picker-today-btn, 
+.ant-picker-now-btn {
+    color: #5CB85C !important;
+}
+.ant-picker-today-btn:hover, 
+.ant-picker-now-btn:hover {
+    color: #4ca34c !important; /* Verde um pouquinho mais escuro no hover */
+}
+
+/* A borda do dia atual (Hoje) dentro do calendário */
+.ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
+    border-color: #5CB85C !important;
+}
+
+/* Hover individual em qualquer dia do calendário */
+.ant-picker-cell:hover .ant-picker-cell-inner {
+    background: #d4eed4 !important;
+}
+
+/* ==========================================================================
+   4. CORREÇÃO DA LINHA DO PERÍODO E HOVER (ANT DESIGN V4)
+   ========================================================================== */
+
+/* 1. Remove os artefatos nativos e o flash de bordas escuras */
+.ant-picker-dropdown .ant-picker-cell-hover-chunk {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.ant-picker-dropdown .ant-picker-cell::before,
+.ant-picker-dropdown .ant-picker-cell::after,
+.ant-picker-dropdown .ant-picker-cell-inner::before,
+.ant-picker-dropdown .ant-picker-cell-inner::after {
+    border-color: transparent !important;
+    transition: none !important; /* Sem animação em bordas/estruturas */
+}
+
+/* 2. TRAVA A TRANSIÇÃO DA LINHA (Resolve o problema do efeito estático na faixa) */
+.ant-picker-cell::before,
+.ant-picker-cell {
+    transition: none !important; /* A faixa verde clara do range deve renderizar instantaneamente */
+}
+
+/* 3. MANTÉM A SUAVIDADE APENAS NO TEXTO E NO CÍRCULO DO DIA INDIVIDUAL */
+.ant-picker-cell-inner {
+    transition: background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1) !important;
+}
+
+/* 4. Garante o fundo verde claro correto no início/fim do range hover */
+.ant-picker-cell-in-view.ant-picker-cell-range-hover-start .ant-picker-cell-inner::after,
+.ant-picker-cell-in-view.ant-picker-cell-range-hover-end .ant-picker-cell-inner::after {
+    background: #d4eed4 !important;
+}
+
+/* 5. Força o dia selecionado/focado a ficar verde sólido */
+.ant-picker-cell-in-view:is(.ant-picker-cell-range-hover-start, .ant-picker-cell-range-hover-end, .ant-picker-cell-selected) .ant-picker-cell-inner {
+    background: #5CB85C !important;
+    color: #ffffff !important;
+}
+
+/* 6. Mantém a borda quadriculada puramente em VERDE */
+.ant-picker-cell-in-view:is(.ant-picker-cell-range-hover-start, .ant-picker-cell-range-hover-end, .ant-picker-cell-range-hover) {
+    box-shadow: 1px 0 0 0 #5CB85C dashed, 
+                -1px 0 0 0 #5CB85C dashed, 
+                0 1px 0 0 #5CB85C dashed, 
+                0 -1px 0 0 #5CB85C dashed !important;
+}
+
+/* 7. Define a faixa verde clara contínua e as linhas tracejadas horizontais */
+.ant-picker-cell-in-view.ant-picker-cell-range-hover::before,
+.ant-picker-cell-in-view.ant-picker-cell-in-range::before {
+    border-top: 1px dashed #5CB85C !important;
+    border-bottom: 1px dashed #5CB85C !important;
+    background: #eaf7ea !important; /* Preenchimento verde claro fluido */
 }
 
 /* Botão Pesquisar - Cor Secundária Escura */
-.ant-btn-pesquisar {
-  background-color: #B8860B !important;
-  border-color: #B8860B !important;
-  color: #FFFFFF !important;
+/* ==========================================================================
+   2. BOTÃO PESQUISAR (Totalmente isolado do resto)
+   ========================================================================== */
+
+/* Estado Normal */
+.ant-btn.ant-btn-pesquisar {
+    background-color: #B8860B !important;
+    border-color: #B8860B !important;
+    color: #FFFFFF !important;
+}
+.ant-btn.ant-btn-pesquisar :is(span, .anticon) {
+    color: #FFFFFF !important;
 }
 
-.ant-btn-pesquisar:hover,
-.ant-btn-pesquisar:focus {
-  background-color: #DAA520 !important;
-  border-color: #DAA520 !important;
-  color: #FFFFFF !important;
+/* Estado Hover / Focus */
+.ant-btn.ant-btn-pesquisar:is(:hover, :focus) {
+    background-color: #DAA520 !important;
+    border-color: #DAA520 !important;
+    color: #FFFFFF !important;
+}
+.ant-btn.ant-btn-pesquisar:is(:hover, :focus) :is(span, .anticon) {
+    color: #FFFFFF !important;
 }
 
-.ant-btn-pesquisar:active {
-  background-color: #9A7209 !important;
-  border-color: #9A7209 !important;
-  color: #FFFFFF !important;
+/* Estado Active */
+.ant-btn.ant-btn-pesquisar:active {
+    background-color: #9A7209 !important;
+    border-color: #9A7209 !important;
+    color: #FFFFFF !important;
+}
+.ant-btn.ant-btn-pesquisar:active :is(span, .anticon) {
+    color: #FFFFFF !important;
 }
 
 /* Sider - Tema Dark */
