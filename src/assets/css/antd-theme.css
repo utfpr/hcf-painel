@@ -562,22 +562,24 @@
   color: #000000 !important;
 }
 
-/* ==========================================================================
+/* ========================================================================== 
    1. PADRONIZAÇÃO DE INPUTS, SELECTS, PICKERS E TEXTOS DE BOTÕES PADRÃO
    ========================================================================== */
 
-/* Estado NORMAL (Garante que a transição de SAÍDA do hover não use azul) */
+/* Estado NORMAL */
 :is(.ant-input, .ant-input-affix-wrapper, .ant-input-number, .ant-picker),
 :is(.ant-btn-default, .ant-btn-dashed),
 .ant-select .ant-select-selector {
-    transition: border-color 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out !important;
+    transition: border-color 0.3s ease-in-out,
+                color 0.3s ease-in-out,
+                box-shadow 0.3s ease-in-out !important;
 }
 
 :is(.ant-btn-default, .ant-btn-dashed) :is(span, .anticon) {
     transition: color 0.3s ease-in-out !important;
 }
 
-/* Estado HOVER / FOCUS / ACTIVE (Garante a borda e efeitos em verde) */
+/* Hover / Focus */
 :is(.ant-input, .ant-input-affix-wrapper, .ant-input-number):hover,
 :is(.ant-btn-default, .ant-btn-dashed):is(:hover, :focus, :active),
 .ant-select:not(.ant-select-disabled):hover .ant-select-selector,
@@ -585,59 +587,53 @@
     border-color: #5CB85C !important;
 }
 
-/* Estado focado específico para o Picker (Range/Date) e inputs */
+/* Focus */
 :is(.ant-input, .ant-input-affix-wrapper, .ant-input-number):focus,
 .ant-picker-focused,
 .ant-select-focused .ant-select-selector {
     border-color: #5CB85C !important;
-    box-shadow: 0 0 0 2px rgba(92, 184, 92, 0.2) !important; /* Sombra sutil verde ao focar */
+    box-shadow: 0 0 0 2px rgba(92, 184, 92, 0.2) !important;
 }
 
-/* Aplica o texto e ícones verdes no hover/focus/active dos botões padrão */
+/* Texto e ícones verdes */
 :is(.ant-btn-default, .ant-btn-dashed):is(:hover, :focus, :active) :is(span, .anticon) {
     color: #5CB85C !important;
 }
 
-/* ==========================================================================
-   AJUSTE PARA BOTÕES COM LINKS (Ex: Sair/Cancelar) E TIPOS CUSTOMIZADOS
+/* ========================================================================== 
+   2. BOTÕES GENÉRICOS (SEM AFETAR BOTÃO PESQUISAR)
    ========================================================================== */
 
-/* Inclui o estado normal para a transição do link interno */
 .ant-btn a {
     transition: color 0.3s ease-in-out !important;
 }
 
-/* Força a borda verde no botão genérico/secondary e o texto verde no Link interno */
-.ant-btn:is(:hover, :focus, :active) {
+.ant-btn:not(.ant-btn-pesquisar):is(:hover, :focus, :active) {
     border-color: #5CB85C !important;
 }
 
-.ant-btn:is(:hover, :focus, :active) a {
+.ant-btn:not(.ant-btn-pesquisar):is(:hover, :focus, :active) a {
     color: #5CB85C !important;
 }
 
-/* ==========================================================================
-   3. CUSTOMIZAÇÃO INTERNA DO PICKER E CALENDÁRIO (ANT DESIGN)
-   ========================================================================= */
+/* ========================================================================== 
+   3. CUSTOMIZAÇÃO INTERNA DO PICKER E CALENDÁRIO
+   ========================================================================== */
 
-/* A barra indicadora de foco ativa no RangePicker */
 .ant-picker .ant-picker-active-bar {
     background: #5CB85C !important;
 }
 
-/* O fundo do intervalo de dias selecionados (Tons mais claros de verde) */
 .ant-picker-cell-in-view.ant-picker-cell-in-range::before {
-    background: #eaf7ea !important; /* Verde bem claro para o meio do período */
+    background: #eaf7ea !important;
 }
 
-/* Hover ao passar o mouse sobre os dias do intervalo */
 .ant-picker-cell-in-view.ant-picker-cell-range-hover::before,
 .ant-picker-cell-in-view.ant-picker-cell-range-hover-start::before,
 .ant-picker-cell-in-view.ant-picker-cell-range-hover-end::before {
     background: #d4eed4 !important;
 }
 
-/* O dia de início e o dia de fim do período selecionado (Verde principal) */
 .ant-picker-cell-in-view.ant-picker-cell-range-start .ant-picker-cell-inner,
 .ant-picker-cell-in-view.ant-picker-cell-range-end .ant-picker-cell-inner,
 .ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner {
@@ -645,31 +641,28 @@
     color: #fff !important;
 }
 
-/* O link/botão de "Hoje" (Today) e textos de ações em verde */
-.ant-picker-today-btn, 
+.ant-picker-today-btn,
 .ant-picker-now-btn {
     color: #5CB85C !important;
 }
-.ant-picker-today-btn:hover, 
+
+.ant-picker-today-btn:hover,
 .ant-picker-now-btn:hover {
-    color: #4ca34c !important; /* Verde um pouquinho mais escuro no hover */
+    color: #4ca34c !important;
 }
 
-/* A borda do dia atual (Hoje) dentro do calendário */
 .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
     border-color: #5CB85C !important;
 }
 
-/* Hover individual em qualquer dia do calendário */
 .ant-picker-cell:hover .ant-picker-cell-inner {
     background: #d4eed4 !important;
 }
 
-/* ==========================================================================
-   4. CORREÇÃO DA LINHA DO PERÍODO E HOVER (ANT DESIGN V4)
+/* ========================================================================== 
+   4. RANGE PICKER / HOVER
    ========================================================================== */
 
-/* 1. Remove os artefatos nativos e o flash de bordas escuras */
 .ant-picker-dropdown .ant-picker-cell-hover-chunk {
     background: transparent !important;
     box-shadow: none !important;
@@ -680,81 +673,249 @@
 .ant-picker-dropdown .ant-picker-cell-inner::before,
 .ant-picker-dropdown .ant-picker-cell-inner::after {
     border-color: transparent !important;
-    transition: none !important; /* Sem animação em bordas/estruturas */
+    transition: none !important;
 }
 
-/* 2. TRAVA A TRANSIÇÃO DA LINHA (Resolve o problema do efeito estático na faixa) */
 .ant-picker-cell::before,
 .ant-picker-cell {
-    transition: none !important; /* A faixa verde clara do range deve renderizar instantaneamente */
+    transition: none !important;
 }
 
-/* 3. MANTÉM A SUAVIDADE APENAS NO TEXTO E NO CÍRCULO DO DIA INDIVIDUAL */
 .ant-picker-cell-inner {
-    transition: background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1) !important;
+    transition: background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1),
+                color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1) !important;
 }
 
-/* 4. Garante o fundo verde claro correto no início/fim do range hover */
 .ant-picker-cell-in-view.ant-picker-cell-range-hover-start .ant-picker-cell-inner::after,
 .ant-picker-cell-in-view.ant-picker-cell-range-hover-end .ant-picker-cell-inner::after {
     background: #d4eed4 !important;
 }
 
-/* 5. Força o dia selecionado/focado a ficar verde sólido */
-.ant-picker-cell-in-view:is(.ant-picker-cell-range-hover-start, .ant-picker-cell-range-hover-end, .ant-picker-cell-selected) .ant-picker-cell-inner {
+.ant-picker-cell-in-view:is(.ant-picker-cell-range-hover-start,
+.ant-picker-cell-range-hover-end,
+.ant-picker-cell-selected) .ant-picker-cell-inner {
     background: #5CB85C !important;
     color: #ffffff !important;
 }
 
-/* 6. Mantém a borda quadriculada puramente em VERDE */
-.ant-picker-cell-in-view:is(.ant-picker-cell-range-hover-start, .ant-picker-cell-range-hover-end, .ant-picker-cell-range-hover) {
-    box-shadow: 1px 0 0 0 #5CB85C dashed, 
-                -1px 0 0 0 #5CB85C dashed, 
-                0 1px 0 0 #5CB85C dashed, 
-                0 -1px 0 0 #5CB85C dashed !important;
+.ant-picker-cell-in-view:is(.ant-picker-cell-range-hover-start,
+.ant-picker-cell-range-hover-end,
+.ant-picker-cell-range-hover) {
+    box-shadow:
+        1px 0 0 0 #5CB85C dashed,
+        -1px 0 0 0 #5CB85C dashed,
+        0 1px 0 0 #5CB85C dashed,
+        0 -1px 0 0 #5CB85C dashed !important;
 }
 
-/* 7. Define a faixa verde clara contínua e as linhas tracejadas horizontais */
 .ant-picker-cell-in-view.ant-picker-cell-range-hover::before,
 .ant-picker-cell-in-view.ant-picker-cell-in-range::before {
     border-top: 1px dashed #5CB85C !important;
     border-bottom: 1px dashed #5CB85C !important;
-    background: #eaf7ea !important; /* Preenchimento verde claro fluido */
+    background: #eaf7ea !important;
 }
 
-/* Botão Pesquisar - Cor Secundária Escura */
-/* ==========================================================================
-   2. BOTÃO PESQUISAR (Totalmente isolado do resto)
+/* ========================================================================== 
+   5. BOTÃO PESQUISAR
    ========================================================================== */
 
-/* Estado Normal */
 .ant-btn.ant-btn-pesquisar {
     background-color: #B8860B !important;
     border-color: #B8860B !important;
     color: #FFFFFF !important;
 }
+
 .ant-btn.ant-btn-pesquisar :is(span, .anticon) {
     color: #FFFFFF !important;
 }
 
-/* Estado Hover / Focus */
 .ant-btn.ant-btn-pesquisar:is(:hover, :focus) {
     background-color: #DAA520 !important;
     border-color: #DAA520 !important;
     color: #FFFFFF !important;
 }
+
 .ant-btn.ant-btn-pesquisar:is(:hover, :focus) :is(span, .anticon) {
     color: #FFFFFF !important;
 }
 
-/* Estado Active */
 .ant-btn.ant-btn-pesquisar:active {
     background-color: #9A7209 !important;
     border-color: #9A7209 !important;
     color: #FFFFFF !important;
 }
+
 .ant-btn.ant-btn-pesquisar:active :is(span, .anticon) {
     color: #FFFFFF !important;
+}
+
+/* ========================================================================== 
+   6. PAGINATION (ANT DESIGN)
+   ========================================================================== */
+
+.ant-pagination .ant-pagination-item,
+.ant-pagination .ant-pagination-prev,
+.ant-pagination .ant-pagination-next {
+    transition: all 0.3s ease-in-out !important;
+}
+
+/* Hover nos números */
+.ant-pagination .ant-pagination-item:hover {
+    border-color: #5CB85C !important;
+    background: transparent !important;
+}
+
+.ant-pagination .ant-pagination-item:hover a {
+    color: #5CB85C !important;
+}
+
+/* Página ativa */
+.ant-pagination .ant-pagination-item-active {
+    border-color: #5CB85C !important;
+    background: transparent !important;
+}
+
+.ant-pagination .ant-pagination-item-active a {
+    color: #5CB85C !important;
+}
+
+/* Hover apenas quando NÃO estiver desabilitado */
+.ant-pagination-prev:not(.ant-pagination-disabled):hover,
+.ant-pagination-next:not(.ant-pagination-disabled):hover {
+    border-color: #5CB85C !important;
+    color: #5CB85C !important;
+}
+
+/* Link interno das setas */
+.ant-pagination-prev:not(.ant-pagination-disabled):hover .ant-pagination-item-link,
+.ant-pagination-next:not(.ant-pagination-disabled):hover .ant-pagination-item-link {
+    color: #5CB85C !important;
+    border-color: #5CB85C !important;
+}
+
+/* SVG das setas */
+.ant-pagination-prev:not(.ant-pagination-disabled):hover svg,
+.ant-pagination-next:not(.ant-pagination-disabled):hover svg {
+    fill: #5CB85C !important;
+    color: #5CB85C !important;
+}
+
+/* Select "20 / página" */
+.ant-pagination-options .ant-select-selector:hover {
+    border-color: #5CB85C !important;
+}
+
+.ant-pagination-options:hover .ant-select-selection-item {
+    color: #5CB85C !important;
+}
+
+.ant-pagination-options:hover .ant-select-arrow {
+    color: #5CB85C !important;
+}
+
+.ant-pagination-options .ant-select-focused .ant-select-selector {
+    border-color: #5CB85C !important;
+    box-shadow: 0 0 0 2px rgba(92, 184, 92, 0.2) !important;
+}
+
+/* ========================================================================== 
+   QUICK JUMPER (>> e <<)
+   ========================================================================== */
+
+.ant-pagination-jump-next:hover,
+.ant-pagination-jump-prev:hover {
+    color: #5CB85C !important;
+}
+
+.ant-pagination-jump-next:hover .ant-pagination-item-container,
+.ant-pagination-jump-prev:hover .ant-pagination-item-container {
+    color: #5CB85C !important;
+}
+
+.ant-pagination-jump-next:hover .ant-pagination-item-link-icon,
+.ant-pagination-jump-prev:hover .ant-pagination-item-link-icon {
+    color: #5CB85C !important;
+    opacity: 1 !important;
+}
+
+.ant-pagination-jump-next:hover .ant-pagination-item-ellipsis,
+.ant-pagination-jump-prev:hover .ant-pagination-item-ellipsis {
+    color: #5CB85C !important;
+}
+
+.ant-pagination-jump-next .anticon,
+.ant-pagination-jump-prev .anticon,
+.ant-pagination-jump-next .anticon svg,
+.ant-pagination-jump-prev .anticon svg {
+    color: inherit !important;
+    fill: currentColor !important;
+}
+
+/* Estado NORMAL do quick jumper */
+.ant-pagination-jump-next,
+.ant-pagination-jump-prev,
+.ant-pagination-jump-next .ant-pagination-item-container,
+.ant-pagination-jump-prev .ant-pagination-item-container,
+.ant-pagination-jump-next .ant-pagination-item-link-icon,
+.ant-pagination-jump-prev .ant-pagination-item-link-icon {
+    color: #5CB85C !important;
+    transition: color 0.3s ease-in-out !important;
+}
+
+/* SVG interno */
+.ant-pagination-jump-next svg,
+.ant-pagination-jump-prev svg {
+    fill: currentColor !important;
+    transition: fill 0.3s ease-in-out !important;
+}
+
+/* ========================================================================== 
+   INPUT NUMBER - SETAS (Hover apenas)
+   ========================================================================== */
+
+/* Estado normal */
+.ant-input-number-handler {
+    transition: color 0.3s ease-in-out,
+                background 0.3s ease-in-out !important;
+}
+
+/* Hover e clique */
+.ant-input-number-handler:hover,
+.ant-input-number-handler:active {
+    color: #5CB85C !important;
+}
+
+/* Ícones internos */
+.ant-input-number-handler:hover .anticon,
+.ant-input-number-handler:hover .anticon svg,
+.ant-input-number-handler:active .anticon,
+.ant-input-number-handler:active .anticon svg {
+    color: #5CB85C !important;
+    fill: currentColor !important;
+}
+
+/* Inner icons */
+.ant-input-number-handler:hover .ant-input-number-handler-up-inner,
+.ant-input-number-handler:hover .ant-input-number-handler-down-inner,
+.ant-input-number-handler:active .ant-input-number-handler-up-inner,
+.ant-input-number-handler:active .ant-input-number-handler-down-inner {
+    color: #5CB85C !important;
+}
+
+/* ========================================================================== 
+   SELECT - SETA NO HOVER
+   ========================================================================== */
+
+/* Transição suave */
+.ant-select-arrow {
+    transition: color 0.3s ease-in-out !important;
+}
+
+/* Apenas selects habilitados */
+.ant-select:not(.ant-select-disabled):hover .ant-select-arrow,
+.ant-select-focused:not(.ant-select-disabled) .ant-select-arrow,
+.ant-select-open:not(.ant-select-disabled) .ant-select-arrow {
+    color: #5CB85C !important;
 }
 
 /* Sider - Tema Dark */
