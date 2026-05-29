@@ -18,6 +18,7 @@ import {
     Image
 } from 'antd'
 import axios from 'axios'
+import { withTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import { formatarDataBRtoEN } from '@/helpers/conversoes/ConversoesData'
@@ -3945,6 +3946,8 @@ class NovoTomboScreen extends Component {
     }
 
     renderFamiliaTombo = (getFieldDecorator, getFieldError) => {
+        const { t } = this.props
+
         const {
             reinoInicial,
             familiaInicial,

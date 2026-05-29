@@ -1,0 +1,54 @@
+{
+  "tombs": "Specimens",
+
+  "taxonomy": "Taxonomy",
+  "kingdoms": "Kingdoms",
+  "families": "Families",
+  "subfamilies": "Subfamilies",
+  "genera": "Genera",
+  "species": "Species",
+  "subspecies": "Subspecies",
+  "varieties": "Varieties",
+  "authors": "Authors",
+
+  "locations": "Locations",
+  "states": "States",
+  "cities": "Cities",
+  "collectionSite": "Collection Site",
+
+  "shipments": "Shipments",
+  "pending": "Pending Items",
+  "users": "Users",
+  "identifiers": "Identifiers",
+  "collectors": "Collectors",
+  "herbaria": "Herbaria",
+
+  "records": "Records",
+  "tombRecord": "Specimen Record",
+
+  "geolocation": "Geolocation",
+  "fullMap": "Full Map",
+  "advancedFilters": "Advanced Filters",
+
+  "reports": "Reports",
+  "reportByPeriod": "Report by Period",
+  "speciesInventory": "Species Inventory",
+  "collectionByDateRange": "Collection by Date Range",
+  "collectionByCollectorAndDateRange": "Collection by Collector and Date Range",
+  "familiesAndGenera": "Families and Genera",
+  "collectionSites": "Collection Sites",
+  "quantityByFamilyAndGenus": "Quantity by Family and Genus",
+  "barcode": "Barcode",
+  "coordinateDiagnosis": "Coordinate Error Diagnosis",
+
+  "export": "Export",
+
+  "services": "Services",
+  "reflora": "Reflora",
+  "speciesLink": "speciesLink",
+
+  "logout": "Logout",
+
+  "profile": "Profile",
+  "login": "Login"
+}

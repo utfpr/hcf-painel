@@ -1,0 +1,54 @@
+{
+  "tombs": "Tombos",
+
+  "taxonomy": "Taxonomia",
+  "kingdoms": "Reinos",
+  "families": "Famílias",
+  "subfamilies": "Subfamílias",
+  "genera": "Gêneros",
+  "species": "Espécies",
+  "subspecies": "Subespécies",
+  "varieties": "Variedades",
+  "authors": "Autores",
+
+  "locations": "Locais",
+  "states": "Estados",
+  "cities": "Cidades",
+  "collectionSite": "Local de Coleta",
+
+  "shipments": "Remessas",
+  "pending": "Pendências",
+  "users": "Usuários",
+  "identifiers": "Identificadores",
+  "collectors": "Coletores",
+  "herbaria": "Herbários",
+
+  "records": "Fichas",
+  "tombRecord": "Ficha tombo",
+
+  "geolocation": "Geolocalização",
+  "fullMap": "Mapa Completo",
+  "advancedFilters": "Filtros Avançados",
+
+  "reports": "Relatórios",
+  "reportByPeriod": "Relatório por Período",
+  "speciesInventory": "Inventário de Espécies",
+  "collectionByDateRange": "Coleta por intervalo de data",
+  "collectionByCollectorAndDateRange": "Coleta por coletor e intervalo de data",
+  "familiesAndGenera": "Famílias e Gêneros",
+  "collectionSites": "Locais de Coleta",
+  "quantityByFamilyAndGenus": "Quantidade por Família e Gênero",
+  "barcode": "Código de Barras",
+  "coordinateDiagnosis": "Diagnóstico Erros Posicionamento",
+
+  "export": "Exportação",
+
+  "services": "Serviços",
+  "reflora": "Reflora",
+  "speciesLink": "speciesLink",
+
+  "logout": "Sair",
+
+  "profile": "Perfil",
+  "login": "Entrar"
+}

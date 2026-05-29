@@ -1,0 +1,54 @@
+{
+  "tombs": "Ejemplares",
+
+  "taxonomy": "Taxonomía",
+  "kingdoms": "Reinos",
+  "families": "Familias",
+  "subfamilies": "Subfamilias",
+  "genera": "Géneros",
+  "species": "Especies",
+  "subspecies": "Subespecies",
+  "varieties": "Variedades",
+  "authors": "Autores",
+
+  "locations": "Ubicaciones",
+  "states": "Estados",
+  "cities": "Ciudades",
+  "collectionSite": "Lugar de Recolección",
+
+  "shipments": "Remesas",
+  "pending": "Pendientes",
+  "users": "Usuarios",
+  "identifiers": "Identificadores",
+  "collectors": "Colectores",
+  "herbaria": "Herbarios",
+
+  "records": "Fichas",
+  "tombRecord": "Ficha del Ejemplar",
+
+  "geolocation": "Geolocalización",
+  "fullMap": "Mapa Completo",
+  "advancedFilters": "Filtros Avanzados",
+
+  "reports": "Informes",
+  "reportByPeriod": "Informe por Período",
+  "speciesInventory": "Inventario de Especies",
+  "collectionByDateRange": "Recolección por Intervalo de Fechas",
+  "collectionByCollectorAndDateRange": "Recolección por Colector e Intervalo de Fechas",
+  "familiesAndGenera": "Familias y Géneros",
+  "collectionSites": "Lugares de Recolección",
+  "quantityByFamilyAndGenus": "Cantidad por Familia y Género",
+  "barcode": "Código de Barras",
+  "coordinateDiagnosis": "Diagnóstico de Errores de Posicionamiento",
+
+  "export": "Exportación",
+
+  "services": "Servicios",
+  "reflora": "Reflora",
+  "speciesLink": "speciesLink",
+
+  "logout": "Salir",
+
+  "profile": "Perfil",
+  "login": "Iniciar Sesión"
+}
