@@ -63,10 +63,10 @@ import NovoTomboScreen from './pages/tombos/NovoTomboScreen'
 import UnauthorizedScreen from './pages/UnauthorizedScreen'
 import PendenciaPagina from './pages/VerPendenciaScreen'
 import RelatorioPorPeriodo from './pages/RelatorioPorPeriodo'
-import RfidConfiguracao from './pages/RfidConfiguração'
+import RfidConfiguracao from './pages/RfidConfiguracao'
 import RfidConferencia from './pages/RfidConferencia'
 import RfidVinculacao from './pages/RfidVinculacao'
-import RfidInventario from './pages/RfidInventário'
+import RfidInventario from './pages/RfidInventario'
 
 interface PrivateRouteProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
