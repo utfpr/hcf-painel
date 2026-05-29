@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom'
 import {
     BarsOutlined, DatabaseOutlined, DesktopOutlined, FileTextOutlined, EnvironmentOutlined,
     FlagOutlined, LogoutOutlined, MenuUnfoldOutlined, SearchOutlined, TeamOutlined,
-    SnippetsOutlined
+    SnippetsOutlined, ScanOutlined
 } from '@ant-design/icons'
 
 import logoImage from '../assets/img/logo_branca.png'
@@ -400,6 +400,32 @@ export default class MainLayout extends Component {
                                                     </Menu.Item>
                                                 )
                                             : null}
+                                    </SubMenu>
+                                )
+                            : null}
+                        {this.props.auth.loggedIn
+                            ? (
+                                    <SubMenu
+                                        key="rfid"
+                                        title={(
+                                            <span>
+                                                <ScanOutlined />
+                                                <span>RFID</span>
+                                            </span>
+                                        )}
+                                    >
+                                        <Menu.Item key="rfidConfiguracao">
+                                            <Link to="/rfid-configuracao">Configuração</Link>
+                                        </Menu.Item>
+                                        <Menu.Item key="rfidConferencia">
+                                            <Link to="/rfid-conferencia">Conferência</Link>
+                                        </Menu.Item>
+                                        <Menu.Item key="rfidVinculacao">
+                                            <Link to="/rfid-vinculacao">Vinculação</Link>
+                                        </Menu.Item>
+                                        <Menu.Item key="rfidInventario">
+                                            <Link to="/rfid-inventario">Inventario</Link>
+                                        </Menu.Item>
                                     </SubMenu>
                                 )
                             : null}

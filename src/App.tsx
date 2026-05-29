@@ -63,6 +63,10 @@ import NovoTomboScreen from './pages/tombos/NovoTomboScreen'
 import UnauthorizedScreen from './pages/UnauthorizedScreen'
 import PendenciaPagina from './pages/VerPendenciaScreen'
 import RelatorioPorPeriodo from './pages/RelatorioPorPeriodo'
+import RfidConfiguracao from './pages/RfidConfiguração'
+import RfidConferencia from './pages/RfidConferencia'
+import RfidVinculacao from './pages/RfidVinculacao'
+import RfidInventario from './pages/RfidInventário'
 
 interface PrivateRouteProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -265,6 +269,26 @@ export function App() {
           authed={Boolean(auth.user?.id)}
           path="/relatorio-quantidade-familia-generos"
           component={RelatorioQuantidadeScreen}
+        />
+        <PrivateRoute
+          authed={Boolean(auth.user?.id)}
+          path="/rfid-configuracao"
+          component={RfidConfiguracao}
+        />
+        <PrivateRoute
+          authed={Boolean(auth.user?.id)}
+          path="/rfid-conferencia"
+          component={RfidConferencia}
+        />
+        <PrivateRoute
+          authed={Boolean(auth.user?.id)}
+          path="/rfid-vinculacao"
+          component={RfidVinculacao}
+        />
+        <PrivateRoute
+          authed={Boolean(auth.user?.id)}
+          path="/rfid-inventario"
+          component={RfidInventario}
         />
       </Switch>
     </MainLayout>
