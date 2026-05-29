@@ -10,6 +10,7 @@ import {
   BrowserRouter, Switch, Route
 } from 'react-router-dom'
 
+import { LocaleWrapper } from './components/LocaleWrapper'
 import { useAuth } from './contexts/Auth/useAuth'
 import InicioScreen from './features/login/InicioScreen'
 import {
@@ -53,18 +54,18 @@ import ResetSenhaScreen from './pages/recuperacaoSenha/ResetSenhaScreen'
 import RelatorioCodigoBarrasScreen from './pages/RelatorioCodigoBarrasScreen'
 import RelatorioColetaPeriodoScreen from './pages/RelatorioColetaPeriodoScreen'
 import RelatorioColetorPeriodoScreen from './pages/RelatorioColetorPeriodoScreen'
+import RelatorioCoordenadaForaPoligonoScreen from './pages/RelatorioCoordenadaForaPoligonoScreen'
 import RelatorioFamiliasGeneroScreen from './pages/RelatorioFamiliasGeneroScreen'
 import RelatorioInventarioEspeciesScreen from './pages/RelatorioInventarioEspeciesScreen'
 import RelatorioLocalColetaScreen from './pages/RelatorioLocalColetaPeriodoScreen'
-import RelatorioTombosPorCidadeScreen from './pages/RelatorioTombosPorCidadeScreen'
+import RelatorioPorPeriodo from './pages/RelatorioPorPeriodo'
 import RelatorioQuantidadeScreen from './pages/RelatorioQtdPeriodoScreen'
+import RelatorioTombosPorCidadeScreen from './pages/RelatorioTombosPorCidadeScreen'
 import ServicosRefloraScreen from './pages/ServicosRefloraScreen'
 import ServicosSpeciesLinkScreen from './pages/ServicosSpeciesLinkScreen'
 import NovoTomboScreen from './pages/tombos/NovoTomboScreen'
 import UnauthorizedScreen from './pages/UnauthorizedScreen'
 import PendenciaPagina from './pages/VerPendenciaScreen'
-import RelatorioPorPeriodo from './pages/RelatorioPorPeriodo'
-import RelatorioCoordenadaForaPoligonoScreen from './pages/RelatorioCoordenadaForaPoligonoScreen'
 
 interface PrivateRouteProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
