@@ -1,4 +1,5 @@
 import './setup'
+import './i18n'
 import { useEffect } from 'react'
 
 import { ConfigProvider } from 'antd'

@@ -9,6 +9,7 @@ import {
     Button
 } from 'antd'
 import axios from 'axios'
+import { withTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import { isCuradorOuOperadorOuIdentificador } from '@/helpers/usuarios'
@@ -20,7 +21,7 @@ import decimalParaGrausMinutosSegundos from '../helpers/conversoes/Coordenadas'
 import fotosTomboMap from '../helpers/fotos-tombo-map'
 import { verificarCoordenada } from './tombos/TomboService'
 
-export default class DetalhesTomboScreen extends Component {
+class DetalhesTomboScreen extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -128,6 +129,7 @@ export default class DetalhesTomboScreen extends Component {
     }
 
     renderMainCharacteristics() {
+        const { t } = this.props
         const { tombo } = this.state
         if (tombo) {
             return (
@@ -169,7 +171,19 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Herbário:</h4>
+                                <>
+                                    <Button onClick={() => void this.props.i18n.changeLanguage('pt')}>
+                                        PT
+                                    </Button>
+
+                                    <Button onClick={() => void this.props.i18n.changeLanguage('en')}>
+                                        EN
+                                    </Button>
+                                    <h4>
+                                        {t('herbarium')}
+                                        :
+                                    </h4>
+                                </>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -766,9 +780,11 @@ export default class DetalhesTomboScreen extends Component {
     }
 
     render() {
+        const { t } = this.props
+
         if (this.state.loading) {
             return (
-                <Spin tip="Carregando...">
+                <Spin tip={t('loading')}>
                     {this.renderConteudo()}
                 </Spin>
             )
@@ -778,3 +794,5 @@ export default class DetalhesTomboScreen extends Component {
         )
     }
 }
+
+export default withTranslation('common')(DetalhesTomboScreen)
