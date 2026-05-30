@@ -1,0 +1,58 @@
+{
+  "specimen": "Ejemplar",
+  "specimenNumber": "Número de Ejemplar:",
+  "specimenDate": "Fecha del Ejemplar:",
+
+  "kingdom": "Reino:",
+  "family": "Familia:",
+  "subfamily": "Subfamilia:",
+  "genus": "Género:",
+  "species": "Especie:",
+  "subspecies": "Subespecie:",
+  "variety": "Variedad:",
+
+  "collector": "Colector:",
+  "additionalCollectors": "Colectores Complementarios:",
+  "collectionNumber": "Número de Recolección:",
+  "collectionDate": "Fecha de Recolección:",
+
+  "commonName": "Nombre Popular:",
+  "herbarium": "Herbario:",
+
+  "type": "Tipo:",
+  "latitude": "Latitud:",
+  "longitude": "Longitud:",
+  "altitude": "Altitud:",
+
+  "country": "País:",
+  "state": "Estado:",
+  "city": "Ciudad:",
+
+  "collectionSite": "Lugar de Recolección:",
+  "description": "Descripción:",
+  "soil": "Suelo:",
+  "relief": "Relieve:",
+  "vegetation": "Vegetación:",
+  "successionalStage": "Fase Sucesional:",
+
+  "identifier": "Identificador:",
+  "identificationDate": "Fecha de Identificación:",
+
+  "attachedCollections": "Colecciones Anexas:",
+
+  "carpoteca": "Carpoteca",
+  "xylotheque": "Xiloteca",
+  "liquidCollection": "Vía Líquida",
+
+  "attachedCollectionNotes": "Observaciones de la Colección Anexa:",
+  "specimenNotes": "Observaciones del Ejemplar:",
+
+  "exsiccateType": "Tipo de Exsicata:",
+  "uniqueSpecimen": "Unicata",
+  "duplicateSpecimen": "Duplicata",
+
+  "barcode": "Código de Barras",
+  "attachedImage": "Imagen Adjunta",
+  "attachImageToBarcode": "Adjuntar Imagen al Código",
+  "action": "Acción"
+}

@@ -3988,7 +3988,7 @@ class NovoTomboScreen extends Component {
                 )}
                 <Row justify="end" gutter={8}>
                     <Button type="secondary">
-                        <Link to="/tombos">Sair/Cancelar</Link>
+                        <Link to="/tombos">{t('exit/cancel')}</Link>
                     </Button>
                 </Row>
                 <Row gutter={8}>
@@ -5026,4 +5026,4 @@ class NovoTomboScreen extends Component {
     }
 }
 
-export default Form.create()(NovoTomboScreen)
+export default withTranslation('common', 'newTomb')(Form.create()(NovoTomboScreen))

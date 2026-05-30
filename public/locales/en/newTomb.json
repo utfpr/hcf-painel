@@ -1,0 +1,58 @@
+{
+  "specimen": "Specimen",
+  "specimenNumber": "Specimen Number:",
+  "specimenDate": "Specimen Date:",
+
+  "kingdom": "Kingdom:",
+  "family": "Family:",
+  "subfamily": "Subfamily:",
+  "genus": "Genus:",
+  "species": "Species:",
+  "subspecies": "Subspecies:",
+  "variety": "Variety:",
+
+  "collector": "Collector:",
+  "additionalCollectors": "Additional Collectors:",
+  "collectionNumber": "Collection Number:",
+  "collectionDate": "Collection Date:",
+
+  "commonName": "Common Name:",
+  "herbarium": "Herbarium:",
+
+  "type": "Type:",
+  "latitude": "Latitude:",
+  "longitude": "Longitude:",
+  "altitude": "Altitude:",
+
+  "country": "Country:",
+  "state": "State:",
+  "city": "City:",
+
+  "collectionSite": "Collection Site:",
+  "description": "Description:",
+  "soil": "Soil:",
+  "relief": "Relief:",
+  "vegetation": "Vegetation:",
+  "successionalStage": "Successional Stage:",
+
+  "identifier": "Identifier:",
+  "identificationDate": "Identification Date:",
+
+  "attachedCollections": "Attached Collections:",
+
+  "carpoteca": "Carpotheca",
+  "xylotheque": "Xylotheque",
+  "liquidCollection": "Liquid Collection",
+
+  "attachedCollectionNotes": "Attached Collection Notes:",
+  "specimenNotes": "Specimen Notes:",
+
+  "exsiccateType": "Exsiccate Type:",
+  "uniqueSpecimen": "Unique Specimen",
+  "duplicateSpecimen": "Duplicate Specimen",
+
+  "barcode": "Barcode",
+  "attachedImage": "Attached Image",
+  "attachImageToBarcode": "Attach Image to Barcode",
+  "action": "Action"
+}
