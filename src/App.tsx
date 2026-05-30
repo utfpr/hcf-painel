@@ -7,7 +7,8 @@ import './assets/css/Search.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
 
 import {
-  BrowserRouter, Switch, Route
+  BrowserRouter, Switch, Route,
+  Redirect
 } from 'react-router-dom'
 
 import { useAuth } from './contexts/Auth/useAuth'
@@ -63,6 +64,7 @@ import NovoTomboScreen from './pages/tombos/NovoTomboScreen'
 import UnauthorizedScreen from './pages/UnauthorizedScreen'
 import PendenciaPagina from './pages/VerPendenciaScreen'
 import RelatorioPorPeriodo from './pages/RelatorioPorPeriodo'
+import DashboardScreen from './pages/DashboardScreen'
 
 interface PrivateRouteProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -91,6 +93,9 @@ export function App() {
   const renderMainLayout = () => (
     <MainLayout auth={auth}>
       <Switch>
+         <Route exact path="/">
+          <Redirect to="/dashboard" />
+        </Route>
         <Route path="/tombos/detalhes/:tombo_id" component={DetalhesTomboScreen} />
         <PrivateRoute authed={isCuradorOuOperador()} path="/tombos/novo" component={NovoTomboScreen} />
         <PrivateRoute
@@ -266,6 +271,7 @@ export function App() {
           path="/relatorio-quantidade-familia-generos"
           component={RelatorioQuantidadeScreen}
         />
+        <Route path="/dashboard" component={DashboardScreen} />
       </Switch>
     </MainLayout>
   )
