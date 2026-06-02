@@ -6,16 +6,9 @@
   "especie": "Espécie",
   "subespecie": "Subespécie",
   "variedade": "Variedade",
-  "buscarReinos": "Digite para buscar reinos...",
-  "buscarFamilias": "Digite para buscar famílias...",
-  "buscarGeneros": "Digite para buscar gêneros...",
-  "buscarEspecies": "Digite para buscar espécies...",
-  "buscarSubespecies": "Digite para buscar subespécies...",
-  "buscarVariedades": "Digite para buscar variedades...",
-  "nenhumReinoEncontrado": "Nenhum reino encontrado",
-  "nenhumaFamiliaEncontrada": "Nenhuma família encontrada",
-  "nenhumGeneroEncontrado": "Nenhum gênero encontrado",
-  "nenhumaEspecieEncontrada": "Nenhuma espécie encontrada",
-  "nenhumaSubespecieEncontrada": "Nenhuma subespécie encontrada",
-  "nenhumaVariedadeEncontrada": "Nenhuma variedade encontrada"
+
+  "tipo_exsicata": "Tipo da Exsicata",
+  "unicata": "Unicata",
+  "duplicata": "Duplicata",
+  "naoEspecificado": "Não Especificado"
 }

@@ -200,7 +200,7 @@ class ListaTombosScreen extends Component {
             'I', 'II', 'III', 'IV', 'V', 'VI',
             'VII', 'VIII', 'IX', 'X', 'XI', 'XII'
         ]
-        
+
         let data = ''
         if (dia !== null && dia !== undefined) {
             data = String(dia).padStart(2, '0')

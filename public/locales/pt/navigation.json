@@ -21,5 +21,20 @@
   "servicos": "Serviços",
   "perfil": "Perfil",
   "entrar": "Entrar",
-  "sair": "Sair"
+  "sair": "Sair",
+  "exportacoes": "Exportações",
+  "NovoColetor": "Novo Coletor",
+  "NovoHerbario": "Novo Herbário",
+  "NovoIdentificador": "Novo Identificador",
+  "locaisColeta": "Locais de Coleta",
+  "autoresTaxonomia": "Autores da Taxonomia",
+  "especiesTaxonomia": "Espécies da Taxonomia",
+  "generosTaxonomia": "Gêneros da Taxonomia",
+  "reinosTaxonomia": "Reinos da Taxonomia",
+  "subespeciesTaxonomia": "Subespécies da Taxonomia",
+  "subfamiliasTaxonomia": "Subfamílias da Taxonomia",
+  "variedadesTaxonomia": "Variedades da Taxonomia",
+  "relatorioInventarioEspecies": "Relatório de Inventário de Espécies",
+  "relatorioLocaisColetaLocalIntervaloData": "Relatório de Locais de Coleta por Local e Intervalo de Data",
+  "reflora": "Reflora"
 }
