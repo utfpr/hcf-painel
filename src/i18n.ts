@@ -28,7 +28,17 @@ void i18n
       loadPath: '/locales/{{lng}}/{{ns}}.json'
     },
 
-    ns: ['common'],
+    ns: [
+      'common',
+      'forms',
+      'navigation',
+      'ui',
+      'validation',
+      'placeholder',
+      'taxonomy',
+      'erroMessage',
+      'geolocation'
+    ],
     defaultNS: 'common',
 
     interpolation: {

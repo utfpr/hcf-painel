@@ -1,0 +1,17 @@
+{
+  "digiteCodigoBarras": "Enter the Barcode",
+  "selecioneDataTomboInicial": "Select the Initial Accession Date",
+  "selecioneDataTomboFinal": "Select the Final Accession Date",
+  "selecionePais": "Select a Country",
+  "selecioneEstado": "Select a State",
+  "selecioneCidade": "Select a City",
+  "selecioneLocalColeta": "Select a Collection Site",
+  "outrasOpcoes": "Other Options",
+  "selecionePeriodicidadeDesejada": "Select the Desired Frequency",
+  "selecioneLogDesejado": "Select the Desired Log",
+  "selecioneReino": "Select a Kingdom",
+  "selecioneFamilia": "Select a Family",
+  "selecioneGenero": "Select a Genus",
+  "selecioneEspecie": "Select a Species",
+  "selecioneAutor": "Select an Author"
+}

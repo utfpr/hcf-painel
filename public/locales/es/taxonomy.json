@@ -1,0 +1,14 @@
+{
+  "reino": "Reino",
+  "familia": "Familia",
+  "subfamilia": "Subfamilia",
+  "genero": "Género",
+  "especie": "Especie",
+  "subespecie": "Subespecie",
+  "variedade": "Variedad",
+
+  "tipo_exsicata": "Tipo de Exsicata",
+  "unicata": "Única",
+  "duplicata": "Duplicada",
+  "naoEspecificado": "No Especificado"
+}

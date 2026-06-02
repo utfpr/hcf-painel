@@ -1,0 +1,12 @@
+{
+  "cidade": "City",
+  "estado": "State",
+  "pais": "Country",
+
+  "relevo": "Terrain",
+  "vegetacao": "Vegetation",
+
+  "latitude": "Latitude",
+  "longitude": "Longitude",
+  "altitude": "Altitude"
+}

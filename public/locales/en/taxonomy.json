@@ -1,0 +1,14 @@
+{
+  "reino": "Kingdom",
+  "familia": "Family",
+  "subfamilia": "Subfamily",
+  "genero": "Genus",
+  "especie": "Species",
+  "subespecie": "Subspecies",
+  "variedade": "Variety",
+
+  "tipo_exsicata": "Exsiccate Type",
+  "unicata": "Unicate",
+  "duplicata": "Duplicate",
+  "naoEspecificado": "Not Specified"
+}

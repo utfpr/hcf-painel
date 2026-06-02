@@ -1,0 +1,55 @@
+{
+  "validacaoObrigatorioColetor": "El nombre y el número del colector son obligatorios.",
+  "validacaoObrigatorioLocal": "La descripción del lugar de recolección es obligatoria.",
+  "validacaoObrigatorioCampo": "Ingrese el nombre para el registro.",
+  "validacaoFormIncompleto": "Complete todos los datos requeridos.",
+
+  "latitudeInvalida": "Latitud inválida (debe estar entre -90 y 90).",
+  "longitudeInvalida": "Longitud inválida (debe estar entre -180 y 180).",
+  "latitudeObrigatoriaLongitude": "La latitud es obligatoria cuando la longitud está заполнada.",
+  "longitudeObrigatoriaLatitude": "La longitud es obligatoria cuando la latitud está заполнada.",
+
+  "buscarHerbarioFiltroObrigatorio": "Ingrese al menos un campo para realizar la búsqueda.",
+
+  "buscarIdentificadorFiltroObrigatorio": "Ingrese al menos un campo para realizar la búsqueda.",
+
+  "validacaoLocalColetaIncompleto": "Ingrese el nombre del lugar de recolección y seleccione país, estado y ciudad.",
+
+  "validacaoRemessaFiltros": "Ingrese al menos un filtro para buscar remesas.",
+  "validacaoDevolucaoTombo": "No fue posible devolver el registro.",
+  "validacaoExclusaoRemessa": "No fue posible eliminar la remesa.",
+  "validacaoNomeVariedadeObrigatorio": "Ingrese el nombre de la nueva variedad y de la especie.",
+
+  "validacaoExportacaoMinMaxColunas": "Seleccione un mínimo de 1 y un máximo de 5 columnas para exportar.",
+
+  "validacaoExportacaoFiltroObrigatorio": "Ingrese un período, registros específicos o un intervalo de fechas para exportar.",
+
+  "validacaoExportacaoFiltroExclusivo": "La exportación de datos debe realizarse por un período, registros específicos o un intervalo de fechas, nunca combinando dos o más.",
+
+  "validacaoDoadorObrigatorio": "Seleccione un donante.",
+  "validacaoReceptorObrigatorio": "Seleccione un receptor.",
+  "validacaoNomeColetorObrigatorio": "Ingrese el nombre del colector.",
+  "validacaoNomeHerbarioObrigatorio": "Ingrese el nombre del herbario.",
+  "validacaoEmailHerbarioObrigatorio": "Ingrese el correo del herbario.",
+  "validacaoLogradouroHerbarioObrigatorio": "Ingrese la dirección del herbario.",
+  "validacaoNumeroLogradouroHerbarioObrigatorio": "Ingrese el número de la dirección del herbario.",
+  "validacaoPaisObrigatorio": "Seleccione o ingrese un país.",
+  "validacaoEstadoObrigatorio": "Seleccione o ingrese un estado.",
+  "validacaoCidadeObrigatoria": "Seleccione o ingrese una ciudad.",
+  "validacaoNomeIdentificadorObrigatorio": "Ingrese el nombre del identificador.",
+  "validacaoNomeUsuarioObrigatorio": "Ingrese el nombre del usuario.",
+  "validacaoEmailUsuarioObrigatorio": "Ingrese el correo del usuario.",
+  "validacaoTipoUsuarioObrigatorio": "Seleccione el tipo de usuario.",
+  "validacaoSenhaUsuarioObrigatoria": "Ingrese la contraseña del usuario.",
+  "validacaoNomeObrigatorio": "Ingrese el nombre.",
+  "validacaoTelefoneObrigatorio": "Ingrese el teléfono.",
+  "validacaoSenhaAtualObrigatoria": "Ingrese su contraseña actual.",
+  "validacaoNovaSenhaObrigatoria": "Ingrese la nueva contraseña.",
+  "validacaoSenhaMinimo6Caracteres": "La contraseña debe tener al menos 6 caracteres.",
+
+  "selecioneReinoPrimeiro": "Seleccione un reino primero.",
+  "selecioneFamiliaPrimeiro": "Seleccione una familia primero.",
+  "selecioneGeneroPrimeiro": "Seleccione un género primero.",
+  "nenhumResultadoEncontrado": "No se encontraron resultados.",
+  "nenhumRegistroEncontrado": "No se encontraron registros."
+}

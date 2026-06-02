@@ -18,7 +18,6 @@ import {
     Image
 } from 'antd'
 import axios from 'axios'
-import { withTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import { formatarDataBRtoEN } from '@/helpers/conversoes/ConversoesData'
@@ -3946,8 +3945,6 @@ class NovoTomboScreen extends Component {
     }
 
     renderFamiliaTombo = (getFieldDecorator, getFieldError) => {
-        const { t } = this.props
-
         const {
             reinoInicial,
             familiaInicial,
@@ -3988,7 +3985,7 @@ class NovoTomboScreen extends Component {
                 )}
                 <Row justify="end" gutter={8}>
                     <Button type="secondary">
-                        <Link to="/tombos">{t('exit/cancel')}</Link>
+                        <Link to="/tombos">Sair/Cancelar</Link>
                     </Button>
                 </Row>
                 <Row gutter={8}>
@@ -5026,4 +5023,4 @@ class NovoTomboScreen extends Component {
     }
 }
 
-export default withTranslation('common', 'newTomb')(Form.create()(NovoTomboScreen))
+export default Form.create()(NovoTomboScreen)

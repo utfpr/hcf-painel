@@ -1,0 +1,17 @@
+{
+  "digiteCodigoBarras": "Ingrese el Código de Barras",
+  "selecioneDataTomboInicial": "Seleccione la Fecha Inicial de Tombo",
+  "selecioneDataTomboFinal": "Seleccione la Fecha Final de Tombo",
+  "selecionePais": "Seleccione un País",
+  "selecioneEstado": "Seleccione un Estado",
+  "selecioneCidade": "Seleccione una Ciudad",
+  "selecioneLocalColeta": "Seleccione el Lugar de Recolección",
+  "outrasOpcoes": "Otras Opciones",
+  "selecionePeriodicidadeDesejada": "Seleccione la Periodicidad Deseada",
+  "selecioneLogDesejado": "Seleccione el LOG Deseado",
+  "selecioneReino": "Seleccione un Reino",
+  "selecioneFamilia": "Seleccione una Familia",
+  "selecioneGenero": "Seleccione un Género",
+  "selecioneEspecie": "Seleccione una Especie",
+  "selecioneAutor": "Seleccione un Autor"
+}

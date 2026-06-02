@@ -1,0 +1,54 @@
+{
+  "validacaoObrigatorioColetor": "Collector name and number are required.",
+  "validacaoObrigatorioLocal": "The collection site description is required.",
+  "validacaoObrigatorioCampo": "Enter a name for registration.",
+  "validacaoFormIncompleto": "Please fill in all required fields.",
+
+  "latitudeInvalida": "Invalid latitude (must be between -90 and 90).",
+  "longitudeInvalida": "Invalid longitude (must be between -180 and 180).",
+  "latitudeObrigatoriaLongitude": "Latitude is required when longitude is provided.",
+  "longitudeObrigatoriaLatitude": "Longitude is required when latitude is provided.",
+
+  "buscarHerbarioFiltroObrigatorio": "Please provide at least one field to perform the search.",
+
+  "buscarIdentificadorFiltroObrigatorio": "Please provide at least one field to perform the search.",
+
+  "validacaoLocalColetaIncompleto": "Enter the collection site name and select country, state, and city.",
+
+  "validacaoRemessaFiltros": "Provide at least one filter to search for shipments.",
+  "validacaoDevolucaoTombo": "It was not possible to return the record.",
+  "validacaoExclusaoRemessa": "It was not possible to delete the shipment.",
+  "validacaoNomeVariedadeObrigatorio": "Enter the name of the new variety and the species.",
+
+  "validacaoExportacaoMinMaxColunas": "Select a minimum of 1 and a maximum of 5 columns to export.",
+
+  "validacaoExportacaoFiltroObrigatorio": "Provide a period, specific records, or a date range for export.",
+
+  "validacaoExportacaoFiltroExclusivo": "Data export must be done using either a period, specific records, or a date range, never combining two or more.",
+  "validacaoDoadorObrigatorio": "Select a donor.",
+  "validacaoReceptorObrigatorio": "Select a recipient.",
+  "validacaoNomeColetorObrigatorio": "Enter the collector name.",
+  "validacaoNomeHerbarioObrigatorio": "Enter the herbarium name.",
+  "validacaoEmailHerbarioObrigatorio": "Enter the herbarium email.",
+  "validacaoLogradouroHerbarioObrigatorio": "Enter the herbarium address.",
+  "validacaoNumeroLogradouroHerbarioObrigatorio": "Enter the herbarium address number.",
+  "validacaoPaisObrigatorio": "Select or enter a country.",
+  "validacaoEstadoObrigatorio": "Select or enter a state.",
+  "validacaoCidadeObrigatoria": "Select or enter a city.",
+  "validacaoNomeIdentificadorObrigatorio": "Enter the identifier name.",
+  "validacaoNomeUsuarioObrigatorio": "Enter the user name.",
+  "validacaoEmailUsuarioObrigatorio": "Enter the user email.",
+  "validacaoTipoUsuarioObrigatorio": "Select the user type.",
+  "validacaoSenhaUsuarioObrigatoria": "Enter the user password.",
+  "validacaoNomeObrigatorio": "Enter the name.",
+  "validacaoTelefoneObrigatorio": "Enter the phone number.",
+  "validacaoSenhaAtualObrigatoria": "Enter your current password.",
+  "validacaoNovaSenhaObrigatoria": "Enter the new password.",
+  "validacaoSenhaMinimo6Caracteres": "Password must be at least 6 characters long.",
+
+  "selecioneReinoPrimeiro": "Select a Kingdom first",
+  "selecioneFamiliaPrimeiro": "Select a Family first",
+  "selecioneGeneroPrimeiro": "Select a Genus first",
+  "nenhumResultadoEncontrado": "No results found",
+  "nenhumRegistroEncontrado": "No records found."
+}

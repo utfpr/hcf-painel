@@ -1,0 +1,175 @@
+{
+  "limpar": "Limpiar",
+  "pesquisar": "Buscar",
+  "editar": "Editar",
+  "excluir": "Eliminar",
+  "acao": "Acción",
+  "acoes": "Acciones",
+  "adicionar": "Agregar",
+  "cadastrar": "Registrar",
+  "atualizar": "Actualizar",
+  "selecione": "Seleccione",
+  "exportar": "Exportar",
+  "salvar": "Guardar",
+  "cancelar": "Cancelar",
+  "aprovar": "Aprobar",
+  "reprovar": "Rechazar",
+
+  "editarTombo": "Editar Registro",
+  "buscarTombo": "Buscar Registro",
+  "aguarde": "Espere",
+  "hcf": "HCF",
+  "dataColeta": "Fecha de Recolección",
+  "nomeCientifico": "Nombre Científico",
+  "numeroCopias": "Número de Copias",
+  "impressaoFicha": "Impresión de Ficha",
+
+  "imprimirFichaTomboComCodigoBarras": "Imprimir Ficha de Registro (con Código de Barras)",
+  "imprimirFichaTomboSemCodigoBarras": "Imprimir Ficha de Registro (sin Código de Barras)",
+  "imprimirFichaTomboReduzida": "Imprimir Ficha de Registro Reducida",
+
+  "selecionarCodigoBarras": "Seleccione el Código",
+  "carregandoCodigosBarras": "Cargando Códigos de Barras...",
+  "nenhumCodigoBarrasDisponivel": "No hay Códigos de Barras Disponibles para este Registro",
+
+  "quantidadeCopias": "Cantidad de Copias",
+  "informarQuantidadeCopias": "Ingrese la Cantidad de Copias",
+  "permitidoEntre1e3": "Permitido entre 1 y 3",
+  "informarNumeroCopias": "Ingrese el Número de Copias",
+
+  "editarImagem": "Editar imagen",
+  "buscarColetor": "Buscar Colector",
+  "listagemColetores": "Listado de Colectores",
+  "novoColetor": "Nuevo Colector",
+  "buscarHerbario": "Buscar Herbario",
+  "novoHerbario": "Nuevo Herbario",
+  "buscarIdentificador": "Buscar Identificador",
+  "identificadores": "Identificadores",
+  "novoIdentificador": "Nuevo Identificador",
+
+  "buscarLocalColeta": "Buscar Lugar de Recolección",
+  "nomeLocalColeta": "Nombre del Lugar de Recolección",
+  "locaisColeta": "Lugares de Recolección",
+
+  "buscarPendencias": "Buscar Pendencias",
+  "listagemPendencias": "Listado de Pendencias",
+
+  "buscarRemessas": "Buscar Remesas",
+  "numeroRemessa": "Número de Remesa",
+  "devolver": "Devolver",
+  "remessas": "Remesas",
+  "listagemRemessas": "Listado de Remesas",
+
+  "buscarAutor": "Buscar Autor",
+  "nomeAutor": "Nombre del Autor",
+
+  "buscarEspecie": "Buscar Especie",
+  "nomeEspecie": "Nombre de la Especie",
+  "adicionarEspecie": "Agregar Especie",
+
+  "subespecies": "Subespecies",
+  "buscarSubespecie": "Buscar Subespecie",
+  "nomeSubespecie": "Nombre de la Subespecie",
+  "adicionarSubespecie": "Agregar Subespecie",
+  "editarSubespecie": "Editar Subespecie",
+  "excluirSubespecie": "Eliminar Subespecie",
+
+  "familias": "Familias",
+  "buscarFamilia": "Buscar Familia",
+  "nomeFamilia": "Nombre de la Familia",
+  "adicionarFamilia": "Agregar Familia",
+  "editarFamilia": "Editar familia",
+  "excluirFamilia": "Eliminar familia",
+
+  "subfamilias": "Subfamilias",
+  "buscarSubfamilia": "Buscar Subfamilia",
+  "nomeSubfamilia": "Nombre de la Subfamilia",
+  "adicionarSubfamilia": "Agregar Subfamilia",
+  "editarSubfamilia": "Editar Subfamilia",
+  "excluirSubfamilia": "Eliminar Subfamilia",
+
+  "generos": "Géneros",
+  "buscarGenero": "Buscar Género",
+  "nomeGenero": "Nombre del Género",
+  "adicionarGenero": "Agregar Género",
+
+  "reinos": "Reinos",
+  "buscarReino": "Buscar Reino",
+  "nomeReino": "Nombre del Reino",
+
+  "taxonomia": "Taxonomía",
+  "buscarTaxonomia": "Buscar Taxonomía",
+
+  "variedades": "Variedades",
+  "buscarVariedade": "Buscar Variedad",
+  "nomeVariedade": "Nombre de la Variedad",
+
+  "confirmarExclusao": "Confirmar eliminación",
+  "sim": "SÍ",
+  "nao": "NO",
+
+  "situacao": "Situación",
+  "sequenciaTombo": "Secuencia del Registro",
+
+  "selecioneCamposSeremExportados": "Seleccione los campos a exportar:",
+  "numerosTombosSeremExportados": "Números de registros a exportar:",
+  "aPartirDe": "A partir de",
+  "ate": "Hasta",
+  "aPartirDataTombo": "A partir de la fecha del registro",
+  "ateDataTombo": "Hasta la fecha del registro",
+
+  "buscarUsuario": "Buscar Usuario",
+  "listagemUsuarios": "Listado de Usuarios",
+  "dataCriacao": "Fecha de Creación",
+
+  "livroTombo": "Libro de Registro",
+
+  "dataInicialColeta": "Fecha inicial de recolección",
+  "dataFinalColeta": "Fecha final de recolección",
+
+  "adicionarTomboRemessa": "Agregar Registro a Remesa",
+  "adicionarTombo": "Agregar registro",
+
+  "selecioneDoador": "Seleccione un Donante",
+  "selecioneReceptor": "Seleccione un Receptor",
+  "selecioneTipo": "Seleccione un Tipo",
+
+  "carregando": "Cargando...",
+  "analisandoDados": "Analizando datos...",
+
+  "selecioneInsiraPais": "Seleccione o ingrese un país",
+  "selecioneInsiraEstado": "Seleccione o ingrese un estado",
+  "selecioneInsiraCidade": "Seleccione o ingrese una ciudad",
+
+  "usuario": "Usuario",
+  "cadastro": "Registro",
+  "edicao": "Edición",
+  "perfilUsuario": "Perfil de Usuario",
+  "tipoUsuario": "Tipo de Usuario",
+  "atualizarPerfil": "Actualizar Perfil",
+  "atualizarSenha": "Actualizar Contraseña",
+  "senhaAtual": "Contraseña Actual",
+  "novaSenha": "Nueva Contraseña",
+  "naoInformado": "No informado",
+
+  "relatorioCodigoBarras": "Informe de Código de Barras",
+  "filtrosRelatorio": "Filtros del Informe",
+  "intervaloData": "Intervalo de Fecha",
+  "gerarPaginaImpressao": "Generar página de impresión",
+  "relatorioColetaLocalIntervaloData": "Informe de recolección por lugar e intervalo de fecha",
+  "gerarPdf": "Generar PDF",
+  "pdfSintetico": "PDF Sintético",
+  "pdfAnalitico": "PDF Analítico",
+  "sintetico": "Sintético",
+  "analitico": "Analítico",
+
+  "diagnosticoErrosPosicionamento": "Diagnóstico de errores de posicionamiento",
+  "incluirTombosSemCoordenadas": "Incluir registros sin coordenadas",
+
+  "motivo": "Motivo",
+  "semCoordenada": "Sin coordenada",
+  "semPoligono": "Sin polígono",
+  "foraPoligono": "Fuera del polígono",
+
+  "alerta": "Alerta"
+}
