@@ -4,15 +4,12 @@ import {
     Divider, Card, Row, Col,
     Button, notification,
     Spin,
-    DatePicker,
     Select,
     Checkbox
 } from 'antd'
-import ptbr from 'antd/es/date-picker/locale/pt_BR'
 import axios from 'axios'
-import moment from 'moment'
 
-import TableCollapseParaLocais from '@/components/TableCollapseParaLocais'
+import TableCollapseParaCidades from '@/components/TableCollapseParaCidades'
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import { LoadingOutlined } from '@ant-design/icons'
@@ -20,15 +17,9 @@ import { LoadingOutlined } from '@ant-design/icons'
 const FormItem = Form.Item
 const { Option } = Select
 
-const dateFormat = 'DD/MM/YYYY'
-const dateLocale = {
-    ...ptbr,
-    lang: {
-        ...ptbr.lang
-    }
-}
 
-class RelatorioLocalColetaScreen extends Component {
+
+class RelatorioTombosPorCidadeScreen extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -37,16 +28,10 @@ class RelatorioLocalColetaScreen extends Component {
             pagina: 1,
             loading: false,
             loadingExport: false,
-            loadingExport2: false,
-            dataInicio: moment().startOf('month')
-                .toISOString(),
-            dataFim: moment().endOf('day')
-                .toISOString(),
-            local: null,
+            cidadeId: null,
             estados: [],
             cidades: [],
             paises: [],
-            locais: [],
             showCoordenadas: false
         }
     }
@@ -55,7 +40,6 @@ class RelatorioLocalColetaScreen extends Component {
         const { pagina } = this.state
         this.requisitaDadosDoRelatorio({}, pagina, null, null, true)
         this.requisitaPaises()
-        this.requisitaListaLocais({ requisicaoInicial: true }, null)
     }
 
     requisitaPaises = async () => {
@@ -89,10 +73,6 @@ class RelatorioLocalColetaScreen extends Component {
 
     formataDadosCidades = () => this.state.cidades.map(item => (
         <Option key={item.id} value={item.id}>{item.nome}</Option>
-    ))
-
-    formataDadosLocaisOption = () => this.state.locais.map(item => (
-        <Option key={item.key} value={item.id}>{item.nome}</Option>
     ))
 
     requisitaEstados = async paisId => {
@@ -135,86 +115,11 @@ class RelatorioLocalColetaScreen extends Component {
         }
     }
 
-    requisitaListaLocais = async (valores, sorter) => {
-        const params = {
-            pagina: 1,
-            limite: 9999
-        }
-
-        if (valores !== undefined) {
-            const { cidade } = valores
-
-            if (cidade) {
-                params.cidade_id = cidade
-            }
-        }
-
-        const campo = sorter && sorter.field ? sorter.field : 'descricao'
-        const ordem = sorter && sorter.order === 'descend' ? 'desc' : 'asc'
-        params.order = `${campo}:${ordem}`
-
-        try {
-            const response = await axios.get('/locais-coleta', { params })
-
-            if (response.status === 200) {
-                let { pais } = valores
-                let { estado } = valores
-                if (valores.requisicaoInicial) {
-                    const bra = this.state.paises.find(p => p.sigla === 'BRA')
-                    if (bra) {
-                        pais = bra.id
-                    }
-                    const parana = this.state.estados.find(e => e.sigla === 'PR')
-                    if (parana) {
-                        estado = parana.id
-                    }
-                }
-
-                const res = this.formataDadosLocais(response.data.resultado, pais, estado)
-                this.setState({
-                    locais: res
-                })
-            } else if (response.status === 400) {
-                this.notificacao('warning', 'Buscar locais', 'Erro ao buscar os locais de coleta.')
-                this.setState({ loading: false })
-            } else {
-                this.notificacao('error', 'Erro', 'Erro do servidor ao buscar os locais de coleta.')
-                this.setState({ loading: false })
-            }
-        } catch (err) {
-            this.setState({ loading: false })
-            this.notificacao('error', 'Erro', 'Falha ao buscar locais de coleta.')
-        }
-    }
-
-    formataDadosLocais = (locais, pais, estado) => locais.map(item => ({
-        key: item.id,
-        nome: item.descricao,
-        pais: item.cidade?.estado?.paise?.nome || '',
-        paisId: item.cidade?.estado?.paise?.id || null,
-        estado: item.cidade?.estado?.nome || '',
-        estadoId: item.cidade?.estado?.id || null,
-        cidade: item.cidade?.nome || ''
-    })).filter(l => {
-        if (pais && estado) {
-            return l.paisId === pais && l.estadoId === estado
-        }
-        if (pais && !estado) {
-            return l.paisId === pais
-        }
-        return true
-    })
-        .filter(v => v.nome)
-
     notificacao = (type, titulo, descricao) => {
         notification[type]({
             message: titulo,
             description: descricao
         })
-    }
-
-    formataDadosDoRelatorio = dados => {
-        return dados
     }
 
     requisitaDadosDoRelatorio = (valores, pg, pageSize, sorter, paraTabela) => {
@@ -225,29 +130,15 @@ class RelatorioLocalColetaScreen extends Component {
         }
 
         if (valores !== undefined) {
-            const { local } = valores
-            const { dataInicio, dataFim } = this.state
-            if (local) {
-                params.local = local
+            const { cidade } = valores
+            if (cidade) {
+                params.cidade = cidade
                 this.setState({
-                    local
+                    cidadeId: cidade
                 })
-            }
-            if (dataInicio && dataFim) {
-                params.dataInicio = dataInicio
-                params.dataFim = dataFim
-                this.setState({
-                    dataInicio,
-                    dataFim
-                })
-            } else {
-                params.dataInicio = moment().startOf('month')
-                    .toISOString()
-                params.dataFim = moment().endOf('day')
-                    .toISOString()
             }
         }
-        axios.get('/relatorio/local-coleta', { params })
+        axios.get('/relatorio/tombos-por-cidade', { params })
             .then(response => {
                 this.setState({
                     loading: false
@@ -255,7 +146,7 @@ class RelatorioLocalColetaScreen extends Component {
                 if (response.status === 200) {
                     const { data } = response
                     this.setState({
-                        dados: this.formataDadosDoRelatorio(data.resultado),
+                        dados: data.resultado,
                         metadados: data.metadados
                     })
                 } else if (response.status === 400) {
@@ -278,45 +169,21 @@ class RelatorioLocalColetaScreen extends Component {
             .catch(this.catchRequestError)
     }
 
-    requisitaExportarPDF = async sintetico => {
-        if (sintetico) {
-            this.setState({
-                loadingExport: true
-            })
-        } else {
-            this.setState({
-                loadingExport2: true
-            })
-        }
+    requisitaExportarPDF = async () => {
+        this.setState({
+            loadingExport: true
+        })
         const params = {}
 
-        if (this.state.local !== undefined || this.state.local !== null) {
-            const { local } = this.state
-
-            if (local) {
-                params.local = local
-            }
-        }
-
-        if (this.state.dataInicio !== undefined || this.state.dataInicio !== null) {
-            const { dataInicio } = this.state
-            if (dataInicio) {
-                params.dataInicio = dataInicio
-            }
-        }
-
-        if (this.state.dataFim !== undefined || this.state.dataFim !== null) {
-            const { dataFim } = this.state
-            if (dataFim) {
-                params.dataFim = dataFim
-            }
+        if (this.state.cidadeId) {
+            params.cidade = this.state.cidadeId
         }
 
         if (this.state.showCoordenadas) {
             params.showCoord = this.state.showCoordenadas
         }
 
-        await axios.post('/relatorio/local-coleta', null, {
+        await axios.post('/relatorio/tombos-por-cidade', null, {
             params,
             responseType: 'arraybuffer'
         }).then(response => {
@@ -329,7 +196,7 @@ class RelatorioLocalColetaScreen extends Component {
                 const formattedDate = new Date().toISOString()
                     .substring(0, 19)
                     .replace(/\D/g, '')
-                anchor.download = `coleta-local-periodo-${formattedDate}.pdf`
+                anchor.download = `tombos-por-cidade-${formattedDate}.pdf`
                 anchor.click()
                 URL.revokeObjectURL(fileUrl)
             } else if (response.status === 400) {
@@ -348,15 +215,9 @@ class RelatorioLocalColetaScreen extends Component {
             })
             .catch(this.catchRequestError)
             .finally(() => {
-                if (sintetico) {
-                    this.setState({
-                        loadingExport: false
-                    })
-                } else {
-                    this.setState({
-                        loadingExport2: false
-                    })
-                }
+                this.setState({
+                    loadingExport: false
+                })
             })
     }
 
@@ -376,18 +237,15 @@ class RelatorioLocalColetaScreen extends Component {
         form.validateFields(this.handleSubmit)
     }
 
-    renderBotaoPDF(sintetico) {
+    renderBotaoPDF() {
         return (
             <Button
                 type="primary"
                 className="login-form-button"
-                onClick={() => this.requisitaExportarPDF(sintetico)}
-                disabled={sintetico ? this.state.loadingExport : this.state.loadingExport2}
+                onClick={() => this.requisitaExportarPDF()}
+                disabled={this.state.loadingExport}
             >
-                {sintetico && this.state.loadingExport
-                    ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ marginRight: 8 }} />
-                    : ''}
-                {!sintetico && this.state.loadingExport2
+                {this.state.loadingExport
                     ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ marginRight: 8 }} />
                     : ''}
                 Gerar PDF
@@ -419,9 +277,6 @@ class RelatorioLocalColetaScreen extends Component {
                                             onChange={value => {
                                                 if (value) {
                                                     this.requisitaEstados(value)
-                                                    this.requisitaListaLocais({
-                                                        pais: value
-                                                    }, null)
                                                 } else {
                                                     this.setState({
                                                         estados: [],
@@ -431,7 +286,6 @@ class RelatorioLocalColetaScreen extends Component {
                                                         estado: { value: undefined },
                                                         cidade: { value: undefined }
                                                     })
-                                                    this.requisitaListaLocais({}, null)
                                                 }
                                             }}
                                         >
@@ -457,18 +311,11 @@ class RelatorioLocalColetaScreen extends Component {
                                             onChange={value => {
                                                 if (value) {
                                                     this.requisitaCidades(value)
-                                                    this.requisitaListaLocais({
-                                                        estado: value,
-                                                        pais: this.props.form.getFieldValue('pais')
-                                                    }, null)
                                                 } else {
                                                     this.setState({ cidades: [] })
                                                     this.props.form.setFields({
                                                         cidade: { value: undefined }
                                                     })
-                                                    this.requisitaListaLocais({
-                                                        pais: this.props.form.getFieldValue('pais')
-                                                    }, null)
                                                 }
                                             }}
                                         >
@@ -491,20 +338,6 @@ class RelatorioLocalColetaScreen extends Component {
                                             allowClear
                                             showSearch
                                             optionFilterProp="children"
-                                            onChange={value => {
-                                                if (value) {
-                                                    this.requisitaListaLocais({
-                                                        cidade: value,
-                                                        estado: this.props.form.getFieldValue('estado'),
-                                                        pais: this.props.form.getFieldValue('pais')
-                                                    }, null)
-                                                } else {
-                                                    this.requisitaListaLocais({
-                                                        estado: this.props.form.getFieldValue('estado'),
-                                                        pais: this.props.form.getFieldValue('pais')
-                                                    }, null)
-                                                }
-                                            }}
                                         >
                                             {this.formataDadosCidades()}
                                         </Select>
@@ -515,76 +348,6 @@ class RelatorioLocalColetaScreen extends Component {
                     </Row>
 
                     <Row gutter={8} style={{ marginTop: 16 }}>
-                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
-                            <Col span={24}>
-                                <span>Local:</span>
-                            </Col>
-                        </Col>
-                    </Row>
-                    <Row gutter={8}>
-                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                            <Col span={24}>
-                                <FormItem>
-                                    {getFieldDecorator('local')(
-                                        <Select
-                                            placeholder="Selecione o local de coleta"
-                                            allowClear
-                                            showSearch
-                                            optionFilterProp="children"
-                                        >
-                                            {this.formataDadosLocaisOption()}
-                                        </Select>
-                                    )}
-                                </FormItem>
-                            </Col>
-                        </Col>
-                    </Row>
-
-                    <Row gutter={8} style={{ marginTop: 16 }}>
-                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
-                            <Col span={24}>
-                                <span>Data inicial:</span>
-                            </Col>
-                            <Col span={24}>
-                                <FormItem>
-                                    {getFieldDecorator('dataInicio')(
-                                        <DatePicker
-                                            defaultValue={moment().startOf('month')}
-                                            style={{ width: '100%' }}
-                                            format="DD/MM/YYYY"
-                                            locale={dateLocale}
-                                            onChange={(a, b) => {
-                                                this.setState({
-                                                    dataInicio: moment(b, dateFormat).toISOString()
-                                                })
-                                            }}
-                                        />
-                                    )}
-                                </FormItem>
-                            </Col>
-                        </Col>
-                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
-                            <Col span={24}>
-                                <span>Data final:</span>
-                            </Col>
-                            <Col span={24}>
-                                <FormItem>
-                                    {getFieldDecorator('dataFim')(
-                                        <DatePicker
-                                            defaultValue={moment().endOf('day')}
-                                            style={{ width: '100%' }}
-                                            format="DD/MM/YYYY"
-                                            locale={dateLocale}
-                                            onChange={a => {
-                                                this.setState({
-                                                    dataFim: a.toISOString()
-                                                })
-                                            }}
-                                        />
-                                    )}
-                                </FormItem>
-                            </Col>
-                        </Col>
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                             <Col span={24}>
                                 <span>Outras opções:</span>
@@ -601,7 +364,6 @@ class RelatorioLocalColetaScreen extends Component {
                                     )}
                                 </FormItem>
                             </Col>
-
                         </Col>
                     </Row>
 
@@ -617,16 +379,12 @@ class RelatorioLocalColetaScreen extends Component {
                                     <FormItem>
                                         <Button
                                             onClick={() => {
-                                                const { form } = this.props
-                                                form.resetFields()
+                                                const { form: formRef } = this.props
+                                                formRef.resetFields()
                                                 this.setState({
                                                     pagina: 1,
                                                     metadados: {},
-                                                    local: null,
-                                                    dataInicio: moment().startOf('month')
-                                                        .toISOString(),
-                                                    dataFim: moment().endOf('day')
-                                                        .toISOString()
+                                                    cidadeId: null
                                                 })
                                                 this.requisitaDadosDoRelatorio({}, 1, null, null, true)
                                             }}
@@ -641,7 +399,7 @@ class RelatorioLocalColetaScreen extends Component {
                                         <Button
                                             type="primary"
                                             htmlType="submit"
-                                            className="login-form-button ant-btn-pesquisar"
+                                            className="login-form-button"
                                         >
                                             Pesquisar
                                         </Button>
@@ -667,7 +425,7 @@ class RelatorioLocalColetaScreen extends Component {
                     }}
                 >
                     <Col xs={24} sm={14} md={18} lg={20} xl={20}>
-                        <h2 style={{ fontWeight: 200 }}>Relatório de Locais de Coleta por Local e Intervalo de Data</h2>
+                        <h2 style={{ fontWeight: 200 }}>Relatório de Tombos por Cidade</h2>
                     </Col>
                     <Col xs={24} sm={10} md={6} lg={4} xl={4} style={{ display: 'flex', justifyContent: 'flex-end' }}>
                         <div style={{ display: 'flex', gap: '10px' }}>
@@ -680,7 +438,7 @@ class RelatorioLocalColetaScreen extends Component {
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
 
-                <TableCollapseParaLocais
+                <TableCollapseParaCidades
                     data={this.state.dados?.locais}
                     loading={this.state.loading}
                     showCoordenadas={this.state.showCoordenadas}
@@ -696,4 +454,4 @@ class RelatorioLocalColetaScreen extends Component {
         )
     }
 }
-export default Form.create()(RelatorioLocalColetaScreen)
+export default Form.create()(RelatorioTombosPorCidadeScreen)

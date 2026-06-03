@@ -316,7 +316,8 @@ class NovoTomboScreen extends Component {
             await Promise.all([
                 this.requisitaDadosFormulario(),
                 this.requisitaReinos(''),
-                this.requisitaFamilias('', this.state.reinoInicial)
+                this.requisitaFamilias('', this.state.reinoInicial),
+                this.requisitaHerbarios('')
             ])
         } catch (error) {
             console.error(error)
@@ -3416,6 +3417,20 @@ class NovoTomboScreen extends Component {
         }
     }
 
+    handleCoordenadaChange = () => {
+        clearTimeout(this._coordenadaDebounceTimer)
+        this._coordenadaDebounceTimer = setTimeout(() => {
+            const { form } = this.props
+            const cidade = form.getFieldValue('cidade')
+            const latitude = form.getFieldValue('latitude')
+            const longitude = form.getFieldValue('longitude')
+
+            if (cidade && latitude != null && latitude !== '' && longitude != null && longitude !== '') {
+                this.verifyCoordenada()
+            }
+        }, 500)
+    }
+
     validacaoModal = () => {
         if (this.state.formColetor) {
             if (
@@ -3764,7 +3779,7 @@ class NovoTomboScreen extends Component {
         return (
             <div>
                 <Row gutter={8}>
-                    <LatLongFormField getFieldDecorator={getFieldDecorator} form={this.props.form} />
+                    <LatLongFormField getFieldDecorator={getFieldDecorator} form={this.props.form} onCoordenadaChange={this.handleCoordenadaChange} />
                 </Row>
                 <br />
                 <Row gutter={8}>
@@ -3877,6 +3892,9 @@ class NovoTomboScreen extends Component {
                         }}
                         loading={fetchingCidades}
                         debounceDelay={100}
+                        getFieldError={getFieldError}
+                        validateStatus={this.state.cidadeStatus}
+                        help={this.state.cidadeHelp}
                     />
                 </Row>
                 <br />
@@ -4927,9 +4945,6 @@ class NovoTomboScreen extends Component {
                         )}
                         herbarios={herbarios}
                         getFieldDecorator={getFieldDecorator}
-                        onSearch={searchText => {
-                            this.requisitaHerbarios(searchText || '')
-                        }}
                         loading={fetchingHerbarios}
                         debounceDelay={100}
                         getFieldError={getFieldError}

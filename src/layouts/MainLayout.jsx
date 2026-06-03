@@ -333,7 +333,7 @@ export default class MainLayout extends Component {
                                             </span>
                                         )}
                                     >
-                                        <Menu.Item key="relatorioInventarioEspeciesMenuItem">
+                                        <Menu.Item key="relatorioPorPeriodoMenuItem">
                                             <Link to="/relatorio-por-periodo">Relatório por Período</Link>
                                         </Menu.Item>
                                         <Menu.Item key="relatorioInventarioEspeciesMenuItem">
@@ -351,6 +351,9 @@ export default class MainLayout extends Component {
                                         <Menu.Item key="relatorioLocaisColetaMenuItem">
                                             <Link to="/relatorio-locais-coleta">Locais de Coleta</Link>
                                         </Menu.Item>
+                                        <Menu.Item key="relatorioTombosPorCidadeMenuItem">
+                                            <Link to="/relatorio-tombos-por-cidade">Tombos por Cidade</Link>
+                                        </Menu.Item>
                                         <Menu.Item key="relatorioQuantidadeFamiliaGenerosMenuItem">
                                             <Link to="/relatorio-quantidade-familia-generos">
                                                 Quantidade por Família e Gênero
@@ -358,6 +361,11 @@ export default class MainLayout extends Component {
                                         </Menu.Item>
                                         <Menu.Item key="relatorioCodigoBarrasMenuItem">
                                             <Link to="/relatorio-codigo-barras">Código de Barras</Link>
+                                        </Menu.Item>
+                                        <Menu.Item key="relatorioCoordenadaForaPoligonoMenuItem">
+                                            <Link to="/relatorio-coordenadas-fora-poligono">
+                                                 Diagnóstico Erros Posicionamento
+                                            </Link>
                                         </Menu.Item>
                                     </SubMenu>
                                 )

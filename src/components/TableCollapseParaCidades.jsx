@@ -25,32 +25,6 @@ const columnsWithCoordenadas = [
         ) || '-'
     },
     {
-        title: 'Subespécie',
-        dataIndex: 'subespecie',
-        key: 'subespecie',
-        render: (text, record) => record?.subespecie
-            ? (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <p style={{ fontStyle: 'italic', margin: 0 }}>{record?.subespecie}</p>
-                    <p style={{ margin: 0 }}>{record?.subespecieAutor}</p>
-                </div>
-            )
-            : '-'
-    },
-    {
-        title: 'Variedade',
-        dataIndex: 'variedade',
-        key: 'variedade',
-        render: (text, record) => record?.variedade
-            ? (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <p style={{ fontStyle: 'italic', margin: 0 }}>{record?.variedade}</p>
-                    <p style={{ margin: 0 }}>{record?.variedadeAutor}</p>
-                </div>
-            )
-            : '-'
-    },
-    {
         title: 'Latitude',
         dataIndex: 'latitude',
         key: 'latitude'
@@ -90,39 +64,13 @@ const columnsWithoutCoordenadas = [
         ) || '-'
     },
     {
-        title: 'Subespécie',
-        dataIndex: 'subespecie',
-        key: 'subespecie',
-        render: (text, record) => record?.subespecie
-            ? (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <p style={{ fontStyle: 'italic', margin: 0 }}>{record?.subespecie}</p>
-                    <p style={{ margin: 0 }}>{record?.subespecieAutor}</p>
-                </div>
-            )
-            : '-'
-    },
-    {
-        title: 'Variedade',
-        dataIndex: 'variedade',
-        key: 'variedade',
-        render: (text, record) => record?.variedade
-            ? (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <p style={{ fontStyle: 'italic', margin: 0 }}>{record?.variedade}</p>
-                    <p style={{ margin: 0 }}>{record?.variedadeAutor}</p>
-                </div>
-            )
-            : '-'
-    },
-    {
         title: 'Nº Tombo',
         dataIndex: 'hcf',
         key: 'hcf'
     }
 ]
 
-const TableCollapseParaLocais = ({ data, loading, showCoordenadas }) => {
+const TableCollapseParaCidades = ({ data, loading, showCoordenadas }) => {
     if (!data) return <div />
     if (data.length === 0) return <div />
     if (loading) {
@@ -182,8 +130,8 @@ const TableCollapseParaLocais = ({ data, loading, showCoordenadas }) => {
         <Collapse bordered={false}>
             {data.map(item => (
                 <Collapse.Panel
-                    header={`${item.local} (${item.municipio}/${getSiglaEstado(item.estado)})`}
-                    key={`${item.local}-${item.municipio}-${item.estado}`}
+                    header={`${item.municipio}/${getSiglaEstado(item.estado)}`}
+                    key={`${item.municipio}-${item.estado}`}
                 >
                     <Table
                         dataSource={item.registros.map(registro => {
@@ -205,12 +153,7 @@ const TableCollapseParaLocais = ({ data, loading, showCoordenadas }) => {
                                 longitude: registro.longitude ? converteDecimalParaGrausMinutosSegundos(registro.longitude, false, true) : null,
                                 datacoleta: dataColeta,
                                 familia: registro?.familia?.nome || '-',
-                                especie: registro?.especy?.nome || '-',
-                                autor: registro?.especy?.autor?.nome || '',
-                                subespecie: registro?.sub_especy?.nome || registro?.sub_especie?.nome || null,
-                                subespecieAutor: registro?.sub_especy?.autor?.nome || registro?.sub_especie?.autor?.nome || '',
-                                variedade: registro?.variedade?.nome || null,
-                                variedadeAutor: registro?.variedade?.autor?.nome || ''
+                                especie: registro?.especy?.nome || '-'
                             }
                         })}
                         columns={showCoordenadas ? columnsWithCoordenadas : columnsWithoutCoordenadas}
@@ -221,4 +164,4 @@ const TableCollapseParaLocais = ({ data, loading, showCoordenadas }) => {
     )
 }
 
-export default TableCollapseParaLocais
+export default TableCollapseParaCidades

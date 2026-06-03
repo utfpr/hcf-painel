@@ -57,6 +57,7 @@ import RelatorioColetorPeriodoScreen from './pages/RelatorioColetorPeriodoScreen
 import RelatorioFamiliasGeneroScreen from './pages/RelatorioFamiliasGeneroScreen'
 import RelatorioInventarioEspeciesScreen from './pages/RelatorioInventarioEspeciesScreen'
 import RelatorioLocalColetaScreen from './pages/RelatorioLocalColetaPeriodoScreen'
+import RelatorioTombosPorCidadeScreen from './pages/RelatorioTombosPorCidadeScreen'
 import RelatorioQuantidadeScreen from './pages/RelatorioQtdPeriodoScreen'
 import ServicosRefloraScreen from './pages/ServicosRefloraScreen'
 import ServicosSpeciesLinkScreen from './pages/ServicosSpeciesLinkScreen'
@@ -65,6 +66,7 @@ import UnauthorizedScreen from './pages/UnauthorizedScreen'
 import PendenciaPagina from './pages/VerPendenciaScreen'
 import RelatorioPorPeriodo from './pages/RelatorioPorPeriodo'
 import DashboardScreen from './pages/DashboardScreen'
+import RelatorioCoordenadaForaPoligonoScreen from './pages/RelatorioCoordenadaForaPoligonoScreen'
 
 interface PrivateRouteProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -268,10 +270,20 @@ export function App() {
         />
         <PrivateRoute
           authed={Boolean(auth.user?.id)}
+          path="/relatorio-tombos-por-cidade"
+          component={RelatorioTombosPorCidadeScreen}
+        />
+        <PrivateRoute
+          authed={Boolean(auth.user?.id)}
           path="/relatorio-quantidade-familia-generos"
           component={RelatorioQuantidadeScreen}
         />
         <Route path="/dashboard" component={DashboardScreen} />
+        <PrivateRoute
+          authed={Boolean(auth.user?.id)}
+          path="/relatorio-coordenadas-fora-poligono"
+          component={RelatorioCoordenadaForaPoligonoScreen}
+        />
       </Switch>
     </MainLayout>
   )
