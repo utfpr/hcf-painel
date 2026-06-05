@@ -8,10 +8,10 @@ void i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    fallbackLng: 'pt',
+    fallbackLng: 'pt-br',
 
     supportedLngs: [
-      'pt',
+      'pt-br',
       'en',
       'es'
     ],
@@ -30,14 +30,9 @@ void i18n
 
     ns: [
       'common',
-      'forms',
       'navigation',
-      'ui',
-      'validation',
-      'placeholder',
-      'taxonomy',
-      'erroMessage',
-      'geolocation'
+      'inicioScreen',
+      'loginLayout'
     ],
     defaultNS: 'common',
 

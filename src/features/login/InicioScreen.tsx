@@ -3,6 +3,7 @@ import React from 'react'
 import {
   Row, Col, Spin, Layout
 } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 import { InicioScreenProps } from '../../@types/components'
 import Header from './components/Header'
@@ -13,6 +14,7 @@ import { useInicioScreenViewModel } from './view-models/useInicioScreenViewModel
 const { Content } = Layout
 
 const InicioScreen: React.FC<InicioScreenProps> = props => {
+  const { t } = useTranslation('inicioScreen')
   const viewModel = useInicioScreenViewModel(props)
 
   const renderLoginView = () => (
@@ -56,7 +58,7 @@ const InicioScreen: React.FC<InicioScreenProps> = props => {
 
   if (viewModel.loading) {
     return (
-      <Spin tip="Carregando...">
+      <Spin tip={t('carregando')}>
         {renderForm()}
       </Spin>
     )
