@@ -100,7 +100,7 @@ const LoginLayout: React.FC<LoginLayoutProps> = props => {
                 className="login-form-button"
                 size="large"
               >
-                {t('loginLayout:entrar')}
+                {t('common:entrar')}
               </Button>
               <br />
               <br />

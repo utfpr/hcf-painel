@@ -14,7 +14,7 @@ import { useInicioScreenViewModel } from './view-models/useInicioScreenViewModel
 const { Content } = Layout
 
 const InicioScreen: React.FC<InicioScreenProps> = props => {
-  const { t } = useTranslation('inicioScreen')
+  const { t } = useTranslation('common')
   const viewModel = useInicioScreenViewModel(props)
 
   const renderLoginView = () => (

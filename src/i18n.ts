@@ -30,9 +30,10 @@ void i18n
 
     ns: [
       'common',
-      'navigation',
-      'inicioScreen',
-      'loginLayout'
+      'loginLayout',
+      'mainLayout',
+      'fundo',
+      'recuperacaoSenha'
     ],
     defaultNS: 'common',
 

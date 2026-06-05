@@ -1,3 +1,7 @@
 {
-    "entrar": "Log in"
+    "entrar": "Log in",
+    "sair": "Log Out",
+    "perfil": "Profile",
+
+  "carregando": "Loading..."
 }

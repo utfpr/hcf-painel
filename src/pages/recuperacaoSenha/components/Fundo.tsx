@@ -1,6 +1,7 @@
 import {
   Row, Col, Menu, Layout
 } from 'antd'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import logoImage from '../../../assets/img/leaves.png'
@@ -12,6 +13,7 @@ type Props = {
 }
 
 export default function Fundo({ children }: Props) {
+  const { t } = useTranslation()
   return (
     <Layout>
       <Header>
@@ -21,12 +23,12 @@ export default function Fundo({ children }: Props) {
           mode="horizontal"
           style={{ lineHeight: '64px' }}
         >
-          <Menu.Item key="1">SOBRE O HCF</Menu.Item>
+          <Menu.Item key="1">{t('fundo:sobreHcf')}</Menu.Item>
           <Menu.Item key="2">
-            <a href="/">DASHBOARD</a>
+            <a href="/">{t('fundo:dashboard')}</a>
           </Menu.Item>
-          <Menu.Item key="3">BUSCAR</Menu.Item>
-          <Menu.Item key="4">CONTATO</Menu.Item>
+          <Menu.Item key="3">{t('fundo:buscar')}</Menu.Item>
+          <Menu.Item key="4">{t('fundo:contato')}</Menu.Item>
         </Menu>
       </Header>
       <Content>
@@ -55,7 +57,7 @@ export default function Fundo({ children }: Props) {
                     style={{ marginBottom: '10px' }}
                   >
                     <span style={{ textAlign: 'center', width: '100%' }}>
-                      HCF - Herbário do Centro Federal
+                      {t('fundo:nomeHerbario')}
                     </span>
                   </Row>
                   <Row justify="center">
