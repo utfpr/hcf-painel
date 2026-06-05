@@ -1,0 +1,57 @@
+{
+  "especies": "Espécies",
+
+  "buscarEspecie": "Buscar Espécie",
+  "nomeEspecie": "Nome da Espécie:",
+  "nomeFamilia": "Nome da Família:",
+  "nomeGenero": "Nome do Gênero:",
+
+  "colunaEspecie": "Espécie",
+  "colunaFamilia": "Família",
+  "colunaGenero": "Gênero",
+  "colunaAutor": "Autor",
+  "colunaAcao": "Ação",
+
+  "confirmarExclusaoEspecie": "Você tem certeza que deseja excluir esta espécie?",
+  "mensagemExclusaoEspecie": "Ao clicar em SIM, a espécie será excluída.",
+
+  "erroCadastrarEspecie": "Houve um problema ao cadastrar a nova espécie, tente novamente.",
+  "erroAtualizarEspecie": "Houve um problema ao atualizar a espécie, tente novamente.",
+  "informarNomeEspecieGenero": "Informe o nome da nova espécie e do gênero.",
+
+  "especieExcluidaSucesso": "A espécie foi excluída com sucesso.",
+  "erroExcluirEspecie": "Erro ao excluir espécie",
+  "erroInesperadoExcluirEspecie": "Ocorreu um erro inesperado ao tentar excluir a espécie.",
+
+  "cadastrarNomeReino": "Nome do Reino:",
+  "cadastrarSelecioneReino": "Selecione um reino",
+  "cadastrarNomeFamilia": "Nome da Família:",
+  "cadastrarSelecioneFamilia": "Selecione uma família",
+  "cadastrarSelecioneReinoPrimeiro": "Selecione um reino primeiro",
+  "cadastrarNomeGenero": "Nome do Gênero:",
+  "cadastrarSelecioneGenero": "Selecione um gênero",
+  "cadastrarSelecioneFamiliaPrimeiro": "Selecione uma família primeiro",
+  "cadastrarNomeEspecie": "Nome da Espécie:",
+  "cadastrarNomeAutor": "Nome do Autor:",
+  "cadastrarSelecioneAutor": "Selecione um autor",
+
+  "buscarEspecies": "Buscar Espécie",
+  "erroBuscarEspecies": "Erro ao buscar as espécies.",
+  "erroServidorBuscarEspecies": "Erro de servidor ao buscar as espécies.",
+  "falhaBuscarEspecies": "Falha ao buscar espécies.",
+
+  "buscarAutores": "Buscar Autores",
+  "erroBuscarAutores": "Erro ao buscar os autores.",
+  "falhaBuscarAutores": "Falha ao buscar autores.",
+
+  "buscarFamilias": "Buscar Famílias",
+  "erroBuscarFamilias": "Erro ao buscar as famílias.",
+  "falhaBuscarFamilias": "Falha ao buscar famílias.",
+
+  "buscarGeneros": "Buscar Gêneros",
+  "erroBuscarGeneros": "Erro ao buscar os gêneros.",
+  "erroServidorBuscarGeneros": "Erro do servidor ao buscar os gêneros.",
+  "falhaBuscarGeneros": "Falha ao buscar gêneros.",
+
+  "buscarGenero": "Buscar Gênero"
+}

@@ -46,7 +46,6 @@
 
   "servicos": "Serviços",
 
-  "tituloFalha": "Falha",
   "erroBuscarDarwinCore": "Houve um problema ao buscar o arquivo Darwin Core, tente novamente.",
   "erroRequisitarDarwinCore": "Houve um problema ao requisitar o arquivo Darwin Core, tente novamente."
 }

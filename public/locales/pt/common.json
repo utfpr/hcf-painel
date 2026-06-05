@@ -1,7 +1,29 @@
 {
-    "entrar": "Entrar",
-    "sair": "Sair",
-    "perfil": "Perfil",
+  "entrar": "Entrar",
+  "sair": "Sair",
+  "perfil": "Perfil",
+  "carregando": "Carregando...",
 
-    "carregando": "Carregando..." 
+  "adicionar": "Adicionar",
+  "excluir": "Excluir",
+  "cadastrar": "Cadastrar",
+  "atualizar": "Atualizar",
+  "limpar": "Limpar",
+  "pesquisar": "Pesquisar",
+
+  "tituloSucesso": "Sucesso",
+  "cadastroRealizadoSucesso": "O cadastro foi realizado com sucesso.",
+  "atualizacaoRealizadaSucesso": "A atualização foi realizada com sucesso.",
+
+  "tituloFalha": "Falha",
+  "erro": "Erro",
+  "error": "Error",
+  "erroExecutarRecaptcha": "Erro ao executar reCAPTCHA:",
+  "erroValidarRecaptcha": "Falha ao validar reCAPTCHA.",
+  "erroComunicacaoServidor": "Falha na comunicação com o servidor.",
+
+  "nenhumResultado": "Nenhum resultado encontrado",
+
+  "sim": "SIM",
+  "nao": "NÃO"
 }

@@ -1,0 +1,39 @@
+{
+    "generos": "Gêneros",
+    "buscarGeneros": "Buscar Gênero",
+
+    "colunaGenero": "Gênero",
+    "colunaFamilia": "Família",
+    "colunaAcao": "Ação",
+
+    "nomeGenero": "Nome do Gênero:",
+    "nomeFamilia": "Nome da Família:",
+    "nomeReino": "Nome do Reino:",
+
+    "placeholderSelecionarReino": "Selecione um reino",
+    "placeholderSelecionarFamilia": "Selecione uma família",
+    "placeholderSelecionarReinoPrimeiro": "Selecione um reino primeiro",
+
+    "confirmarExclusaoTitulo": "Você tem certeza que deseja excluir este gênero?",
+    "confirmarExclusaoDescricao": "Ao clicar em SIM, o gênero será excluído.",
+
+    "buscarGenero": "Buscar gênero",
+
+    "erroBuscarGeneros": "Erro ao buscar os gêneros.",
+    "erroServidorBuscarGeneros": "Erro de servidor ao buscar os gêneros.",
+    "falhaBuscarGeneros": "Falha ao buscar gêneros.",
+
+    "erroBuscarFamilias": "Erro ao buscar as famílias.",
+    "falhaBuscarFamilias": "Falha ao buscar famílias.",
+
+    "falhaBuscarReinos": "Falha ao buscar reinos.",
+
+    "erroCadastro": "Houve um problema ao cadastrar o novo gênero, tente novamente.",
+    "erroAtualizacao": "Houve um problema ao atualizar o gênero, tente novamente.",
+
+    "validacaoNomeGeneroFamilia": "Informe o nome do gênero e da família.",
+
+    "sucessoExclusao": "O gênero foi excluído com sucesso.",
+    "erroExcluirTitulo": "Erro ao excluir gênero",
+    "erroExcluirInesperado": "Ocorreu um erro inesperado ao tentar excluir o gênero."
+}

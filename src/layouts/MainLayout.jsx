@@ -83,9 +83,9 @@ export default class MainLayout extends Component {
                 const { response } = err
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
-                        this.notificacao('warning', t('mainLayout:tituloFalha'), response.data.error.message)
+                        this.notificacao('warning', t('common:tituloFalha'), response.data.error.message)
                     } else {
-                        this.notificacao('error', t('mainLayout:tituloFalha'), t('mainLayout:erroBuscarDarwinCore'))
+                        this.notificacao('error', t('common:tituloFalha'), t('mainLayout:erroBuscarDarwinCore'))
                     }
                     const { error } = response.data
                     throw new Error(error.message)
@@ -94,7 +94,7 @@ export default class MainLayout extends Component {
                 }
             })
             .catch(() => {
-                this.notificacao('error', t('mainLayout:tituloFalha'), t('mainLayout:erroRequisitarDarwinCore'))
+                this.notificacao('error', t('common:tituloFalha'), t('mainLayout:erroRequisitarDarwinCore'))
             })
     }
 

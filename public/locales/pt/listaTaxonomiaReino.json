@@ -1,0 +1,17 @@
+{
+  "reinos": "Reinos",
+  "buscarReino": "Buscar Reino",
+  "nomeReino": "Nome do Reino:",
+  "colunaReino": "Reino",
+  "colunaAcao": "Ação",
+  "informarNomeReino": "Informe o nome do reino:",
+  "confirmacaoExcluirReino": "Você tem certeza que deseja excluir este reino?",
+  "descricaoExcluirReino": "Ao clicar em SIM, o reino será excluído.",
+
+  "erroCadastrarReino": "Houve um problema ao cadastrar o novo reino, tente novamente.",
+  "erroAtualizarReino": "Houve um problema ao atualizar o reino, tente novamente.",
+  "erroNomeReinoObrigatorio": "Informe o nome do reino.",
+
+  "erroReinoJaCadastrada": "Reino já cadastrado.",
+  "erroBuscarReinos": "Falha ao buscar reinos."
+}
