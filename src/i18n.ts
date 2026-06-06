@@ -33,13 +33,15 @@ void i18n
     ns: [
       'common',
       'simpleTableComponent',
+      'totalRecordsFound',
+      'selectedFormField',
       'loginLayout',
       'mainLayout',
       'fundo',
       'recuperacaoSenha',
       'listaTaxonomiaReino',
       'listaTaxonomiaFamilia',
-      'totalRecordsFound'
+      'listaTaxonomiaSubfamilia'
     ],
     defaultNS: 'common',
 

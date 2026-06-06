@@ -26,6 +26,8 @@
         "antd": "4.24.14",
         "axios": "1.5.1",
         "dompurify": "^3.0.8",
+        "i18next": "^26.3.0",
+        "i18next-browser-languagedetector": "^8.2.1",
         "leaflet": "^1.9.4",
         "leaflet-easyprint": "^2.1.9",
         "leaflet.fullscreen": "^3.0.1",

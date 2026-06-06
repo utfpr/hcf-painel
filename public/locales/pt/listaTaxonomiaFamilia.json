@@ -19,6 +19,7 @@
   "erroBuscarFamilias": "Erro ao buscar as famílias.",
   "erroServidorBuscarFamilias": "Erro de servidor ao buscar as famílias.",
   "erroBuscarReinos": "Falha ao buscar reinos.",
+  "notificacaoBuscarFamilia": "Buscar Família",
 
   "confirmacaoExcluirFamilia": "Você tem certeza que deseja excluir esta família?",
   "descricaoExcluirFamilia": "Ao clicar em SIM, a família será excluída.",
@@ -27,3 +28,4 @@
   "erroExcluirFamilia": "Erro ao excluir família",
   "erroExcluirFamiliaInesperado": "Ocorreu um erro inesperado ao tentar excluir a família."
 } 
+ 

@@ -27,12 +27,15 @@
 
   "erroExcluirSubfamilia": "Erro ao excluir subfamília",
   "erroExcluirSubfamiliaInesperado": "Ocorreu um erro inesperado ao tentar excluir a subfamília.",
-  "buscarSubfamiliaErro": "Erro ao buscar as subfamílias.",
+  "buscarSubfamiliaTipoErro": "Buscar subfamília",
+  "buscarSubfamiliaErroMensagem": "Erro ao buscar as subfamílias.",
   "erroServidorBuscarSubfamilias": "Erro do servidor ao buscar as subfamílias.",
   "erroBuscarSubfamilias": "Falha ao buscar subfamílias.",
   "erroCadastroSubfamilia": "Houve um problema ao cadastrar a nova subfamília, tente novamente.",
   "erroAtualizarSubfamilia": "Houve um problema ao atualizar a subfamília, tente novamente.",
   "erroBuscarFamilias": "Erro ao buscar as famílias.",
   "erroFalhaBuscarFamilias": "Falha ao buscar famílias.",
-  "erroFalhaBuscarReinos": "Falha ao buscar reinos."
+  "erroFalhaBuscarReinos": "Falha ao buscar reinos.",
+  "buscarFamiliaTipoErro": "Buscar famílias",
+  "buscarFamiliaErroMensagem": "Erro ao buscar as famílias"
 }

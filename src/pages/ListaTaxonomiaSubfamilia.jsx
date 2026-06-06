@@ -5,6 +5,7 @@ import {
     Select, Input, Button, notification
 } from 'antd'
 import axios from 'axios'
+import { withTranslation } from 'react-i18next'
 
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { recaptchaKey } from '@/config/api'
@@ -19,36 +20,6 @@ import SelectedFormField from './tombos/components/SelectedFormFiled'
 const { confirm } = Modal
 const FormItem = Form.Item
 const { Option } = Select
-
-const columns = [
-    {
-        title: 'Subfamília',
-        type: 'text',
-        key: 'subfamilia',
-        dataIndex: 'subfamilia',
-        width: '23.25%',
-        sorter: true
-    },
-    {
-        title: 'Família',
-        key: 'familia',
-        dataIndex: 'familia',
-        width: '23.25%',
-        sorter: true
-    },
-    {
-        title: 'Autor',
-        key: 'autor',
-        dataIndex: 'autor',
-        width: '23.25%',
-        sorter: true
-    },
-    {
-        title: 'Ação',
-        key: 'acao',
-        width: 100
-    }
-]
 
 class ListaTaxonomiaSubfamilia extends Component {
     constructor(props) {
@@ -81,7 +52,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                 })
                 if (response.status === 204) {
                     this.requisitaListaSubfamilia(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir', 'A subfamília foi excluída com sucesso.')
+                    this.notificacao('success', this.props.t('common:excluir'), this.props.t('listaTaxonomiaSubfamilia:sucessoExcluirSubfamilia'))
                 }
             })
             .catch(err => {
@@ -92,13 +63,13 @@ class ListaTaxonomiaSubfamilia extends Component {
                 if (response && response.data) {
                     const { error } = response.data
                     if (error && error.code) {
-                        this.notificacao('error', 'Erro ao excluir subfamília', error.code)
+                        this.notificacao('error', this.props.t('listaTaxonomiaSubfamilia:erroExcluirSubfamilia'), error.code)
                     } else {
-                        this.notificacao('error', 'Erro ao excluir subfamília', 'Ocorreu um erro inesperado ao tentar excluir a subfamília.')
+                        this.notificacao('error', this.props.t('listaTaxonomiaSubfamilia:erroExcluirSubfamilia'), this.props.t('listaTaxonomiaSubfamilia:erroExcluirSubfamiliaInesperado'))
                     }
                     console.error(error)
                 } else {
-                    this.notificacao('error', 'Erro ao excluir subfamília', 'Falha na comunicação com o servidor.')
+                    this.notificacao('error', this.props.t('listaTaxonomiaSubfamilia:erroExcluirSubfamilia'), this.props.t('common:erroComunicacaoServidor'))
                 }
             })
     }
@@ -114,11 +85,11 @@ class ListaTaxonomiaSubfamilia extends Component {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this
         confirm({
-            title: 'Você tem certeza que deseja excluir esta subfamília?',
-            content: 'Ao clicar em SIM, a subfamília será excluída.',
-            okText: 'SIM',
+            title: this.props.t('listaTaxonomiaSubfamilia:confirmarExcluirSubfamilia'),
+            content: this.props.t('listaTaxonomiaSubfamilia:descricaoExcluirSubfamilia'),
+            okText: this.props.t('common:sim'),
             okType: 'danger',
-            cancelText: 'NÃO',
+            cancelText: this.props.t('common:nao'),
             onOk() {
                 self.requisitaExclusao(id)
             },
@@ -145,7 +116,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                             this.setState({
                                 visibleModal: true,
                                 id: item.id,
-                                titulo: 'Atualizar',
+                                titulo: this.props.t('common:atualizar'),
                                 reinoSelecionado: reinoId
                             })
 
@@ -222,10 +193,10 @@ class ListaTaxonomiaSubfamilia extends Component {
                     loading: false
                 })
             } else if (response.status === 400) {
-                this.notificacao('warning', 'Buscar subfamília', 'Erro ao buscar as subfamílias.')
+                this.notificacao('warning', this.props.t('listaTaxonomiaSubfamilia:buscarSubfamiliaTipoErro'), this.props.t('listaTaxonomiaSubfamilia:buscarSubfamiliaErroMensagem'))
                 this.setState({ loading: false })
             } else {
-                this.notificacao('error', 'Erro', 'Erro do servidor ao buscar as subfamílias.')
+                this.notificacao('error', this.props.t('common:erro'), this.props.t('listaTaxonomiaSubfamilia:erroServidorBuscarSubfamilias'))
                 this.setState({ loading: false })
             }
         } catch (err) {
@@ -235,7 +206,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                 const { error } = response.data
                 console.error(error.message)
             }
-            this.notificacao('error', 'Erro', 'Falha ao buscar subfamílias.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('listaTaxonomiaSubfamilia:erroBuscarSubfamilias'))
         }
     }
 
@@ -268,11 +239,11 @@ class ListaTaxonomiaSubfamilia extends Component {
                 })
                 if (response.status === 204) {
                     this.requisitaListaSubfamilia()
-                    this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                    this.openNotificationWithIcon('success', this.props.t('common:sucesso'), this.props.t('common:cadastroRealizadoSucesso'))
                 } else if (response.status === 400) {
-                    this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                    this.openNotificationWithIcon('warning', this.props.t('common:falha'), response.data.error.message)
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar a nova subfamília, tente novamente.')
+                    this.openNotificationWithIcon('error', this.props.t('common:falha'), this.props.t('listaTaxonomiaSubfamilia:erroCadastroSubfamilia'))
                 }
             })
             .catch(err => {
@@ -312,11 +283,11 @@ class ListaTaxonomiaSubfamilia extends Component {
                 })
                 if (response.status === 204) {
                     this.requisitaListaSubfamilia()
-                    this.openNotificationWithIcon('success', 'Sucesso', 'A atualização foi realizada com sucesso.')
+                    this.openNotificationWithIcon('success', this.props.t('common:sucesso'), this.props.t('common:atualizacaoRealizadaSucesso'))
                 } else if (response.status === 400) {
-                    this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                    this.openNotificationWithIcon('warning', this.props.t('common:falha'), response.data.error.message)
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao atualizar a subfamília, tente novamente.')
+                    this.openNotificationWithIcon('error', this.props.t('common:falha'), this.props.t('listaTaxonomiaSubfamilia:erroAtualizarSubfamilia'))
                 }
                 this.props.form.setFields({
                     nomeSubfamilia: {
@@ -350,7 +321,7 @@ class ListaTaxonomiaSubfamilia extends Component {
 
                         this.setState({
                             visibleModal: true,
-                            titulo: 'Cadastrar',
+                            titulo: this.props.t('common:cadastrar'),
                             id: -1,
                             reinoSelecionado: null,
                             familias: []
@@ -358,7 +329,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                     }}
                     style={{ backgroundColor: '#5CB85C', borderColor: '#5CB85C', width: '100%' }}
                 >
-                    Adicionar
+                    {this.props.t('common:adicionar')}
                 </Button>
 
             )
@@ -399,7 +370,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                 const { error } = response.data
                 console.error(error.message)
             }
-            this.notificacao('error', 'Erro', 'Falha ao buscar reinos.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('listaTaxonomiaSubfamilia:erroFalhaBuscarReinos'))
         }
         return []
     }
@@ -431,7 +402,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                 })
                 return response.data.resultado
             } else {
-                this.notificacao('warning', 'Buscar famílias', 'Erro ao buscar as famílias.')
+                this.notificacao('warning', this.props.t('listaTaxonomiaSubfamilia:buscarFamiliaTipoErro'), this.props.t('listaTaxonomiaSubfamilia:buscarFamiliaErroMensagem'))
                 this.setState({ fetchingFamilias: false })
             }
         } catch (err) {
@@ -441,19 +412,19 @@ class ListaTaxonomiaSubfamilia extends Component {
                 const { error } = response.data
                 console.error(error.message)
             }
-            this.notificacao('error', 'Erro', 'Falha ao buscar famílias.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('listaTaxonomiaSubfamilia:erroFalhaBuscarFamilias'))
         }
         return []
     }
 
     renderPainelBusca(getFieldDecorator) {
         return (
-            <Card title="Buscar subfamília">
+            <Card title={this.props.t('listaTaxonomiaSubfamilia:buscarSubfamilia')}>
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Nome da subfamília:</span>
+                                <span>{this.props.t('listaTaxonomiaSubfamilia:buscarNomeSubfamilia')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
@@ -466,7 +437,7 @@ class ListaTaxonomiaSubfamilia extends Component {
 
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Nome da família:</span>
+                                <span>{this.props.t('listaTaxonomiaSubfamilia:buscarNomeFamilia')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
@@ -501,7 +472,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                                             }}
                                             className="login-form-button"
                                         >
-                                            Limpar
+                                            {this.props.t('common:limpar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -512,7 +483,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                                             htmlType="submit"
                                             className="login-form-button ant-btn-pesquisar"
                                         >
-                                            Pesquisar
+                                            {this.props.t('common:pesquisar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -536,6 +507,36 @@ class ListaTaxonomiaSubfamilia extends Component {
         const { getFieldDecorator } = this.props.form
         const { fetchingFamilias, fetchingReinos, reinoSelecionado } = this.state
 
+        const columns = [
+            {
+                title: this.props.t('listaTaxonomiaSubfamilia:colunaSubfamilia'),
+                type: 'text',
+                key: 'subfamilia',
+                dataIndex: 'subfamilia',
+                width: '23.25%',
+                sorter: true
+            },
+            {
+                title: this.props.t('listaTaxonomiaSubfamilia:colunaFamilia'),
+                key: 'familia',
+                dataIndex: 'familia',
+                width: '23.25%',
+                sorter: true
+            },
+            {
+                title: this.props.t('listaTaxonomiaSubfamilia:colunaAutor'),
+                key: 'autor',
+                dataIndex: 'autor',
+                width: '23.25%',
+                sorter: true
+            },
+            {
+                title: this.props.t('listaTaxonomiaSubfamilia:colunaAcao'),
+                key: 'acao',
+                width: 100
+            }
+        ]
+
         return (
             <div>
                 <Form onSubmit={this.handleSubmitForm}>
@@ -558,12 +559,12 @@ class ListaTaxonomiaSubfamilia extends Component {
                                 if (this.props.form.getFieldsValue().nomeFamilia && this.props.form.getFieldsValue().nomeSubfamilia && this.props.form.getFieldsValue().nomeSubfamilia.trim() !== '') {
                                     this.cadastraNovaSubfamilia()
                                 } else {
-                                    this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da nova subfamília e da família.')
+                                    this.openNotificationWithIcon('warning', this.props.t('common:falha'), this.props.t('listaTaxonomiaSubfamilia:validacaoInformarSubfamiliaEFamilia'))
                                 }
                             } else if (this.props.form.getFieldsValue().nomeFamilia && this.props.form.getFieldsValue().nomeSubfamilia && this.props.form.getFieldsValue().nomeSubfamilia.trim() !== '') {
                                 this.atualizaSubfamilia()
                             } else {
-                                this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da nova subfamília e da família.')
+                                this.openNotificationWithIcon('warning', this.props.t('common:falha'), this.props.t('listaTaxonomiaSubfamilia:validacaoInformarSubfamiliaEFamilia'))
                             }
 
                             this.props.form.resetFields()
@@ -578,8 +579,8 @@ class ListaTaxonomiaSubfamilia extends Component {
                         <div>
                             <Row gutter={8}>
                                 <SelectedFormField
-                                    title="Nome do reino:"
-                                    placeholder="Selecione um reino"
+                                    title={this.props.t('listaTaxonomiaSubfamilia:cadastrarNomeReino')}
+                                    placeholder={this.props.t('listaTaxonomiaSubfamilia:placeholderSelecionarReino')}
                                     fieldName="nomeReino"
                                     getFieldDecorator={getFieldDecorator}
                                     onSearch={searchText => {
@@ -597,7 +598,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                                     }}
                                     others={{
                                         loading: fetchingReinos,
-                                        notFoundContent: fetchingReinos ? <Spin size="small" /> : 'Nenhum resultado encontrado',
+                                        notFoundContent: fetchingReinos ? <Spin size="small" /> : this.props.t('common:nenhumResultadoEncontrado'),
                                         allowClear: true
                                     }}
                                     debounceDelay={200}
@@ -612,8 +613,8 @@ class ListaTaxonomiaSubfamilia extends Component {
                             </Row>
                             <Row gutter={8} style={{ marginTop: 16 }}>
                                 <SelectedFormField
-                                    title="Nome da família:"
-                                    placeholder={reinoSelecionado ? 'Selecione uma família' : 'Selecione um reino primeiro'}
+                                    title={this.props.t('listaTaxonomiaSubfamilia:cadastrarNomeFamilia')}
+                                    placeholder={reinoSelecionado ? this.props.t('listaTaxonomiaSubfamilia:placeholderSelecionarFamilia') : this.props.t('listaTaxonomiaSubfamilia:placeholderSelecionarReinoPrimeiro')}
                                     fieldName="nomeFamilia"
                                     getFieldDecorator={getFieldDecorator}
                                     onSearch={searchText => {
@@ -623,7 +624,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                                     }}
                                     others={{
                                         loading: fetchingFamilias,
-                                        notFoundContent: fetchingFamilias ? <Spin size="small" /> : 'Nenhum resultado encontrado',
+                                        notFoundContent: fetchingFamilias ? <Spin size="small" /> : this.props.t('common:nenhumResultadoEncontrado'),
                                         allowClear: true
                                     }}
                                     disabled={!reinoSelecionado}
@@ -639,7 +640,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                             </Row>
                             <Row gutter={8} style={{ marginTop: 16 }}>
                                 <Col span={24}>
-                                    <span>Nome da subfamília:</span>
+                                    <span>{this.props.t('listaTaxonomiaSubfamilia:cadastrarNomeSubfamilia')}</span>
                                 </Col>
                             </Row>
                             <Row gutter={8}>
@@ -658,7 +659,7 @@ class ListaTaxonomiaSubfamilia extends Component {
 
                 <Row gutter={24} style={{ marginBottom: '20px' }}>
                     <Col xs={24} sm={14} md={18} lg={20} xl={20}>
-                        <h2 style={{ fontWeight: 200 }}>Subfamílias</h2>
+                        <h2 style={{ fontWeight: 200 }}>{this.props.t('listaTaxonomiaSubfamilia:subfamilias')}</h2>
                     </Col>
                     <Col xs={24} sm={10} md={6} lg={4} xl={4}>
                         {this.renderAdd()}
@@ -692,4 +693,6 @@ class ListaTaxonomiaSubfamilia extends Component {
         )
     }
 }
-export default Form.create()(ListaTaxonomiaSubfamilia)
+const ListaTaxonomiaSubfamiliaWithForm = Form.create()(ListaTaxonomiaSubfamilia)
+
+export default withTranslation()(ListaTaxonomiaSubfamiliaWithForm)
