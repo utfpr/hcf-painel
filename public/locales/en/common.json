@@ -27,7 +27,7 @@
   "erroValidarRecaptcha": "Failed to validate reCAPTCHA.",
   "erroComunicacaoServidor": "Failed to communicate with the server.",
 
-  "nenhumResultado": "No results found",
+  "nenhumResultadoEncontrado": "No results found",
 
   "sim": "YES",
   "nao": "NO"

@@ -5,9 +5,9 @@ import {
     Divider
 } from 'antd'
 import axios from 'axios'
+import { withTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
-import i18n from '@/i18n'
 import {
     BarsOutlined, DatabaseOutlined, DesktopOutlined, FileTextOutlined, EnvironmentOutlined,
     FlagOutlined, LogoutOutlined, MenuUnfoldOutlined, SearchOutlined, TeamOutlined,
@@ -16,8 +16,6 @@ import {
 
 import logoImage from '../assets/img/logo_branca.png'
 import { EnvBadge } from '../components/EnvBadge'
-
-const t = i18n.t
 
 const { Header, Content, Sider } = Layout
 const { SubMenu } = Menu
@@ -41,7 +39,7 @@ const SERVICOS_RESOURCES = [
     'SpeciesLink'
 ]
 
-export default class MainLayout extends Component {
+class MainLayout extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -83,9 +81,9 @@ export default class MainLayout extends Component {
                 const { response } = err
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
-                        this.notificacao('warning', t('common:tituloFalha'), response.data.error.message)
+                        this.notificacao('warning', this.props.t('common:tituloFalha'), response.data.error.message)
                     } else {
-                        this.notificacao('error', t('common:tituloFalha'), t('mainLayout:erroBuscarDarwinCore'))
+                        this.notificacao('error', this.props.t('common:tituloFalha'), this.props.t('mainLayout:erroBuscarDarwinCore'))
                     }
                     const { error } = response.data
                     throw new Error(error.message)
@@ -94,7 +92,7 @@ export default class MainLayout extends Component {
                 }
             })
             .catch(() => {
-                this.notificacao('error', t('common:tituloFalha'), t('mainLayout:erroRequisitarDarwinCore'))
+                this.notificacao('error', this.props.t('common:tituloFalha'), this.props.t('mainLayout:erroRequisitarDarwinCore'))
             })
     }
 
@@ -129,7 +127,7 @@ export default class MainLayout extends Component {
                                     <Menu.Item key="tomboMenuItem">
                                         <Link to="/tombos">
                                             <DesktopOutlined />
-                                            <span>{t('mainLayout:tombos')}</span>
+                                            <span>{this.props.t('mainLayout:tombos')}</span>
                                         </Link>
                                     </Menu.Item>
                                 )
@@ -141,63 +139,63 @@ export default class MainLayout extends Component {
                                         title={(
                                             <span>
                                                 <DesktopOutlined />
-                                                <span>{t('mainLayout:taxonomia')}</span>
+                                                <span>{this.props.t('mainLayout:taxonomia')}</span>
                                             </span>
                                         )}
                                     >
                                         {this.props.auth.can('read', 'Reino')
                                             ? (
                                                     <Menu.Item key="reinoMenuItem">
-                                                        <Link to="/reinos">{t('mainLayout:reinos')}</Link>
+                                                        <Link to="/reinos">{this.props.t('mainLayout:reinos')}</Link>
                                                     </Menu.Item>
                                                 )
                                             : null}
                                         {this.props.auth.can('read', 'Familia')
                                             ? (
                                                     <Menu.Item key="familiaMenuItem">
-                                                        <Link to="/familias">{t('mainLayout:familias')}</Link>
+                                                        <Link to="/familias">{this.props.t('mainLayout:familias')}</Link>
                                                     </Menu.Item>
                                                 )
                                             : null}
                                         {this.props.auth.can('read', 'Subfamilia')
                                             ? (
                                                     <Menu.Item key="subfamiliaMenuItem">
-                                                        <Link to="/subfamilias">{t('mainLayout:subfamilias')}</Link>
+                                                        <Link to="/subfamilias">{this.props.t('mainLayout:subfamilias')}</Link>
                                                     </Menu.Item>
                                                 )
                                             : null}
                                         {this.props.auth.can('read', 'Genero')
                                             ? (
                                                     <Menu.Item key="generoMenuItem">
-                                                        <Link to="/generos">{t('mainLayout:generos')}</Link>
+                                                        <Link to="/generos">{this.props.t('mainLayout:generos')}</Link>
                                                     </Menu.Item>
                                                 )
                                             : null}
                                         {this.props.auth.can('read', 'Especie')
                                             ? (
                                                     <Menu.Item key="especieMenuItem">
-                                                        <Link to="/especies">{t('mainLayout:especies')}</Link>
+                                                        <Link to="/especies">{this.props.t('mainLayout:especies')}</Link>
                                                     </Menu.Item>
                                                 )
                                             : null}
                                         {this.props.auth.can('read', 'Subespecie')
                                             ? (
                                                     <Menu.Item key="subespecieMenuItem">
-                                                        <Link to="/subespecies">{t('mainLayout:subespecies')}</Link>
+                                                        <Link to="/subespecies">{this.props.t('mainLayout:subespecies')}</Link>
                                                     </Menu.Item>
                                                 )
                                             : null}
                                         {this.props.auth.can('read', 'Variedade')
                                             ? (
                                                     <Menu.Item key="variedadeMenuItem">
-                                                        <Link to="/variedades">{t('mainLayout:variedades')}</Link>
+                                                        <Link to="/variedades">{this.props.t('mainLayout:variedades')}</Link>
                                                     </Menu.Item>
                                                 )
                                             : null}
                                         {this.props.auth.can('read', 'Autor')
                                             ? (
                                                     <Menu.Item key="autorMenuItem">
-                                                        <Link to="/autores">{t('mainLayout:autores')}</Link>
+                                                        <Link to="/autores">{this.props.t('mainLayout:autores')}</Link>
                                                     </Menu.Item>
                                                 )
                                             : null}
@@ -209,21 +207,21 @@ export default class MainLayout extends Component {
                             title={(
                                 <span>
                                     <EnvironmentOutlined />
-                                    <span>{t('mainLayout:locais')}</span>
+                                    <span>{this.props.t('mainLayout:locais')}</span>
                                 </span>
                             )}
                         >
                             <Menu.Item key="estadoMenuItem">
-                                <Link to="/estados">{t('mainLayout:estados')}</Link>
+                                <Link to="/estados">{this.props.t('mainLayout:estados')}</Link>
                             </Menu.Item>
                             <Menu.Item key="cidadeMenuItem">
-                                <Link to="/cidades">{t('mainLayout:cidades')}</Link>
+                                <Link to="/cidades">{this.props.t('mainLayout:cidades')}</Link>
                             </Menu.Item>
                             {this.props.auth.loggedIn
                                 ? (
                                         <Menu.Item key="localColetaMenuItem">
                                             <Link to="/locais-coleta">
-                                                <span>{t('mainLayout:localColeta')}</span>
+                                                <span>{this.props.t('mainLayout:localColeta')}</span>
                                             </Link>
                                         </Menu.Item>
                                     )
@@ -234,7 +232,7 @@ export default class MainLayout extends Component {
                                     <Menu.Item key="remessaMenuItem">
                                         <Link to="/remessas">
                                             <DatabaseOutlined />
-                                            <span>{t('mainLayout:remessas')}</span>
+                                            <span>{this.props.t('mainLayout:remessas')}</span>
                                         </Link>
                                     </Menu.Item>
                                 )
@@ -244,7 +242,7 @@ export default class MainLayout extends Component {
                                     <Menu.Item key="pendenciaMenuItem">
                                         <Link to="/pendencias">
                                             <BarsOutlined />
-                                            <span>{t('mainLayout:pendencias')}</span>
+                                            <span>{this.props.t('mainLayout:pendencias')}</span>
                                         </Link>
                                     </Menu.Item>
                                 )
@@ -254,7 +252,7 @@ export default class MainLayout extends Component {
                                     <Menu.Item key="usuarioMenuItem">
                                         <Link to="/usuarios">
                                             <TeamOutlined />
-                                            <span>{t('mainLayout:usuarios')}</span>
+                                            <span>{this.props.t('mainLayout:usuarios')}</span>
                                         </Link>
                                     </Menu.Item>
                                 )
@@ -264,7 +262,7 @@ export default class MainLayout extends Component {
                                     <Menu.Item key="identificadorMenuItem">
                                         <Link to="/identificadores">
                                             <TeamOutlined />
-                                            <span>{t('mainLayout:identificadores')}</span>
+                                            <span>{this.props.t('mainLayout:identificadores')}</span>
                                         </Link>
                                     </Menu.Item>
                                 )
@@ -274,7 +272,7 @@ export default class MainLayout extends Component {
                                     <Menu.Item key="coletorMenuItem">
                                         <Link to="/coletores">
                                             <TeamOutlined />
-                                            <span>{t('mainLayout:coletores')}</span>
+                                            <span>{this.props.t('mainLayout:coletores')}</span>
                                         </Link>
                                     </Menu.Item>
                                 )
@@ -284,7 +282,7 @@ export default class MainLayout extends Component {
                                     <Menu.Item key="herbarioMenuItem">
                                         <Link to="/herbarios">
                                             <FlagOutlined />
-                                            <span>{t('mainLayout:herbarios')}</span>
+                                            <span>{this.props.t('mainLayout:herbarios')}</span>
                                         </Link>
                                     </Menu.Item>
                                 )
@@ -296,13 +294,13 @@ export default class MainLayout extends Component {
                                         title={(
                                             <span>
                                                 <FileTextOutlined />
-                                                <span>{t('mainLayout:fichas')}</span>
+                                                <span>{this.props.t('mainLayout:fichas')}</span>
                                             </span>
                                         )}
                                     >
                                         <Menu.Item key="fichaTomboMenuItem">
                                             {' '}
-                                            <Link to="/fichas/tombos">{t('mainLayout:fichaTombo')}</Link>
+                                            <Link to="/fichas/tombos">{this.props.t('mainLayout:fichaTombo')}</Link>
                                             {' '}
                                         </Menu.Item>
                                     </SubMenu>
@@ -314,15 +312,15 @@ export default class MainLayout extends Component {
                             title={(
                                 <span>
                                     <EnvironmentOutlined />
-                                    <span>{t('mainLayout:geolocalizacao')}</span>
+                                    <span>{this.props.t('mainLayout:geolocalizacao')}</span>
                                 </span>
                             )}
                         >
                             <Menu.Item key="mapaMenuItem">
-                                <Link to="/mapa">{t('mainLayout:mapaCompleto')}</Link>
+                                <Link to="/mapa">{this.props.t('mainLayout:mapaCompleto')}</Link>
                             </Menu.Item>
                             <Menu.Item key="filtroAvancadoMenuItem">
-                                <Link to="/filtros">{t('mainLayout:filtrosAvancados')}</Link>
+                                <Link to="/filtros">{this.props.t('mainLayout:filtrosAvancados')}</Link>
                             </Menu.Item>
                         </SubMenu>
                         {this.props.auth.loggedIn
@@ -332,42 +330,42 @@ export default class MainLayout extends Component {
                                         title={(
                                             <span>
                                                 <SnippetsOutlined />
-                                                <span>{t('mainLayout:relatorios')}</span>
+                                                <span>{this.props.t('mainLayout:relatorios')}</span>
                                             </span>
                                         )}
                                     >
                                         <Menu.Item key="relatorioPorPeriodoMenuItem">
-                                            <Link to="/relatorio-por-periodo">{t('mainLayout:relatorioPorPeriodo')}</Link>
+                                            <Link to="/relatorio-por-periodo">{this.props.t('mainLayout:relatorioPorPeriodo')}</Link>
                                         </Menu.Item>
                                         <Menu.Item key="relatorioInventarioEspeciesMenuItem">
-                                            <Link to="/relatorio-inventario-especies">{t('mainLayout:inventarioEspecies')}</Link>
+                                            <Link to="/relatorio-inventario-especies">{this.props.t('mainLayout:inventarioEspecies')}</Link>
                                         </Menu.Item>
                                         <Menu.Item key="relatorioColetaDataMenuItem">
-                                            <Link to="/relatorio-coleta-data">{t('mainLayout:coletaIntervaloData')}</Link>
+                                            <Link to="/relatorio-coleta-data">{this.props.t('mainLayout:coletaIntervaloData')}</Link>
                                         </Menu.Item>
                                         <Menu.Item key="relatorioColetorDataMenuItem">
-                                            <Link to="/relatorio-coletor-data">{t('mainLayout:coletaColetorIntervaloData')}</Link>
+                                            <Link to="/relatorio-coletor-data">{this.props.t('mainLayout:coletaColetorIntervaloData')}</Link>
                                         </Menu.Item>
                                         <Menu.Item key="relatorioFamiliasGeneroMenuItem">
-                                            <Link to="/relatorio-familias-genero">{t('mainLayout:familiasGeneros')}</Link>
+                                            <Link to="/relatorio-familias-genero">{this.props.t('mainLayout:familiasGeneros')}</Link>
                                         </Menu.Item>
                                         <Menu.Item key="relatorioLocaisColetaMenuItem">
-                                            <Link to="/relatorio-locais-coleta">{t('mainLayout:locaisColeta')}</Link>
+                                            <Link to="/relatorio-locais-coleta">{this.props.t('mainLayout:locaisColeta')}</Link>
                                         </Menu.Item>
                                         <Menu.Item key="relatorioTombosPorCidadeMenuItem">
-                                            <Link to="/relatorio-tombos-por-cidade">{t('mainLayout:tombosPorCidade')}</Link>
+                                            <Link to="/relatorio-tombos-por-cidade">{this.props.t('mainLayout:tombosPorCidade')}</Link>
                                         </Menu.Item>
                                         <Menu.Item key="relatorioQuantidadeFamiliaGenerosMenuItem">
                                             <Link to="/relatorio-quantidade-familia-generos">
-                                                {t('mainLayout:quantidadeFamiliaGenero')}
+                                                {this.props.t('mainLayout:quantidadeFamiliaGenero')}
                                             </Link>
                                         </Menu.Item>
                                         <Menu.Item key="relatorioCodigoBarrasMenuItem">
-                                            <Link to="/relatorio-codigo-barras">{t('mainLayout:codigoBarras')}</Link>
+                                            <Link to="/relatorio-codigo-barras">{this.props.t('mainLayout:codigoBarras')}</Link>
                                         </Menu.Item>
                                         <Menu.Item key="relatorioCoordenadaForaPoligonoMenuItem">
                                             <Link to="/relatorio-coordenadas-fora-poligono">
-                                                {t('mainLayout:diagnosticoErrosPosicionamento')}
+                                                {this.props.t('mainLayout:diagnosticoErrosPosicionamento')}
                                             </Link>
                                         </Menu.Item>
                                     </SubMenu>
@@ -378,7 +376,7 @@ export default class MainLayout extends Component {
                                     <Menu.Item key="exportacaoMenuItem">
                                         <Link to="/exportacao">
                                             <DesktopOutlined />
-                                            <span>{t('mainLayout:exportacao')}</span>
+                                            <span>{this.props.t('mainLayout:exportacao')}</span>
                                         </Link>
                                     </Menu.Item>
                                 )
@@ -392,7 +390,7 @@ export default class MainLayout extends Component {
                                                 {' '}
                                                 <SearchOutlined />
                                                 {' '}
-                                                <span>{t('mainLayout:servicos')}</span>
+                                                <span>{this.props.t('mainLayout:servicos')}</span>
                                                 {' '}
                                             </span>
                                         )}
@@ -422,7 +420,7 @@ export default class MainLayout extends Component {
                                             onClick={this.props.logOut}
                                         >
                                             <LogoutOutlined />
-                                            <span>{t('common:sair')}</span>
+                                            <span>{this.props.t('common:sair')}</span>
                                         </Link>
                                     </Menu.Item>
                                 )
@@ -444,7 +442,7 @@ export default class MainLayout extends Component {
                                             <Divider type="vertical" />
 
                                             <Link to="/perfil">
-                                                <Button size="small">{t('common:perfil')}</Button>
+                                                <Button size="small">{this.props.t('common:perfil')}</Button>
                                             </Link>
 
                                             <Divider type="vertical" />
@@ -453,13 +451,13 @@ export default class MainLayout extends Component {
                                                 to="/inicio"
                                                 onClick={this.props.logOut}
                                             >
-                                                <Button size="small">{t('common:sair')}</Button>
+                                                <Button size="small">{this.props.t('common:sair')}</Button>
                                             </Link>
                                         </div>
                                     )
                                 : (
                                         <Link to="/inicio">
-                                            <Button>{t('common:sair')}</Button>
+                                            <Button>{this.props.t('common:sair')}</Button>
                                         </Link>
                                     )}
                         </Row>
@@ -493,3 +491,6 @@ export default class MainLayout extends Component {
         )
     }
 }
+
+const MainLayoutWithTranslation = withTranslation()(MainLayout)
+export default MainLayoutWithTranslation

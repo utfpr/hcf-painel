@@ -24,8 +24,9 @@
   "erroValidarRecaptcha": "Falha ao validar reCAPTCHA.",
   "erroComunicacaoServidor": "Falha na comunicação com o servidor.",
 
-  "nenhumResultado": "Nenhum resultado encontrado",
+  "nenhumResultadoEncontrado": "Nenhum resultado encontrado",
 
   "sim": "SIM",
   "nao": "NÃO"
 }
+ 
