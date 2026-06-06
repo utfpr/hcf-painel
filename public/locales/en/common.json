@@ -1,7 +1,34 @@
 {
-    "entrar": "Log in",
-    "sair": "Log Out",
-    "perfil": "Profile",
+  "entrar": "Log In",
+  "sair": "Log Out",
+  "perfil": "Profile",
 
-  "carregando": "Loading..."
+  "carregando": "Loading...",
+
+  "pagina": "page",
+  "paginas": "pages",
+  
+  "adicionar": "Add",
+  "excluir": "Delete",
+  "cadastrar": "Register",
+  "atualizar": "Update",
+  "limpar": "Clear",
+  "pesquisar": "Search",
+  "cancelar": "Cancel",
+
+  "tituloSucesso": "Success",
+  "cadastroRealizadoSucesso": "The registration was completed successfully.",
+  "atualizacaoRealizadaSucesso": "The update was completed successfully.",
+
+  "tituloFalha": "Failure",
+  "erro": "Error",
+  "error": "Error",
+  "erroExecutarRecaptcha": "Error executing reCAPTCHA:",
+  "erroValidarRecaptcha": "Failed to validate reCAPTCHA.",
+  "erroComunicacaoServidor": "Failed to communicate with the server.",
+
+  "nenhumResultado": "No results found",
+
+  "sim": "YES",
+  "nao": "NO"
 }

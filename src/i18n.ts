@@ -30,10 +30,12 @@ void i18n
 
     ns: [
       'common',
+      'simpleTableComponent',
       'loginLayout',
       'mainLayout',
       'fundo',
-      'recuperacaoSenha'
+      'recuperacaoSenha',
+      'listaTaxonomiaReino'
     ],
     defaultNS: 'common',
 

@@ -2,6 +2,7 @@
   "entrar": "Entrar",
   "sair": "Sair",
   "perfil": "Perfil",
+
   "carregando": "Carregando...",
 
   "adicionar": "Adicionar",
@@ -10,6 +11,7 @@
   "atualizar": "Atualizar",
   "limpar": "Limpar",
   "pesquisar": "Pesquisar",
+  "cancelar": "Cancelar",
 
   "tituloSucesso": "Sucesso",
   "cadastroRealizadoSucesso": "O cadastro foi realizado com sucesso.",
