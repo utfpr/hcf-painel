@@ -95,7 +95,7 @@ export function App() {
   const renderMainLayout = () => (
     <MainLayout auth={auth}>
       <Switch>
-         <Route exact path="/">
+        <Route exact path="/" >
           <Redirect to="/dashboard" />
         </Route>
         <Route path="/tombos/detalhes/:tombo_id" component={DetalhesTomboScreen} />
