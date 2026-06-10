@@ -143,7 +143,17 @@ export const requisitaCadastroTomboService = (getResponse, json) => {
 }
 
 export const requisitaNumeroHcfService = getResponse => {
-    return axios.get('/tombos/filtrar_ultimo_numero')
+    return axios.get('/tombos/proximo_numero')
+        .then(response => {
+            getResponse(response)
+        })
+        .catch(error => {
+            catchError(error)
+        })
+}
+
+export const requisitaProximoNumeroHcfService = getResponse => {
+    return axios.get('/tombos/proximo_numero')
         .then(response => {
             getResponse(response)
         })
