@@ -53,7 +53,5 @@
   "avisoBuscarGeneros": "Buscar Gêneros",
   "erroBuscarGeneros": "Erro ao buscar os gêneros.",
   "erroServidorBuscarGeneros": "Erro do servidor ao buscar os gêneros.",
-  "falhaBuscarGeneros": "Falha ao buscar gêneros.",
-
-  "buscarGenero": "Buscar Gênero"
+  "falhaBuscarGeneros": "Falha ao buscar gêneros."
 }
