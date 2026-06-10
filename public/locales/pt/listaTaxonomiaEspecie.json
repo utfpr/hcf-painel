@@ -35,20 +35,22 @@
   "cadastrarNomeAutor": "Nome do Autor:",
   "cadastrarSelecioneAutor": "Selecione um autor",
 
-  "buscarEspecies": "Buscar Espécie",
+  "avisoBuscarEspecies": "Buscar Espécies",
   "erroBuscarEspecies": "Erro ao buscar as espécies.",
   "erroServidorBuscarEspecies": "Erro de servidor ao buscar as espécies.",
   "falhaBuscarEspecies": "Falha ao buscar espécies.",
 
-  "buscarAutores": "Buscar Autores",
+  "avisoBuscarAutores": "Buscar Autores",
   "erroBuscarAutores": "Erro ao buscar os autores.",
   "falhaBuscarAutores": "Falha ao buscar autores.",
 
-  "buscarFamilias": "Buscar Famílias",
+  "falhaBuscarReinos": "Falha ao buscar reinos.",
+
+  "avisoBuscarFamilias": "Buscar Famílias",
   "erroBuscarFamilias": "Erro ao buscar as famílias.",
   "falhaBuscarFamilias": "Falha ao buscar famílias.",
 
-  "buscarGeneros": "Buscar Gêneros",
+  "avisoBuscarGeneros": "Buscar Gêneros",
   "erroBuscarGeneros": "Erro ao buscar os gêneros.",
   "erroServidorBuscarGeneros": "Erro do servidor ao buscar os gêneros.",
   "falhaBuscarGeneros": "Falha ao buscar gêneros.",

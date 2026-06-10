@@ -52,7 +52,7 @@ class ListaTaxonomiaSubfamilia extends Component {
                 })
                 if (response.status === 204) {
                     this.requisitaListaSubfamilia(this.state.valores, this.state.pagina)
-                    this.notificacao('success', this.props.t('common:excluir'), this.props.t('listaTaxonomiaSubfamilia:sucessoExcluirSubfamilia'))
+                    this.notificacao('success', this.props.t('common:notificacaoExcluir'), this.props.t('listaTaxonomiaSubfamilia:sucessoExcluirSubfamilia'))
                 }
             })
             .catch(err => {

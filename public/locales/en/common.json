@@ -20,6 +20,8 @@
   "cadastroRealizadoSucesso": "The registration was completed successfully.",
   "atualizacaoRealizadaSucesso": "The update was completed successfully.",
 
+  "notificacaoExcluir": "Delete",
+  
   "tituloFalha": "Failure",
   "erro": "Error",
   "error": "Error",

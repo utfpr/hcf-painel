@@ -3,8 +3,6 @@ import LanguageDetector from 'i18next-browser-languagedetector'
 import HttpBackend from 'i18next-http-backend'
 import { initReactI18next } from 'react-i18next'
 
-import TotalRecordsFound from './components/TotalRecordsFound'
-
 void i18n
   .use(HttpBackend)
   .use(LanguageDetector)
@@ -41,7 +39,10 @@ void i18n
       'recuperacaoSenha',
       'listaTaxonomiaReino',
       'listaTaxonomiaFamilia',
-      'listaTaxonomiaSubfamilia'
+      'totalRecordsFound',
+      'listaTaxonomiaSubfamilia',
+      'listaTaxonomiaGenero',
+      'listaTaxonomiaEspecie'
     ],
     defaultNS: 'common',
 
