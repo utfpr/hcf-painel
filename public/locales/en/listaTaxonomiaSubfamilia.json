@@ -1,0 +1,41 @@
+{
+  "subfamilias": "Subfamilies",
+
+  "buscarSubfamilia": "Search Subfamily",
+  "buscarNomeSubfamilia": "Subfamily Name:",
+  "buscarNomeFamilia": "Family Name:",
+
+  "cadastrarNomeReino": "Kingdom Name:",
+  "placeholderSelecionarReino": "Select a kingdom",
+  "cadastrarNomeFamilia": "Family Name:",
+  "placeholderSelecionarFamilia": "Select a family",
+  "placeholderSelecionarReinoPrimeiro": "Select a kingdom first",
+  "cadastrarNomeSubfamilia": "Subfamily Name:",
+  "sucessoCadastro": "The registration was completed successfully.",
+  "sucessoAtualizacao": "The update was completed successfully.",
+
+  "colunaSubfamilia": "Subfamily",
+  "colunaFamilia": "Family",
+  "colunaAutor": "Author",
+  "colunaAcao": "Action",
+
+  "confirmarExcluirSubfamilia": "Are you sure you want to delete this subfamily?",
+  "descricaoExcluirSubfamilia": "By clicking YES, the subfamily will be deleted.",
+  "sucessoExcluirSubfamilia": "The subfamily was successfully deleted.",
+
+  "validacaoInformarSubfamiliaEFamilia": "Enter the name of the new subfamily and family.",
+
+  "erroExcluirSubfamilia": "Error deleting subfamily",
+  "erroExcluirSubfamiliaInesperado": "An unexpected error occurred while trying to delete the subfamily.",
+  "buscarSubfamiliaTipoErro": "Search subfamily",
+  "buscarSubfamiliaErroMensagem": "Error fetching subfamilies.",
+  "erroServidorBuscarSubfamilias": "Server error while fetching subfamilies.",
+  "erroBuscarSubfamilias": "Failed to fetch subfamilies.",
+  "erroCadastroSubfamilia": "There was a problem registering the new subfamily, please try again.",
+  "erroAtualizarSubfamilia": "There was a problem updating the subfamily, please try again.",
+  "erroBuscarFamilias": "Error fetching families.",
+  "erroFalhaBuscarFamilias": "Failed to fetch families.",
+  "erroFalhaBuscarReinos": "Failed to fetch kingdoms.",
+  "buscarFamiliaTipoErro": "Search families",
+  "buscarFamiliaErroMensagem": "Error fetching families"
+}

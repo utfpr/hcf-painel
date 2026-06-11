@@ -1,0 +1,51 @@
+{
+  "tombos": "Tombos",
+  "taxonomia": "Taxonomia",
+
+  "reinos": "Reinos",
+  "familias": "Famílias",
+  "subfamilias": "Subfamílias",
+  "generos": "Gêneros",
+  "especies": "Espécies",
+  "subespecies": "Subespécies",
+  "variedades": "Variedades",
+  "autores": "Autores",
+
+  "locais": "Locais",
+  "estados": "Estados",
+  "cidades": "Cidades",
+  "localColeta": "Local de Coleta",
+
+  "remessas": "Remessas",
+  "pendencias": "Pendências",
+  "usuarios": "Usuários",
+  "identificadores": "Identificadores",
+  "coletores": "Coletores",
+  "herbarios": "Herbários",
+
+  "fichas": "Fichas",
+  "fichaTombo": "Ficha Tombo",
+
+  "geolocalizacao": "Geolocalização",
+  "mapaCompleto": "Mapa Completo",
+  "filtrosAvancados": "Filtros Avançados",
+
+  "relatorios": "Relatórios",
+  "relatorioPorPeriodo": "Relatório por Período",
+  "inventarioEspecies": "Inventário de Espécies",
+  "coletaIntervaloData": "Coleta por Intervalo de Data",
+  "coletaColetorIntervaloData": "Coleta por Coletor e Intervalo de Data",
+  "familiasGeneros": "Famílias e Gêneros",
+  "locaisColeta": "Locais de Coleta",
+  "tombosPorCidade": "Tombos por Cidade",
+  "quantidadeFamiliaGenero": "Quantidade por Família e Gênero",
+  "codigoBarras": "Código de Barras",
+  "diagnosticoErrosPosicionamento": "Diagnóstico Erros Posicionamento",
+
+  "exportacao": "Exportação",
+
+  "servicos": "Serviços",
+
+  "erroBuscarDarwinCore": "Houve um problema ao buscar o arquivo Darwin Core, tente novamente.",
+  "erroRequisitarDarwinCore": "Houve um problema ao requisitar o arquivo Darwin Core, tente novamente."
+}

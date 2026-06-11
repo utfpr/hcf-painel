@@ -57,7 +57,6 @@ import RelatorioColetorPeriodoScreen from './pages/RelatorioColetorPeriodoScreen
 import RelatorioFamiliasGeneroScreen from './pages/RelatorioFamiliasGeneroScreen'
 import RelatorioInventarioEspeciesScreen from './pages/RelatorioInventarioEspeciesScreen'
 import RelatorioLocalColetaScreen from './pages/RelatorioLocalColetaPeriodoScreen'
-import RelatorioTombosPorCidadeScreen from './pages/RelatorioTombosPorCidadeScreen'
 import RelatorioQuantidadeScreen from './pages/RelatorioQtdPeriodoScreen'
 import ServicosRefloraScreen from './pages/ServicosRefloraScreen'
 import ServicosSpeciesLinkScreen from './pages/ServicosSpeciesLinkScreen'
@@ -67,6 +66,7 @@ import PendenciaPagina from './pages/VerPendenciaScreen'
 import RelatorioPorPeriodo from './pages/RelatorioPorPeriodo'
 import DashboardScreen from './pages/DashboardScreen'
 import RelatorioCoordenadaForaPoligonoScreen from './pages/RelatorioCoordenadaForaPoligonoScreen'
+import RelatorioTombosPorCidadeScreen from './pages/RelatorioTombosPorCidadeScreen'
 
 interface PrivateRouteProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

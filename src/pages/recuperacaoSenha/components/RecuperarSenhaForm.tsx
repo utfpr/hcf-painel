@@ -3,6 +3,7 @@ import { useState } from 'react'
 import {
   Form, Input, Button, Typography, message
 } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 const {
   Title, Paragraph, Text
@@ -12,6 +13,7 @@ type Props = { onSuccess?: () => void }
 type CatchError = { message: string }
 
 export default function RecuperarSenhaForm({ onSuccess }: Props) {
+  const { t } = useTranslation()
   const [form] = Form.useForm()
   const [loading, setLoading] = useState(false)
 
@@ -29,15 +31,15 @@ export default function RecuperarSenhaForm({ onSuccess }: Props) {
 
       if (!response.ok) {
         const data = await response.json().catch(() => ({})) as { mensagem?: string }
-        throw new Error(data.mensagem || 'Erro ao solicitar recuperação de senha.')
+        throw new Error(data.mensagem || t('recuperacaoSenha:mensagemErroRecuperacao'))
       }
 
-      await message.success('Se existir uma conta com este e-mail, enviaremos instruções de recuperação.')
+      await message.success(t('recuperacaoSenha:mensagemSucessoRecuperacao'))
       onSuccess?.()
       form.resetFields()
     } catch (e: unknown) {
       const err = e as CatchError
-      await message.error(err.message || 'Falha ao enviar solicitação. Tente novamente.')
+      await message.error(err.message || t('recuperacaoSenha:mensagemErroRecuperacao'))
     } finally {
       setLoading(false)
     }
@@ -45,9 +47,9 @@ export default function RecuperarSenhaForm({ onSuccess }: Props) {
 
   return (
     <div className="w-full max-w-md mx-auto p-4">
-      <Title level={3} style={{ marginBottom: 4, textAlign: 'center' }}>Recuperar senha</Title>
+      <Title level={3} style={{ marginBottom: 4, textAlign: 'center' }}>{t('recuperacaoSenha:recuperarSenha')}</Title>
       <Paragraph type="secondary" style={{ marginTop: 0, textAlign: 'center' }}>
-        Informe seu e-mail para receber um link de redefinição.
+        {t('recuperacaoSenha:descricaoRecuperarSenha')}
       </Paragraph>
 
       <Form layout="vertical" form={form} onFinish={handleFinish}>
@@ -55,21 +57,21 @@ export default function RecuperarSenhaForm({ onSuccess }: Props) {
           name="email"
           label="E-mail"
           rules={[
-            { required: true, message: 'Informe o e-mail.' },
-            { type: 'email', message: 'E-mail inválido.' }
+            { required: true, message: t('recuperacaoSenha:validacaoInformeEmail') },
+            { type: 'email', message: t('recuperacaoSenha:validacaoEmailInvalido') }
           ]}
         >
-          <Input placeholder="seuemail@exemplo.com" autoComplete="email" />
+          <Input placeholder={t('recuperacaoSenha:placeholderEmail')} autoComplete="email" />
         </Form.Item>
 
         <Form.Item>
           <Button type="primary" htmlType="submit" block loading={loading}>
-            Enviar link de recuperação
+            {t('recuperacaoSenha:enviarLinkRecuperacao')}
           </Button>
         </Form.Item>
 
         <Text type="secondary" style={{ fontSize: 12 }}>
-          *Por segurança, a resposta é genérica (não revela se o e-mail existe).
+          {t('recuperacaoSenha:mensagemSeguranca')}
         </Text>
       </Form>
     </div>

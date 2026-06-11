@@ -1,0 +1,18 @@
+{
+  "pagina": "página",
+  "irPara": "Ir para",
+  "irParaConfirmar": "Confirmar",
+
+  "paginaAnterior": "Página anterior",
+  "proximaPagina": "Próxima página",
+
+  "voltar5Paginas": "Voltar 5 páginas",
+  "avancar5Paginas": "Avançar 5 páginas",
+
+  "voltar3Paginas": "Voltar 3 páginas",
+  "avancar3Paginas": "Avançar 3 páginas",
+
+  "ordenacaoDecrescente": "Clique para ordenar decrescente",
+  "ordenacaoCrescente": "Clique para ordenar crescente",
+  "cancelarOrdenacao": "Cancelar ordenação"
+}

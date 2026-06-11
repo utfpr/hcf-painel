@@ -1,0 +1,41 @@
+{
+  "subfamilias": "Subfamílias",
+
+  "buscarSubfamilia": "Buscar subfamília",
+  "buscarNomeSubfamilia": "Nome da subfamília:",
+  "buscarNomeFamilia": "Nome da família:",
+
+  "cadastrarNomeReino": "Nome do reino:",
+  "placeholderSelecionarReino": "Selecione um reino",
+  "cadastrarNomeFamilia": "Nome da família:",
+  "placeholderSelecionarFamilia": "Selecione uma família",
+  "placeholderSelecionarReinoPrimeiro": "Selecione um reino primeiro",
+  "cadastrarNomeSubfamilia": "Nome da subfamília:",
+  "sucessoCadastro": "O cadastro foi realizado com sucesso.",
+  "sucessoAtualizacao": "A atualização foi realizada com sucesso.",
+  
+  "colunaSubfamilia": "Subfamília",
+  "colunaFamilia": "Família",
+  "colunaAutor": "Autor",
+  "colunaAcao": "Ação",
+
+  "confirmarExcluirSubfamilia": "Você tem certeza que deseja excluir esta subfamília?",
+  "descricaoExcluirSubfamilia": "Ao clicar em SIM, a subfamília será excluída.",
+  "sucessoExcluirSubfamilia": "A subfamília foi excluída com sucesso.",
+
+  "validacaoInformarSubfamiliaEFamilia": "Informe o nome da nova subfamília e da família.",
+
+  "erroExcluirSubfamilia": "Erro ao excluir subfamília",
+  "erroExcluirSubfamiliaInesperado": "Ocorreu um erro inesperado ao tentar excluir a subfamília.",
+  "buscarSubfamiliaTipoErro": "Buscar subfamília",
+  "buscarSubfamiliaErroMensagem": "Erro ao buscar as subfamílias.",
+  "erroServidorBuscarSubfamilias": "Erro do servidor ao buscar as subfamílias.",
+  "erroBuscarSubfamilias": "Falha ao buscar subfamílias.",
+  "erroCadastroSubfamilia": "Houve um problema ao cadastrar a nova subfamília, tente novamente.",
+  "erroAtualizarSubfamilia": "Houve um problema ao atualizar a subfamília, tente novamente.",
+  "erroBuscarFamilias": "Erro ao buscar as famílias.",
+  "erroFalhaBuscarFamilias": "Falha ao buscar famílias.",
+  "erroFalhaBuscarReinos": "Falha ao buscar reinos.",
+  "buscarFamiliaTipoErro": "Buscar famílias",
+  "buscarFamiliaErroMensagem": "Erro ao buscar as famílias"
+}

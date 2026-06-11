@@ -4,6 +4,7 @@ import {
     Col, Select, Button, Spin
 } from 'antd'
 import debounce from 'lodash.debounce'
+import { useTranslation } from 'react-i18next'
 
 import { Form } from '@ant-design/compatible'
 import {
@@ -19,6 +20,7 @@ const SelectedFormField = ({
     xs, sm, md, lg, xl, onSearch, others, debounceDelay = 200,
     disabled = false, extra
 }) => {
+    const { t } = useTranslation('selectedFormField')
     const [searchLoading, setSearchLoading] = useState(false)
     const [lastSearchValue, setLastSearchValue] = useState('')
 
@@ -72,7 +74,7 @@ const SelectedFormField = ({
                             style={{ width: '100%' }}
                             mode={title === 'Identificadores:' ? 'multiple' : ''}
                             showSearch
-                            placeholder={disabled ? 'Selecione o nível superior primeiro' : placeholder}
+                            placeholder={disabled ? t('selecioneNivelSuperiorPrimeiro') : placeholder}
                             optionFilterProp="children"
                             onChange={onChange}
                             onSearch={onSearch ? handleSearch : undefined}

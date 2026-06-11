@@ -1,0 +1,57 @@
+{
+  "especies": "Species",
+
+  "buscarEspecie": "Search Species",
+  "nomeEspecie": "Species Name:",
+  "nomeFamilia": "Family Name:",
+  "nomeGenero": "Genus Name:",
+
+  "colunaEspecie": "Species",
+  "colunaFamilia": "Family",
+  "colunaGenero": "Genus",
+  "colunaAutor": "Author",
+  "colunaAcao": "Action",
+
+  "confirmarExclusaoEspecie": "Are you sure you want to delete this species?",
+  "mensagemExclusaoEspecie": "By clicking YES, the species will be deleted.",
+
+  "erroCadastrarEspecie": "There was a problem creating the new species. Please try again.",
+  "erroAtualizarEspecie": "There was a problem updating the species. Please try again.",
+  "informarNomeEspecieGenero": "Please provide the new species name and genus.",
+
+  "especieExcluidaSucesso": "The species was successfully deleted.",
+  "erroExcluirEspecie": "Error deleting species",
+  "erroInesperadoExcluirEspecie": "An unexpected error occurred while trying to delete the species.",
+
+  "cadastrarNomeReino": "Kingdom Name:",
+  "cadastrarSelecioneReino": "Select a kingdom",
+  "cadastrarNomeFamilia": "Family Name:",
+  "cadastrarSelecioneFamilia": "Select a family",
+  "cadastrarSelecioneReinoPrimeiro": "Select a kingdom first",
+  "cadastrarNomeGenero": "Genus Name:",
+  "cadastrarSelecioneGenero": "Select a genus",
+  "cadastrarSelecioneFamiliaPrimeiro": "Select a family first",
+  "cadastrarNomeEspecie": "Species Name:",
+  "cadastrarNomeAutor": "Author Name:",
+  "cadastrarSelecioneAutor": "Select an author",
+
+  "avisoBuscarEspecies": "Search Species",
+  "erroBuscarEspecies": "Error fetching species.",
+  "erroServidorBuscarEspecies": "Server error while fetching species.",
+  "falhaBuscarEspecies": "Failed to fetch species.",
+
+  "avisoBuscarAutores": "Search Authors",
+  "erroBuscarAutores": "Error fetching authors.",
+  "falhaBuscarAutores": "Failed to fetch authors.",
+
+  "falhaBuscarReinos": "Failed to fetch kingdons.",
+
+  "avisoBuscarFamilias": "Search Families",
+  "erroBuscarFamilias": "Error fetching families.",
+  "falhaBuscarFamilias": "Failed to fetch families.",
+
+  "avisoBuscarGeneros": "Search Genera",
+  "erroBuscarGeneros": "Error fetching genera.",
+  "erroServidorBuscarGeneros": "Server error while fetching genera.",
+  "falhaBuscarGeneros": "Failed to fetch genera."
+}

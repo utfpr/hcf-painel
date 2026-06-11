@@ -3,6 +3,7 @@ import React, { useEffect } from 'react'
 import {
   Row, Col, Input, Button, Checkbox, Form
 } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 import {
   MailOutlined, LockOutlined, EyeOutlined, EyeInvisibleOutlined
@@ -15,6 +16,7 @@ import { useLoginFormViewModel } from './view-models/useLoginFormViewModel'
 import { useLoginLayoutViewModel } from './view-models/useLoginLayoutViewModel'
 
 const LoginLayout: React.FC<LoginLayoutProps> = props => {
+  const { t } = useTranslation()
   const viewModel = useLoginLayoutViewModel(props)
   const formViewModel = useLoginFormViewModel((err: unknown, valores: LoginRequest) => viewModel.handleSubmit(err, valores, formViewModel.lembrar))
 
@@ -37,6 +39,7 @@ const LoginLayout: React.FC<LoginLayoutProps> = props => {
   }
 
   return (
+
     <Row justify="center" align="middle">
       <Col span={16} className="style-form">
         <Row
@@ -67,7 +70,7 @@ const LoginLayout: React.FC<LoginLayoutProps> = props => {
               <Form.Item style={formItemStyle}>
                 <Input
                   prefix={<MailOutlined style={inputPrefixStyle} />}
-                  placeholder="E-mail"
+                  placeholder={t('loginLayout:email')}
                   size="large"
                   value={formViewModel.email}
                   onChange={e => formViewModel.setEmail(e.target.value)}
@@ -77,7 +80,7 @@ const LoginLayout: React.FC<LoginLayoutProps> = props => {
                 <Input
                   size="large"
                   type={formViewModel.senhaVisivel ? 'text' : 'password'}
-                  placeholder="Senha"
+                  placeholder={t('loginLayout:senha')}
                   prefix={<LockOutlined style={inputPrefixStyle} />}
                   suffix={(
                     <Button
@@ -97,7 +100,7 @@ const LoginLayout: React.FC<LoginLayoutProps> = props => {
                 className="login-form-button"
                 size="large"
               >
-                Entrar
+                {t('common:entrar')}
               </Button>
               <br />
               <br />
@@ -106,9 +109,9 @@ const LoginLayout: React.FC<LoginLayoutProps> = props => {
                   checked={formViewModel.lembrar}
                   onChange={e => formViewModel.setLembrar(e.target.checked)}
                 >
-                  Lembrar me
+                  {t('loginLayout:lembrarMe')}
                 </Checkbox>
-                <a href="/recuperar-senha" className="login-form-forgot">Esqueci a senha</a>
+                <a href="/recuperar-senha" className="login-form-forgot">{t('loginLayout:esqueciSenha')}</a>
                 <br />
                 <br />
               </Form.Item>

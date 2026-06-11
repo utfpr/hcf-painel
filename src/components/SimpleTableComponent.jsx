@@ -2,6 +2,9 @@ import { Component } from 'react'
 
 import { Table } from 'antd'
 
+import i18n from '@/i18n'
+const t = i18n.t
+
 export default class SimpleTableComponent extends Component {
     constructor(props) {
         super(props)
@@ -107,25 +110,25 @@ export default class SimpleTableComponent extends Component {
                         pagination={{
                             ...this.state.paginacao,
                             locale: {
-                                items_per_page: '/ página',
-                                jump_to: 'Ir para',
-                                jump_to_confirm: 'confirmar',
-                                page: 'página',
-                                prev_page: 'Página anterior',
-                                next_page: 'Próxima página',
-                                prev_5: 'Voltar 5 páginas',
-                                next_5: 'Avançar 5 páginas',
-                                prev_3: 'Voltar 3 páginas',
-                                next_3: 'Avançar 3 páginas'
+                                items_per_page: `/ ${t('simpleTableComponent:pagina')}`,
+                                jump_to: t('simpleTableComponent:irPara'),
+                                jump_to_confirm: t('simpleTableComponent:irParaConfirmar'),
+                                page: t('simpleTableComponent:pagina'),
+                                prev_page: t('simpleTableComponent:paginaAnterior'),
+                                next_page: t('simpleTableComponent:proximaPagina'),
+                                prev_5: t('simpleTableComponent:voltar5Paginas'),
+                                next_5: t('simpleTableComponent:avancar5Paginas'),
+                                prev_3: t('simpleTableComponent:voltar3Paginas'),
+                                next_3: t('simpleTableComponent:avancar3Paginas')
                             },
                             showSizeChanger: true
                         }}
                         loading={this.props.loading}
                         scroll={{ x: 800 }}
                         locale={{
-                            triggerDesc: 'Clique para ordenar decrescente',
-                            triggerAsc: 'Clique para ordenar crescente',
-                            cancelSort: 'Cancelar ordenação'
+                            triggerDesc: t('simpleTableComponent:ordenacaoDecrescente'),
+                            triggerAsc: t('simpleTableComponent:ordenacaoCrescente'),
+                            cancelSort: t('simpleTableComponent:cancelarOrdenacao')
                         }}
                     />
                 )}

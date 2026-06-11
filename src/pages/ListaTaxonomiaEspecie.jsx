@@ -5,6 +5,7 @@ import {
     Select, Input, Button, notification
 } from 'antd'
 import axios from 'axios'
+import { withTranslation } from 'react-i18next'
 
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { recaptchaKey } from '@/config/api'
@@ -19,43 +20,6 @@ import SelectedFormField from './tombos/components/SelectedFormFiled'
 const { confirm } = Modal
 const FormItem = Form.Item
 const { Option } = Select
-
-const columns = [
-    {
-        title: 'Espécie',
-        type: 'text',
-        key: 'especie',
-        dataIndex: 'especie',
-        width: '18.6%',
-        sorter: true
-    },
-    {
-        title: 'Família',
-        key: 'familia',
-        dataIndex: 'familia',
-        width: '18.6%',
-        sorter: true
-    },
-    {
-        title: 'Gênero',
-        key: 'genero',
-        dataIndex: 'genero',
-        width: '18.6%',
-        sorter: true
-    },
-    {
-        title: 'Autor',
-        key: 'autor',
-        dataIndex: 'autor',
-        width: '18.6%',
-        sorter: true
-    },
-    {
-        title: 'Ação',
-        key: 'acao',
-        width: 100
-    }
-]
 
 class ListaTaxonomiaEspecie extends Component {
     constructor(props) {
@@ -93,7 +57,7 @@ class ListaTaxonomiaEspecie extends Component {
                 })
                 if (response.status === 204) {
                     this.requisitaListaEspecie(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir', 'A espécie foi excluída com sucesso.')
+                    this.notificacao('success', this.props.t('common:excluir'), this.props.t('listaTaxonomiaEspecie:especieExcluidaSucesso'))
                 }
             })
             .catch(err => {
@@ -104,13 +68,13 @@ class ListaTaxonomiaEspecie extends Component {
                 if (response && response.data) {
                     const { error } = response.data
                     if (error && error.code) {
-                        this.notificacao('error', 'Erro ao excluir espécie', error.code)
+                        this.notificacao('error', this.props.t('listaTaxonomiaEspecie:erroExcluirEspecie'), error.code)
                     } else {
-                        this.notificacao('error', 'Erro ao excluir espécie', 'Ocorreu um erro inesperado ao tentar excluir a espécie.')
+                        this.notificacao('error', this.props.t('listaTaxonomiaEspecie:erroExcluirEspecie'), this.props.t('listaTaxonomiaEspecie:erroInesperadoExcluirEspecie'))
                     }
                     console.error(error)
                 } else {
-                    this.notificacao('error', 'Erro ao excluir espécie', 'Falha na comunicação com o servidor.')
+                    this.notificacao('error', this.props.t('listaTaxonomiaEspecie:erroExcluirEspecie'), this.props.t('common:erroComunicacaoServidor'))
                 }
             })
     }
@@ -126,11 +90,11 @@ class ListaTaxonomiaEspecie extends Component {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this
         confirm({
-            title: 'Você tem certeza que deseja excluir esta espécie?',
-            content: 'Ao clicar em SIM, a espécie será excluída.',
-            okText: 'SIM',
+            title: this.props.t('listaTaxonomiaEspecie:confirmarExclusaoEspecie'),
+            content: this.props.t('listaTaxonomiaEspecie:mensagemExclusaoEspecie'),
+            okText: this.props.t('common:sim'),
             okType: 'danger',
-            cancelText: 'NÃO',
+            cancelText: this.props.t('common:nao'),
             onOk() {
                 self.requisitaExclusao(id)
             },
@@ -159,7 +123,7 @@ class ListaTaxonomiaEspecie extends Component {
                             this.setState({
                                 visibleModal: true,
                                 id: item.id,
-                                titulo: 'Atualizar',
+                                titulo: this.props.t('common:atualizar'),
                                 reinoSelecionado: reinoId,
                                 familiaSelecionada: familiaId
                             })
@@ -245,10 +209,10 @@ class ListaTaxonomiaEspecie extends Component {
                     loading: false
                 })
             } else if (response.status === 400) {
-                this.notificacao('warning', 'Buscar espécie', 'Erro ao buscar as espécies.')
+                this.notificacao('warning', this.props.t('listaTaxonomiaEspecie:avisoBuscarEspecies'), this.props.t('listaTaxonomiaEspecie:erroBuscarEspecies'))
                 this.setState({ loading: false })
             } else {
-                this.notificacao('error', 'Error', 'Erro de servidor ao buscar as espécies.')
+                this.notificacao('error', this.props.t('common:error'), this.props.t('listaTaxonomiaEspecie:erroServidorBuscarEspecies'))
                 this.setState({ loading: false })
             }
         } catch (err) {
@@ -258,7 +222,7 @@ class ListaTaxonomiaEspecie extends Component {
                 const { error } = response.data
                 console.error(error.message)
             }
-            this.notificacao('error', 'Erro', 'Falha ao buscar espécies.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('listaTaxonomiaEspecie:falhaBuscarEspecies'))
         }
     }
 
@@ -303,7 +267,7 @@ class ListaTaxonomiaEspecie extends Component {
                 })
                 return response.data.resultado
             } else {
-                this.notificacao('warning', 'Buscar autores', 'Erro ao buscar os autores.')
+                this.notificacao('warning', this.props.t('listaTaxonomiaEspecie:avisoBuscarAutores'), this.props.t('listaTaxonomiaEspecie:erroBuscarAutores'))
                 this.setState({ fetchingAutores: false })
             }
         } catch (err) {
@@ -313,7 +277,7 @@ class ListaTaxonomiaEspecie extends Component {
                 const { error } = response.data
                 console.error(error.message)
             }
-            this.notificacao('error', 'Erro', 'Falha ao buscar autores.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('listaTaxonomiaEspecie:falhaBuscarAutores'))
         }
         return []
     }
@@ -351,7 +315,7 @@ class ListaTaxonomiaEspecie extends Component {
                 const { error } = response.data
                 console.error(error.message)
             }
-            this.notificacao('error', 'Erro', 'Falha ao buscar reinos.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('listaTaxonomiaEspecie:falhaBuscarReinos'))
         }
         return []
     }
@@ -383,7 +347,7 @@ class ListaTaxonomiaEspecie extends Component {
                 })
                 return response.data.resultado
             } else {
-                this.notificacao('warning', 'Buscar famílias', 'Erro ao buscar as famílias.')
+                this.notificacao('warning', this.props.t('listaTaxonomiaEspecie:avisoBuscarFamilias'), this.props.t('listaTaxonomiaEspecie:erroBuscarFamilias'))
                 this.setState({ fetchingFamilias: false })
             }
         } catch (err) {
@@ -393,7 +357,7 @@ class ListaTaxonomiaEspecie extends Component {
                 const { error } = response.data
                 console.error(error.message)
             }
-            this.notificacao('error', 'Erro', 'Falha ao buscar famílias.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('listaTaxonomiaEspecie:falhaBuscarFamilias'))
         }
         return []
     }
@@ -425,7 +389,7 @@ class ListaTaxonomiaEspecie extends Component {
                 })
                 return response.data.resultado
             } else {
-                this.notificacao('warning', 'Buscar gêneros', 'Erro ao buscar os gêneros.')
+                this.notificacao('warning', this.props.t('listaTaxonomiaEspecie:avisoBuscarGeneros'), this.props.t('listaTaxonomiaEspecie:erroBuscarGeneros'))
                 this.setState({ fetchingGeneros: false })
             }
         } catch (err) {
@@ -435,7 +399,7 @@ class ListaTaxonomiaEspecie extends Component {
                 const { error } = response.data
                 console.error(error.message)
             }
-            this.notificacao('error', 'Erro', 'Falha ao buscar gêneros.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('listaTaxonomiaEspecie:falhaBuscarGeneros'))
         }
         return []
     }
@@ -455,11 +419,11 @@ class ListaTaxonomiaEspecie extends Component {
                 })
                 if (response.status === 204) {
                     this.requisitaListaEspecie()
-                    this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                    this.openNotificationWithIcon('success', this.props.t('common:sucesso'), this.props.t('common:cadastroRealizadoSucesso'))
                 } else if (response.status === 400) {
-                    this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                    this.openNotificationWithIcon('warning', this.props.t('common:tituloFalha'), response.data.error.message)
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar a nova espécie, tente novamente.')
+                    this.openNotificationWithIcon('error', this.props.t('common:tituloFalha'), this.props.t('listaTaxonomiaEspecie:erroCadastrarEspecie'))
                 }
                 this.props.form.setFields({
                     nomeEspecie: {
@@ -509,11 +473,11 @@ class ListaTaxonomiaEspecie extends Component {
                 })
                 if (response.status === 204) {
                     this.requisitaListaEspecie()
-                    this.openNotificationWithIcon('success', 'Sucesso', 'A atualização foi realizada com sucesso.')
+                    this.openNotificationWithIcon('success', this.props.t('common:sucesso'), this.props.t('common:atualizacaoRealizadaSucesso'))
                 } else if (response.status === 400) {
-                    this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                    this.openNotificationWithIcon('warning', this.props.t('common:tituloFalha'), response.data.error.message)
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao atualizar a espécie, tente novamente.')
+                    this.openNotificationWithIcon('error', this.props.t('common:tituloFalha'), this.props.t('listaTaxonomiaEspecie:erroAtualizarEspecie'))
                 }
                 this.props.form.setFields({
                     nomeEspecie: {
@@ -566,10 +530,10 @@ class ListaTaxonomiaEspecie extends Component {
                     loading: false
                 })
             } else if (response.status === 400) {
-                this.notificacao('warning', 'Buscar gênero', 'Erro ao buscar os gêneros.')
+                this.notificacao('warning', this.props.t('listaTaxonomiaEspecie:avisoBuscarGeneros'), this.props.t('listaTaxonomiaEspecie:erroBuscarGeneros'))
                 this.setState({ loading: false })
             } else {
-                this.notificacao('error', 'Erro', 'Erro do servidor ao buscar os gêneros.')
+                this.notificacao('error', this.props.t('common:erro'), this.props.t('listaTaxonomiaEspecie:erroServidorBuscarGeneros'))
                 this.setState({ loading: false })
             }
         } catch (err) {
@@ -579,7 +543,7 @@ class ListaTaxonomiaEspecie extends Component {
                 const { error } = response.data
                 console.error(error.message)
             }
-            this.notificacao('error', 'Erro', 'Falha ao buscar gêneros.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('listaTaxonomiaEspecie:falhaBuscarGeneros'))
         }
     }
 
@@ -596,7 +560,7 @@ class ListaTaxonomiaEspecie extends Component {
 
                         this.setState({
                             visibleModal: true,
-                            titulo: 'Cadastrar',
+                            titulo: this.props.t('common:cadastrar'),
                             id: -1,
                             reinoSelecionado: null,
                             familiaSelecionada: null,
@@ -606,7 +570,7 @@ class ListaTaxonomiaEspecie extends Component {
                     }}
                     style={{ backgroundColor: '#5CB85C', borderColor: '#5CB85C', width: '100%' }}
                 >
-                    Adicionar
+                    {this.props.t('common:adicionar')}
                 </Button>
             )
         }
@@ -615,13 +579,13 @@ class ListaTaxonomiaEspecie extends Component {
 
     renderPainelBusca(getFieldDecorator) {
         return (
-            <Card title="Buscar espécie">
+            <Card title={this.props.t('listaTaxonomiaEspecie:buscarEspecie')}>
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
 
                             <Col span={24}>
-                                <span>Nome da espécie:</span>
+                                <span>{this.props.t('listaTaxonomiaEspecie:nomeEspecie')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
@@ -634,7 +598,7 @@ class ListaTaxonomiaEspecie extends Component {
 
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Nome da família:</span>
+                                <span>{this.props.t('listaTaxonomiaEspecie:nomeFamilia')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
@@ -647,7 +611,7 @@ class ListaTaxonomiaEspecie extends Component {
 
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Nome do gênero:</span>
+                                <span>{this.props.t('listaTaxonomiaEspecie:nomeGenero')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
@@ -682,7 +646,7 @@ class ListaTaxonomiaEspecie extends Component {
                                             }}
                                             className="login-form-button"
                                         >
-                                            Limpar
+                                            {this.props.t('common:limpar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -693,7 +657,7 @@ class ListaTaxonomiaEspecie extends Component {
                                             htmlType="submit"
                                             className="login-form-button ant-btn-pesquisar"
                                         >
-                                            Pesquisar
+                                            {this.props.t('common:pesquisar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -725,6 +689,43 @@ class ListaTaxonomiaEspecie extends Component {
         const { getFieldDecorator } = this.props.form
         const { fetchingReinos, fetchingFamilias, fetchingGeneros, fetchingAutores, reinoSelecionado, familiaSelecionada } = this.state
 
+        const columns = [
+            {
+                title: this.props.t('listaTaxonomiaEspecie:colunaEspecie'),
+                type: 'text',
+                key: 'especie',
+                dataIndex: 'especie',
+                width: '18.6%',
+                sorter: true
+            },
+            {
+                title: this.props.t('listaTaxonomiaEspecie:colunaFamilia'),
+                key: 'familia',
+                dataIndex: 'familia',
+                width: '18.6%',
+                sorter: true
+            },
+            {
+                title: this.props.t('listaTaxonomiaEspecie:colunaGenero'),
+                key: 'genero',
+                dataIndex: 'genero',
+                width: '18.6%',
+                sorter: true
+            },
+            {
+                title: this.props.t('listaTaxonomiaEspecie:colunaAutor'),
+                key: 'autor',
+                dataIndex: 'autor',
+                width: '18.6%',
+                sorter: true
+            },
+            {
+                title: this.props.t('listaTaxonomiaEspecie:colunaAcao'),
+                key: 'acao',
+                width: 100
+            }
+        ]
+
         return (
             <div>
                 <Form onSubmit={this.handleSubmitForm}>
@@ -749,12 +750,12 @@ class ListaTaxonomiaEspecie extends Component {
                                 if (this.props.form.getFieldsValue().nomeGenero && this.props.form.getFieldsValue().nomeEspecie && this.props.form.getFieldsValue().nomeEspecie.trim() !== '') {
                                     this.cadastraNovaEspecie()
                                 } else {
-                                    this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da nova espécie e do gênero.')
+                                    this.openNotificationWithIcon('warning', this.props.t('common:tituloFalha'), this.props.t('listaTaxonomiaEspecie:informarNomeEspecieGenero'))
                                 }
                             } else if (this.props.form.getFieldsValue().nomeGenero && this.props.form.getFieldsValue().nomeEspecie && this.props.form.getFieldsValue().nomeEspecie.trim() !== '') {
                                 this.atualizaEspecie()
                             } else {
-                                this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da nova espécie e do gênero.')
+                                this.openNotificationWithIcon('warning', this.props.t('common:tituloFalha'), this.props.t('listaTaxonomiaEspecie:informarNomeEspecieGenero'))
                             }
 
                             this.props.form.resetFields()
@@ -771,8 +772,8 @@ class ListaTaxonomiaEspecie extends Component {
                         <div>
                             <Row gutter={8}>
                                 <SelectedFormField
-                                    title="Nome do reino:"
-                                    placeholder="Selecione um reino"
+                                    title={this.props.t('listaTaxonomiaEspecie:cadastrarNomeReino')}
+                                    placeholder={this.props.t('listaTaxonomiaEspecie:cadastrarSelecioneReino')}
                                     fieldName="nomeReino"
                                     getFieldDecorator={getFieldDecorator}
                                     onSearch={searchText => {
@@ -795,7 +796,7 @@ class ListaTaxonomiaEspecie extends Component {
                                     }}
                                     others={{
                                         loading: fetchingReinos,
-                                        notFoundContent: fetchingReinos ? <Spin size="small" /> : 'Nenhum resultado encontrado',
+                                        notFoundContent: fetchingReinos ? <Spin size="small" /> : this.props.t('common:nenhumResultadoEncontrado'),
                                         allowClear: true
                                     }}
                                     debounceDelay={200}
@@ -810,8 +811,8 @@ class ListaTaxonomiaEspecie extends Component {
                             </Row>
                             <Row gutter={8} style={{ marginTop: 16 }}>
                                 <SelectedFormField
-                                    title="Nome da família:"
-                                    placeholder={reinoSelecionado ? 'Selecione uma família' : 'Selecione um reino primeiro'}
+                                    title={this.props.t('listaTaxonomiaEspecie:cadastrarNomeFamilia')}
+                                    placeholder={reinoSelecionado ? this.props.t('listaTaxonomiaEspecie:cadastrarSelecioneFamilia') : this.props.t('listaTaxonomiaEspecie:cadastrarSelecioneReinoPrimeiro')}
                                     fieldName="nomeFamilia"
                                     getFieldDecorator={getFieldDecorator}
                                     onSearch={searchText => {
@@ -831,7 +832,7 @@ class ListaTaxonomiaEspecie extends Component {
                                     }}
                                     others={{
                                         loading: fetchingFamilias,
-                                        notFoundContent: fetchingFamilias ? <Spin size="small" /> : 'Nenhum resultado encontrado',
+                                        notFoundContent: fetchingFamilias ? <Spin size="small" /> : this.props.t('common:nenhumResultadoEncontrado'),
                                         allowClear: true
                                     }}
                                     disabled={!reinoSelecionado}
@@ -847,8 +848,8 @@ class ListaTaxonomiaEspecie extends Component {
                             </Row>
                             <Row gutter={8} style={{ marginTop: 16 }}>
                                 <SelectedFormField
-                                    title="Nome do gênero:"
-                                    placeholder={familiaSelecionada ? 'Selecione um gênero' : 'Selecione uma família primeiro'}
+                                    title={this.props.t('listaTaxonomiaEspecie:cadastrarNomeGenero')}
+                                    placeholder={familiaSelecionada ? this.props.t('listaTaxonomiaEspecie:cadastrarSelecioneGenero') : this.props.t('listaTaxonomiaEspecie:cadastrarSelecioneFamiliaPrimeiro')}
                                     fieldName="nomeGenero"
                                     getFieldDecorator={getFieldDecorator}
                                     onSearch={searchText => {
@@ -858,7 +859,7 @@ class ListaTaxonomiaEspecie extends Component {
                                     }}
                                     others={{
                                         loading: fetchingGeneros,
-                                        notFoundContent: fetchingGeneros ? <Spin size="small" /> : 'Nenhum resultado encontrado',
+                                        notFoundContent: fetchingGeneros ? <Spin size="small" /> : this.props.t('common:nenhumResultadoEncontrado'),
                                         allowClear: true
                                     }}
                                     disabled={!familiaSelecionada}
@@ -874,7 +875,7 @@ class ListaTaxonomiaEspecie extends Component {
                             </Row>
                             <Row gutter={8} style={{ marginTop: 16 }}>
                                 <Col span={24}>
-                                    <span>Nome da espécie:</span>
+                                    <span>{this.props.t('listaTaxonomiaEspecie:cadastrarNomeEspecie')}</span>
                                 </Col>
                             </Row>
                             <Row gutter={8}>
@@ -888,8 +889,8 @@ class ListaTaxonomiaEspecie extends Component {
                             </Row>
                             <Row gutter={8} style={{ marginTop: 16 }}>
                                 <SelectedFormField
-                                    title="Nome do autor:"
-                                    placeholder="Selecione um autor"
+                                    title={this.props.t('listaTaxonomiaEspecie:cadastrarNomeAutor')}
+                                    placeholder={this.props.t('listaTaxonomiaEspecie:cadastrarSelecioneAutor')}
                                     fieldName="nomeAutor"
                                     getFieldDecorator={getFieldDecorator}
                                     onSearch={searchText => {
@@ -897,7 +898,7 @@ class ListaTaxonomiaEspecie extends Component {
                                     }}
                                     others={{
                                         loading: fetchingAutores,
-                                        notFoundContent: fetchingAutores ? <Spin size="small" /> : 'Nenhum resultado encontrado',
+                                        notFoundContent: fetchingAutores ? <Spin size="small" /> : this.props.t('common:nenhumResultadoEncontrado'),
                                         allowClear: true
                                     }}
                                     debounceDelay={200}
@@ -916,7 +917,7 @@ class ListaTaxonomiaEspecie extends Component {
 
                 <Row gutter={24} style={{ marginBottom: '20px' }}>
                     <Col xs={24} sm={14} md={18} lg={20} xl={20}>
-                        <h2 style={{ fontWeight: 200 }}>Espécies</h2>
+                        <h2 style={{ fontWeight: 200 }}>{this.props.t('listaTaxonomiaEspecie:especies')}</h2>
                     </Col>
                     <Col xs={24} sm={10} md={6} lg={4} xl={4}>
                         {this.renderAdd()}
@@ -950,4 +951,6 @@ class ListaTaxonomiaEspecie extends Component {
         )
     }
 }
-export default Form.create()(ListaTaxonomiaEspecie)
+const ListaTaxonomiaEspecieWithForm = Form.create()(ListaTaxonomiaEspecie)
+
+export default withTranslation()(ListaTaxonomiaEspecieWithForm)
