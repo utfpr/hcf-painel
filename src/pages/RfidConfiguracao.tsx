@@ -35,9 +35,10 @@ const getDefaultIdentifier = (tipoDispositivo: string) => {
     default: return 'mock'
   }
 }
+
 const RfidConfiguracao: React.FC = () => {
   const {
-    apiUrl, tipoDispositivo, identificador,
+    apiUrl, tipoDispositivo, identificador, portaSerial,
     hardwareOnline, statusConexao,
     setConfig, conectar, desconectar, verificarHardware
   } = useRfidStore()
@@ -49,13 +50,32 @@ const RfidConfiguracao: React.FC = () => {
   const [uptime, setUptime] = useState<string | null>(null)
   const [carregandoDiagnostico, setCarregandoDiagnostico] = useState<boolean>(true)
 
+  const [portasSeriais, setPortasSeriais] = useState<string[]>([])
+  const [carregandoPortas, setCarregandoPortas] = useState<boolean>(false)
+
   const notificacao = (type: 'success' | 'warning' | 'error' | 'info', titulo: string, descricao: string) => {
-    notification[type]({
-      message: titulo,
-      description: descricao,
-      placement: 'topRight'
-    })
+    notification[type]({ message: titulo, description: descricao, placement: 'topRight' })
   }
+
+  const buscarPortasSeriais = useCallback(async () => {
+    setCarregandoPortas(true)
+    try {
+      const response = await axios.get(`${apiUrl}/debug/scan`, { timeout: 5000 })
+
+      const data = response.data
+      const ports = Array.isArray(data) ? data : (data.ports || data.portas || data.dados || [])
+
+      setPortasSeriais(ports)
+      if (ports.length === 0) {
+        notificacao('info', 'Nenhuma porta', 'Não foram encontradas portas seriais disponíveis na máquina.')
+      }
+    } catch (error) {
+      notificacao('warning', 'Scan Falhou', 'Não foi possível buscar as portas seriais da máquina local.')
+      setPortasSeriais([])
+    } finally {
+      setCarregandoPortas(false)
+    }
+  }, [apiUrl])
 
   const buscarDiagnostico = useCallback(async () => {
     setCarregandoDiagnostico(true)
@@ -79,22 +99,29 @@ const RfidConfiguracao: React.FC = () => {
     buscarDiagnostico()
   }, [buscarDiagnostico])
 
+  useEffect(() => {
+    if (tipoDispositivo === 'HEXAPAD' && infoSO) {
+      buscarPortasSeriais()
+    }
+  }, [tipoDispositivo, infoSO, buscarPortasSeriais])
+
   const handleTipoDispositivoChange = (value: string) => {
     setConfig({
       tipoDispositivo: value,
-      identificador: getDefaultIdentifier(value)
+      identificador: getDefaultIdentifier(value),
+      portaSerial: ''
     })
-    if (statusConexao === 'CONECTADO') desconectar()
-  }
-
-  const handleIdentificadorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setConfig({ identificador: e.target.value.trim() })
     if (statusConexao === 'CONECTADO') desconectar()
   }
 
   const handleConectar = async () => {
     if (statusConexao === 'CONECTADO') {
       notificacao('info', 'Aviso', 'O dispositivo já está conectado e pronto para uso.')
+      return
+    }
+
+    if (tipoDispositivo === 'HEXAPAD' && !portaSerial) {
+      notificacao('warning', 'Porta Serial', 'Selecione a porta serial para comunicar com o Hexapad.')
       return
     }
 
@@ -195,10 +222,42 @@ const RfidConfiguracao: React.FC = () => {
                 <Input
                   value={identificador}
                   disabled
-                  style={{ marginTop: 8 }}
+                  style={{ marginTop: 8, backgroundColor: '#f5f5f5', color: '#595959' }}
                 />
               </Col>
             </Row>
+
+            {tipoDispositivo === 'HEXAPAD' && (
+              <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
+                <Col xs={24} sm={12}>
+                  <span>Porta Serial (Connection):</span>
+                  <div style={{ display: 'flex', gap: '8px', marginTop: 8 }}>
+                    <Select
+                      value={portaSerial || undefined}
+                      onChange={(value) => {
+                        setConfig({ portaSerial: value })
+                        if (statusConexao === 'CONECTADO') desconectar()
+                      }}
+                      style={{ flex: 1 }}
+                      placeholder="Ex: COM1"
+                      loading={carregandoPortas}
+                      disabled={!hardwareOnline && statusConexao === 'DESCONECTADO'}
+                    >
+                      {portasSeriais.map(porta => (
+                        <Option key={porta} value={porta}>{porta}</Option>
+                      ))}
+                    </Select>
+                    <Button
+                      icon={<ReloadOutlined />}
+                      onClick={buscarPortasSeriais}
+                      loading={carregandoPortas}
+                      disabled={!hardwareOnline && statusConexao === 'DESCONECTADO'}
+                      title="Escanear portas novamente"
+                    />
+                  </div>
+                </Col>
+              </Row>
+            )}
 
             <Divider dashed style={{ margin: '24px 0' }} />
 
