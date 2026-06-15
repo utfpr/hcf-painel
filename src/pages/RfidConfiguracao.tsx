@@ -62,8 +62,8 @@ const RfidConfiguracao: React.FC = () => {
     try {
       const response = await axios.get(`${apiUrl}/debug/scan`, { timeout: 5000 })
 
-      const data = response.data
-      const ports = Array.isArray(data) ? data : (data.ports || data.portas || data.dados || [])
+      const data = response.data.dispositvos;
+      const ports = Array.isArray(data) ? data : (data.porta || [])
 
       setPortasSeriais(ports)
       if (ports.length === 0) {
