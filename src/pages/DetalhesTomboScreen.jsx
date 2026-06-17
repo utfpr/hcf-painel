@@ -117,7 +117,7 @@ export default class DetalhesTomboScreen extends Component {
     verificaCoordenada = (cidadeId, latitude, longitude) => {
         verificarCoordenada(res => {
             if (res.data && res.data.dentro === false) {
-                const cidadeEncontrada = res.data.cidadeEncontrada
+                const cidadeEncontrada = res.data.cidade_encontrada
                 const message = cidadeEncontrada
                     ? `A coordenada informada não pertence à cidade do tombo. Ela pertence a ${cidadeEncontrada.nome}${cidadeEncontrada.estado_sigla ? `/${cidadeEncontrada.estado_sigla}` : ''}.`
                     : 'A coordenada informada não pertence à cidade do tombo e não foi encontrada outra cidade correspondente.'
