@@ -3402,9 +3402,14 @@ class NovoTomboScreen extends Component {
             console.log('Resposta verificação:', response?.data)
 
             if (response?.data && response.data.dentro === false) {
+                const cidadeEncontrada = response.data.cidadeEncontrada
+                const cidadeMensagem = cidadeEncontrada
+                    ? `A coordenada informada não pertence à cidade selecionada. Ela pertence a ${cidadeEncontrada.nome}${cidadeEncontrada.estado_sigla ? `/${cidadeEncontrada.estado_sigla}` : ''}.`
+                    : 'A coordenada informada não pertence à cidade selecionada e não foi encontrada outra cidade correspondente.'
+
                 this.setState({
                     cidadeStatus: 'warning',
-                    cidadeHelp: 'A coordenada não pertence à cidade'
+                    cidadeHelp: cidadeMensagem
                 })
             } else if (response?.data && response.data.dentro === true) {
                 this.setState({

@@ -107,7 +107,7 @@ class MainLayout extends Component {
                     collapsedWidth={80}
                 >
                     <Col align="center" style={{ marginTop: 20, marginBottom: 20 }}>
-                        <Link to="/">
+                        <Link to="/dashboard">
                             <img
                                 src={logoImage}
                                 alt="logo-hcf"

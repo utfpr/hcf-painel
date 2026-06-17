@@ -117,7 +117,12 @@ export default class DetalhesTomboScreen extends Component {
     verificaCoordenada = (cidadeId, latitude, longitude) => {
         verificarCoordenada(res => {
             if (res.data && res.data.dentro === false) {
-                this.openNotificationWithIcon('warning', 'Atenção', 'A coordenada informada não pertence à cidade do tombo.')
+                const cidadeEncontrada = res.data.cidadeEncontrada
+                const message = cidadeEncontrada
+                    ? `A coordenada informada não pertence à cidade do tombo. Ela pertence a ${cidadeEncontrada.nome}${cidadeEncontrada.estado_sigla ? `/${cidadeEncontrada.estado_sigla}` : ''}.`
+                    : 'A coordenada informada não pertence à cidade do tombo e não foi encontrada outra cidade correspondente.'
+
+                this.openNotificationWithIcon('warning', 'Atenção', message)
             }
         }, cidadeId, latitude, longitude)
     }

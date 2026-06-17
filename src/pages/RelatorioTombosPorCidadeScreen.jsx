@@ -38,7 +38,7 @@ class RelatorioTombosPorCidadeScreen extends Component {
 
     componentDidMount() {
         const { pagina } = this.state
-        this.requisitaDadosDoRelatorio({}, pagina, null, null, true)
+        // não carregar automaticamente - aguardar o usuário clicar em Pesquisar
         this.requisitaPaises()
     }
 
@@ -130,12 +130,17 @@ class RelatorioTombosPorCidadeScreen extends Component {
         }
 
         if (valores !== undefined) {
-            const { cidade } = valores
+            const { cidade, estado, pais } = valores
             if (cidade) {
                 params.cidade = cidade
-                this.setState({
-                    cidadeId: cidade
-                })
+                this.setState({ cidadeId: cidade })
+            }
+            if (estado) {
+                params.estado = estado
+                this.setState({ estadoId: estado })
+            }
+            if (pais) {
+                params.pais = pais
             }
         }
         axios.get('/relatorio/tombos-por-cidade', { params })
@@ -175,9 +180,14 @@ class RelatorioTombosPorCidadeScreen extends Component {
         })
         const params = {}
 
-        if (this.state.cidadeId) {
-            params.cidade = this.state.cidadeId
-        }
+        const { form } = this.props
+        const cidadeField = this.state.cidadeId || form.getFieldValue('cidade')
+        const estadoField = this.state.estadoId || form.getFieldValue('estado')
+        const paisField = form.getFieldValue('pais')
+
+        if (cidadeField) params.cidade = cidadeField
+        if (estadoField) params.estado = estadoField
+        if (paisField) params.pais = paisField
 
         if (this.state.showCoordenadas) {
             params.showCoord = this.state.showCoordenadas
@@ -386,7 +396,8 @@ class RelatorioTombosPorCidadeScreen extends Component {
                                                     metadados: {},
                                                     cidadeId: null
                                                 })
-                                                this.requisitaDadosDoRelatorio({}, 1, null, null, true)
+                                                // limpar resultados exibidos
+                                                this.setState({ dados: [] })
                                             }}
                                             className="login-form-button"
                                         >

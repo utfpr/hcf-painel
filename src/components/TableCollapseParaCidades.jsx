@@ -153,7 +153,8 @@ const TableCollapseParaCidades = ({ data, loading, showCoordenadas }) => {
                                 longitude: registro.longitude ? converteDecimalParaGrausMinutosSegundos(registro.longitude, false, true) : null,
                                 datacoleta: dataColeta,
                                 familia: registro?.familia?.nome || '-',
-                                especie: registro?.especy?.nome || '-'
+                                especie: ((registro?.genero?.nome || '') + ' ' + (registro?.especy?.nome || registro?.especie?.nome || '')).trim() || '-',
+                                autor: registro?.especy?.autor?.nome || registro?.especie?.autor?.nome || ''
                             }
                         })}
                         columns={showCoordenadas ? columnsWithCoordenadas : columnsWithoutCoordenadas}
