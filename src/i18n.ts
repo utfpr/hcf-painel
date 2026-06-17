@@ -42,7 +42,8 @@ void i18n
       'totalRecordsFound',
       'listaTaxonomiaSubfamilia',
       'listaTaxonomiaGenero',
-      'listaTaxonomiaEspecie'
+      'listaTaxonomiaEspecie',
+      'listaTaxonomiaSubespecie'
     ],
     defaultNS: 'common',
 
