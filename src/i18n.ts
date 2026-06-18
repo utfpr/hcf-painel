@@ -8,10 +8,10 @@ void i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    fallbackLng: 'pt-br',
+    fallbackLng: 'pt-BR',
 
     supportedLngs: [
-      'pt-br',
+      'pt-BR',
       'en',
       'es'
     ],
@@ -43,13 +43,20 @@ void i18n
       'listaTaxonomiaSubfamilia',
       'listaTaxonomiaGenero',
       'listaTaxonomiaEspecie',
-      'listaTaxonomiaSubespecie'
+      'listaTaxonomiaSubespecie',
+      'listaTaxonomiaVariedade',
+      'listaTaxonomiaAutores'
     ],
     defaultNS: 'common',
 
     interpolation: {
       escapeValue: false
     }
+  })
+  .then(() => {
+    console.log('navigator.language:', navigator.language)
+    console.log('i18n.language:', i18n.language)
+    console.log('supportedLngs:', i18n.options.supportedLngs)
   })
 
 export default i18n
