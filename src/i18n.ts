@@ -53,10 +53,5 @@ void i18n
       escapeValue: false
     }
   })
-  .then(() => {
-    console.log('navigator.language:', navigator.language)
-    console.log('i18n.language:', i18n.language)
-    console.log('supportedLngs:', i18n.options.supportedLngs)
-  })
 
 export default i18n
