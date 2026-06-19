@@ -43,7 +43,10 @@ void i18n
       'listaTaxonomiaSubfamilia',
       'listaTaxonomiaGenero',
       'listaTaxonomiaEspecie',
-      'listaTaxonomiaSubespecie'
+      'listaTaxonomiaSubespecie',
+      'listaTaxonomiaVariedade',
+      'listaTaxonomiaAutores',
+      'mapa'
     ],
     defaultNS: 'common',
 
