@@ -13,6 +13,7 @@ import React, {
 import axios from 'axios'
 import L from 'leaflet'
 import ReactDOM from 'react-dom/client'
+import { useTranslation } from 'react-i18next'
 import { MapContainer, useMap } from 'react-leaflet'
 
 import pinVerde from '../assets/img/pin-verde.svg'
@@ -58,6 +59,7 @@ function createClusterIcon(cluster) {
 }
 
 function MapLogic({ setLoading }) {
+    const { t } = useTranslation()
     const map = useMap()
     const [pontos, setPontos] = useState([])
     const clusterMarkersRef = useRef(L.markerClusterGroup({
@@ -86,13 +88,13 @@ function MapLogic({ setLoading }) {
                             }, 0)
                         })
                         .catch(error => {
-                            console.error('Erro ao buscar os pontos: ', error)
+                            console.error(t('mapaCompleto:erroBuscarPontos'), error)
                             setLoading(false)
                         })
                 })
                 .catch(error => {
-                    console.error('Erro ao executar reCAPTCHA: ', error)
-                    this.notificacao('warning', 'Buscar Pontos Mapa', 'Erro ao executar reCAPTCHA')
+                    console.error(t('mapaCompleto:erroExecutarRecaptcha'), error)
+                    this.notificacao('warning', t('mapaCompleto:buscarPontosMapa'), t('mapaCompleto:erroExecutarRecaptchaMensagem'))
                     setLoading(false)
                 })
         })
@@ -144,7 +146,7 @@ function MapLogic({ setLoading }) {
                                     setTimeout(() => marker.openPopup(), 0)
                                 })
                                 .catch(error => {
-                                    console.error('Erro ao buscar detalhes do ponto: ', error)
+                                    console.error(t('mapaCompleto:erroBuscarDetalhesPonto'), error)
                                 })
                         } else {
                             root.render(<PopupContentCity cidade={cidade.nome} />)
@@ -200,6 +202,7 @@ function debounce(func, wait) {
 }
 
 function Mapa() {
+    const { t } = useTranslation()
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
@@ -222,7 +225,7 @@ function Mapa() {
             {isLoading && (
                 <div className="loading-container">
                     <div className="spinner" />
-                    <p className="loading-text">analisando dados...</p>
+                    <p className="loading-text">{t('mapaCompleto:analisandoDados')}</p>
                 </div>
             )}
             <div id="map-container" style={{ height: '100%', display: 'none' }}>
