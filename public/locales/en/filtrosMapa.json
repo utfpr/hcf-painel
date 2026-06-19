@@ -1,0 +1,20 @@
+{
+  "hcfSemCoordenadas": "The HCF {{hcf}} is in {{cidade}}, but it does not have registered coordinates.",
+
+  "camposAltitudeObrigatorios": "Both altitude fields (Minimum and Maximum) must be filled out.",
+  "altitudeMinimaMaiorQueMaxima": "The minimum altitude value cannot be greater than the maximum value.",
+
+  "nenhumPontoAltitude": "No points found for the specified altitude range.",
+  "nenhumPontoTaxonomia": "No points found for the specified taxonomy filters.",
+  "nenhumPontoNomePopular": "No points found for the provided common name.",
+  "nenhumPontoNomeCientifico": "No points found for the provided scientific name.",
+
+  "nenhumFiltroValido": "No valid filters were applied.",
+  "erroBuscarDados": "Error fetching data. Please try again.",
+  "reviseDadosTenteNovamente": "Please review the data and try again.",
+
+  "foramEncontrados": "Found",
+  "registrosComGeolocalizacao": "records with geolocation for the applied filters.",
+
+  "carregando": "Loading..."
+}
