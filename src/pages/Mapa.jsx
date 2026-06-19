@@ -88,13 +88,13 @@ function MapLogic({ setLoading }) {
                             }, 0)
                         })
                         .catch(error => {
-                            console.error(t('mapa:erroBuscarPontos'), error)
+                            console.error(t('mapaCompleto:erroBuscarPontos'), error)
                             setLoading(false)
                         })
                 })
                 .catch(error => {
-                    console.error(t('mapa:erroExecutarRecaptcha'), error)
-                    this.notificacao('warning', t('mapa:buscarPontosMapa'), t('mapa:erroExecutarRecaptchaMensagem'))
+                    console.error(t('mapaCompleto:erroExecutarRecaptcha'), error)
+                    this.notificacao('warning', t('mapaCompleto:buscarPontosMapa'), t('mapaCompleto:erroExecutarRecaptchaMensagem'))
                     setLoading(false)
                 })
         })
@@ -146,7 +146,7 @@ function MapLogic({ setLoading }) {
                                     setTimeout(() => marker.openPopup(), 0)
                                 })
                                 .catch(error => {
-                                    console.error(t('mapa:erroBuscarDetalhesPonto'), error)
+                                    console.error(t('mapaCompleto:erroBuscarDetalhesPonto'), error)
                                 })
                         } else {
                             root.render(<PopupContentCity cidade={cidade.nome} />)
@@ -225,7 +225,7 @@ function Mapa() {
             {isLoading && (
                 <div className="loading-container">
                     <div className="spinner" />
-                    <p className="loading-text">{t('mapa:analisandoDados')}</p>
+                    <p className="loading-text">{t('mapaCompleto:analisandoDados')}</p>
                 </div>
             )}
             <div id="map-container" style={{ height: '100%', display: 'none' }}>

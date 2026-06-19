@@ -46,7 +46,7 @@ void i18n
       'listaTaxonomiaSubespecie',
       'listaTaxonomiaVariedade',
       'listaTaxonomiaAutores',
-      'mapa'
+      'mapaCompleto'
     ],
     defaultNS: 'common',
 
