@@ -18,17 +18,18 @@
   "periodo": "Período",
   "dataInicial": "Data inicial",
   "dataFinal": "Data final",
+  "subTextoPeriodo": "Período:",
   "subTextoDias": "dias",
   "subTextoSemanas": "semanas",
   "subTextoMeses": "meses",
   "granularidade": "Granularidade",
   "selecioneGranularidade": "Selecione a granularidade",
   "granularidadeDia": "Dia",
-  "maxDias": "(máx. 30 dias)",
+  "maxGranularidadeDias": "(máx. 30 dias)",
   "granularidadeSemana": "Semana",
-  "maxSemanas": "(máx. 30 semanas)",
+  "maxGranularidadeSemanas": "(máx. 30 semanas)",
   "granularidadeMes": "Mês",
-  "maxMeses": "(máx. 30 meses)",
+  "maxGranularidadeMeses": "(máx. 30 meses)",
   "granularidadeAno": "Ano",
   "buscar": "Buscar",
 
@@ -37,7 +38,9 @@
   "ajusteGranularidadeDatas": "Tente ajustar a granularidade ou o intervalo de datas.",
   "analiseTombosDistribuicaoTemporal": "Análise de Tombos - Distribuição Temporal",
   
+  "barChartSemana": "Semana", 
   "tombos": "tombos",
   "quantidade": "Quantidade",
   "quantidadeTombos": "Quantidade de Tombos"
 }
+ 
