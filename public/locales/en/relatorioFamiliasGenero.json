@@ -1,8 +1,8 @@
 {
   "tituloRelatorioFamiliasGeneros": "Families and Genders Report",
-  "buscarFamilia": "Search family",
+  "buscarFamilia": "Search Family",
   "nomeFamilia": "Family name:",
-  "selecioneFamilia": "Select a family",
+  "placeholderSelecioneFamilia": "Select a family",
   "limpar": "Clear",
   "pesquisar": "Search",
   "gerarPdf": "Generate PDF",
@@ -17,5 +17,7 @@
   "erroExportarPdf": "Error exporting PDF.",
   "erroServidorExportarPdf": "Server error while exporting PDF.",
 
-  "tituloErro": "Error"
+  "colunaGenero": "Gender",
+  "colunaEspecie": "Species",
+  "colunaQuantidade": "Quantity"
 }
