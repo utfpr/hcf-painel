@@ -43,7 +43,8 @@ void i18n
       'listaTaxonomiaSubfamilia',
       'listaTaxonomiaGenero',
       'listaTaxonomiaEspecie',
-      'listaTaxonomiaSubespecie'
+      'listaTaxonomiaSubespecie',
+      'relatorioInventarioEspecies'
     ],
     defaultNS: 'common',
 
