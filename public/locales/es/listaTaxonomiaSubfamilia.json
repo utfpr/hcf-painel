@@ -1,0 +1,41 @@
+{
+  "subfamilias": "Subfamilias",
+
+  "buscarSubfamilia": "Buscar subfamilia",
+  "buscarNomeSubfamilia": "Nombre de la subfamilia:",
+  "buscarNomeFamilia": "Nombre de la familia:",
+
+  "cadastrarNomeReino": "Nombre del reino:",
+  "placeholderSelecionarReino": "Seleccione un reino",
+  "cadastrarNomeFamilia": "Nombre de la familia:",
+  "placeholderSelecionarFamilia": "Seleccione una familia",
+  "placeholderSelecionarReinoPrimeiro": "Seleccione un reino primero",
+  "cadastrarNomeSubfamilia": "Nombre de la subfamilia:",
+  "sucessoCadastro": "El registro se ha realizado con éxito.",
+  "sucessoAtualizacao": "La actualización se ha realizado con éxito.",
+  
+  "colunaSubfamilia": "Subfamilia",
+  "colunaFamilia": "Familia",
+  "colunaAutor": "Autor",
+  "colunaAcao": "Acción",
+
+  "confirmarExcluirSubfamilia": "¿Está seguro de que desea eliminar esta subfamilia?",
+  "descricaoExcluirSubfamilia": "Al hacer clic en SÍ, la subfamilia será eliminada.",
+  "sucessoExcluirSubfamilia": "La subfamilia fue eliminada con éxito.",
+
+  "validacaoInformarSubfamiliaEFamilia": "Ingrese el nombre de la nueva subfamilia y de la familia.",
+
+  "erroExcluirSubfamilia": "Error al eliminar subfamilia",
+  "erroExcluirSubfamiliaInesperado": "Ocurrió un error inesperado al intentar eliminar la subfamilia.",
+  "buscarSubfamiliaTipoErro": "Buscar subfamilia",
+  "buscarSubfamiliaErroMensagem": "Error al buscar las subfamilias.",
+  "erroServidorBuscarSubfamilias": "Error del servidor al buscar las subfamilias.",
+  "erroBuscarSubfamilias": "Fallo al buscar subfamilias.",
+  "erroCadastroSubfamilia": "Hubo un problema al registrar la nueva subfamilia, intente nuevamente.",
+  "erroAtualizarSubfamilia": "Hubo un problema al actualizar la subfamilia, intente nuevamente.",
+  "erroBuscarFamilias": "Error al buscar las familias.",
+  "erroFalhaBuscarFamilias": "Fallo al buscar familias.",
+  "erroFalhaBuscarReinos": "Fallo al buscar reinos.",
+  "buscarFamiliaTipoErro": "Buscar familias",
+  "buscarFamiliaErroMensagem": "Error al buscar las familias"
+}

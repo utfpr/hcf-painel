@@ -1,0 +1,20 @@
+{
+  "hcfSemCoordenadas": "El HCF {{hcf}} está en {{cidade}}, pero no tiene coordenadas registradas.",
+
+  "camposAltitudeObrigatorios": "Ambos campos de altitud (Mínimo y Máximo) deben ser completados.",
+  "altitudeMinimaMaiorQueMaxima": "El valor mínimo de la altitud no puede ser mayor que el valor máximo.",
+
+  "nenhumPontoAltitude": "No se encontraron puntos para el rango de altitud especificado.",
+  "nenhumPontoTaxonomia": "No se encontraron puntos para los filtros de taxonomía especificados.",
+  "nenhumPontoNomePopular": "No se encontraron puntos para el nombre popular ingresado.",
+  "nenhumPontoNomeCientifico": "No se encontraron puntos para el nombre científico ingresado.",
+
+  "nenhumFiltroValido": "No se ha aplicado ningún filtro válido.",
+  "erroBuscarDados": "Error al buscar datos. Intente nuevamente.",
+  "reviseDadosTenteNovamente": "Revise los datos e intente nuevamente.",
+
+  "foramEncontrados": "Se encontraron",
+  "registrosComGeolocalizacao": "registros con geolocalización para los filtros aplicados.",
+
+  "carregando": "Cargando..."
+}

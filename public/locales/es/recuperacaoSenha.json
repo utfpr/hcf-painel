@@ -1,0 +1,39 @@
+{
+  "recuperarSenha": "Recuperar contraseña",
+  "descricaoRecuperarSenha": "Ingrese su correo electrónico para recibir un enlace de restablecimiento.",
+  "validacaoInformeEmail": "Ingrese el correo electrónico.",
+  "validacaoEmailInvalido": "Correo electrónico no válido.",
+  "placeholderEmail": "sucorreo@ejemplo.com",
+  "enviarLinkRecuperacao": "Enviar enlace de recuperación",
+  "mensagemSeguranca": "*Por seguridad, la respuesta es genérica (no revela si el correo electrónico existe).",
+  "mensagemSucessoRecuperacao": "Si existe una cuenta con este correo electrónico, le enviaremos instrucciones de recuperación.",
+  "mensagemErroRecuperacao": "Error al solicitar la recuperación de contraseña.",
+  "mensagemFalhaSolicitacao": "Fallo al enviar la solicitud. Intente nuevamente.",
+
+  "definirNovaSenha": "Establecer nueva contraseña",
+  "descricaoNovaSenha": "Cree una contraseña segura para su cuenta.",
+
+  "novaSenha": "Nueva contraseña",
+  "confirmarSenha": "Confirmar contraseña",
+
+  "validacaoNovaSenha": "Ingrese la nueva contraseña.",
+  "validacaoMinimoCaracteres": "Mínimo 8 caracteres.",
+  "validacaoConfirmarSenha": "Confirme la contraseña.",
+  "validacaoSenhasNaoCoincidem": "Las contraseñas no coinciden.",
+
+  "forca": "Seguridad:",
+  "senhaMuitoFraca": "Muy débil",
+  "senhaFraca": "Débil",
+  "senhaOk": "Aceptable",
+  "senhaBoa": "Buena",
+  "senhaForte": "Segura",
+
+  "salvarNovaSenha": "Guardar nueva contraseña",
+
+  "erroSenhasNaoCoincidem": "Las contraseñas no coinciden.",
+  "erroTokenInvalido": "Token de restablecimiento ausente o no válido.",
+  "erroRedefinirSenha": "Error al restablecer la contraseña.",
+  "erroFalhaRedefinirSenha": "Fallo al restablecer la contraseña. Intente nuevamente.",
+
+  "sucessoSenhaRedefinida": "¡Contraseña restablecida con éxito! Inicie sesión con su nueva contraseña."
+}
