@@ -1,9 +1,12 @@
 import React from 'react'
 
 import { Result } from 'antd'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 export default function UnauthorizedScreen() {
+    const { t } = useTranslation()
+
     return (
         <div
             style={{
@@ -16,9 +19,9 @@ export default function UnauthorizedScreen() {
         >
             <Result
                 status="403"
-                title="Acesso negado"
-                subTitle="Entre em contato com o administrador do sistema se acredita que isso é um erro."
-                extra={<Link to="/">Voltar ao início</Link>}
+                title={t('unauthorized:acessoNegado')}
+                subTitle={t('unauthorized:mensagemAcessoNegado')}
+                extra={<Link to="/">{t('unauthorized:voltarAoInicio')}</Link>}
             />
         </div>
     )
