@@ -1,0 +1,21 @@
+{
+  "tituloRelatorioFamiliasGeneros": "Families and Genders Report",
+  "buscarFamilia": "Search family",
+  "nomeFamilia": "Family name:",
+  "selecioneFamilia": "Select a family",
+  "limpar": "Clear",
+  "pesquisar": "Search",
+  "gerarPdf": "Generate PDF",
+  "cliqueFamiliaExibirInformacoes": "Click on the family name to view its information",
+
+  "tituloBuscarDados": "Search data",
+  "erroBuscarDadosRelatorio": "Error fetching report data.",
+  "erroServidorBuscarDadosRelatorio": "Server error while fetching report data.",
+
+  "tituloExportarPdf": "Export PDF",
+  "sucessoPdfGerado": "PDF generated successfully.",
+  "erroExportarPdf": "Error exporting PDF.",
+  "erroServidorExportarPdf": "Server error while exporting PDF.",
+
+  "tituloErro": "Error"
+}
