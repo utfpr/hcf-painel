@@ -7,7 +7,8 @@ import './assets/css/Search.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
 
 import {
-  BrowserRouter, Switch, Route
+  BrowserRouter, Switch, Route,
+  Redirect
 } from 'react-router-dom'
 
 import { useAuth } from './contexts/Auth/useAuth'
@@ -67,6 +68,9 @@ import RfidConfiguracao from './pages/RfidConfiguracao'
 import RfidConferencia from './pages/RfidConferencia'
 import RfidVinculacao from './pages/RfidVinculacao'
 import RfidInventario from './pages/RfidInventario'
+import DashboardScreen from './pages/DashboardScreen'
+import RelatorioCoordenadaForaPoligonoScreen from './pages/RelatorioCoordenadaForaPoligonoScreen'
+import RelatorioTombosPorCidadeScreen from './pages/RelatorioTombosPorCidadeScreen'
 
 interface PrivateRouteProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -95,6 +99,9 @@ export function App() {
   const renderMainLayout = () => (
     <MainLayout auth={auth}>
       <Switch>
+        <Route exact path="/">
+          <Redirect to="/dashboard" />
+        </Route>
         <Route path="/tombos/detalhes/:tombo_id" component={DetalhesTomboScreen} />
         <PrivateRoute authed={isCuradorOuOperador()} path="/tombos/novo" component={NovoTomboScreen} />
         <PrivateRoute
@@ -267,6 +274,11 @@ export function App() {
         />
         <PrivateRoute
           authed={Boolean(auth.user?.id)}
+          path="/relatorio-tombos-por-cidade"
+          component={RelatorioTombosPorCidadeScreen}
+        />
+        <PrivateRoute
+          authed={Boolean(auth.user?.id)}
           path="/relatorio-quantidade-familia-generos"
           component={RelatorioQuantidadeScreen}
         />
@@ -289,6 +301,12 @@ export function App() {
           authed={Boolean(auth.user?.id)}
           path="/rfid-inventario"
           component={RfidInventario}
+        />
+        <Route path="/dashboard" component={DashboardScreen} />
+        <PrivateRoute
+          authed={Boolean(auth.user?.id)}
+          path="/relatorio-coordenadas-fora-poligono"
+          component={RelatorioCoordenadaForaPoligonoScreen}
         />
       </Switch>
     </MainLayout>

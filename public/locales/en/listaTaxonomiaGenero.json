@@ -1,0 +1,39 @@
+{
+  "generos": "Genera",
+  "buscarGeneros": "Search Genera",
+
+  "colunaGenero": "Genus",
+  "colunaFamilia": "Family",
+  "colunaAcao": "Action",
+
+  "nomeGenero": "Genus Name:",
+  "nomeFamilia": "Family Name:",
+  "nomeReino": "Kingdom Name:",
+
+  "placeholderSelecionarReino": "Select a kingdom",
+  "placeholderSelecionarFamilia": "Select a family",
+  "placeholderSelecionarReinoPrimeiro": "Select a kingdom first",
+
+  "confirmarExclusaoTitulo": "Are you sure you want to delete this genus?",
+  "confirmarExclusaoDescricao": "By clicking YES, the genus will be deleted.",
+
+  "buscarGenero": "Search genus",
+
+  "erroBuscarGeneros": "Error fetching genera.",
+  "erroServidorBuscarGeneros": "Server error while fetching genera.",
+  "falhaBuscarGeneros": "Failed to fetch genera.",
+
+  "erroBuscarFamilias": "Error fetching families.",
+  "falhaBuscarFamilias": "Failed to fetch families.",
+
+  "falhaBuscarReinos": "Failed to fetch kingdoms.",
+
+  "erroCadastroGenero": "There was a problem creating the new genus. Please try again.",
+  "erroAtualizacaoGenero": "There was a problem updating the genus. Please try again.",
+
+  "validacaoNomeGeneroFamilia": "Please provide the genus and family names.",
+
+  "sucessoExclusao": "The genus was successfully deleted.",
+  "erroExcluirTitulo": "Error deleting genus",
+  "erroExcluirInesperado": "An unexpected error occurred while trying to delete the genus."
+}

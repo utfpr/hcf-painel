@@ -1,0 +1,39 @@
+{
+  "recuperarSenha": "Recuperar senha",
+  "descricaoRecuperarSenha": "Informe seu e-mail para receber um link de redefinição.",
+  "validacaoInformeEmail": "Informe o e-mail.",
+  "validacaoEmailInvalido": "E-mail inválido.",
+  "placeholderEmail": "seuemail@exemplo.com",
+  "enviarLinkRecuperacao": "Enviar link de recuperação",
+  "mensagemSeguranca": "*Por segurança, a resposta é genérica (não revela se o e-mail existe).",
+  "mensagemSucessoRecuperacao": "Se existir uma conta com este e-mail, enviaremos instruções de recuperação.",
+  "mensagemErroRecuperacao": "Erro ao solicitar recuperação de senha.",
+  "mensagemFalhaSolicitacao": "Falha ao enviar solicitação. Tente novamente.",
+
+  "definirNovaSenha": "Definir nova senha",
+  "descricaoNovaSenha": "Crie uma senha forte para sua conta.",
+
+  "novaSenha": "Nova senha",
+  "confirmarSenha": "Confirmar senha",
+
+  "validacaoNovaSenha": "Informe a nova senha.",
+  "validacaoMinimoCaracteres": "Mínimo de 8 caracteres.",
+  "validacaoConfirmarSenha": "Confirme a senha.",
+  "validacaoSenhasNaoCoincidem": "As senhas não coincidem.",
+
+  "forca": "Força:",
+  "senhaMuitoFraca": "Muito fraca",
+  "senhaFraca": "Fraca",
+  "senhaOk": "Ok",
+  "senhaBoa": "Boa",
+  "senhaForte": "Forte",
+
+  "salvarNovaSenha": "Salvar nova senha",
+
+  "erroSenhasNaoCoincidem": "As senhas não coincidem.",
+  "erroTokenInvalido": "Token de redefinição ausente ou inválido.",
+  "erroRedefinirSenha": "Erro ao redefinir senha.",
+  "erroFalhaRedefinirSenha": "Falha ao redefinir senha. Tente novamente.",
+
+  "sucessoSenhaRedefinida": "Senha redefinida com sucesso! Faça login com a nova senha."
+}

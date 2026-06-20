@@ -200,7 +200,7 @@ class ListaTombosScreen extends Component {
             'I', 'II', 'III', 'IV', 'V', 'VI',
             'VII', 'VIII', 'IX', 'X', 'XI', 'XII'
         ]
-        
+
         let data = ''
         if (dia !== null && dia !== undefined) {
             data = String(dia).padStart(2, '0')
@@ -222,7 +222,7 @@ class ListaTombosScreen extends Component {
         nomePopular: item?.nomes_populares,
         nomeCientifico: item?.nome_cientifico,
         data: this.retornaDataColeta(item?.data_coleta_dia, item?.data_coleta_mes, item?.data_coleta_ano),
-        coletor: item?.coletore?.nome,
+        coletor: item?.coletor?.nome,
         acao: <div style={{ display: 'flex' }}>{this.gerarAcao(item.hcf)}</div>
     }))
 

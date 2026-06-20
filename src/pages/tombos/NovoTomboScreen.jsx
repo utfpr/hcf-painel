@@ -316,7 +316,8 @@ class NovoTomboScreen extends Component {
             await Promise.all([
                 this.requisitaDadosFormulario(),
                 this.requisitaReinos(''),
-                this.requisitaFamilias('', this.state.reinoInicial)
+                this.requisitaFamilias('', this.state.reinoInicial),
+                this.requisitaHerbarios('')
             ])
         } catch (error) {
             console.error(error)
@@ -3401,9 +3402,14 @@ class NovoTomboScreen extends Component {
             console.log('Resposta verificação:', response?.data)
 
             if (response?.data && response.data.dentro === false) {
+                const cidadeEncontrada = response.data.cidade_encontrada
+                const cidadeMensagem = cidadeEncontrada
+                    ? `A coordenada informada não pertence à cidade selecionada. Ela pertence a ${cidadeEncontrada.nome}${cidadeEncontrada.estado_sigla ? `/${cidadeEncontrada.estado_sigla}` : ''}.`
+                    : 'A coordenada informada não pertence à cidade selecionada e não foi encontrada outra cidade correspondente.'
+
                 this.setState({
                     cidadeStatus: 'warning',
-                    cidadeHelp: 'A coordenada não pertence à cidade'
+                    cidadeHelp: cidadeMensagem
                 })
             } else if (response?.data && response.data.dentro === true) {
                 this.setState({
@@ -3414,6 +3420,20 @@ class NovoTomboScreen extends Component {
         } catch (err) {
             console.error('Falha ao verificar coordenada:', err)
         }
+    }
+
+    handleCoordenadaChange = () => {
+        clearTimeout(this._coordenadaDebounceTimer)
+        this._coordenadaDebounceTimer = setTimeout(() => {
+            const { form } = this.props
+            const cidade = form.getFieldValue('cidade')
+            const latitude = form.getFieldValue('latitude')
+            const longitude = form.getFieldValue('longitude')
+
+            if (cidade && latitude != null && latitude !== '' && longitude != null && longitude !== '') {
+                this.verifyCoordenada()
+            }
+        }, 500)
     }
 
     validacaoModal = () => {
@@ -3764,7 +3784,7 @@ class NovoTomboScreen extends Component {
         return (
             <div>
                 <Row gutter={8}>
-                    <LatLongFormField getFieldDecorator={getFieldDecorator} form={this.props.form} />
+                    <LatLongFormField getFieldDecorator={getFieldDecorator} form={this.props.form} onCoordenadaChange={this.handleCoordenadaChange} />
                 </Row>
                 <br />
                 <Row gutter={8}>
@@ -3877,6 +3897,9 @@ class NovoTomboScreen extends Component {
                         }}
                         loading={fetchingCidades}
                         debounceDelay={100}
+                        getFieldError={getFieldError}
+                        validateStatus={this.state.cidadeStatus}
+                        help={this.state.cidadeHelp}
                     />
                 </Row>
                 <br />
@@ -4927,9 +4950,6 @@ class NovoTomboScreen extends Component {
                         )}
                         herbarios={herbarios}
                         getFieldDecorator={getFieldDecorator}
-                        onSearch={searchText => {
-                            this.requisitaHerbarios(searchText || '')
-                        }}
                         loading={fetchingHerbarios}
                         debounceDelay={100}
                         getFieldError={getFieldError}
