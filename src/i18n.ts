@@ -8,10 +8,10 @@ void i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    fallbackLng: 'pt-br',
+    fallbackLng: 'pt',
 
     supportedLngs: [
-      'pt-br',
+      'pt',
       'en',
       'es'
     ],
@@ -43,7 +43,8 @@ void i18n
       'listaTaxonomiaSubfamilia',
       'listaTaxonomiaGenero',
       'listaTaxonomiaEspecie',
-      'listaTaxonomiaSubespecie'
+      'listaTaxonomiaSubespecie',
+      'tombo'
     ],
     defaultNS: 'common',
 

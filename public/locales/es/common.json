@@ -1,3 +1,26 @@
 {
-    "entrar": "Iniciar sesión"
+  "entrar": "Iniciar sesión",
+  "sair": "Salir",
+  "perfil": "Perfil",
+  "carregando": "Cargando...",
+  "adicionar": "Agregar",
+  "excluir": "Eliminar",
+  "cadastrar": "Registrar",
+  "atualizar": "Actualizar",
+  "limpar": "Limpiar",
+  "pesquisar": "Buscar",
+  "cancelar": "Cancelar",
+  "tituloSucesso": "Éxito",
+  "cadastroRealizadoSucesso": "El registro se completó correctamente.",
+  "atualizacaoRealizadaSucesso": "La actualización se completó correctamente.",
+  "notificacaoExcluir": "Eliminar",
+  "tituloFalha": "Fallo",
+  "erro": "Error",
+  "error": "Error",
+  "erroExecutarRecaptcha": "Error al ejecutar reCAPTCHA:",
+  "erroValidarRecaptcha": "Error al validar reCAPTCHA.",
+  "erroComunicacaoServidor": "Error de comunicación con el servidor.",
+  "nenhumResultadoEncontrado": "No se encontraron resultados",
+  "sim": "SÍ",
+  "nao": "NO"
 }

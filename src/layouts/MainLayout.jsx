@@ -2,7 +2,7 @@ import { Component } from 'react'
 
 import {
     Layout, Menu, Col, Spin, Button, Row,
-    Divider
+    Divider, Select
 } from 'antd'
 import axios from 'axios'
 import { withTranslation } from 'react-i18next'
@@ -45,12 +45,23 @@ class MainLayout extends Component {
         this.state = {
             collapsed: false,
             loading: false,
-            openKeys: []
+            openKeys: [],
+            language: this.getCurrentLanguage()
         }
     }
 
     componentDidMount() {
         document.title = IS_PROD ? 'HCF' : `HCF — ${APP_ENV.toUpperCase()}`
+    }
+
+    getCurrentLanguage = () => {
+        const language = this.props.i18n?.resolvedLanguage || this.props.i18n?.language || 'pt'
+        return language.toLowerCase().startsWith('pt') ? 'pt' : language
+    }
+
+    handleChangeLanguage = value => {
+        this.props.i18n?.changeLanguage(value)
+        this.setState({ language: value })
     }
 
     onOpenChange = openKeys => {
@@ -438,6 +449,20 @@ class MainLayout extends Component {
                                 ? (
                                         <div>
                                             {this.props.auth.user?.nome}
+
+                                            <Divider type="vertical" />
+
+                                            <Select
+                                                size="small"
+                                                value={this.state.language}
+                                                onChange={this.handleChangeLanguage}
+                                                style={{ width: 140 }}
+                                                aria-label={this.props.t('mainLayout:idioma')}
+                                            >
+                                                <Select.Option value="pt">{this.props.t('tombo:languagePortuguese')}</Select.Option>
+                                                <Select.Option value="en">{this.props.t('tombo:languageEnglish')}</Select.Option>
+                                                <Select.Option value="es">{this.props.t('tombo:languageSpanish')}</Select.Option>
+                                            </Select>
 
                                             <Divider type="vertical" />
 

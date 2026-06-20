@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Select, Spin } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 import SelectedFormFiled from './SelectedFormFiled'
 
@@ -10,6 +11,7 @@ const GeneroFormField = ({
     initialValue, generos, getFieldDecorator, onClickAddMore, onChange, validateStatus,
     onSearch, loading = false, debounceDelay = 200, disabled = false
 }) => {
+    const { t } = useTranslation('tombo')
     const optionGeneros = () => generos?.map(item => (
         <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
     ))
@@ -21,9 +23,9 @@ const GeneroFormField = ({
             md={12}
             lg={12}
             xl={12}
-            title="Gênero:"
+            title={t('genus')}
             initialValue={initialValue}
-            placeholder="Digite para buscar gêneros..."
+            placeholder={t('searchGenera')}
             fieldName="genero"
             getFieldDecorator={getFieldDecorator}
             onClickAddMore={onClickAddMore}
@@ -35,7 +37,7 @@ const GeneroFormField = ({
             others={{
                 allowClear: true,
                 loading: loading,
-                notFoundContent: loading ? <Spin size="small" /> : 'Nenhum gênero encontrado',
+                notFoundContent: loading ? <Spin size="small" /> : t('noneFoundEntity', { entity: t('genus').replace(':', '').toLowerCase() }),
                 filterOption: onSearch ? false : undefined
             }}
         >

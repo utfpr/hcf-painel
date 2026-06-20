@@ -1,10 +1,11 @@
 import { Component } from 'react'
 
 import { Button } from 'antd'
+import { withTranslation } from 'react-i18next'
 
 import { ExportOutlined } from '@ant-design/icons'
 
-export default class ButtonExportComponent extends Component {
+class ButtonExportComponent extends Component {
     render() {
         return (
             <Button
@@ -12,8 +13,10 @@ export default class ButtonExportComponent extends Component {
                 icon={<ExportOutlined />}
                 style={{ backgroundColor: '#FF7F00', borderColor: '#FF7F00' }}
             >
-                Exportar
+                {this.props.t('tombo:export')}
             </Button>
         )
     }
 }
+
+export default withTranslation()(ButtonExportComponent)
