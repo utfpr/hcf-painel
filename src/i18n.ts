@@ -44,6 +44,7 @@ void i18n
       'listaTaxonomiaGenero',
       'listaTaxonomiaEspecie',
       'listaTaxonomiaSubespecie',
+      'listaTaxonomiaVariedade',
       'exportacaoScreen'
     ],
     defaultNS: 'common',

@@ -14,9 +14,9 @@
   "colunaAutor": "Autor",
   "colunaAcao": "Ação",
 
-  "titulo": "Você tem certeza que deseja excluir esta variedade?",
-  "conteudo": "Ao clicar em SIM, a variedade será excluída.",
-  "sucesso": "A Variedade foi excluída com sucesso.",
+  "perguntaExcluirVariedade": "Você tem certeza que deseja excluir esta variedade?",
+  "confirmacaoExcluirVariedade": "Ao clicar em SIM, a variedade será excluída.",
+  "variedadeExcluidaSucesso": "A Variedade foi excluída com sucesso.",
 
   "cadastroNomeReino": "Nome do reino:",
   "selecioneReino": "Selecione um reino",
@@ -41,14 +41,24 @@
   "erroBuscarVariedades": "Falha ao buscar variedades.",
   "erroCadastroVariedade": "Houve um problema ao cadastrar a nova variedade, tente novamente.",
   "erroAtualizarVariedade": "Houve um problema ao atualizar a variedade, tente novamente.",
+  
+  "buscarReinos": "Buscar Reinos",
   "erroBuscarReinos": "Erro ao buscar os reinos.",
   "erroFalhaBuscarReinos": "Falha ao buscar reinos.",
+  
+  "buscarFamilias": "Buscar Famílias",
   "erroBuscarFamilias": "Erro ao buscar as famílias.",
   "erroFalhaBuscarFamilias": "Falha ao buscar famílias.",
+  
+  "buscarGeneros": "Buscar Gêneros",
   "erroBuscarGeneros": "Erro ao buscar os gêneros.",
   "erroFalhaBuscarGeneros": "Falha ao buscar gêneros.",
+  
+  "buscarEspecies": "Buscar Espécies",
   "erroBuscarEspecies": "Erro ao buscar as espécies.",
   "erroFalhaBuscarEspecies": "Falha ao buscar espécies.",
+  
+  "buscarAutores": "Buscar Autores",
   "erroBuscarAutores": "Erro ao buscar os autores.",
   "erroFalhaBuscarAutores": "Falha ao buscar autores.",
 
