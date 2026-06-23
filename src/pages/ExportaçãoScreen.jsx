@@ -6,6 +6,7 @@ import {
 } from 'antd'
 import axios from 'axios'
 import moment from 'moment'
+import { withTranslation } from 'react-i18next'
 
 import { Form } from '@ant-design/compatible'
 
@@ -32,7 +33,7 @@ class ExportaçãoScreen extends Component {
 
     componentWillUnmount() {
         if (this.state.cancelTokenSource) {
-            this.state.cancelTokenSource.cancel('Requisição cancelada porque o usuário saiu da página.')
+            this.state.cancelTokenSource.cancel(this.props.t('exportacaoScreen:requisicaoCancelada'))
         }
         this.setState({ estaMontado: false })
     }
@@ -57,7 +58,7 @@ class ExportaçãoScreen extends Component {
                 this.setState({ executandoDarwinCore: false, cancelTokenSource: null })
             })
             .catch(err => {
-                console.error('Erro ao acessar Darwin Core:', err)
+                console.error(this.props.t('exportacaoScreen:erroAcessarDarwinCore'), err)
             })
     }
 
@@ -81,19 +82,19 @@ class ExportaçãoScreen extends Component {
                 this.setState({ executandoSplinker: false, cancelTokenSource: null })
             })
             .catch(err => {
-                console.error('Erro ao acessar SPlinker:', err)
+                console.error(this.props.t('exportacaoScreen:erroAcessarSplinker'), err)
             })
     }
 
     renderPainel() {
         return (
-            <Card title="Opções de Exportação">
+            <Card title={this.props.t('exportacaoScreen:opcoesExportacao')}>
                 <Row gutter={6}>
                     <Col span={6} style={{ textAlign: 'center' }}>
-                        {!this.state.executandoDarwinCore ? <Button type="primary" htmlType="submit" className="login-form-button" onClick={this.exportaDarwinCore}> Darwin Core </Button> : <span style={{ fontWeight: 'bold' }}>EXPORTANDO!!! AGUARDE...</span>}
+                        {!this.state.executandoDarwinCore ? <Button type="primary" htmlType="submit" className="login-form-button" onClick={this.exportaDarwinCore}>{this.props.t('exportacaoScreen:darwinCore')}</Button> : <span style={{ fontWeight: 'bold' }}>{this.props.t('exportacaoScreen:exportandoAguarde')}</span>}
                     </Col>
                     <Col span={6} style={{ textAlign: 'center' }}>
-                        {!this.state.executandoSplinker ? <Button type="primary" htmlType="submit" className="login-form-button" onClick={this.exportaSplinker}> SPlinker </Button> : <span style={{ fontWeight: 'bold' }}>EXPORTANDO!!! AGUARDE...</span>}
+                        {!this.state.executandoSplinker ? <Button type="primary" htmlType="submit" className="login-form-button" onClick={this.exportaSplinker}>{this.props.t('exportacaoScreen:splinker')}</Button> : <span style={{ fontWeight: 'bold' }}>{this.props.t('exportacaoScreen:exportandoAguarde')}</span>}
                     </Col>
                 </Row>
             </Card>
@@ -103,7 +104,7 @@ class ExportaçãoScreen extends Component {
     render() {
         return (
             <Form>
-                <HeaderServicesComponent title="Exportações" />
+                <HeaderServicesComponent title={this.props.t('exportacaoScreen:exportacoes')} />
                 <Divider dashed />
                 {this.renderPainel()}
                 <Divider dashed />
@@ -111,5 +112,6 @@ class ExportaçãoScreen extends Component {
         )
     }
 }
+const ExportaçãoScreenWithForm = Form.create()(ExportaçãoScreen)
 
-export default Form.create()(ExportaçãoScreen)
+export default withTranslation()(ExportaçãoScreenWithForm)
