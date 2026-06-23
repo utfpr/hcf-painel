@@ -44,6 +44,8 @@ void i18n
       'listaTaxonomiaGenero',
       'listaTaxonomiaEspecie',
       'listaTaxonomiaSubespecie',
+      'filtrosMapa',
+      'filtersMap',
       'relatorioFamiliasGenero',
       'authService',
       'listaTaxonomiaVariedade',
