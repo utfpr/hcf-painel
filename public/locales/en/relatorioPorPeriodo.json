@@ -1,0 +1,46 @@
+{
+  "relatorioTombosPeriodo": "Accession Report by Period",
+
+  "alerta": "Alert",
+  "erro": "Error",
+
+  "selecionePeriodoValido": "Please select a valid period",
+  "dataInicioAnteriorDataFim": "The start date must be before the end date",
+
+  "falhaBuscarDadosRelatorio": "Failed to fetch report data",
+
+  "dia": "day",
+  "semana": "week",
+  "mes": "month",
+  "ano": "year",
+
+  "filtrosRelatorio": "Report Filters",
+  "periodo": "Period",
+  "dataInicial": "Start Date",
+  "dataFinal": "End Date",
+  "subTextoPeriodo": "Period:",
+  "subTextoDias": "days",
+  "subTextoSemanas": "weeks",
+  "subTextoMeses": "months",
+  "granularidade": "Granularity",
+  "selecioneGranularidade": "Select granularity",
+  "granularidadeDia": "Day",
+  "maxGranularidadeDias": "(max. 30 days)",
+  "granularidadeSemana": "Week",
+  "maxGranularidadeSemanas": "(max. 30 weeks)",
+  "granularidadeMes": "Month",
+  "maxGranularidadeMeses": "(max. 30 months)",
+  "granularidadeAno": "Year",
+  "buscar": "Search",
+
+  "carregandoDadosEstatisticos": "Loading statistical data...",
+  "nenhumDadoDisponivel": "No data available for the selected period.",
+  "ajusteGranularidadeDatas": "Try adjusting the granularity or the date range.",
+  "analiseTombosDistribuicaoTemporal": "Accession Analysis - Temporal Distribution",
+  
+  "barChartSemana": "Week", 
+  "tombos": "accessions",
+  "quantidade": "Quantity",
+  "quantidadeTombos": "Quantity of Accessions"
+}
+ 
