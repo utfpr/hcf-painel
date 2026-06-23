@@ -1,0 +1,23 @@
+{
+  "tituloRelatorioFamiliasGeneros": "Reporte de familias y géneros",
+  "buscarFamilia": "Buscar familia",
+  "nomeFamilia": "Nombre de la familia:",
+  "placeholderSelecioneFamilia": "Seleccione una familia",
+  "limpar": "Limpiar",
+  "pesquisar": "Buscar",
+  "gerarPdf": "Generar PDF",
+  "cliqueFamiliaExibirInformacoes": "Haga clic en el nombre de la familia para mostrar su información",
+
+  "tituloErroBuscarDados": "Buscar datos",
+  "erroBuscarDadosRelatorio": "Error al buscar los datos del reporte.",
+  "erroServidorBuscarDadosRelatorio": "Error del servidor al buscar los datos del reporte.",
+
+  "tituloExportarPdf": "Exportar PDF",
+  "sucessoPdfGerado": "PDF generado con éxito.",
+  "erroExportarPdf": "Error al exportar el PDF.",
+  "erroServidorExportarPdf": "Error del servidor al exportar el PDF.",
+
+  "colunaGenero": "Género",
+  "colunaEspecie": "Especie",
+  "colunaQuantidade": "Cantidad"
+}

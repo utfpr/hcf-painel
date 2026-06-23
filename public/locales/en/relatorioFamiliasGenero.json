@@ -1,0 +1,23 @@
+{
+  "tituloRelatorioFamiliasGeneros": "Families and Genders Report",
+  "buscarFamilia": "Search Family",
+  "nomeFamilia": "Family name:",
+  "placeholderSelecioneFamilia": "Select a family",
+  "limpar": "Clear",
+  "pesquisar": "Search",
+  "gerarPdf": "Generate PDF",
+  "cliqueFamiliaExibirInformacoes": "Click on the family name to view its information",
+
+  "tituloBuscarDados": "Search data",
+  "erroBuscarDadosRelatorio": "Error fetching report data.",
+  "erroServidorBuscarDadosRelatorio": "Server error while fetching report data.",
+
+  "tituloExportarPdf": "Export PDF",
+  "sucessoPdfGerado": "PDF generated successfully.",
+  "erroExportarPdf": "Error exporting PDF.",
+  "erroServidorExportarPdf": "Server error while exporting PDF.",
+
+  "colunaGenero": "Gender",
+  "colunaEspecie": "Species",
+  "colunaQuantidade": "Quantity"
+}

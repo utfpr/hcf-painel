@@ -1,0 +1,24 @@
+{
+  "relatorioDeInventarioDeEspecies": "Species Inventory Report",
+  "buscarFamilia": "Search family",
+  "nomeDaFamilia": "Family name:",
+  "selecioneUmaFamilia": "Select a family",
+  "limpar": "Clear",
+  "pesquisar": "Search",
+  "gerarPdf": "Generate PDF",
+  "cliqueNoNomeDaFamiliaParaExibirSuasInformacoes": "Click on the family name to view its information",
+
+  "buscarDados": "Search data",
+  "erroAoBuscarOsDadosDoRelatorio": "Error fetching report data.",
+  "erroDeServidorAoBuscarOsDadosDoRelatorio": "Server error while fetching report data.",
+
+  "exportarPdf": "Export PDF",
+  "pdfGeradoComSucesso": "PDF generated successfully.",
+  "erroAoExportarOPdf": "Error exporting PDF.",
+  "erroDeServidorAoExportarOPdf": "Server error while exporting PDF.",
+
+  "especie": "Species",
+  "tombosRelacionados": "Related records",
+
+  "error": "Error"
+}

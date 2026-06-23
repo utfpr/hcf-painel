@@ -7,6 +7,7 @@ import {
     Select
 } from 'antd'
 import axios from 'axios'
+import { withTranslation } from 'react-i18next'
 
 import TableCollapseParaGeneros from '@/components/TableCollapseParaGeneros'
 import TotalRecordFound from '@/components/TotalRecordsFound'
@@ -76,9 +77,9 @@ class RelatorioFamiliasGeneroScreen extends Component {
                         metadados: data.metadados
                     })
                 } else if (response.status === 400) {
-                    this.notificacao('warning', 'Buscar dados', 'Erro ao buscar os dados do relatório.')
+                    this.notificacao('warning', this.props.t('relatorioFamiliasGenero:tituloErroBuscarDados'), this.props.t('relatorioFamiliasGenero:erroBuscarDadosRelatorio'))
                 } else {
-                    this.notificacao('error', 'Error', 'Erro de servidor ao buscar os dados do relatório.')
+                    this.notificacao('error', this.props.t('common:error'), this.props.t('relatorioFamiliasGenero:erroServidorBuscarDadosRelatorio'))
                 }
             })
             .catch(err => {
@@ -114,7 +115,7 @@ class RelatorioFamiliasGeneroScreen extends Component {
             responseType: 'arraybuffer'
         }).then(response => {
             if (response.status === 200) {
-                this.notificacao('success', 'Exportar PDF', 'PDF gerado com sucesso.')
+                this.notificacao('success', this.props.t('relatorioFamiliasGenero:tituloExportarPdf'), this.props.t('relatorioFamiliasGenero:sucessoPdfGerado'))
                 const file = new Blob([response.data], { type: 'application/pdf' })
                 const fileUrl = URL.createObjectURL(file)
                 const anchor = document.createElement('a')
@@ -126,9 +127,9 @@ class RelatorioFamiliasGeneroScreen extends Component {
                 anchor.click()
                 URL.revokeObjectURL(fileUrl)
             } else if (response.status === 400) {
-                this.notificacao('warning', 'Exportar PDF', 'Erro ao exportar o PDF.')
+                this.notificacao('warning', this.props.t('relatorioFamiliasGenero:tituloExportarPdf'), this.props.t('relatorioFamiliasGenero:erroExportarPdf'))
             } else {
-                this.notificacao('error', 'Error', 'Erro de servidor ao exportar o PDF.')
+                this.notificacao('error', this.props.t('relatorioFamiliasGenero:error'), this.props.t('relatorioFamiliasGenero:erroServidorExportarPdf'))
             }
         })
             .catch(err => {
@@ -200,7 +201,7 @@ class RelatorioFamiliasGeneroScreen extends Component {
                 {this.state.loadingExport
                     ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ marginRight: 8 }} />
                     : ''}
-                Gerar PDF
+                {this.props.t('relatorioFamiliasGenero:gerarPdf')}
             </Button>
         )
     }
@@ -209,11 +210,11 @@ class RelatorioFamiliasGeneroScreen extends Component {
         const { form } = this.props
         const { getFieldDecorator } = form
         return (
-            <Card title="Buscar família">
+            <Card title={this.props.t('relatorioFamiliasGenero:buscarFamilia')}>
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col span={24}>
-                            <span>Nome da família:</span>
+                            <span>{this.props.t('relatorioFamiliasGenero:nomeFamilia')}</span>
                         </Col>
                     </Row>
                     <Row gutter={8}>
@@ -223,7 +224,7 @@ class RelatorioFamiliasGeneroScreen extends Component {
                                     <Select
                                         showSearch
                                         style={{ width: '100%' }}
-                                        placeholder="Selecione uma família"
+                                        placeholder={this.props.t('relatorioFamiliasGenero:placeholderSelecioneFamilia')}
                                         optionFilterProp="children"
                                     >
 
@@ -258,7 +259,7 @@ class RelatorioFamiliasGeneroScreen extends Component {
                                             }}
                                             className="login-form-button"
                                         >
-                                            Limpar
+                                            {this.props.t('common:limpar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -269,7 +270,7 @@ class RelatorioFamiliasGeneroScreen extends Component {
                                             htmlType="submit"
                                             className="login-form-button ant-btn-pesquisar"
                                         >
-                                            Pesquisar
+                                            {this.props.t('relatorioFamiliasGenero:pesquisar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -288,7 +289,7 @@ class RelatorioFamiliasGeneroScreen extends Component {
             <div>
                 <Row gutter={24} style={{ marginBottom: '20px' }}>
                     <Col xs={24} sm={14} md={18} lg={20} xl={20}>
-                        <h2 style={{ fontWeight: 200 }}>Relatório de Famílias e Gêneros</h2>
+                        <h2 style={{ fontWeight: 200 }}>{this.props.t('relatorioFamiliasGenero:tituloRelatorioFamiliasGeneros')}</h2>
                     </Col>
                     <Col xs={24} sm={10} md={6} lg={4} xl={4}>
                         {this.renderBotaoPDF()}
@@ -299,7 +300,7 @@ class RelatorioFamiliasGeneroScreen extends Component {
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
 
-                <p>Clique no nome da família para exibir suas informações</p>
+                <p>{this.props.t('relatorioFamiliasGenero:cliqueFamiliaExibirInformacoes')}</p>
                 <TableCollapseParaGeneros data={this.state.dados} loading={this.state.loading} />
                 <Divider dashed />
             </div>
@@ -312,4 +313,6 @@ class RelatorioFamiliasGeneroScreen extends Component {
         )
     }
 }
-export default Form.create()(RelatorioFamiliasGeneroScreen)
+const RelatorioFamiliasGeneroScreenWithForm = Form.create()(RelatorioFamiliasGeneroScreen)
+
+export default withTranslation()(RelatorioFamiliasGeneroScreenWithForm)

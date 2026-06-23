@@ -5,6 +5,7 @@ import React, {
 import { notification } from 'antd'
 import axios from 'axios'
 import moment, { Moment } from 'moment'
+import { useTranslation } from 'react-i18next'
 
 import { baseUrl } from '../../../config/api'
 import TombosPorIntervaloTempoComponent, { TomboData } from './TombosPorIntervaloTempo.component'
@@ -21,6 +22,7 @@ const TombosPorIntervaloTempoContainer: React.FC = () => {
     notification[type]({ message, description })
   }
 
+  const { t } = useTranslation()
   // Cálculo de granularidades permitidas
   const getGranularidadesPermitidas = useCallback(() => {
     if (!dataInicio || !dataFim) {
@@ -61,12 +63,12 @@ const TombosPorIntervaloTempoContainer: React.FC = () => {
   // Requisição de dados
   const requisitaDados = useCallback(async () => {
     if (!dataInicio || !dataFim) {
-      openNotification('warning', 'Alerta', 'Selecione um período válido')
+      openNotification('warning', t('relatorioPorPeriodo:alerta'), t('relatorioPorPeriodo:selecionePeriodoValido'))
       return
     }
 
     if (dataInicio.isAfter(dataFim)) {
-      openNotification('warning', 'Alerta', 'A data de início deve ser anterior à data de fim')
+      openNotification('warning', t('relatorioPorPeriodo:alerta'), t('relatorioPorPeriodo:dataInicioAnteriorDataFim'))
       return
     }
 
@@ -82,18 +84,30 @@ const TombosPorIntervaloTempoContainer: React.FC = () => {
       const response = await axios.get<TomboData[]>(`${baseUrl}/tombos/relatorio-periodo`, { params })
 
       if (response.status === 200) {
-        const novosDados: TomboData[] = response.data.map(item => ({
-          periodo: item.periodo,
-          quantidade: item.quantidade
-        }))
+        const novosDados: TomboData[] = response.data.map(item => {
+          let periodo = item.periodo
+
+          if (periodo.startsWith('Semana')) {
+            periodo = periodo.replace(
+              'Semana',
+              t('relatorioPorPeriodo:barChartSemana')
+            )
+          }
+
+          return {
+            periodo,
+            quantidade: item.quantidade
+          }
+        })
+
         setDados(novosDados)
       } else {
-        openNotification('error', 'Erro', 'Falha ao buscar dados do relatório')
+        openNotification('error', t('relatorioPorPeriodo:erro'), t('relatorioPorPeriodo:falhaBuscarDadosRelatorio'))
       }
     } catch (err: unknown) {
       const error = err as { response?: { data?: { error?: { message?: string } } } }
-      const mensagemErro = error.response?.data?.error?.message || 'Falha ao buscar dados do relatório'
-      openNotification('error', 'Erro', mensagemErro)
+      const mensagemErro = error.response?.data?.error?.message || t('relatorioPorPeriodo:falhaBuscarDadosRelatorio')
+      openNotification('error', t('relatorioPorPeriodo:erro'), mensagemErro)
     } finally {
       setLoading(false)
     }
