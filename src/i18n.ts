@@ -44,6 +44,7 @@ void i18n
       'listaTaxonomiaGenero',
       'listaTaxonomiaEspecie',
       'listaTaxonomiaSubespecie',
+      'relatorioFamiliasGenero',
       'authService',
       'listaTaxonomiaVariedade',
       'exportacaoScreen'
