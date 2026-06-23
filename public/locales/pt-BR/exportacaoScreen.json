@@ -1,0 +1,15 @@
+{
+  "exportacoes": "Exportações",
+
+  "opcoesExportacao": "Opções de Exportação",
+
+  "darwinCore": "Darwin Core",
+  "splinker": "SPlinker",
+
+  "exportandoAguarde": "EXPORTANDO!!! AGUARDE...",
+
+  "requisicaoCancelada": "Requisição cancelada porque o usuário saiu da página.",
+
+  "erroAcessarDarwinCore": "Erro ao acessar Darwin Core:",
+  "erroAcessarSplinker": "Erro ao acessar SPlinker:"
+}
