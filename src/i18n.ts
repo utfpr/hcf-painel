@@ -44,6 +44,7 @@ void i18n
       'listaTaxonomiaGenero',
       'listaTaxonomiaEspecie',
       'listaTaxonomiaSubespecie',
+      'relatorioPorPeriodo',
       'listaTaxonomiaVariedade',
       'listaTaxonomiaAutores',
       'mapaCompleto',
