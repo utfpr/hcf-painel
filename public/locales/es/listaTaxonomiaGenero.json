@@ -1,0 +1,39 @@
+{
+    "generos": "Géneros",
+    "buscarGeneros": "Buscar Género",
+
+    "colunaGenero": "Género",
+    "colunaFamilia": "Familia",
+    "colunaAcao": "Acción",
+
+    "nomeGenero": "Nombre del Género:",
+    "nomeFamilia": "Nombre de la Familia:",
+    "nomeReino": "Nombre del Reino:",
+
+    "placeholderSelecionarReino": "Seleccione un reino",
+    "placeholderSelecionarFamilia": "Seleccione una familia",
+    "placeholderSelecionarReinoPrimeiro": "Seleccione un reino primero",
+
+    "confirmarExclusaoTitulo": "¿Está seguro de que desea eliminar este género?",
+    "confirmarExclusaoDescricao": "Al hacer clic en SÍ, el género será eliminado.",
+
+    "buscarGenero": "Buscar género",
+
+    "erroBuscarGeneros": "Error al buscar los géneros.",
+    "erroServidorBuscarGeneros": "Error de servidor al buscar los géneros.",
+    "falhaBuscarGeneros": "Fallo al buscar géneros.",
+
+    "erroBuscarFamilias": "Error al buscar las familias.",
+    "falhaBuscarFamilias": "Fallo al buscar familias.",
+
+    "falhaBuscarReinos": "Fallo al buscar reinos.",
+
+    "erroCadastroGenero": "Hubo un problema al registrar el nuevo género, intente nuevamente.",
+    "erroAtualizacaoGenero": "Hubo un problema al actualizar el género, intente nuevamente.",
+
+    "validacaoNomeGeneroFamilia": "Ingrese el nombre del género y de la familia.",
+
+    "sucessoExclusao": "El género fue eliminado con éxito.",
+    "erroExcluirTitulo": "Error al eliminar género",
+    "erroExcluirInesperado": "Ocurrió un error inesperado al intentar eliminar el género."
+}

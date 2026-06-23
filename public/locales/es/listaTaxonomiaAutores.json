@@ -1,0 +1,26 @@
+{
+  "autores": "Autores",
+
+  "buscarAutor": "Buscar Autor",
+  "buscarNomeAutor": "Nombre del Autor:",
+
+  "cadastroNomeAutor": "Nombre:",
+  "cadastroObservacao": "Observación:",
+
+  "colunaAutor": "Autor",
+  "colunaObservacao": "Observación",
+  "colunaAcao": "Acción",
+
+  "confirmarExcluirAutor": "¿Está seguro de que desea eliminar este autor?",
+  "descricaoExcluirAutor": "Al hacer clic en SÍ, el autor será eliminado.",
+  "sucessoExcluirAutor": "El autor fue eliminado con éxito.",
+
+  "validacaoInformarAutor": "Ingrese el nombre del nuevo autor.",
+
+  "buscarAutoresErro": "Error al buscar los autores.",
+  "erroServidorBuscarAutores": "Error del servidor al buscar los autores.",
+  "erroBuscarAutores": "Fallo al buscar autores.",
+
+  "erroCadastroAutor": "Hubo un problema al registrar el nuevo autor, intente nuevamente.",
+  "erroAtualizarAutor": "Hubo un problema al actualizar el autor, intente nuevamente."
+}
