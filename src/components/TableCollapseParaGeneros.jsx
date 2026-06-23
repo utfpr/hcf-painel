@@ -1,37 +1,40 @@
 import { Collapse, Skeleton, Table } from 'antd'
-
-const columns = [
-    {
-        title: 'Gênero',
-        dataIndex: 'genero',
-        key: 'genero'
-    },
-    {
-        title: 'Espécie',
-        dataIndex: 'especie',
-        key: 'especie'
-    },
-    {
-        title: 'Quantidade',
-        dataIndex: 'quantidade',
-        key: 'quantidade'
-    }
-]
-
-const columns2 = [
-    {
-        title: 'Gênero',
-        dataIndex: 'nome',
-        key: 'nome'
-    },
-    {
-        title: 'Quantidade',
-        dataIndex: 'quantidade',
-        key: 'quantidade'
-    }
-]
+import { useTranslation } from 'react-i18next'
 
 const TableCollapseParaGeneros = ({ data, loading, modelo = 1 }) => {
+    const { t } = useTranslation()
+
+    const columns = [
+        {
+            title: t('relatorioFamiliasGenero:colunaGenero'),
+            dataIndex: 'genero',
+            key: 'genero'
+        },
+        {
+            title: t('relatorioFamiliasGenero:colunaEspecie'),
+            dataIndex: 'especie',
+            key: 'especie'
+        },
+        {
+            title: t('relatorioFamiliasGenero:colunaQuantidade'),
+            dataIndex: 'quantidade',
+            key: 'quantidade'
+        }
+    ]
+
+    const columns2 = [
+        {
+            title: t('relatorioFamiliasGenero:colunaNome'),
+            dataIndex: 'nome',
+            key: 'nome'
+        },
+        {
+            title: t('relatorioFamiliasGenero:colunaQuantidade'),
+            dataIndex: 'quantidade',
+            key: 'quantidade'
+        }
+    ]
+
     if (!data) return <div />
     if (data.length === 0) return <div />
     if (loading) {

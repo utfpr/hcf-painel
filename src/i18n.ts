@@ -44,7 +44,16 @@ void i18n
       'listaTaxonomiaGenero',
       'listaTaxonomiaEspecie',
       'listaTaxonomiaSubespecie',
-      'relatorioPorPeriodo'
+      'relatorioPorPeriodo',
+      'listaTaxonomiaVariedade',
+      'listaTaxonomiaAutores',
+      'mapaCompleto',
+      'filtrosMapa',
+      'filtersMap',
+      'relatorioFamiliasGenero',
+      'authService',
+      'listaTaxonomiaVariedade',
+      'exportacaoScreen'
     ],
     defaultNS: 'common',
 
