@@ -7,7 +7,7 @@
   "botaoAtualizar": "Actualizar",
   "processoExecutando": "¡EJECUTANDO! ¡POR FAVOR ESPERE!",
 
-  "ultimaAtualizacao": "La última actualización se realizó el {horario} y duró {duracao}.",
+  "ultimaAtualizacao": "La última actualización se realizó el {{horario}} y duró {{duracao}}.",
 
   "atualizacaoProgramada": "Actualización programada",
   "periodicidade": "Periodicidad:",
