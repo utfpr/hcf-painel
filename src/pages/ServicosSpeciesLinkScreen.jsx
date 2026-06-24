@@ -313,16 +313,16 @@ class ServicosSpeciesLinkScreen extends Component {
         axios.get('/specieslink', { params }).then(response => {
             if (response.status === 200) {
                 if (response.data.result === 'failed') {
-                    this.exibeNotificacao('error', this.props.t('common:failure'), this.props.t('servicosSpeciesLink:erroAgendarAtualizacao'))
+                    this.exibeNotificacao('error', this.props.t('common:tituloFalha'), this.props.t('servicosSpeciesLink:erroAgendarAtualizacao'))
                 } else {
                     if (params.periodicidade === 2) {
-                        this.exibeNotificacao('success', this.props.t('common:success'), this.mensagemSemanal(moment().isoWeekday()))
+                        this.exibeNotificacao('success', this.props.t('common:tituloSucesso'), this.mensagemSemanal(moment().isoWeekday()))
                     }
                     if (params.periodicidade === 3) {
-                        this.exibeNotificacao('success', this.props.t('common:success'), this.mensagemMensal())
+                        this.exibeNotificacao('success', this.props.t('common:tituloSucesso'), this.mensagemMensal())
                     }
                     if (params.periodicidade === 4) {
-                        this.exibeNotificacao('success', this.props.t('common:success'), this.mensagem2Mensal())
+                        this.exibeNotificacao('success', this.props.t('common:tituloSucesso'), this.mensagem2Mensal())
                     }
                 }
             }
@@ -343,9 +343,9 @@ class ServicosSpeciesLinkScreen extends Component {
         axios.get('/specieslink', { params }).then(response => {
             if (response.status === 200) {
                 if (response.data.result === 'failed') {
-                    this.exibeNotificacao('error', this.props.t('common:failure'), this.props.t('servicosSpeciesLink:erroProcessoEmExecucao'))
+                    this.exibeNotificacao('error', this.props.t('common:tituloFalha'), this.props.t('servicosSpeciesLink:erroProcessoEmExecucao'))
                 } else {
-                    this.exibeNotificacao('success', this.props.t('common:success'), this.props.t('servicosSpeciesLink:sucessoAtualizacaoInicializada'))
+                    this.exibeNotificacao('success', this.props.t('common:tituloSucesso'), this.props.t('servicosSpeciesLink:sucessoAtualizacaoInicializada'))
                 }
             }
         })
