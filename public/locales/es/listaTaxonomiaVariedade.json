@@ -1,0 +1,66 @@
+{
+  "variedades": "Variedades",
+  "buscarVariedade": "Buscar variedad",
+
+  "nomeVariedade": "Nombre de la variedad:",
+  "nomeFamilia": "Nombre de la familia:",
+  "nomeGenero": "Nombre del género:",
+  "nomeEspecie": "Nombre de la especie:",
+    
+  "colunaVariedade": "Variedad",
+  "colunaFamilia": "Familia",
+  "colunaGenero": "Género",
+  "colunaEspecie": "Especie",
+  "colunaAutor": "Autor",
+  "colunaAcao": "Acción",
+
+  "perguntaExcluirVariedade": "¿Está seguro de que desea eliminar esta variedad?",
+  "confirmacaoExcluirVariedade": "Al hacer clic en SÍ, la variedad será eliminada.",
+  "variedadeExcluidaSucesso": "La variedad fue eliminada con éxito.",
+
+  "cadastroNomeReino": "Nombre del reino:",
+  "selecioneReino": "Seleccione un reino",
+  "cadastroNomeFamilia": "Nombre de la familia:",
+  "selecioneFamilia": "Seleccione una familia",
+  "cadastroNomeGenero": "Nombre del género:",
+  "selecioneGenero": "Seleccione un género",
+  "cadastroNomeEspecie": "Nombre de la especie:",
+  "selecioneEspecie": "Seleccione una especie",
+  "cadastroNomeVariedade": "Nombre de la variedad:",
+  "cadastroNomeAutor": "Nombre del autor:",
+  "selecioneAutor": "Seleccione un autor",
+  "selecioneReinoPrimeiro": "Seleccione un reino primero",
+  "selecioneFamiliaPrimeiro": "Seleccione una familia primero",
+  "selecioneGeneroPrimeiro": "Seleccione un género primero",
+        
+  "erroExcluirVariedade": "Error al eliminar la variedad",
+  "erroExcluirVariedadeInesperado": "Ocurrió un error inesperado al intentar eliminar la variedad.",
+  "erroComunicacaoServidor": "Fallo en la comunicación con el servidor.",
+  "buscarVariedadeErro": "Error al buscar las variedades.",
+  "erroServidorBuscarVariedades": "Error del servidor al buscar las variedades.",
+  "erroBuscarVariedades": "Fallo al buscar las variedades.",
+  "erroCadastroVariedade": "Hubo un problema al registrar la nueva variedad. Por favor, intente nuevamente.",
+  "erroAtualizarVariedade": "Hubo un problema al actualizar la variedad. Por favor, intente nuevamente.",
+  
+  "buscarReinos": "Buscar reinos",
+  "erroBuscarReinos": "Error al buscar los reinos.",
+  "erroFalhaBuscarReinos": "Fallo al buscar los reinos.",
+  
+  "buscarFamilias": "Buscar familias",
+  "erroBuscarFamilias": "Error al buscar las familias.",
+  "erroFalhaBuscarFamilias": "Fallo al buscar las familias.",
+  
+  "buscarGeneros": "Buscar géneros",
+  "erroBuscarGeneros": "Error al buscar los géneros.",
+  "erroFalhaBuscarGeneros": "Fallo al buscar los géneros.",
+  
+  "buscarEspecies": "Buscar especies",
+  "erroBuscarEspecies": "Error al buscar las especies.",
+  "erroFalhaBuscarEspecies": "Fallo al buscar las especies.",
+  
+  "buscarAutores": "Buscar autores",
+  "erroBuscarAutores": "Error al buscar los autores.",
+  "erroFalhaBuscarAutores": "Fallo al buscar los autores.",
+
+  "informarVariedadeEspecie": "Ingrese el nombre de la nueva variedad y la especie."
+}

@@ -5,6 +5,7 @@ import {
   Spin, Empty, Form
 } from 'antd'
 import { Moment } from 'moment'
+import { useTranslation } from 'react-i18next'
 import {
   BarChart, Bar, XAxis, YAxis,
   CartesianGrid, Tooltip, Legend, ResponsiveContainer
@@ -47,9 +48,11 @@ const TombosPorIntervaloTempoComponent: React.FC<TombosPorIntervaloTempoProps> =
   onGranularidadeChange,
   onSearch
 }) => {
+  const { t } = useTranslation()
+
   const renderFiltros = () => (
     <Card
-      title="Filtros do relatório"
+      title={t('relatorioPorPeriodo:relatorioTombosPeriodo')}
       style={{
         marginBottom: '20px',
         borderRadius: '12px',
@@ -61,13 +64,13 @@ const TombosPorIntervaloTempoComponent: React.FC<TombosPorIntervaloTempoProps> =
       <Form layout="vertical">
         <Row gutter={16}>
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-            <Form.Item label="Período">
+            <Form.Item label={t('relatorioPorPeriodo:periodo')}>
               <RangePicker
                 value={dataInicio && dataFim ? [dataInicio, dataFim] : undefined}
                 onChange={onDateChange}
                 format="DD/MM/YYYY"
                 style={{ width: '100%', borderRadius: '6px' }}
-                placeholder={['Data inicial', 'Data final']}
+                placeholder={[t('relatorioPorPeriodo:dataInicial'), t('relatorioPorPeriodo:dataFinal')]}
               />
             </Form.Item>
             {dataInicio && dataFim && (
@@ -75,48 +78,52 @@ const TombosPorIntervaloTempoComponent: React.FC<TombosPorIntervaloTempoProps> =
                 fontSize: '12px', color: '#8c8c8c', marginTop: '-15px', paddingLeft: '4px'
               }}
               >
-                Período:
+                {t('relatorioPorPeriodo:subTextoPeriodo')}
                 {' '}
                 {diffs.dias}
                 {' '}
-                dias |
+                {t('relatorioPorPeriodo:subTextoDias')}
+                {' '}
+                |
                 {' '}
                 {diffs.semanas}
                 {' '}
-                semanas |
+                {t('relatorioPorPeriodo:subTextoSemanas')}
+                {' '}
+                |
                 {' '}
                 {diffs.meses}
                 {' '}
-                meses
+                {t('relatorioPorPeriodo:subTextoMeses')}
               </p>
             )}
           </Col>
 
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-            <Form.Item label="Granularidade">
+            <Form.Item label={t('relatorioPorPeriodo:granularidade')}>
               <Select
                 value={granularidade}
                 onChange={onGranularidadeChange}
-                placeholder="Selecione a granularidade"
+                placeholder={t('relatorioPorPeriodo:selecioneGranularidade')}
                 style={{ borderRadius: '6px' }}
               >
                 <Option value="dia" disabled={!granularidadesPermitidas.includes('dia')}>
-                  Dia
+                  {t('relatorioPorPeriodo:granularidadeDia')}
                   {' '}
-                  {!granularidadesPermitidas.includes('dia') ? '(máx. 30 dias)' : ''}
+                  {!granularidadesPermitidas.includes('dia') ? t('relatorioPorPeriodo:maxGranularidadeDias') : ''}
                 </Option>
                 <Option value="semana" disabled={!granularidadesPermitidas.includes('semana')}>
-                  Semana
+                  {t('relatorioPorPeriodo:granularidadeSemana')}
                   {' '}
-                  {!granularidadesPermitidas.includes('semana') ? '(máx. 30 semanas)' : ''}
+                  {!granularidadesPermitidas.includes('semana') ? t('relatorioPorPeriodo:maxGranularidadeSemanas') : ''}
                 </Option>
                 <Option value="mes" disabled={!granularidadesPermitidas.includes('mes')}>
-                  Mês
+                  {t('relatorioPorPeriodo:granularidadeMes')}
                   {' '}
-                  {!granularidadesPermitidas.includes('mes') ? '(máx. 30 meses)' : ''}
+                  {!granularidadesPermitidas.includes('mes') ? t('relatorioPorPeriodo:maxGranularidadeMeses') : ''}
                 </Option>
                 <Option value="ano" disabled={!granularidadesPermitidas.includes('ano')}>
-                  Ano
+                  {t('relatorioPorPeriodo:granularidadeAno')}
                 </Option>
               </Select>
             </Form.Item>
@@ -137,7 +144,7 @@ const TombosPorIntervaloTempoComponent: React.FC<TombosPorIntervaloTempoProps> =
                 boxShadow: '0 2px 4px rgba(24, 144, 255, 0.25)'
               }}
             >
-              Buscar
+              {t('relatorioPorPeriodo:buscar')}
             </Button>
           </Col>
         </Row>
@@ -152,7 +159,7 @@ const TombosPorIntervaloTempoComponent: React.FC<TombosPorIntervaloTempoProps> =
           textAlign: 'center', padding: '100px', borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
         }}
         >
-          <Spin size="large" tip="Carregando dados estatísticos..." />
+          <Spin size="large" tip={t('relatorioPorPeriodo:carregandoDadosEstatisticos')} />
         </Card>
       )
     }
@@ -166,9 +173,9 @@ const TombosPorIntervaloTempoComponent: React.FC<TombosPorIntervaloTempoProps> =
           <Empty
             description={(
               <span>
-                Nenhum dado disponível para o período selecionado.
+                {t('relatorioPorPeriodo:nenhumDadoDisponivel')}
                 <br />
-                <small style={{ color: '#8c8c8c' }}>Tente ajustar a granularidade ou o intervalo de datas.</small>
+                <small style={{ color: '#8c8c8c' }}>{t('relatorioPorPeriodo:ajusteGranularidadeDatas')}</small>
               </span>
             )}
             style={{ margin: '60px 0' }}
@@ -177,9 +184,11 @@ const TombosPorIntervaloTempoComponent: React.FC<TombosPorIntervaloTempoProps> =
       )
     }
 
+    console.log(dados)
+
     return (
       <Card
-        title="Análise de Tombos - Distribuição Temporal"
+        title={t('relatorioPorPeriodo:analiseTombosDistribuicaoTemporal')}
         style={{
           marginTop: '20px',
           borderRadius: '12px',
@@ -217,13 +226,13 @@ const TombosPorIntervaloTempoComponent: React.FC<TombosPorIntervaloTempoProps> =
                   padding: '12px'
                 }}
                 cursor={{ fill: 'rgba(24, 144, 255, 0.05)' }}
-                formatter={value => [`${String(value)} tombos`, 'Quantidade']}
+                formatter={value => [`${String(value)} ${t('relatorioPorPeriodo:tombos')}`, t('relatorioPorPeriodo:quantidade')]}
               />
               <Legend wrapperStyle={{ paddingTop: '20px' }} />
               <Bar
                 dataKey="quantidade"
                 fill="#1890ff"
-                name="Quantidade de Tombos"
+                name={t('relatorioPorPeriodo:quantidadeTombos')}
                 radius={[
                   6,
                   6,

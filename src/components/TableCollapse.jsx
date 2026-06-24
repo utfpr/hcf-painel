@@ -1,19 +1,22 @@
 import { Collapse, Skeleton, Table } from 'antd'
-
-const columns = [
-    {
-        title: 'Espécie',
-        dataIndex: 'especie',
-        key: 'especie'
-    },
-    {
-        title: 'Tombos relacionados',
-        dataIndex: 'tombos',
-        key: 'tombos'
-    }
-]
+import { useTranslation } from 'react-i18next'
 
 const TableCollapse = ({ data, loading }) => {
+    const { t } = useTranslation()
+
+    const columns = [
+        {
+            title: t('relatorioInventarioEspecies:especie'),
+            dataIndex: 'especie',
+            key: 'especie'
+        },
+        {
+            title: t('relatorioInventarioEspecies:tombosRelacionados'),
+            dataIndex: 'tombos',
+            key: 'tombos'
+        }
+    ]
+
     if (!data) return <div />
     if (data.length === 0) return <div />
     if (loading) {

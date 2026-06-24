@@ -1,0 +1,24 @@
+{
+  "relatorioDeInventarioDeEspecies": "Relatório de Inventário de Espécies",
+  "buscarFamilia": "Buscar família",
+  "nomeDaFamilia": "Nome da família:",
+  "selecioneUmaFamilia": "Selecione uma família",
+  "limpar": "Limpar",
+  "pesquisar": "Pesquisar",
+  "gerarPdf": "Gerar PDF",
+  "cliqueNoNomeDaFamiliaParaExibirSuasInformacoes": "Clique no nome da família para exibir suas informações",
+
+  "buscarDados": "Buscar dados",
+  "erroAoBuscarOsDadosDoRelatorio": "Erro ao buscar os dados do relatório.",
+  "erroDeServidorAoBuscarOsDadosDoRelatorio": "Erro de servidor ao buscar os dados do relatório.",
+
+  "exportarPdf": "Exportar PDF",
+  "pdfGeradoComSucesso": "PDF gerado com sucesso.",
+  "erroAoExportarOPdf": "Erro ao exportar o PDF.",
+  "erroDeServidorAoExportarOPdf": "Erro de servidor ao exportar o PDF.",
+
+  "especie": "Espécie",
+  "tombosRelacionados": "Tombos relacionados",
+
+  "error": "Error"
+}
