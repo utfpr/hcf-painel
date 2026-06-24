@@ -1,0 +1,43 @@
+{
+  "tituloCardBuscarReflora": "Buscar información en Reflora",
+
+  "perguntaAtualizarAgora": "¿Desea actualizar ahora?",
+  "botaoAtualizar": "Actualizar",
+
+  "processoExecutando": "¡EJECUTANDO! ESPERE...",
+
+  "ultimaAtualizacao": "La última actualización se realizó a las {{horario}} y duró {{duracao}}.",
+
+  "tituloAtualizacaoProgramada": "Actualización programada",
+
+  "labelAtualizacaoProgramada": "Actualización programada",
+
+  "labelPeriodicidade": "Periodicidad:",
+  "placeholderPeriodicidade": "Seleccione la periodicidad deseada",
+
+  "opcaoPeriodicidadeSemanal": "Cada semana",
+  "opcaoPeriodicidadeMensal": "Cada mes",
+  "opcaoPeriodicidadeDoisMeses": "Cada dos meses",
+
+  "botaoDefinirAtualizacaoProgramada": "Definir actualización programada",
+
+  "placeholderSelecionarLog": "Seleccione el archivo LOG",
+  "verificarLogSaida": "Verificar LOG de salida",
+
+  "headerReflora": "Reflora",
+
+  "erroAgendarAtualizacao": "No fue posible programar la nueva hora de actualización.",
+  "erroProcessoExecutando": "El proceso de actualización se está ejecutando actualmente.",
+  "infoProcessoInicializando": "El proceso de actualización comenzará en breve.",
+
+  "mensagemPeriodicidadeSemanalSegunda": "El proceso de actualización ha sido programado para todos los lunes a medianoche.",
+  "mensagemPeriodicidadeSemanalTerca": "El proceso de actualización ha sido programado para todos los martes a medianoche.",
+  "mensagemPeriodicidadeSemanalQuarta": "El proceso de actualización ha sido programado para todos los miércoles a medianoche.",
+  "mensagemPeriodicidadeSemanalQuinta": "El proceso de actualización ha sido programado para todos los jueves a medianoche.",
+  "mensagemPeriodicidadeSemanalSexta": "El proceso de actualización ha sido programado para todos los viernes a medianoche.",
+  "mensagemPeriodicidadeSemanalSabado": "El proceso de actualización ha sido programado para todos los sábados a medianoche.",
+  "mensagemPeriodicidadeSemanalDomingo": "El proceso de actualización ha sido programado para todos los domingos a medianoche.",
+
+  "mensagemPeriodicidadeMensal": "El proceso de actualización ha sido programado y se ejecutará cada mes.",
+  "mensagemPeriodicidadeDoisMeses": "El proceso de actualización ha sido programado y se ejecutará cada dos meses."
+}
