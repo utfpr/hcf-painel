@@ -10,12 +10,12 @@ import {
 } from 'antd'
 
 import { Form } from '@ant-design/compatible'
-
+import { withTranslation } from 'react-i18next'
 import ButtonExportComponent from '../components/ButtonExportComponent'
 
 const FormItem = Form.Item
 
-export default class LivroTomboScreen extends Component {
+export class LivroTomboScreen extends Component {
     constructor(props) {
         super(props)
         this.state = {}
@@ -31,20 +31,20 @@ export default class LivroTomboScreen extends Component {
             <Form onSubmit={this.handleSubmit}>
                 <Row>
                     <Col span={24}>
-                        <h2 style={{ fontWeight: 200 }}>Livro Tombo</h2>
+                        <h2 style={{ fontWeight: 200 }}>{this.props.t('livroTombo:tituloLivroTombo')}</h2>
                     </Col>
                 </Row>
                 <Divider dashed />
 
                 <Row gutter={8}>
                     <Col span={8}>
-                        <span>Data inicial da coleta:</span>
+                        <span>{this.props.t('livroTombo:dataInicialColeta')}</span>
                     </Col>
                     <Col span={8}>
-                        <span>Data final de coleta:</span>
+                        <span>{this.props.t('livroTombo:dataFinalColeta')}</span>
                     </Col>
                     <Col span={8}>
-                        <span>Gênero:</span>
+                        <span>{this.props.t('livroTombo:genero')}</span>
                     </Col>
                 </Row>
                 <Row gutter={8}>
@@ -55,10 +55,10 @@ export default class LivroTomboScreen extends Component {
 
                 <Row gutter={8}>
                     <Col span={8}>
-                        <span>Espécie:</span>
+                        <span>{this.props.t('livroTombo:especie')}</span>
                     </Col>
                     <Col span={8}>
-                        <span>Família:</span>
+                        <span>{this.props.t('livroTombo:familia')}</span>
                     </Col>
                 </Row>
                 <Row gutter={8}>
@@ -68,7 +68,7 @@ export default class LivroTomboScreen extends Component {
 
                 <Row gutter={8}>
                     <Col span={24}>
-                        <span>Selecione os campos a serem exportados:</span>
+                        <span>{this.props.t('livroTombo:selecaoCamposExportacao')}</span>
                     </Col>
                 </Row>
                 <Row gutter={8}>
@@ -76,27 +76,27 @@ export default class LivroTomboScreen extends Component {
                         <FormItem>
                             <Checkbox name="localidade">
                                 {' '}
-                                <Tag color="geekblue">Cód. Família</Tag>
+                                <Tag color="geekblue">{this.props.t('livroTombo:codFamilia')}</Tag>
                             </Checkbox>
                             <Checkbox name="localidade">
                                 {' '}
-                                <Tag color="magenta">Data da Coleta</Tag>
+                                <Tag color="magenta">{this.props.t('livroTombo:dataColeta')}</Tag>
                             </Checkbox>
                             <Checkbox name="localidade">
                                 {' '}
-                                <Tag color="red">Família</Tag>
+                                <Tag color="red">{this.props.t('livroTombo:familiaOpcao')}</Tag>
                             </Checkbox>
                             <Checkbox name="localidade">
                                 {' '}
-                                <Tag color="blue">Espécie</Tag>
+                                <Tag color="blue">{this.props.t('livroTombo:especieOpcao')}</Tag>
                             </Checkbox>
                             <Checkbox name="localidade">
                                 {' '}
-                                <Tag color="orange">Gênero</Tag>
+                                <Tag color="orange">{this.props.t('livroTombo:generoOpcao')}</Tag>
                             </Checkbox>
                             <Checkbox name="localidade">
                                 {' '}
-                                <Tag color="purple">Quantidade</Tag>
+                                <Tag color="purple">{this.props.t('livroTombo:quantidade')}</Tag>
                             </Checkbox>
                         </FormItem>
                     </Col>
@@ -109,3 +109,8 @@ export default class LivroTomboScreen extends Component {
         )
     }
 }
+
+
+const LivroTomboScreenWithForm = Form.create()(LivroTomboScreen)
+
+export default withTranslation()(LivroTomboScreenWithForm)

@@ -1,10 +1,10 @@
 import { Component } from 'react'
 
 import { Button } from 'antd'
-
+import { withTranslation } from 'react-i18next'
 import { ExportOutlined } from '@ant-design/icons'
 
-export default class ButtonExportComponent extends Component {
+export class ButtonExportComponent extends Component {
     render() {
         return (
             <Button
@@ -12,8 +12,12 @@ export default class ButtonExportComponent extends Component {
                 icon={<ExportOutlined />}
                 style={{ backgroundColor: '#FF7F00', borderColor: '#FF7F00' }}
             >
-                Exportar
+                {this.props.t('botaoExportar', {ns: 'buttonExport'})}
             </Button>
         )
     }
 }
+
+const ButtonExportComponentWithTranslation = withTranslation()(ButtonExportComponent)
+
+export default ButtonExportComponentWithTranslation

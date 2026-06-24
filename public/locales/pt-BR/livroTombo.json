@@ -1,0 +1,19 @@
+{
+  "tituloLivroTombo": "Livro Tombo",
+
+  "dataInicialColeta": "Data inicial da coleta:",
+  "dataFinalColeta": "Data final de coleta:",
+  "genero": "Gênero:",
+
+  "especie": "Espécie:",
+  "familia": "Família:",
+
+  "selecaoCamposExportacao": "Selecione os campos a serem exportados:",
+
+  "codFamilia": "Cód. Família",
+  "dataColeta": "Data da Coleta",
+  "familiaOpcao": "Família",
+  "especieOpcao": "Espécie",
+  "generoOpcao": "Gênero",
+  "quantidade": "Quantidade"
+}
