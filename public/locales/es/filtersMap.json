@@ -1,0 +1,31 @@
+{
+  "filtrosMapa": "Filtros del mapa",
+
+  "adicionarFiltro": "Añadir filtro",
+  "remover": "Eliminar",
+  "limpar": "Limpiar",
+  "pesquisar": "Buscar",
+
+  "numeroHcf": "Número HCF",
+  "nomePopular": "Nombre común",
+  "nomeCientifico": "Nombre científico",
+  "altitudeMinMax": "Altitud (mín-máx)",
+  "taxonomia": "Taxonomía",
+
+  "placeholderNumeroHcf": "Introduce el número HCF, ej. 28140",
+  "placeholderNomePopular": "Introduce el nombre común, ej. maracuyá",
+  "placeholderNomeCientifico": "Introduce el nombre científico, ej. Hancornia speciosa",
+
+  "placeholderAltitudeMinima": "Introduce el valor mínimo, ej. 1500",
+  "placeholderAltitudeMaxima": "Introduce el valor máximo, ej. 2000",
+
+  "reino": "reino",
+  "familia": "familia",
+  "subFamilia": "subfamilia",
+  "genero": "género",
+  "especie": "especie",
+  "subEspecie": "subespecie",
+  "variedade": "variedad",
+
+  "placeholderTaxonomia": "Introduce el valor para {{taxonomia}}"
+}
