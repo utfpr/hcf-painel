@@ -13,9 +13,11 @@
 
   "confirmarExcluirAutor": "Você tem certeza que deseja excluir este autor?",
   "descricaoExcluirAutor": "Ao clicar em SIM, o autor será excluída.",
-  "sucessoExcluirAutor": "O Autor foi excluída com sucesso.",
+  "sucessoExcluirAutor": "O Autor foi excluído com sucesso.",
 
   "validacaoInformarAutor": "Informe o nome do novo autor.",
+
+  "buscarAutores": "Buscar autores",
 
   "buscarAutoresErro": "Erro ao buscar os autores.",
   "erroServidorBuscarAutores": "Erro do servidor ao buscar os autores.",

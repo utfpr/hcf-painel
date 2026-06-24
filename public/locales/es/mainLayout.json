@@ -1,0 +1,51 @@
+{
+  "tombos": "Registros",
+  "taxonomia": "Taxonomía",
+
+  "reinos": "Reinos",
+  "familias": "Familias",
+  "subfamilias": "Subfamilias",
+  "generos": "Géneros",
+  "especies": "Especies",
+  "subespecies": "Subespecies",
+  "variedades": "Variedades",
+  "autores": "Autores",
+
+  "locais": "Lugares",
+  "estados": "Estados",
+  "cidades": "Ciudades",
+  "localColeta": "Lugar de recolección",
+
+  "remessas": "Envíos",
+  "pendencias": "Pendientes",
+  "usuarios": "Usuarios",
+  "identificadores": "Identificadores",
+  "coletores": "Recolectores",
+  "herbarios": "Herbarios",
+
+  "fichas": "Fichas",
+  "fichaTombo": "Ficha de registro",
+
+  "geolocalizacao": "Geolocalización",
+  "mapaCompleto": "Mapa completo",
+  "filtrosAvancados": "Filtros avanzados",
+
+  "relatorios": "Informes",
+  "relatorioPorPeriodo": "Informe por período",
+  "inventarioEspecies": "Inventario de especies",
+  "coletaIntervaloData": "Recolección por intervalo de fechas",
+  "coletaColetorIntervaloData": "Recolección por recolector e intervalo de fechas",
+  "familiasGeneros": "Familias y géneros",
+  "locaisColeta": "Lugares de recolección",
+  "tombosPorCidade": "Registros por ciudad",
+  "quantidadeFamiliaGenero": "Cantidad por familia y género",
+  "codigoBarras": "Código de barras",
+  "diagnosticoErrosPosicionamento": "Diagnóstico de errores de posicionamiento",
+
+  "exportacao": "Exportación",
+
+  "servicos": "Servicios",
+
+  "erroBuscarDarwinCore": "Hubo un problema al buscar el archivo Darwin Core, inténtalo de nuevo.",
+  "erroRequisitarDarwinCore": "Hubo un problema al solicitar el archivo Darwin Core, inténtalo de nuevo."
+}
