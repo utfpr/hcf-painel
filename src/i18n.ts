@@ -55,7 +55,8 @@ void i18n
       'relatorioFamiliasGenero',
       'authService',
       'listaTaxonomiaVariedade',
-      'exportacaoScreen'
+      'exportacaoScreen',
+      'verPendencia'
     ],
     defaultNS: 'common',
 

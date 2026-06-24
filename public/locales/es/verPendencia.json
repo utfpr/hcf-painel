@@ -1,0 +1,29 @@
+{
+  "carregando": "Cargando...",
+
+  "tituloModificacoes": "Modificaciones",
+
+  "fotosAntigas": "Fotos antiguas:",
+  "fotosNovas": "Nuevas fotos:",
+  "fotos": "Fotos:",
+
+  "observacao": "Observación:",
+
+  "botaoAprovado": "APROBADO",
+  "botaoReprovado": "RECHAZADO",
+
+  "colunaCampo": "Campo",
+  "colunaValorAntigo": "Valor antiguo",
+  "colunaValorNovo": "Valor nuevo",
+
+  "erroBuscarPendenciasTitulo": "Fallo",
+  "erroBuscarPendenciasMensagem": "No fue posible obtener las pendientes, intente nuevamente.",
+
+  "erroBuscarPendenciasGenerico": "Hubo un problema al buscar las pendientes, intente nuevamente.",
+
+  "atualizacaoTitulo": "Actualización",
+  "sucessoAtualizacaoMensagem": "La pendiente fue actualizada con éxito.",
+  "erroAtualizacaoMensagem": "Hubo un problema al actualizar la pendiente.",
+
+  "spinnerCarregando": "Cargando..."
+}
