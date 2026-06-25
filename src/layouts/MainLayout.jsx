@@ -55,14 +55,28 @@ class MainLayout extends Component {
     }
 
     getCurrentLanguage = () => {
-        const language = this.props.i18n?.resolvedLanguage || this.props.i18n?.language || 'pt'
-        return language.toLowerCase().startsWith('pt') ? 'pt' : language
+        const language = this.props.i18n?.resolvedLanguage || this.props.i18n?.language || 'pt-BR'
+        return language.toLowerCase().startsWith('pt') ? 'pt-BR' : language
     }
 
     handleChangeLanguage = value => {
         this.props.i18n?.changeLanguage(value)
         this.setState({ language: value })
     }
+
+    renderLanguageSelector = () => (
+        <Select
+            size="small"
+            value={this.state.language}
+            onChange={this.handleChangeLanguage}
+            style={{ width: 140 }}
+            aria-label={this.props.t('mainLayout:idioma')}
+        >
+            <Select.Option value="pt-BR">{this.props.t('tombo:languagePortuguese')}</Select.Option>
+            <Select.Option value="en">{this.props.t('tombo:languageEnglish')}</Select.Option>
+            <Select.Option value="es">{this.props.t('tombo:languageSpanish')}</Select.Option>
+        </Select>
+    )
 
     onOpenChange = openKeys => {
         this.setState({ openKeys })
@@ -452,17 +466,7 @@ class MainLayout extends Component {
 
                                             <Divider type="vertical" />
 
-                                            <Select
-                                                size="small"
-                                                value={this.state.language}
-                                                onChange={this.handleChangeLanguage}
-                                                style={{ width: 140 }}
-                                                aria-label={this.props.t('mainLayout:idioma')}
-                                            >
-                                                <Select.Option value="pt">{this.props.t('tombo:languagePortuguese')}</Select.Option>
-                                                <Select.Option value="en">{this.props.t('tombo:languageEnglish')}</Select.Option>
-                                                <Select.Option value="es">{this.props.t('tombo:languageSpanish')}</Select.Option>
-                                            </Select>
+                                            {this.renderLanguageSelector()}
 
                                             <Divider type="vertical" />
 
@@ -481,9 +485,15 @@ class MainLayout extends Component {
                                         </div>
                                     )
                                 : (
-                                        <Link to="/inicio">
-                                            <Button>{this.props.t('common:sair')}</Button>
-                                        </Link>
+                                        <div>
+                                            {this.renderLanguageSelector()}
+
+                                            <Divider type="vertical" />
+
+                                            <Link to="/inicio">
+                                                <Button>{this.props.t('common:sair')}</Button>
+                                            </Link>
+                                        </div>
                                     )}
                         </Row>
                     </Header>

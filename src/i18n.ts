@@ -18,10 +18,10 @@ void i18n
 
     detection: {
       order: [
-        'path',
         'localStorage',
-        'navigator'
-      ]
+        'path'
+      ],
+      caches: ['localStorage']
     },
 
     backend: {
@@ -55,7 +55,8 @@ void i18n
       'relatorioFamiliasGenero',
       'authService',
       'listaTaxonomiaVariedade',
-      'exportacaoScreen'
+      'exportacaoScreen',
+      'tombo'
     ],
     defaultNS: 'common',
 
