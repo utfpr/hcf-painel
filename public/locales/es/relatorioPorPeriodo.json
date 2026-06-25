@@ -1,0 +1,45 @@
+{
+  "relatorioTombosPeriodo": "Reporte de registros por período",
+
+  "alerta": "Alerta",
+  "erro": "Error",
+
+  "selecionePeriodoValido": "Seleccione un período válido",
+  "dataInicioAnteriorDataFim": "La fecha de inicio debe ser anterior a la fecha de fin",
+
+  "falhaBuscarDadosRelatorio": "Fallo al buscar los datos del reporte",
+
+  "dia": "día",
+  "semana": "semana",
+  "mes": "mes",
+  "ano": "año",
+
+  "filtrosRelatorio": "Filtros del reporte",
+  "periodo": "Período",
+  "dataInicial": "Fecha inicial",
+  "dataFinal": "Fecha final",
+  "subTextoPeriodo": "Período:",
+  "subTextoDias": "días",
+  "subTextoSemanas": "semanas",
+  "subTextoMeses": "meses",
+  "granularidade": "Granularidad",
+  "selecioneGranularidade": "Seleccione la granularidad",
+  "granularidadeDia": "Día",
+  "maxGranularidadeDias": "(máx. 30 días)",
+  "granularidadeSemana": "Semana",
+  "maxGranularidadeSemanas": "(máx. 30 semanas)",
+  "granularidadeMes": "Mes",
+  "maxGranularidadeMeses": "(máx. 30 meses)",
+  "granularidadeAno": "Año",
+  "buscar": "Buscar",
+
+  "carregandoDadosEstatisticos": "Cargando datos estadísticos...",
+  "nenhumDadoDisponivel": "Ningún dato disponible para el período seleccionado.",
+  "ajusteGranularidadeDatas": "Intente ajustar la granularidad o el rango de fechas.",
+  "analiseTombosDistribuicaoTemporal": "Análisis de registros - Distribución temporal",
+  
+  "barChartSemana": "Semana", 
+  "tombos": "registros",
+  "amount": "Cantidad",
+  "quantidadeTombos": "Cantidad de registros"
+}

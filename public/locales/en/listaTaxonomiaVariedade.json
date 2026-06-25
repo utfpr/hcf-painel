@@ -1,0 +1,66 @@
+{
+  "variedades": "Varieties",
+  "buscarVariedade": "Search Variety",
+
+  "nomeVariedade": "Variety Name:",
+  "nomeFamilia": "Family Name:",
+  "nomeGenero": "Genus Name:",
+  "nomeEspecie": "Species Name:",
+
+  "colunaVariedade": "Variety",
+  "colunaFamilia": "Family",
+  "colunaGenero": "Genus",
+  "colunaEspecie": "Species",
+  "colunaAutor": "Author",
+  "colunaAcao": "Action",
+
+  "perguntaExcluirVariedade": "Are you sure you want to delete this variety?",
+  "confirmacaoExcluirVariedade": "By clicking YES, the variety will be deleted.",
+  "variedadeExcluidaSucesso": "The variety was successfully deleted.",
+
+  "cadastroNomeReino": "Kingdom Name:",
+  "selecioneReino": "Select a kingdom",
+  "cadastroNomeFamilia": "Family Name:",
+  "selecioneFamilia": "Select a family",
+  "cadastroNomeGenero": "Genus Name:",
+  "selecioneGenero": "Select a genus",
+  "cadastroNomeEspecie": "Species Name:",
+  "selecioneEspecie": "Select a species",
+  "cadastroNomeVariedade": "Variety Name:",
+  "cadastroNomeAutor": "Author Name:",
+  "selecioneAutor": "Select an author",
+  "selecioneReinoPrimeiro": "Select a kingdom first",
+  "selecioneFamiliaPrimeiro": "Select a family first",
+  "selecioneGeneroPrimeiro": "Select a genus first",
+
+  "erroExcluirVariedade": "Error deleting variety",
+  "erroExcluirVariedadeInesperado": "An unexpected error occurred while trying to delete the variety.",
+  "erroComunicacaoServidor": "Failed to communicate with the server.",
+  "buscarVariedadeErro": "Error fetching varieties.",
+  "erroServidorBuscarVariedades": "Server error while fetching varieties.",
+  "erroBuscarVariedades": "Failed to fetch varieties.",
+  "erroCadastroVariedade": "There was a problem registering the new variety. Please try again.",
+  "erroAtualizarVariedade": "There was a problem updating the variety. Please try again.",
+
+  "buscarReinos": "Search Kingdoms",
+  "erroBuscarReinos": "Error fetching kingdoms.",
+  "erroFalhaBuscarReinos": "Failed to fetch kingdoms.",
+
+  "buscarFamilias": "Search Families",
+  "erroBuscarFamilias": "Error fetching families.",
+  "erroFalhaBuscarFamilias": "Failed to fetch families.",
+
+  "buscarGeneros": "Search Genera",
+  "erroBuscarGeneros": "Error fetching genera.",
+  "erroFalhaBuscarGeneros": "Failed to fetch genera.",
+
+  "buscarEspecies": "Search Species",
+  "erroBuscarEspecies": "Error fetching species.",
+  "erroFalhaBuscarEspecies": "Failed to fetch species.",
+
+  "buscarAutores": "Search Authors",
+  "erroBuscarAutores": "Error fetching authors.",
+  "erroFalhaBuscarAutores": "Failed to fetch authors.",
+
+  "informarVariedadeEspecie": "Enter the name of the new variety and the species."
+}

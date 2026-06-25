@@ -3,24 +3,26 @@ import React, { useState } from 'react'
 import {
     Card, Button, Dropdown, Menu, Collapse, Form, Input, Space
 } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 import { PlusCircleOutlined, MinusCircleOutlined } from '@ant-design/icons'
 
 const { Panel } = Collapse
 
 const FiltersMap = ({ onSearch, onClear }) => {
+    const { t } = useTranslation()
     const [selectedFilters, setSelectedFilters] = useState([])
     const [filterValues, setFilterValues] = useState({})
 
-    const taxonomiaOptions = ['Reino', 'Família', 'SubFamília', 'Gênero', 'Espécie', 'SubEspécie', 'Variedade']
+    const taxonomiaOptions = [t('filtersMap:reino'), t('filtersMap:familia'), t('filtersMap:subFamilia'), t('filtersMap:genero'), t('filtersMap:especie'), t('filtersMap:subEspecie'), t('filtersMap:variedade')]
 
     const availableFilters = [
         {
             key: 'hcf',
-            label: 'Número HCF',
+            label: t('filtersMap:numeroHcf'),
             component: (
                 <Input
-                    placeholder="Digite o número HCF, ex: 28140"
+                    placeholder={t('filtersMap:placeholderNumeroHcf')}
                     onChange={e => handleFilterChange('hcf', e.target.value)}
                     value={filterValues.hcf}
                 />
@@ -28,10 +30,10 @@ const FiltersMap = ({ onSearch, onClear }) => {
         },
         {
             key: 'nomesPopulares',
-            label: 'Nome Popular',
+            label: t('filtersMap:nomePopular'),
             component: (
                 <Input
-                    placeholder="Digite o nome popular, ex: maracujá"
+                    placeholder={t('filtersMap:placeholderNomePopular')}
                     onChange={e => handleFilterChange('nomesPopulares', e.target.value)}
                     value={filterValues.nomesPopulares}
                 />
@@ -39,10 +41,10 @@ const FiltersMap = ({ onSearch, onClear }) => {
         },
         {
             key: 'nomeCientifico',
-            label: 'Nome Científico',
+            label: t('filtersMap:nomeCientifico'),
             component: (
                 <Input
-                    placeholder="Digite o nome científico, ex: Hancornia speciosa"
+                    placeholder={t('filtersMap:placeholderNomeCientifico')}
                     onChange={e => handleFilterChange('nomeCientifico', e.target.value)}
                     value={filterValues.nomeCientifico}
                 />
@@ -50,16 +52,16 @@ const FiltersMap = ({ onSearch, onClear }) => {
         },
         {
             key: 'altitude',
-            label: 'Altitude (min-max)',
+            label: t('filtersMap:altitudeMinMax'),
             component: (
                 <div style={{ display: 'flex', gap: '8px' }}>
                     <Input
-                        placeholder="Digite o valor Mínimo, ex:1500"
+                        placeholder={t('filtersMap:placeholderAltitudeMinima')}
                         onChange={e => handleFilterChange('altitudeMin', e.target.value)}
                         value={filterValues.altitudeMin}
                     />
                     <Input
-                        placeholder="Digite o valor Máximo, ex:2000"
+                        placeholder={t('filtersMap:placeholderAltitudeMaxima')}
                         onChange={e => handleFilterChange('altitudeMax', e.target.value)}
                         value={filterValues.altitudeMax}
                     />
@@ -68,13 +70,13 @@ const FiltersMap = ({ onSearch, onClear }) => {
         },
         {
             key: 'taxonomia',
-            label: 'Taxonomia',
+            label: t('filtersMap:taxonomia'),
             component: (
                 <div>
                     {taxonomiaOptions.map(taxonomia => (
                         <Form.Item key={taxonomia} label={taxonomia}>
                             <Input
-                                placeholder={`Digite valor para ${taxonomia}`}
+                                placeholder={t('filtersMap:placeholderTaxonomia', { taxonomia: taxonomia })}
                                 value={filterValues[`taxonomia_${taxonomia}`]}
                                 onChange={e => handleFilterChange(`taxonomia_${taxonomia}`, e.target.value)}
                             />
@@ -110,7 +112,7 @@ const FiltersMap = ({ onSearch, onClear }) => {
     }
 
     return (
-        <Card title="Filtros do Mapa" style={{ marginBottom: '1rem' }}>
+        <Card title={t('filtersMap:filtrosMapa')} style={{ marginBottom: '1rem' }}>
             <Dropdown
                 overlay={(
                     <Menu>
@@ -123,7 +125,7 @@ const FiltersMap = ({ onSearch, onClear }) => {
                 )}
                 trigger={['click']}
             >
-                <Button icon={<PlusCircleOutlined />}>Adicionar Filtro</Button>
+                <Button icon={<PlusCircleOutlined />}>{t('filtersMap:adicionarFiltro')}</Button>
             </Dropdown>
 
             <Collapse style={{ marginTop: '1rem' }}>
@@ -141,7 +143,7 @@ const FiltersMap = ({ onSearch, onClear }) => {
                                     onClick={() => handleRemoveFilter(key)}
                                 >
                                     <MinusCircleOutlined style={{ marginRight: -3 }} />
-                                    Remover
+                                    {t('filtersMap:remover')}
                                 </Button>
                             )}
                         >
@@ -154,14 +156,14 @@ const FiltersMap = ({ onSearch, onClear }) => {
             </Collapse>
 
             <Space style={{ marginTop: 16 }}>
-                <Button onClick={handleReset}>Limpar</Button>
+                <Button onClick={handleReset}>{t('filtersMap:limpar')}</Button>
                 <Button
                     type="primary"
                     onClick={() => {
                         onSearch(filterValues)
                     }}
                 >
-                    Pesquisar
+                    {t('filtersMap:pesquisar')}
                 </Button>
             </Space>
         </Card>

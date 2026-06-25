@@ -4,6 +4,7 @@ import {
     Divider, Modal, Card, Row, Col, Select, Input, Button, notification
 } from 'antd'
 import axios from 'axios'
+import { withTranslation } from 'react-i18next'
 
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { recaptchaKey } from '@/config/api'
@@ -19,30 +20,6 @@ import {
 const { confirm } = Modal
 const FormItem = Form.Item
 const { Option } = Select
-
-const columns = [
-    {
-        title: 'Autor',
-        type: 'text',
-        key: 'autor',
-        dataIndex: 'autor',
-        width: '46.5%',
-        sorter: true
-    },
-    {
-        title: 'Observação',
-        type: 'text',
-        key: 'observacao',
-        dataIndex: 'observacao',
-        width: '46.5%',
-        sorter: true
-    },
-    {
-        title: 'Ação',
-        key: 'acao',
-        width: 100
-    }
-]
 
 class ListaTaxonomiaAutores extends Component {
     constructor(props) {
@@ -70,7 +47,7 @@ class ListaTaxonomiaAutores extends Component {
                 })
                 if (response.status === 204) {
                     this.requisitaListaAutores(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir', 'O Autor foi excluída com sucesso.')
+                    this.notificacao('success', this.props.t('common:excluir'), this.props.t('listaTaxonomiaAutores:sucessoExcluirAutor'))
                 }
             })
             .catch(err => {
@@ -96,11 +73,11 @@ class ListaTaxonomiaAutores extends Component {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this
         confirm({
-            title: 'Você tem certeza que deseja excluir este autor?',
-            content: 'Ao clicar em SIM, o autor será excluída.',
-            okText: 'SIM',
+            title: this.props.t('listaTaxonomiaAutores:confirmarExcluirAutor'),
+            content: this.props.t('listaTaxonomiaAutores:descricaoExcluirAutor'),
+            okText: this.props.t('common:sim'),
             okType: 'danger',
-            cancelText: 'NÃO',
+            cancelText: this.props.t('common:nao'),
             onOk() {
                 self.requisitaExclusao(id)
             },
@@ -130,7 +107,7 @@ class ListaTaxonomiaAutores extends Component {
                         this.setState({
                             visibleModal: true,
                             id: item.id,
-                            titulo: 'Atualizar'
+                            titulo: this.props.t('common:atualizar')
                         })
                     }}
                     >
@@ -192,10 +169,10 @@ class ListaTaxonomiaAutores extends Component {
                     loading: false
                 })
             } else if (response.status === 400) {
-                this.notificacao('warning', 'Buscar autores', 'Erro ao buscar os autores.')
+                this.notificacao('warning', this.props.t('listaTaxonomiaAutores:buscarAutores'), this.props.t('listaTaxonomiaAutores:buscarAutoresErro'))
                 this.setState({ loading: false })
             } else {
-                this.notificacao('error', 'Erro', 'Erro do servidor ao buscar os autores.')
+                this.notificacao('error', this.props.t('common:erro'), this.props.t('common:erroServidorBuscarAutores'))
                 this.setState({ loading: false })
             }
         } catch (err) {
@@ -205,7 +182,7 @@ class ListaTaxonomiaAutores extends Component {
                 const { error } = response.data
                 console.error(error.message)
             }
-            this.notificacao('error', 'Erro', 'Falha ao buscar autores.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('listaTaxonomiaAutores:erroBuscarAutores'))
         }
     }
 
@@ -250,11 +227,11 @@ class ListaTaxonomiaAutores extends Component {
                         this.state.valores || {},
                         this.state.pagina
                     )
-                    this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                    this.openNotificationWithIcon('success', this.props.t('common:tituloSucesso'), this.props.t('common:cadastroRealizadoSucesso'))
                 } else if (response.status === 400) {
-                    this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                    this.openNotificationWithIcon('warning', this.props.t('common:tituloFalha'), response.data.error.message)
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar o novo autor, tente novamente.')
+                    this.openNotificationWithIcon('error', this.props.t('common:tituloFalha'), this.props.t('listaTaxonomiaAutores:erroCadastroAutor'))
                 }
                 this.props.form.setFields({
                     nomeAutor: {
@@ -272,7 +249,7 @@ class ListaTaxonomiaAutores extends Component {
                 const { response } = err
                 if (response && response.data) {
                     const { error } = response.data
-                    this.openNotificationWithIcon('warning', 'Falha', error.message)
+                    this.openNotificationWithIcon('warning', this.props.t('common:tituloFalha'), error.message)
                 }
             })
             .catch(this.catchRequestError)
@@ -295,13 +272,13 @@ class ListaTaxonomiaAutores extends Component {
                         })
                         this.setState({
                             visibleModal: true,
-                            titulo: 'Cadastrar',
+                            titulo: this.props.t('common:cadastrar'),
                             id: -1
                         })
                     }}
                     style={{ backgroundColor: '#5CB85C', borderColor: '#5CB85C', width: '100%' }}
                 >
-                    Adicionar
+                    {this.props.t('common:adicionar')}
                 </Button>
             )
         }
@@ -325,11 +302,11 @@ class ListaTaxonomiaAutores extends Component {
                         this.state.valores || {},
                         this.state.pagina
                     )
-                    this.openNotificationWithIcon('success', 'Sucesso', 'A atualização foi realizada com sucesso.')
+                    this.openNotificationWithIcon('success', this.props.t('common:tituloSucesso'), this.props.t('common:atualizacaoRealizadaSucesso'))
                 } else if (response.status === 400) {
-                    this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                    this.openNotificationWithIcon('warning', this.props.t('common:tituloFalha'), response.data.error.message)
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao atualizar o autor, tente novamente.')
+                    this.openNotificationWithIcon('error', this.props.t('common:tituloFalha'), this.props.t('listaTaxonomiaAutores:erroAtualizarAutor'))
                 }
                 this.props.form.setFields({
                     nomeAutor: {
@@ -355,11 +332,11 @@ class ListaTaxonomiaAutores extends Component {
 
     renderPainelBusca(getFieldDecorator) {
         return (
-            <Card title="Buscar autor">
+            <Card title={this.props.t('listaTaxonomiaAutores:buscarAutor')}>
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col span={24}>
-                            <span>Nome do autor:</span>
+                            <span>{this.props.t('listaTaxonomiaAutores:buscarNomeAutor')}</span>
                         </Col>
                     </Row>
                     <Row gutter={8}>
@@ -396,7 +373,7 @@ class ListaTaxonomiaAutores extends Component {
                                             }}
                                             className="login-form-button"
                                         >
-                                            Limpar
+                                            {this.props.t('common:limpar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -407,7 +384,7 @@ class ListaTaxonomiaAutores extends Component {
                                             htmlType="submit"
                                             className="login-form-button ant-btn-pesquisar"
                                         >
-                                            Pesquisar
+                                            {this.props.t('common:pesquisar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -425,6 +402,31 @@ class ListaTaxonomiaAutores extends Component {
 
     renderFormulario() {
         const { getFieldDecorator } = this.props.form
+
+        const columns = [
+            {
+                title: this.props.t('listaTaxonomiaAutores:colunaAutor'),
+                type: 'text',
+                key: 'autor',
+                dataIndex: 'autor',
+                width: '46.5%',
+                sorter: true
+            },
+            {
+                title: this.props.t('listaTaxonomiaAutores:colunaObservacao'),
+                type: 'text',
+                key: 'observacao',
+                dataIndex: 'observacao',
+                width: '46.5%',
+                sorter: true
+            },
+            {
+                title: this.props.t('listaTaxonomiaAutores:colunaAcao'),
+                key: 'acao',
+                width: 100
+            }
+        ]
+
         return (
             <div>
                 <Form onSubmit={this.handleSubmitForm}>
@@ -452,12 +454,12 @@ class ListaTaxonomiaAutores extends Component {
                                 if (this.props.form.getFieldsValue().nomeAutor && this.props.form.getFieldsValue().nomeAutor.trim() !== '') {
                                     this.cadastraNovoAutor()
                                 } else {
-                                    this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome do novo autor.')
+                                    this.openNotificationWithIcon('warning', this.props.t('common:tituloFalha'), this.props.t('listaTaxonomiaAutores:validacaoInformarAutor'))
                                 }
                             } else if (this.props.form.getFieldsValue().nomeAutor && this.props.form.getFieldsValue().nomeAutor.trim() !== '') {
                                 this.atualizaAutor()
                             } else {
-                                this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome do novo autor.')
+                                this.openNotificationWithIcon('warning', this.props.t('common:tituloFalha'), this.props.t('listaTaxonomiaAutores:validacaoInformarAutor'))
                             }
                             this.setState({
                                 visibleModal: false
@@ -468,7 +470,7 @@ class ListaTaxonomiaAutores extends Component {
                         <div>
                             <Row gutter={8}>
                                 <Col span={24}>
-                                    <span>Nome:</span>
+                                    <span>{this.props.t('listaTaxonomiaAutores:cadastroNomeAutor')}</span>
                                 </Col>
                             </Row>
                             <Row gutter={8}>
@@ -483,7 +485,7 @@ class ListaTaxonomiaAutores extends Component {
 
                             <Row gutter={8} style={{ marginTop: 16 }}>
                                 <Col span={24}>
-                                    <span>Observação:</span>
+                                    <span>{this.props.t('listaTaxonomiaAutores:cadastroObservacao')}</span>
                                 </Col>
                             </Row>
                             <Row gutter={8}>
@@ -502,7 +504,7 @@ class ListaTaxonomiaAutores extends Component {
 
                 <Row gutter={24} style={{ marginBottom: '20px' }}>
                     <Col xs={24} sm={14} md={18} lg={20} xl={20}>
-                        <h2 style={{ fontWeight: 200 }}>Autores</h2>
+                        <h2 style={{ fontWeight: 200 }}>{this.props.t('listaTaxonomiaAutores:autores')}</h2>
                     </Col>
                     <Col xs={24} sm={10} md={6} lg={4} xl={4}>
                         {this.renderAdd()}
@@ -536,4 +538,6 @@ class ListaTaxonomiaAutores extends Component {
         )
     }
 }
-export default Form.create()(ListaTaxonomiaAutores)
+const ListaTaxonomiaAutoresWithForm = Form.create()(ListaTaxonomiaAutores)
+
+export default withTranslation()(ListaTaxonomiaAutoresWithForm)
