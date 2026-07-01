@@ -56,6 +56,7 @@ void i18n
       'authService',
       'listaTaxonomiaVariedade',
       'exportacaoScreen',
+      'relatorioQtdPeriodoScreen',
       'relatorioTombosPorCidadeScreen'
     ],
     defaultNS: 'common',

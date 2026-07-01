@@ -1,0 +1,16 @@
+{
+  "titulo": "Quantity Report by Family and Genus",
+
+  "filtros": "Report filters",
+  "intervaloData": "Date range:",
+
+  "gerarPDF": "Generate PDF",
+
+  "erroBuscarDados": "Error fetching report data.",
+  "erroServidorBuscarDados": "Server error fetching report data.",
+
+  "exportarPDF": "Export PDF",
+  "sucessoExportarPDF": "PDF generated successfully.",
+  "erroExportarPDF": "Error exporting PDF.",
+  "erroServidorExportarPDF": "Server error exporting PDF."
+}
