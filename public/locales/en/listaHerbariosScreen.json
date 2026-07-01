@@ -1,0 +1,24 @@
+{
+  "titulo": "Herbaria",
+
+  "buscarHerbario": "Search herbarium",
+  "buscarSigla": "Acronym:",
+  "buscarNome": "Name:",
+  "buscarEmail": "E-mail:",
+
+  "colunaSigla": "Acronym",
+  "colunaNome": "Name",
+  "colunaEndereco": "Address",
+  "colunaEmail": "E-mail",
+  "colunaAcao": "Action",
+
+  "confirmarExcluirHerbario": "Are you sure you want to delete this herbarium?",
+  "descricaoExcluirHerbario": "By clicking YES, the herbarium will be deleted.",
+  "sucessoExcluirHerbario": "The herbarium has been successfully deleted.",
+
+  "erroExcluirHerbario": "Error deleting herbarium",
+  "erroInesperadoExcluirHerbario": "An unexpected error occurred while trying to delete the herbarium.",
+
+  "erroBuscarHerbarios": "There was a problem fetching the herbaria, please try again.",
+  "validacaoBusca": "Please fill in at least one field to perform the search."
+}
