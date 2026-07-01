@@ -1,0 +1,40 @@
+{
+  "titulo": "Positioning Error Diagnosis",
+
+  "filtros": "Report filters",
+  "pais": "Country:",
+  "selecionePais": "Select a country",
+  "estado": "State:",
+  "selecioneEstado": "Select a state",
+  "cidade": "City:",
+  "selecioneCidade": "Select a city",
+  "incluirSemCoordenadas": "Include vouchers without coordinates",
+
+  "gerarPDF": "Generate PDF",
+
+  "colunaHCF": "HCF",
+  "colunaNomeCientifico": "Scientific Name",
+  "colunaColetorPrincipal": "Main Collector",
+  "colunaLatitude": "Latitude",
+  "colunaLongitude": "Longitude",
+  "colunaMotivo": "Reason",
+
+  "motivoSemCoordenada": "No coordinate",
+  "motivoSemPoligono": "No polygon",
+  "motivoForaDoPoligono": "Outside polygon",
+
+  "nenhumRegistro": "No records found.",
+  "tombos": "voucher(s)",
+
+  "erroBuscarPaises": "Failed to fetch countries.",
+  "erroBuscarEstados": "Failed to fetch states.",
+  "erroBuscarCidades": "Failed to fetch cities.",
+  "erroBuscarRelatorio": "Error fetching report data.",
+  "erroFalhaBuscarRelatorio": "Failed to fetch report data.",
+
+  "exportarPDF": "Export PDF",
+  "sucessoExportarPDF": "PDF generated successfully.",
+  "erroExportarPDF": "Error exporting PDF.",
+  "erroServidorExportarPDF": "Server error exporting PDF.",
+  "falhaExportarPDF": "Failed to export PDF."
+}
