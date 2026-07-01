@@ -11,6 +11,7 @@ import {
 import ptbr from 'antd/es/date-picker/locale/pt_BR'
 import axios from 'axios'
 import moment from 'moment'
+import { withTranslation } from 'react-i18next'
 
 import TableCollapseParaLocais from '@/components/TableCollapseParaLocais'
 import TotalRecordFound from '@/components/TotalRecordsFound'
@@ -75,7 +76,7 @@ class RelatorioLocalColetaScreen extends Component {
                 }
             }
         } catch (err) {
-            this.notificacao('error', 'Erro', 'Falha ao buscar países.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('relatorioLocalColetaPeriodoScreen:erroBuscarPaises'))
         }
     }
 
@@ -115,7 +116,7 @@ class RelatorioLocalColetaScreen extends Component {
                 }
             }
         } catch (err) {
-            this.notificacao('error', 'Erro', 'Falha ao buscar estados.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('relatorioLocalColetaPeriodoScreen:erroBuscarEstados'))
         }
     }
 
@@ -131,7 +132,7 @@ class RelatorioLocalColetaScreen extends Component {
                 })
             }
         } catch (err) {
-            this.notificacao('error', 'Erro', 'Falha ao buscar cidades.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('relatorioLocalColetaPeriodoScreen:erroBuscarCidades'))
         }
     }
 
@@ -175,15 +176,15 @@ class RelatorioLocalColetaScreen extends Component {
                     locais: res
                 })
             } else if (response.status === 400) {
-                this.notificacao('warning', 'Buscar locais', 'Erro ao buscar os locais de coleta.')
+                this.notificacao('warning', this.props.t('common:pesquisar'), this.props.t('relatorioLocalColetaPeriodoScreen:erroBuscarLocaisWarning'))
                 this.setState({ loading: false })
             } else {
-                this.notificacao('error', 'Erro', 'Erro do servidor ao buscar os locais de coleta.')
+                this.notificacao('error', this.props.t('common:erro'), this.props.t('relatorioLocalColetaPeriodoScreen:erroServidorBuscarLocais'))
                 this.setState({ loading: false })
             }
         } catch (err) {
             this.setState({ loading: false })
-            this.notificacao('error', 'Erro', 'Falha ao buscar locais de coleta.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('relatorioLocalColetaPeriodoScreen:erroBuscarLocais'))
         }
     }
 
@@ -259,9 +260,9 @@ class RelatorioLocalColetaScreen extends Component {
                         metadados: data.metadados
                     })
                 } else if (response.status === 400) {
-                    this.notificacao('warning', 'Buscar dados', 'Erro ao buscar os dados do relatório.')
+                    this.notificacao('warning', this.props.t('common:pesquisar'), this.props.t('relatorioLocalColetaPeriodoScreen:erroBuscarDados'))
                 } else {
-                    this.notificacao('error', 'Error', 'Erro de servidor ao buscar os dados do relatório.')
+                    this.notificacao('error', this.props.t('common:erro'), this.props.t('relatorioLocalColetaPeriodoScreen:erroServidorBuscarDados'))
                 }
             })
             .catch(err => {
@@ -321,7 +322,7 @@ class RelatorioLocalColetaScreen extends Component {
             responseType: 'arraybuffer'
         }).then(response => {
             if (response.status === 200) {
-                this.notificacao('success', 'Exportar PDF', 'PDF gerado com sucesso.')
+                this.notificacao('success', this.props.t('relatorioLocalColetaPeriodoScreen:exportarPDF'), this.props.t('relatorioLocalColetaPeriodoScreen:sucessoExportarPDF'))
                 const file = new Blob([response.data], { type: 'application/pdf' })
                 const fileUrl = URL.createObjectURL(file)
                 const anchor = document.createElement('a')
@@ -333,9 +334,9 @@ class RelatorioLocalColetaScreen extends Component {
                 anchor.click()
                 URL.revokeObjectURL(fileUrl)
             } else if (response.status === 400) {
-                this.notificacao('warning', 'Exportar PDF', 'Erro ao exportar o PDF.')
+                this.notificacao('warning', this.props.t('relatorioLocalColetaPeriodoScreen:exportarPDF'), this.props.t('relatorioLocalColetaPeriodoScreen:erroExportarPDF'))
             } else {
-                this.notificacao('error', 'Error', 'Erro de servidor ao exportar o PDF.')
+                this.notificacao('error', this.props.t('common:erro'), this.props.t('relatorioLocalColetaPeriodoScreen:erroServidorExportarPDF'))
             }
         })
             .catch(err => {
@@ -390,7 +391,7 @@ class RelatorioLocalColetaScreen extends Component {
                 {!sintetico && this.state.loadingExport2
                     ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ marginRight: 8 }} />
                     : ''}
-                Gerar PDF
+                {this.props.t('relatorioLocalColetaPeriodoScreen:gerarPDF')}
                 {' '}
             </Button>
         )
@@ -400,19 +401,19 @@ class RelatorioLocalColetaScreen extends Component {
         const { form } = this.props
         const { getFieldDecorator } = form
         return (
-            <Card title="Filtros do relatório">
+            <Card title={this.props.t('relatorioLocalColetaPeriodoScreen:filtros')}>
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>País:</span>
+                                <span>{this.props.t('relatorioLocalColetaPeriodoScreen:pais')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('pais')(
                                         <Select
                                             defaultValue={this.state.paises.find(item => item.sigla === 'BRA')?.id}
-                                            placeholder="Selecione um país"
+                                            placeholder={this.props.t('relatorioLocalColetaPeriodoScreen:selecionePais')}
                                             allowClear
                                             showSearch
                                             optionFilterProp="children"
@@ -444,13 +445,13 @@ class RelatorioLocalColetaScreen extends Component {
 
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Estado:</span>
+                                <span>{this.props.t('relatorioLocalColetaPeriodoScreen:estado')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('estado')(
                                         <Select
-                                            placeholder="Selecione um estado"
+                                            placeholder={this.props.t('relatorioLocalColetaPeriodoScreen:selecioneEstado')}
                                             allowClear
                                             showSearch
                                             optionFilterProp="children"
@@ -481,13 +482,13 @@ class RelatorioLocalColetaScreen extends Component {
 
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Cidade:</span>
+                                <span>{this.props.t('relatorioLocalColetaPeriodoScreen:cidade')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('cidade')(
                                         <Select
-                                            placeholder="Selecione uma cidade"
+                                            placeholder={this.props.t('relatorioLocalColetaPeriodoScreen:selecioneCidade')}
                                             allowClear
                                             showSearch
                                             optionFilterProp="children"
@@ -517,7 +518,7 @@ class RelatorioLocalColetaScreen extends Component {
                     <Row gutter={8} style={{ marginTop: 16 }}>
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Local:</span>
+                                <span>{this.props.t('relatorioLocalColetaPeriodoScreen:local')}</span>
                             </Col>
                         </Col>
                     </Row>
@@ -527,7 +528,7 @@ class RelatorioLocalColetaScreen extends Component {
                                 <FormItem>
                                     {getFieldDecorator('local')(
                                         <Select
-                                            placeholder="Selecione o local de coleta"
+                                            placeholder={this.props.t('relatorioLocalColetaPeriodoScreen:selecioneLocal')}
                                             allowClear
                                             showSearch
                                             optionFilterProp="children"
@@ -543,7 +544,7 @@ class RelatorioLocalColetaScreen extends Component {
                     <Row gutter={8} style={{ marginTop: 16 }}>
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Data inicial:</span>
+                                <span>{this.props.t('relatorioLocalColetaPeriodoScreen:dataInicial')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
@@ -565,7 +566,7 @@ class RelatorioLocalColetaScreen extends Component {
                         </Col>
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Data final:</span>
+                                <span>{this.props.t('relatorioLocalColetaPeriodoScreen:dataFinal')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
@@ -587,7 +588,7 @@ class RelatorioLocalColetaScreen extends Component {
                         </Col>
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Outras opções:</span>
+                                <span>{this.props.t('relatorioLocalColetaPeriodoScreen:outrasOpcoes')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
@@ -596,7 +597,7 @@ class RelatorioLocalColetaScreen extends Component {
                                             this.setState({ showCoordenadas: e.target.checked })
                                         }}
                                         >
-                                            Mostrar coordenadas
+                                            {this.props.t('relatorioLocalColetaPeriodoScreen:mostrarCoordenadas')}
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -632,7 +633,7 @@ class RelatorioLocalColetaScreen extends Component {
                                             }}
                                             className="login-form-button"
                                         >
-                                            Limpar
+                                            {this.props.t('common:limpar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -643,7 +644,7 @@ class RelatorioLocalColetaScreen extends Component {
                                             htmlType="submit"
                                             className="login-form-button ant-btn-pesquisar"
                                         >
-                                            Pesquisar
+                                            {this.props.t('common:pesquisar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -667,7 +668,7 @@ class RelatorioLocalColetaScreen extends Component {
                     }}
                 >
                     <Col xs={24} sm={14} md={18} lg={20} xl={20}>
-                        <h2 style={{ fontWeight: 200 }}>Relatório de Locais de Coleta por Local e Intervalo de Data</h2>
+                        <h2 style={{ fontWeight: 200 }}>{this.props.t('relatorioLocalColetaPeriodoScreen:titulo')}</h2>
                     </Col>
                     <Col xs={24} sm={10} md={6} lg={4} xl={4} style={{ display: 'flex', justifyContent: 'flex-end' }}>
                         <div style={{ display: 'flex', gap: '10px' }}>
@@ -696,4 +697,4 @@ class RelatorioLocalColetaScreen extends Component {
         )
     }
 }
-export default Form.create()(RelatorioLocalColetaScreen)
+export default withTranslation()(Form.create()(RelatorioLocalColetaScreen))

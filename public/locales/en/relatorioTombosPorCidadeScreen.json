@@ -1,0 +1,26 @@
+{
+  "titulo": "Vouchers by City Report",
+
+  "filtros": "Report filters",
+  "pais": "Country:",
+  "selecionePais": "Select a country",
+  "estado": "State:",
+  "selecioneEstado": "Select a state",
+  "cidade": "City:",
+  "selecioneCidade": "Select a city",
+  "outrasOpcoes": "Other options:",
+  "mostrarCoordenadas": "Show coordinates",
+
+  "gerarPDF": "Generate PDF",
+
+  "erroBuscarPaises": "Failed to fetch countries.",
+  "erroBuscarEstados": "Failed to fetch states.",
+  "erroBuscarCidades": "Failed to fetch cities.",
+  "erroBuscarDados": "Error fetching report data.",
+  "erroServidorBuscarDados": "Server error fetching report data.",
+
+  "exportarPDF": "Export PDF",
+  "sucessoExportarPDF": "PDF generated successfully.",
+  "erroExportarPDF": "Error exporting PDF.",
+  "erroServidorExportarPDF": "Server error exporting PDF."
+}

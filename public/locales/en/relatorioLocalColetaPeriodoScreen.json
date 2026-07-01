@@ -1,0 +1,33 @@
+{
+  "titulo": "Collection Sites Report by Location and Date Range",
+
+  "filtros": "Report filters",
+  "pais": "Country:",
+  "selecionePais": "Select a country",
+  "estado": "State:",
+  "selecioneEstado": "Select a state",
+  "cidade": "City:",
+  "selecioneCidade": "Select a city",
+  "local": "Location:",
+  "selecioneLocal": "Select the collection site",
+  "dataInicial": "Start date:",
+  "dataFinal": "End date:",
+  "outrasOpcoes": "Other options:",
+  "mostrarCoordenadas": "Show coordinates",
+
+  "gerarPDF": "Generate PDF",
+
+  "erroBuscarPaises": "Failed to fetch countries.",
+  "erroBuscarEstados": "Failed to fetch states.",
+  "erroBuscarCidades": "Failed to fetch cities.",
+  "erroBuscarLocais": "Failed to fetch collection sites.",
+  "erroBuscarLocaisWarning": "Error fetching collection sites.",
+  "erroServidorBuscarLocais": "Server error fetching collection sites.",
+  "erroBuscarDados": "Error fetching report data.",
+  "erroServidorBuscarDados": "Server error fetching report data.",
+
+  "exportarPDF": "Export PDF",
+  "sucessoExportarPDF": "PDF generated successfully.",
+  "erroExportarPDF": "Error exporting PDF.",
+  "erroServidorExportarPDF": "Server error exporting PDF."
+}

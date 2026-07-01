@@ -5,6 +5,7 @@ import {
     Spin, Select, Button, InputNumber
 } from 'antd'
 import axios from 'axios'
+import { withTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import TotalRecordFound from '@/components/TotalRecordsFound'
@@ -19,67 +20,6 @@ const { confirm } = Modal
 const FormItem = Form.Item
 const { Option } = Select
 
-const columns = [
-    {
-        title: 'Código',
-        dataIndex: 'codigo',
-        key: 'codigo',
-        with: 100
-    },
-    {
-        title: 'Data de envio',
-        dataIndex: 'dataEnvio',
-        key: 'dataEnvio',
-        width: 325
-    },
-    {
-        title: 'Doador',
-        dataIndex: 'doador',
-        key: 'doador',
-        width: 325
-    },
-    {
-        title: 'Receptor',
-        dataIndex: 'receptor',
-        key: 'receptor',
-        width: 325
-    },
-    {
-        title: 'Observação',
-        dataIndex: 'observacao',
-        key: 'observacao',
-        width: 325
-    },
-    {
-        title: 'Ação',
-        key: 'acao',
-        width: 100
-    }
-]
-
-const subColumns = [
-    {
-        title: 'Tombo',
-        dataIndex: 'tombo',
-        key: 'tombo'
-    },
-    {
-        title: 'Tipo',
-        dataIndex: 'tipo',
-        key: 'tipo'
-    },
-    {
-        title: 'Data Vencimento',
-        dataIndex: 'dataVencimento',
-        key: 'dataVencimento'
-    },
-    {
-        title: 'Ação',
-        dataIndex: 'acao',
-        key: 'acao'
-    }
-]
-
 class ListaRemessasScreen extends Component {
     constructor(props) {
         super(props)
@@ -91,6 +31,26 @@ class ListaRemessasScreen extends Component {
             loading: false,
             loadingPg: false
         }
+    }
+
+    getColumns() {
+        return [
+            { title: this.props.t('listaRemessasScreen:colunaCodigo'), dataIndex: 'codigo', key: 'codigo', with: 100 },
+            { title: this.props.t('listaRemessasScreen:colunaDataEnvio'), dataIndex: 'dataEnvio', key: 'dataEnvio', width: 325 },
+            { title: this.props.t('listaRemessasScreen:colunaDoador'), dataIndex: 'doador', key: 'doador', width: 325 },
+            { title: this.props.t('listaRemessasScreen:colunaReceptor'), dataIndex: 'receptor', key: 'receptor', width: 325 },
+            { title: this.props.t('listaRemessasScreen:colunaObservacao'), dataIndex: 'observacao', key: 'observacao', width: 325 },
+            { title: this.props.t('listaRemessasScreen:colunaAcao'), key: 'acao', width: 100 }
+        ]
+    }
+
+    getSubColumns() {
+        return [
+            { title: this.props.t('listaRemessasScreen:subColunaTombo'), dataIndex: 'tombo', key: 'tombo' },
+            { title: this.props.t('listaRemessasScreen:subColunaTipo'), dataIndex: 'tipo', key: 'tipo' },
+            { title: this.props.t('listaRemessasScreen:subColunaDataVencimento'), dataIndex: 'dataVencimento', key: 'dataVencimento' },
+            { title: this.props.t('listaRemessasScreen:subColunaAcao'), dataIndex: 'acao', key: 'acao' }
+        ]
     }
 
     componentDidMount() {
@@ -134,11 +94,11 @@ class ListaRemessasScreen extends Component {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this
         confirm({
-            title: 'Você tem certeza que deseja excluir esta remessa?',
-            content: 'Ao clicar em SIM, a remessa será excluída.',
-            okText: 'SIM',
+            title: this.props.t('listaRemessasScreen:confirmarExcluirRemessa'),
+            content: this.props.t('listaRemessasScreen:descricaoExcluirRemessa'),
+            okText: this.props.t('common:sim'),
             okType: 'danger',
-            cancelText: 'NÃO',
+            cancelText: this.props.t('common:nao'),
             onOk() {
                 self.requisitaExclusao(id)
             },
@@ -151,11 +111,11 @@ class ListaRemessasScreen extends Component {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this
         confirm({
-            title: 'Você tem certeza que deseja devolver este tombo?',
-            content: 'Ao clicar em SIM, o tombo será devolvido.',
-            okText: 'SIM',
+            title: this.props.t('listaRemessasScreen:confirmarDevolverTombo'),
+            content: this.props.t('listaRemessasScreen:descricaoDevolverTombo'),
+            okText: this.props.t('common:sim'),
             okType: 'warning',
-            cancelText: 'NÃO',
+            cancelText: this.props.t('common:nao'),
             onOk() {
                 self.requisitaDevolucao(idRemessa, idTombo)
             },
@@ -169,7 +129,7 @@ class ListaRemessasScreen extends Component {
             .then(response => {
                 if (response.status === 204) {
                     this.requisitaListaRemessas(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir remessa', 'A remessa foi excluída com sucesso.')
+                    this.notificacao('success', this.props.t('listaRemessasScreen:tituloExcluirRemessa'), this.props.t('listaRemessasScreen:sucessoExcluirRemessa'))
                 }
             })
             .catch(err => {
@@ -191,13 +151,13 @@ class ListaRemessasScreen extends Component {
             .then(response => {
                 if (response.status === 204) {
                     this.requisitaListaRemessas(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Devolver tombo', 'O tombo foi devolvido com sucesso.')
+                    this.notificacao('success', this.props.t('listaRemessasScreen:tituloDevolverTombo'), this.props.t('listaRemessasScreen:sucessoDevolverTombo'))
                 }
             })
             .catch(err => {
                 const { response } = err
                 if (response && response.data) {
-                    this.notificacao('error', 'Erro ao devolver o tombo', response.data.error.message)
+                    this.notificacao('error', this.props.t('listaRemessasScreen:erroDevolverTombo'), response.data.error.message)
                     const { error } = response.data
                     console.error(error.message)
                 }
@@ -224,7 +184,7 @@ class ListaRemessasScreen extends Component {
             icon={<CheckOutlined />}
             onClick={() => this.mostraMensagemDevolucao(idRemessa, idTombo)}
         >
-            Devolver
+            {this.props.t('listaRemessasScreen:devolver')}
         </Button>
     )
 
@@ -284,9 +244,9 @@ class ListaRemessasScreen extends Component {
                         metadados: data.metadados
                     })
                 } else if (response.status === 400) {
-                    this.notificacao('warning', 'Buscar Gênero', response.data.error.message)
+                    this.notificacao('warning', this.props.t('common:pesquisar'), response.data.error.message)
                 } else {
-                    this.notificacao('error', 'Error', 'Erro de servidor ao buscar os gêneros.')
+                    this.notificacao('error', this.props.t('common:erro'), this.props.t('common:erroComunicacaoServidor'))
                 }
             })
             .catch(err => {
@@ -309,12 +269,12 @@ class ListaRemessasScreen extends Component {
     renderPainelBusca() {
         const { getFieldDecorator } = this.props.form
         return (
-            <Card title="Buscar remessas">
+            <Card title={this.props.t('listaRemessasScreen:buscarRemessas')}>
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col xs={24} sm={24} md={12} lg={6} xl={6}>
                             <Col span={24}>
-                                <span>Número da remessa:</span>
+                                <span>{this.props.t('listaRemessasScreen:numeroRemessa')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
@@ -329,7 +289,7 @@ class ListaRemessasScreen extends Component {
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={6} xl={6}>
                             <Col span={24}>
-                                <span>Número do tombo:</span>
+                                <span>{this.props.t('listaRemessasScreen:numeroTombo')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
@@ -344,12 +304,12 @@ class ListaRemessasScreen extends Component {
                         </Col>
                         <Col xs={24} sm={24} md={24} lg={12} xl={12}>
                             <Col span={24}>
-                                <span>Herbário:</span>
+                                <span>{this.props.t('listaRemessasScreen:herbario')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('herbario')(
-                                        <Select placeholder="Selecione" allowClear>
+                                        <Select placeholder={this.props.t('listaRemessasScreen:selecioneHerbario')} allowClear>
                                             {this.optionHerbario()}
                                         </Select>
                                     )}
@@ -380,7 +340,7 @@ class ListaRemessasScreen extends Component {
                                             }}
                                             className="login-form-button"
                                         >
-                                            Limpar
+                                            {this.props.t('common:limpar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -391,7 +351,7 @@ class ListaRemessasScreen extends Component {
                                             htmlType="submit"
                                             className="login-form-button ant-btn-pesquisar"
                                         >
-                                            Pesquisar
+                                            {this.props.t('common:pesquisar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -421,15 +381,15 @@ class ListaRemessasScreen extends Component {
     renderFormulario() {
         return (
             <div>
-                <HeaderListComponent title="Remessas" link="/remessas/novo" />
+                <HeaderListComponent title={this.props.t('listaRemessasScreen:titulo')} link="/remessas/novo" />
                 <Divider dashed />
                 {this.renderPainelBusca()}
                 <Divider dashed />
                 <ExpansiveTableComponent
-                    columns={columns}
+                    columns={this.getColumns()}
                     metadados={this.state.metadados}
                     data={this.state.remessas}
-                    subColumns={subColumns}
+                    subColumns={this.getSubColumns()}
                     loading={this.state.loading}
                     changePage={(pg, pageSize) => {
                         this.setState({
@@ -447,7 +407,7 @@ class ListaRemessasScreen extends Component {
     render() {
         if (this.state.loadingPg) {
             return (
-                <Spin tip="Carregando...">
+                <Spin tip={this.props.t('common:carregando')}>
                     {this.renderFormulario()}
                 </Spin>
             )
@@ -458,4 +418,4 @@ class ListaRemessasScreen extends Component {
     }
 }
 
-export default Form.create()(ListaRemessasScreen)
+export default withTranslation()(Form.create()(ListaRemessasScreen))
