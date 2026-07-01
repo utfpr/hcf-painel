@@ -1,0 +1,33 @@
+{
+  "titulo": "Informe de Sitios de Recolección por Ubicación e Intervalo de Fecha",
+
+  "filtros": "Filtros del informe",
+  "pais": "País:",
+  "selecionePais": "Seleccione un país",
+  "estado": "Estado:",
+  "selecioneEstado": "Seleccione un estado",
+  "cidade": "Ciudad:",
+  "selecioneCidade": "Seleccione una ciudad",
+  "local": "Ubicación:",
+  "selecioneLocal": "Seleccione el sitio de recolección",
+  "dataInicial": "Fecha inicial:",
+  "dataFinal": "Fecha final:",
+  "outrasOpcoes": "Otras opciones:",
+  "mostrarCoordenadas": "Mostrar coordenadas",
+
+  "gerarPDF": "Generar PDF",
+
+  "erroBuscarPaises": "Error al buscar países.",
+  "erroBuscarEstados": "Error al buscar estados.",
+  "erroBuscarCidades": "Error al buscar ciudades.",
+  "erroBuscarLocais": "Error al buscar sitios de recolección.",
+  "erroBuscarLocaisWarning": "Error al buscar los sitios de recolección.",
+  "erroServidorBuscarLocais": "Error del servidor al buscar los sitios de recolección.",
+  "erroBuscarDados": "Error al buscar los datos del informe.",
+  "erroServidorBuscarDados": "Error del servidor al buscar los datos del informe.",
+
+  "exportarPDF": "Exportar PDF",
+  "sucessoExportarPDF": "PDF generado con éxito.",
+  "erroExportarPDF": "Error al exportar el PDF.",
+  "erroServidorExportarPDF": "Error del servidor al exportar el PDF."
+}

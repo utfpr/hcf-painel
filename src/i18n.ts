@@ -56,7 +56,10 @@ void i18n
       'authService',
       'listaTaxonomiaVariedade',
       'exportacaoScreen',
-      'relatorioCoordenadaForaPoligonoScreen'
+      'relatorioCoordenadaForaPoligonoScreen',
+      'relatorioLocalColetaPeriodoScreen',
+      'relatorioQtdPeriodoScreen',
+      'relatorioTombosPorCidadeScreen'
     ],
     defaultNS: 'common',
 
