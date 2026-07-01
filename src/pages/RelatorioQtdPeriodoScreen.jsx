@@ -9,6 +9,7 @@ import {
 import ptbr from 'antd/es/date-picker/locale/pt_BR'
 import axios from 'axios'
 import moment from 'moment'
+import { withTranslation } from 'react-i18next'
 
 import TableCollapseParaGeneros from '@/components/TableCollapseParaGeneros'
 import TotalRecordFound from '@/components/TotalRecordsFound'
@@ -101,9 +102,9 @@ class RelatorioQuantidadeScreen extends Component {
                         metadados: data.metadados
                     })
                 } else if (response.status === 400) {
-                    this.notificacao('warning', 'Buscar dados', 'Erro ao buscar os dados do relatório.')
+                    this.notificacao('warning', this.props.t('common:pesquisar'), this.props.t('relatorioQtdPeriodoScreen:erroBuscarDados'))
                 } else {
-                    this.notificacao('error', 'Error', 'Erro de servidor ao buscar os dados do relatório.')
+                    this.notificacao('error', this.props.t('common:erro'), this.props.t('relatorioQtdPeriodoScreen:erroServidorBuscarDados'))
                 }
             })
             .catch(err => {
@@ -153,7 +154,7 @@ class RelatorioQuantidadeScreen extends Component {
             responseType: 'arraybuffer'
         }).then(response => {
             if (response.status === 200) {
-                this.notificacao('success', 'Exportar PDF', 'PDF gerado com sucesso.')
+                this.notificacao('success', this.props.t('relatorioQtdPeriodoScreen:exportarPDF'), this.props.t('relatorioQtdPeriodoScreen:sucessoExportarPDF'))
                 const file = new Blob([response.data], { type: 'application/pdf' })
                 const fileUrl = URL.createObjectURL(file)
                 const anchor = document.createElement('a')
@@ -165,9 +166,9 @@ class RelatorioQuantidadeScreen extends Component {
                 anchor.click()
                 URL.revokeObjectURL(fileUrl)
             } else if (response.status === 400) {
-                this.notificacao('warning', 'Exportar PDF', 'Erro ao exportar o PDF.')
+                this.notificacao('warning', this.props.t('relatorioQtdPeriodoScreen:exportarPDF'), this.props.t('relatorioQtdPeriodoScreen:erroExportarPDF'))
             } else {
-                this.notificacao('error', 'Error', 'Erro de servidor ao exportar o PDF.')
+                this.notificacao('error', this.props.t('common:erro'), this.props.t('relatorioQtdPeriodoScreen:erroServidorExportarPDF'))
             }
         })
             .catch(err => {
@@ -213,7 +214,7 @@ class RelatorioQuantidadeScreen extends Component {
                 {this.state.loadingExport
                     ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ marginRight: 8 }} />
                     : ''}
-                Gerar PDF
+                {this.props.t('relatorioQtdPeriodoScreen:gerarPDF')}
             </Button>
         )
     }
@@ -222,12 +223,12 @@ class RelatorioQuantidadeScreen extends Component {
         const { form } = this.props
         const { getFieldDecorator } = form
         return (
-            <Card title="Filtros do relatório">
+            <Card title={this.props.t('relatorioQtdPeriodoScreen:filtros')}>
                 <Form onSubmit={this.onSubmit}>
 
                     <Row gutter={8}>
                         <Col span={24}>
-                            <span>Intervalo de data:</span>
+                            <span>{this.props.t('relatorioQtdPeriodoScreen:intervaloData')}</span>
                         </Col>
                     </Row>
                     <Row gutter={8}>
@@ -278,7 +279,7 @@ class RelatorioQuantidadeScreen extends Component {
                                             }}
                                             className="login-form-button"
                                         >
-                                            Limpar
+                                            {this.props.t('common:limpar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -289,7 +290,7 @@ class RelatorioQuantidadeScreen extends Component {
                                             htmlType="submit"
                                             className="login-form-button ant-btn-pesquisar"
                                         >
-                                            Pesquisar
+                                            {this.props.t('common:pesquisar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -313,7 +314,7 @@ class RelatorioQuantidadeScreen extends Component {
                     }}
                 >
                     <Col xs={24} sm={14} md={18} lg={20} xl={20}>
-                        <h2 style={{ fontWeight: 200 }}>Relatório de Quantidade por Família e Gênero</h2>
+                        <h2 style={{ fontWeight: 200 }}>{this.props.t('relatorioQtdPeriodoScreen:titulo')}</h2>
                     </Col>
                     <Col xs={24} sm={10} md={6} lg={4} xl={4} style={{ display: 'flex', justifyContent: 'flex-end' }}>
                         <div style={{ display: 'flex', gap: '10px' }}>
@@ -338,4 +339,4 @@ class RelatorioQuantidadeScreen extends Component {
         )
     }
 }
-export default Form.create()(RelatorioQuantidadeScreen)
+export default withTranslation()(Form.create()(RelatorioQuantidadeScreen))

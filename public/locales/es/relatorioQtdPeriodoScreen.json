@@ -1,0 +1,16 @@
+{
+  "titulo": "Informe de Cantidad por Familia y Género",
+
+  "filtros": "Filtros del informe",
+  "intervaloData": "Intervalo de fecha:",
+
+  "gerarPDF": "Generar PDF",
+
+  "erroBuscarDados": "Error al buscar los datos del informe.",
+  "erroServidorBuscarDados": "Error del servidor al buscar los datos del informe.",
+
+  "exportarPDF": "Exportar PDF",
+  "sucessoExportarPDF": "PDF generado con éxito.",
+  "erroExportarPDF": "Error al exportar el PDF.",
+  "erroServidorExportarPDF": "Error del servidor al exportar el PDF."
+}

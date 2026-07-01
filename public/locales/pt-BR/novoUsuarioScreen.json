@@ -1,0 +1,31 @@
+{
+  "titulo": "Usuário",
+
+  "nome": "Nome:",
+  "validacaoNome": "Insira o nome do usuário",
+  "email": "E-mail:",
+  "validacaoEmail": "Insira o e-mail do usuário",
+  "tipo": "Tipo:",
+  "validacaoTipo": "Selecione o tipo do usuário",
+  "ra": "RA:",
+  "telefone": "Telefone:",
+  "senha": "Senha:",
+  "validacaoSenha": "Informe a senha do usuário.",
+
+  "tipoCurador": "Curador",
+  "tipoOperador": "Operador",
+  "tipoIdentificador": "Identificador",
+
+  "salvar": "Salvar",
+
+  "tituloCadastro": "Cadastro",
+  "sucessoCadastro": "O usuário foi cadastrado com sucesso.",
+  "erroCadastro": "Houve um problema ao realizar o cadastro, verifique os dados e tente novamente.",
+  "erroCadastroEmailUnico": "Houve um problema ao realizar o cadastro, o e-mail deve ser único por usuário, verifique os dados e tente novamente.",
+
+  "tituloEdicao": "Edição",
+  "sucessoEdicao": "O usuário foi alterado com sucesso.",
+  "erroEdicao": "Houve um problema ao realizar a edição, verifique os dados e tente novamente.",
+
+  "erroBuscarUsuario": "Houve um problema ao buscar os dados do usuário, tente novamente."
+}

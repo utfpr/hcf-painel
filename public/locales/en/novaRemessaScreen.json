@@ -1,0 +1,46 @@
+{
+  "titulo": "Shipment",
+
+  "colunaTombo": "Voucher",
+  "colunaTipo": "Type",
+  "colunaDataVencimento": "Due date",
+  "colunaAcao": "Action",
+
+  "modalTitulo": "Add voucher to shipment",
+  "numeroTombo": "Voucher no.:",
+  "tipo": "Type:",
+  "dataVencimento": "Due date:",
+  "selecioneTipo": "Select a type",
+  "tipoEmprestimo": "Loan",
+  "tipoDoacao": "Donation",
+  "tipoPermuta": "Exchange",
+
+  "doador": "Donor:",
+  "selecioneDoador": "Select a donor",
+  "validacaoDoador": "Select a donor",
+  "receptor": "Receiver:",
+  "selecioneReceptor": "Select a receiver",
+  "validacaoReceptor": "Select a receiver",
+
+  "dataEnvio": "Shipping date:",
+  "observacao": "Notes:",
+
+  "adicionarTombo": "Add voucher",
+  "salvar": "Save",
+
+  "erroBuscarRemessa": "There was a problem fetching the shipment data, please try again.",
+  "erroBuscarHerbarios": "Error fetching the herbaria list.",
+
+  "validacaoAdicionarTombo": "You must add at least one voucher to the shipment list.",
+  "tituloCadastroAlteracao": "Register/Update",
+
+  "sucessoCadastro": "Registration completed successfully.",
+  "erroCadastro": "There was a problem registering the new shipment, please try again.",
+
+  "sucessoEdicao": "The shipment has been successfully updated.",
+  "tituloEdicao": "Edit",
+  "erroEdicao": "There was a problem editing, please check the data and try again.",
+
+  "confirmarExcluirTombo": "Are you sure you want to remove this voucher from the list?",
+  "descricaoExcluirTombo": "By clicking YES, the voucher will be removed."
+}
