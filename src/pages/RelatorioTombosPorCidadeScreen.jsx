@@ -8,6 +8,7 @@ import {
     Checkbox
 } from 'antd'
 import axios from 'axios'
+import { withTranslation } from 'react-i18next'
 
 import TableCollapseParaCidades from '@/components/TableCollapseParaCidades'
 import TotalRecordFound from '@/components/TotalRecordsFound'
@@ -59,7 +60,7 @@ class RelatorioTombosPorCidadeScreen extends Component {
                 }
             }
         } catch (err) {
-            this.notificacao('error', 'Erro', 'Falha ao buscar países.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('relatorioTombosPorCidadeScreen:erroBuscarPaises'))
         }
     }
 
@@ -95,7 +96,7 @@ class RelatorioTombosPorCidadeScreen extends Component {
                 }
             }
         } catch (err) {
-            this.notificacao('error', 'Erro', 'Falha ao buscar estados.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('relatorioTombosPorCidadeScreen:erroBuscarEstados'))
         }
     }
 
@@ -111,7 +112,7 @@ class RelatorioTombosPorCidadeScreen extends Component {
                 })
             }
         } catch (err) {
-            this.notificacao('error', 'Erro', 'Falha ao buscar cidades.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('relatorioTombosPorCidadeScreen:erroBuscarCidades'))
         }
     }
 
@@ -155,9 +156,9 @@ class RelatorioTombosPorCidadeScreen extends Component {
                         metadados: data.metadados
                     })
                 } else if (response.status === 400) {
-                    this.notificacao('warning', 'Buscar dados', 'Erro ao buscar os dados do relatório.')
+                    this.notificacao('warning', this.props.t('common:pesquisar'), this.props.t('relatorioTombosPorCidadeScreen:erroBuscarDados'))
                 } else {
-                    this.notificacao('error', 'Error', 'Erro de servidor ao buscar os dados do relatório.')
+                    this.notificacao('error', this.props.t('common:erro'), this.props.t('relatorioTombosPorCidadeScreen:erroServidorBuscarDados'))
                 }
             })
             .catch(err => {
@@ -198,7 +199,7 @@ class RelatorioTombosPorCidadeScreen extends Component {
             responseType: 'arraybuffer'
         }).then(response => {
             if (response.status === 200) {
-                this.notificacao('success', 'Exportar PDF', 'PDF gerado com sucesso.')
+                this.notificacao('success', this.props.t('relatorioTombosPorCidadeScreen:exportarPDF'), this.props.t('relatorioTombosPorCidadeScreen:sucessoExportarPDF'))
                 const file = new Blob([response.data], { type: 'application/pdf' })
                 const fileUrl = URL.createObjectURL(file)
                 const anchor = document.createElement('a')
@@ -210,9 +211,9 @@ class RelatorioTombosPorCidadeScreen extends Component {
                 anchor.click()
                 URL.revokeObjectURL(fileUrl)
             } else if (response.status === 400) {
-                this.notificacao('warning', 'Exportar PDF', 'Erro ao exportar o PDF.')
+                this.notificacao('warning', this.props.t('relatorioTombosPorCidadeScreen:exportarPDF'), this.props.t('relatorioTombosPorCidadeScreen:erroExportarPDF'))
             } else {
-                this.notificacao('error', 'Error', 'Erro de servidor ao exportar o PDF.')
+                this.notificacao('error', this.props.t('common:erro'), this.props.t('relatorioTombosPorCidadeScreen:erroServidorExportarPDF'))
             }
         })
             .catch(err => {
@@ -258,7 +259,7 @@ class RelatorioTombosPorCidadeScreen extends Component {
                 {this.state.loadingExport
                     ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ marginRight: 8 }} />
                     : ''}
-                Gerar PDF
+                {this.props.t('relatorioTombosPorCidadeScreen:gerarPDF')}
                 {' '}
             </Button>
         )
@@ -268,19 +269,19 @@ class RelatorioTombosPorCidadeScreen extends Component {
         const { form } = this.props
         const { getFieldDecorator } = form
         return (
-            <Card title="Filtros do relatório">
+            <Card title={this.props.t('relatorioTombosPorCidadeScreen:filtros')}>
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>País:</span>
+                                <span>{this.props.t('relatorioTombosPorCidadeScreen:pais')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('pais')(
                                         <Select
                                             defaultValue={this.state.paises.find(item => item.sigla === 'BRA')?.id}
-                                            placeholder="Selecione um país"
+                                            placeholder={this.props.t('relatorioTombosPorCidadeScreen:selecionePais')}
                                             allowClear
                                             showSearch
                                             optionFilterProp="children"
@@ -308,13 +309,13 @@ class RelatorioTombosPorCidadeScreen extends Component {
 
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Estado:</span>
+                                <span>{this.props.t('relatorioTombosPorCidadeScreen:estado')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('estado')(
                                         <Select
-                                            placeholder="Selecione um estado"
+                                            placeholder={this.props.t('relatorioTombosPorCidadeScreen:selecioneEstado')}
                                             allowClear
                                             showSearch
                                             optionFilterProp="children"
@@ -338,13 +339,13 @@ class RelatorioTombosPorCidadeScreen extends Component {
 
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Cidade:</span>
+                                <span>{this.props.t('relatorioTombosPorCidadeScreen:cidade')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('cidade')(
                                         <Select
-                                            placeholder="Selecione uma cidade"
+                                            placeholder={this.props.t('relatorioTombosPorCidadeScreen:selecioneCidade')}
                                             allowClear
                                             showSearch
                                             optionFilterProp="children"
@@ -360,7 +361,7 @@ class RelatorioTombosPorCidadeScreen extends Component {
                     <Row gutter={8} style={{ marginTop: 16 }}>
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Outras opções:</span>
+                                <span>{this.props.t('relatorioTombosPorCidadeScreen:outrasOpcoes')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
@@ -369,7 +370,7 @@ class RelatorioTombosPorCidadeScreen extends Component {
                                             this.setState({ showCoordenadas: e.target.checked })
                                         }}
                                         >
-                                            Mostrar coordenadas
+                                            {this.props.t('relatorioTombosPorCidadeScreen:mostrarCoordenadas')}
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -401,7 +402,7 @@ class RelatorioTombosPorCidadeScreen extends Component {
                                             }}
                                             className="login-form-button"
                                         >
-                                            Limpar
+                                            {this.props.t('common:limpar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -412,7 +413,7 @@ class RelatorioTombosPorCidadeScreen extends Component {
                                             htmlType="submit"
                                             className="login-form-button"
                                         >
-                                            Pesquisar
+                                            {this.props.t('common:pesquisar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -436,7 +437,7 @@ class RelatorioTombosPorCidadeScreen extends Component {
                     }}
                 >
                     <Col xs={24} sm={14} md={18} lg={20} xl={20}>
-                        <h2 style={{ fontWeight: 200 }}>Relatório de Tombos por Cidade</h2>
+                        <h2 style={{ fontWeight: 200 }}>{this.props.t('relatorioTombosPorCidadeScreen:titulo')}</h2>
                     </Col>
                     <Col xs={24} sm={10} md={6} lg={4} xl={4} style={{ display: 'flex', justifyContent: 'flex-end' }}>
                         <div style={{ display: 'flex', gap: '10px' }}>
@@ -465,4 +466,4 @@ class RelatorioTombosPorCidadeScreen extends Component {
         )
     }
 }
-export default Form.create()(RelatorioTombosPorCidadeScreen)
+export default withTranslation()(Form.create()(RelatorioTombosPorCidadeScreen))
