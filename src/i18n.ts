@@ -56,6 +56,8 @@ void i18n
       'authService',
       'listaTaxonomiaVariedade',
       'exportacaoScreen',
+      'listaUsuariosScreen',
+      'novoUsuarioScreen',
       'relatorioCoordenadaForaPoligonoScreen',
       'relatorioLocalColetaPeriodoScreen',
       'relatorioQtdPeriodoScreen',

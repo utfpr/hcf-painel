@@ -1,0 +1,31 @@
+{
+  "titulo": "User",
+
+  "nome": "Name:",
+  "validacaoNome": "Please enter the user name",
+  "email": "E-mail:",
+  "validacaoEmail": "Please enter the user e-mail",
+  "tipo": "Type:",
+  "validacaoTipo": "Select the user type",
+  "ra": "RA:",
+  "telefone": "Phone:",
+  "senha": "Password:",
+  "validacaoSenha": "Please enter the user password.",
+
+  "tipoCurador": "Curator",
+  "tipoOperador": "Operator",
+  "tipoIdentificador": "Identifier",
+
+  "salvar": "Save",
+
+  "tituloCadastro": "Registration",
+  "sucessoCadastro": "The user has been registered successfully.",
+  "erroCadastro": "There was a problem registering, please check the data and try again.",
+  "erroCadastroEmailUnico": "There was a problem registering, the e-mail must be unique per user, please check the data and try again.",
+
+  "tituloEdicao": "Edit",
+  "sucessoEdicao": "The user has been successfully updated.",
+  "erroEdicao": "There was a problem editing, please check the data and try again.",
+
+  "erroBuscarUsuario": "There was a problem fetching the user data, please try again."
+}
