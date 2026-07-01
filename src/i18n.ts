@@ -57,7 +57,13 @@ void i18n
       'listaTaxonomiaVariedade',
       'exportacaoScreen',
       'listaRemessasScreen',
-      'novaRemessaScreen'
+      'novaRemessaScreen',
+      'listaUsuariosScreen',
+      'novoUsuarioScreen',
+      'relatorioCoordenadaForaPoligonoScreen',
+      'relatorioLocalColetaPeriodoScreen',
+      'relatorioQtdPeriodoScreen',
+      'relatorioTombosPorCidadeScreen'
     ],
     defaultNS: 'common',
 
