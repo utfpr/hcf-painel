@@ -1,0 +1,40 @@
+{
+  "titulo": "Diagnóstico de Erros de Posicionamento",
+
+  "filtros": "Filtros do relatório",
+  "pais": "País:",
+  "selecionePais": "Selecione um país",
+  "estado": "Estado:",
+  "selecioneEstado": "Selecione um estado",
+  "cidade": "Cidade:",
+  "selecioneCidade": "Selecione uma cidade",
+  "incluirSemCoordenadas": "Incluir tombos sem coordenadas",
+
+  "gerarPDF": "Gerar PDF",
+
+  "colunaHCF": "HCF",
+  "colunaNomeCientifico": "Nome Científico",
+  "colunaColetorPrincipal": "Coletor Principal",
+  "colunaLatitude": "Latitude",
+  "colunaLongitude": "Longitude",
+  "colunaMotivo": "Motivo",
+
+  "motivoSemCoordenada": "Sem coordenada",
+  "motivoSemPoligono": "Sem polígono",
+  "motivoForaDoPoligono": "Fora do polígono",
+
+  "nenhumRegistro": "Nenhum registro encontrado.",
+  "tombos": "tombo(s)",
+
+  "erroBuscarPaises": "Falha ao buscar países.",
+  "erroBuscarEstados": "Falha ao buscar estados.",
+  "erroBuscarCidades": "Falha ao buscar cidades.",
+  "erroBuscarRelatorio": "Erro ao buscar os dados do relatório.",
+  "erroFalhaBuscarRelatorio": "Falha ao buscar dados do relatório.",
+
+  "exportarPDF": "Exportar PDF",
+  "sucessoExportarPDF": "PDF gerado com sucesso.",
+  "erroExportarPDF": "Erro ao exportar o PDF.",
+  "erroServidorExportarPDF": "Erro de servidor ao exportar o PDF.",
+  "falhaExportarPDF": "Falha ao exportar o PDF."
+}
