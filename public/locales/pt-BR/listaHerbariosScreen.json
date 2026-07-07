@@ -1,0 +1,24 @@
+{
+  "titulo": "Herbários",
+
+  "buscarHerbario": "Buscar herbário",
+  "buscarSigla": "Sigla:",
+  "buscarNome": "Nome:",
+  "buscarEmail": "E-mail:",
+
+  "colunaSigla": "Sigla",
+  "colunaNome": "Nome",
+  "colunaEndereco": "Endereço",
+  "colunaEmail": "E-mail",
+  "colunaAcao": "Ação",
+
+  "confirmarExcluirHerbario": "Você tem certeza que deseja excluir este herbário?",
+  "descricaoExcluirHerbario": "Ao clicar em SIM, o herbário será excluído.",
+  "sucessoExcluirHerbario": "O herbário foi excluído com sucesso.",
+
+  "erroExcluirHerbario": "Erro ao excluir herbário",
+  "erroInesperadoExcluirHerbario": "Ocorreu um erro inesperado ao tentar excluir o herbário.",
+
+  "erroBuscarHerbarios": "Houve um problema ao buscar os herbários, tente novamente.",
+  "validacaoBusca": "Informe ao menos um campo para realizar a busca."
+}

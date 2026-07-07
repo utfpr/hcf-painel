@@ -12,6 +12,7 @@ import {
     Spin
 } from 'antd'
 import axios from 'axios'
+import { withTranslation } from 'react-i18next'
 
 import { Form } from '@ant-design/compatible'
 
@@ -48,7 +49,7 @@ class NovoUsuarioScreen extends Component {
             if (this.props.match.params.usuario_id !== undefined) {
                 this.requisitaEdicaoUsuario(valores)
             } else if (valores.password == null || valores.password.trim() == '') {
-                this.openNotificationWithIcon('error', 'Falha', 'Informe a senha do usuário.')
+                this.openNotificationWithIcon('error', this.props.t('common:tituloFalha'), this.props.t('novoUsuarioScreen:validacaoSenha'))
             } else {
                 this.requisitaCadastroUsuario(valores)
             }
@@ -84,10 +85,10 @@ class NovoUsuarioScreen extends Component {
         })
             .then(response => {
                 if (response.status !== 201) {
-                    this.openNotificationWithIcon('error', 'Cadastro', 'Houve um problema ao realizar o cadastro, verifique os dados e tente novamente.')
+                    this.openNotificationWithIcon('error', this.props.t('novoUsuarioScreen:tituloCadastro'), this.props.t('novoUsuarioScreen:erroCadastro'))
                 } else {
                     this.props.form.resetFields()
-                    this.openNotificationWithIcon('success', 'Cadastro', 'O usuário foi cadastrado com sucesso.')
+                    this.openNotificationWithIcon('success', this.props.t('novoUsuarioScreen:tituloCadastro'), this.props.t('novoUsuarioScreen:sucessoCadastro'))
                     this.props.history.goBack()
                 }
                 this.setState({
@@ -98,7 +99,7 @@ class NovoUsuarioScreen extends Component {
                 this.setState({
                     loading: false
                 })
-                this.openNotificationWithIcon('error', 'Cadastro', 'Houve um problema ao realizar o cadastro, o e-mail deve ser único por usuário, verifique os dados e tente novamente.')
+                this.openNotificationWithIcon('error', this.props.t('novoUsuarioScreen:tituloCadastro'), this.props.t('novoUsuarioScreen:erroCadastroEmailUnico'))
 
                 const { response } = err
                 if (response && response.data) {
@@ -135,7 +136,7 @@ class NovoUsuarioScreen extends Component {
                         tipoUsuarioInicial: response.data.tipos_usuario.id
                     })
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao buscar os dados do usuário, tente novamente.')
+                    this.openNotificationWithIcon('error', this.props.t('common:tituloFalha'), this.props.t('novoUsuarioScreen:erroBuscarUsuario'))
                 }
             })
             .catch(err => {
@@ -178,10 +179,10 @@ class NovoUsuarioScreen extends Component {
         axios.put(`/usuarios/${this.props.match.params.usuario_id}`, body)
             .then(response => {
                 if (response.status !== 201 && response.status !== 204) {
-                    this.openNotificationWithIcon('error', 'Edição', 'Houve um problema ao realizar a edição, verifique os dados e tente novamente.')
+                    this.openNotificationWithIcon('error', this.props.t('novoUsuarioScreen:tituloEdicao'), this.props.t('novoUsuarioScreen:erroEdicao'))
                 } else {
                     this.props.form.resetFields()
-                    this.openNotificationWithIcon('success', 'Edição', 'O usuário foi alterado com sucesso.')
+                    this.openNotificationWithIcon('success', this.props.t('novoUsuarioScreen:tituloEdicao'), this.props.t('novoUsuarioScreen:sucessoEdicao'))
                     this.props.history.goBack()
                 }
                 this.setState({
@@ -207,7 +208,7 @@ class NovoUsuarioScreen extends Component {
             <Form onSubmit={this.onSubmit}>
                 <Row>
                     <Col span={12}>
-                        <h2 style={{ fontWeight: 200 }}>Usuário</h2>
+                        <h2 style={{ fontWeight: 200 }}>{this.props.t('novoUsuarioScreen:titulo')}</h2>
                     </Col>
                 </Row>
                 <Divider dashed />
@@ -215,14 +216,14 @@ class NovoUsuarioScreen extends Component {
                 <Row gutter={8}>
                     <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                         <Col span={24}>
-                            <span>Nome:</span>
+                            <span>{this.props.t('novoUsuarioScreen:nome')}</span>
                         </Col>
                         <Col span={24}>
                             <FormItem>
                                 {getFieldDecorator('nome', {
                                     rules: [{
                                         required: true,
-                                        message: 'Insira o nome do usuário'
+                                        message: this.props.t('novoUsuarioScreen:validacaoNome')
                                     }]
                                 })(
                                     <Input placeholder="Marcelo Caxambu" type="text" />
@@ -232,14 +233,14 @@ class NovoUsuarioScreen extends Component {
                     </Col>
                     <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                         <Col span={24}>
-                            <span>E-mail:</span>
+                            <span>{this.props.t('novoUsuarioScreen:email')}</span>
                         </Col>
                         <Col span={24}>
                             <FormItem>
                                 {getFieldDecorator('email', {
                                     rules: [{
                                         required: true,
-                                        message: 'Insira o e-mail do usuário'
+                                        message: this.props.t('novoUsuarioScreen:validacaoEmail')
                                     }]
                                 })(
                                     <Input placeholder="marcelo@gmail.com" type="email" />
@@ -249,7 +250,7 @@ class NovoUsuarioScreen extends Component {
                     </Col>
                     <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                         <Col span={24}>
-                            <span>Tipo:</span>
+                            <span>{this.props.t('novoUsuarioScreen:tipo')}</span>
                         </Col>
                         <Col span={24}>
                             <FormItem>
@@ -257,13 +258,13 @@ class NovoUsuarioScreen extends Component {
                                     initialValue: String(this.state.tipoUsuarioInicial),
                                     rules: [{
                                         required: true,
-                                        message: 'Selecione o tipo do usuário'
+                                        message: this.props.t('novoUsuarioScreen:validacaoTipo')
                                     }]
                                 })(
                                     <Select initialValue="2">
-                                        <Option value="1">Curador</Option>
-                                        <Option value="2">Operador</Option>
-                                        <Option value="3">Identificador</Option>
+                                        <Option value="1">{this.props.t('novoUsuarioScreen:tipoCurador')}</Option>
+                                        <Option value="2">{this.props.t('novoUsuarioScreen:tipoOperador')}</Option>
+                                        <Option value="3">{this.props.t('novoUsuarioScreen:tipoIdentificador')}</Option>
                                     </Select>
                                 )}
                             </FormItem>
@@ -273,7 +274,7 @@ class NovoUsuarioScreen extends Component {
                 <Row gutter={8}>
                     <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                         <Col span={24}>
-                            <span>RA:</span>
+                            <span>{this.props.t('novoUsuarioScreen:ra')}</span>
                         </Col>
                         <Col span={24}>
                             <FormItem>
@@ -289,7 +290,7 @@ class NovoUsuarioScreen extends Component {
                     </Col>
                     <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                         <Col span={24}>
-                            <span>Telefone:</span>
+                            <span>{this.props.t('novoUsuarioScreen:telefone')}</span>
                         </Col>
                         <Col span={24}>
                             <FormItem>
@@ -305,7 +306,7 @@ class NovoUsuarioScreen extends Component {
                     </Col>
                     <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                         <Col span={24}>
-                            <span>Senha:</span>
+                            <span>{this.props.t('novoUsuarioScreen:senha')}</span>
                         </Col>
                         <Col span={24}>
                             <FormItem>
@@ -325,7 +326,7 @@ class NovoUsuarioScreen extends Component {
                                 htmlType="submit"
                                 className="login-form-button"
                             >
-                                Salvar
+                                {this.props.t('novoUsuarioScreen:salvar')}
                             </Button>
                         </FormItem>
                     </Col>
@@ -339,7 +340,7 @@ class NovoUsuarioScreen extends Component {
     render() {
         if (this.state.loading) {
             return (
-                <Spin tip="Carregando...">
+                <Spin tip={this.props.t('common:carregando')}>
                     {this.renderFormulario()}
                 </Spin>
             )
@@ -350,4 +351,4 @@ class NovoUsuarioScreen extends Component {
     }
 }
 
-export default Form.create()(NovoUsuarioScreen)
+export default withTranslation()(Form.create()(NovoUsuarioScreen))

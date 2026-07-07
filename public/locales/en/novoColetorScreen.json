@@ -1,0 +1,16 @@
+{
+  "titulo": "Collector",
+
+  "nome": "Name:",
+  "validacaoNome": "Please enter the collector name",
+
+  "salvar": "Save",
+
+  "sucessoCadastro": "Collector registered successfully.",
+  "erroCadastro": "There was a problem registering the collector, please try again.",
+
+  "sucessoAtualizacao": "Collector updated successfully.",
+  "erroAtualizacao": "There was a problem updating the collector, please try again.",
+
+  "erroBuscarColetor": "There was a problem fetching the collector data, please try again."
+}

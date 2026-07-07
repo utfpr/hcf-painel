@@ -1,0 +1,16 @@
+{
+  "titulo": "Listagem de identificadores",
+
+  "buscarIdentificador": "Buscar identificador",
+  "buscarNome": "Nome:",
+
+  "colunaNome": "Nome",
+  "colunaAcao": "Ação",
+
+  "confirmarExcluirIdentificador": "Você tem certeza que deseja excluir este identificador?",
+  "descricaoExcluirIdentificador": "Ao clicar em SIM, o identificador será excluído.",
+  "sucessoExcluirIdentificador": "O identificador foi excluído com sucesso.",
+
+  "erroExcluirIdentificador": "Erro ao excluir identificador",
+  "erroInesperadoExcluirIdentificador": "Ocorreu um erro inesperado ao tentar excluir o identificador."
+}

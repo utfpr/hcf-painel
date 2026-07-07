@@ -12,6 +12,7 @@ import {
     Spin
 } from 'antd'
 import axios from 'axios'
+import { withTranslation } from 'react-i18next'
 
 import { Form } from '@ant-design/compatible'
 
@@ -61,9 +62,9 @@ class NovoHerbarioScreen extends Component {
             const { response } = err
             if (response && response.data) {
                 if (response.status === 400 || response.status === 422) {
-                    this.notificacao('warning', 'Falha', response.data.error.message)
+                    this.notificacao('warning', this.props.t('common:tituloFalha'), response.data.error.message)
                 } else {
-                    this.notificacao('error', 'Falha', 'Houve um problema ao buscar os países, tente novamente.')
+                    this.notificacao('error', this.props.t('common:tituloFalha'), this.props.t('novoHerbarioScreen:erroBuscarPaises'))
                 }
             }
         }
@@ -91,9 +92,9 @@ class NovoHerbarioScreen extends Component {
             const { response } = err
             if (response && response.data) {
                 if (response.status === 400 || response.status === 422) {
-                    this.notificacao('warning', 'Falha', response.data.error.message)
+                    this.notificacao('warning', this.props.t('common:tituloFalha'), response.data.error.message)
                 } else {
-                    this.notificacao('error', 'Falha', 'Houve um problema ao buscar os estados, tente novamente.')
+                    this.notificacao('error', this.props.t('common:tituloFalha'), this.props.t('novoHerbarioScreen:erroBuscarEstados'))
                 }
             }
         }
@@ -121,9 +122,9 @@ class NovoHerbarioScreen extends Component {
             const { response } = err
             if (response && response.data) {
                 if (response.status === 400 || response.status === 422) {
-                    this.notificacao('warning', 'Falha', response.data.error.message)
+                    this.notificacao('warning', this.props.t('common:tituloFalha'), response.data.error.message)
                 } else {
-                    this.notificacao('error', 'Falha', 'Houve um problema ao buscar as cidades, tente novamente.')
+                    this.notificacao('error', this.props.t('common:tituloFalha'), this.props.t('novoHerbarioScreen:erroBuscarCidades'))
                 }
             }
         }
@@ -208,9 +209,9 @@ class NovoHerbarioScreen extends Component {
                 const { response } = err
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
-                        this.notificacao('warning', 'Falha', response.data.error.message)
+                        this.notificacao('warning', this.props.t('common:tituloFalha'), response.data.error.message)
                     } else {
-                        this.notificacao('error', 'Falha', 'Houve um problema ao cadastrar o herbários, tente novamente.')
+                        this.notificacao('error', this.props.t('common:tituloFalha'), this.props.t('novoHerbarioScreen:erroCadastro'))
                     }
                     const { error } = response.data
                     throw new Error(error.message)
@@ -219,7 +220,7 @@ class NovoHerbarioScreen extends Component {
                 }
             })
             .catch(() => {
-                this.notificacao('error', 'Falha', 'Houve um problema ao cadastrar o herbário, tente novamente.')
+                this.notificacao('error', this.props.t('common:tituloFalha'), this.props.t('novoHerbarioScreen:erroCadastro'))
             })
     }
 
@@ -285,9 +286,9 @@ class NovoHerbarioScreen extends Component {
             const { response } = err
             if (response && response.data) {
                 if (response.status === 400 || response.status === 422) {
-                    this.notificacao('warning', 'Falha', response.data.error.message)
+                    this.notificacao('warning', this.props.t('common:tituloFalha'), response.data.error.message)
                 } else {
-                    this.notificacao('error', 'Falha', 'Houve um problema ao buscar os dados do herbário, tente novamente.')
+                    this.notificacao('error', this.props.t('common:tituloFalha'), this.props.t('novoHerbarioScreen:erroBuscarHerbario'))
                 }
                 const { error } = response.data
                 console.error(error.message)
@@ -340,9 +341,9 @@ class NovoHerbarioScreen extends Component {
                 const { response } = err
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
-                        this.notificacao('warning', 'Falha', response.data.error.message)
+                        this.notificacao('warning', this.props.t('common:tituloFalha'), response.data.error.message)
                     } else {
-                        this.notificacao('error', 'Falha', 'Houve um problema ao atualizar o herbário, tente novamente.')
+                        this.notificacao('error', this.props.t('common:tituloFalha'), this.props.t('novoHerbarioScreen:erroAtualizacao'))
                     }
                     const { error } = response.data
                     throw new Error(error.message)
@@ -351,7 +352,7 @@ class NovoHerbarioScreen extends Component {
                 }
             })
             .catch(() => {
-                this.notificacao('error', 'Falha', 'Houve um problema ao atualizar o herbário, tente novamente.')
+                this.notificacao('error', this.props.t('common:tituloFalha'), this.props.t('novoHerbarioScreen:erroAtualizacao'))
             })
     }
 
@@ -363,7 +364,7 @@ class NovoHerbarioScreen extends Component {
             <Form onSubmit={this.onSubmit}>
                 <Row>
                     <Col span={12}>
-                        <h2 style={{ fontWeight: 200 }}>Herbário</h2>
+                        <h2 style={{ fontWeight: 200 }}>{this.props.t('novoHerbarioScreen:titulo')}</h2>
                     </Col>
                 </Row>
                 <Divider dashed />
@@ -371,14 +372,14 @@ class NovoHerbarioScreen extends Component {
                 <Row gutter={8}>
                     <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                         <Col span={24}>
-                            <span>Nome:</span>
+                            <span>{this.props.t('novoHerbarioScreen:nome')}</span>
                         </Col>
                         <Col span={24}>
                             <FormItem>
                                 {getFieldDecorator('nome', {
                                     rules: [{
                                         required: true,
-                                        message: 'Insira o nome do herbário'
+                                        message: this.props.t('novoHerbarioScreen:validacaoNome')
                                     }]
                                 })(
                                     <Input placeholder="Herbário do Centro Federal" type="text" />
@@ -388,7 +389,7 @@ class NovoHerbarioScreen extends Component {
                     </Col>
                     <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                         <Col span={24}>
-                            <span>Sigla:</span>
+                            <span>{this.props.t('novoHerbarioScreen:sigla')}</span>
                         </Col>
                         <Col span={24}>
                             <FormItem>
@@ -400,14 +401,14 @@ class NovoHerbarioScreen extends Component {
                     </Col>
                     <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                         <Col span={24}>
-                            <span>E-mail:</span>
+                            <span>{this.props.t('novoHerbarioScreen:email')}</span>
                         </Col>
                         <Col span={24}>
                             <FormItem>
                                 {getFieldDecorator('email', {
                                     rules: [{
                                         required: true,
-                                        message: 'Insira o e-mail do herbário'
+                                        message: this.props.t('novoHerbarioScreen:validacaoEmail')
                                     }]
                                 })(
                                     <Input placeholder="hcfcampomourao@gmail.com" type="text" />
@@ -420,14 +421,14 @@ class NovoHerbarioScreen extends Component {
                 <Row gutter={8}>
                     <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                         <Col span={24}>
-                            <span>Endereço:</span>
+                            <span>{this.props.t('novoHerbarioScreen:endereco')}</span>
                         </Col>
                         <Col span={24}>
                             <FormItem>
                                 {getFieldDecorator('logradouro', {
                                     rules: [{
                                         required: true,
-                                        message: 'Insira o logradouro do herbário'
+                                        message: this.props.t('novoHerbarioScreen:validacaoEndereco')
                                     }]
                                 })(
                                     <Input placeholder="Av. das torres" type="text" />
@@ -437,14 +438,14 @@ class NovoHerbarioScreen extends Component {
                     </Col>
                     <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                         <Col span={24}>
-                            <span>Número:</span>
+                            <span>{this.props.t('novoHerbarioScreen:numero')}</span>
                         </Col>
                         <Col span={24}>
                             <FormItem>
                                 {getFieldDecorator('numero', {
                                     rules: [{
                                         required: true,
-                                        message: 'Insira o numero do logradouro do herbário'
+                                        message: this.props.t('novoHerbarioScreen:validacaoNumero')
                                     }]
                                 })(
                                     <InputNumber min={1} placeholder={1920} style={{ width: '100%' }} />
@@ -456,8 +457,8 @@ class NovoHerbarioScreen extends Component {
 
                 <Row gutter={8}>
                     <SelectedFormField
-                        title="País:"
-                        placeholder="Selecione um país"
+                        title={this.props.t('novoHerbarioScreen:pais')}
+                        placeholder={this.props.t('novoHerbarioScreen:selecionePais')}
                         fieldName="pais"
                         getFieldDecorator={getFieldDecorator}
                         onSearch={searchText => {
@@ -480,7 +481,7 @@ class NovoHerbarioScreen extends Component {
                         }}
                         others={{
                             loading: fetchingPaises,
-                            notFoundContent: fetchingPaises ? <Spin size="small" /> : 'Nenhum resultado encontrado',
+                            notFoundContent: fetchingPaises ? <Spin size="small" /> : this.props.t('common:nenhumResultadoEncontrado'),
                             allowClear: true
                         }}
                         debounceDelay={200}
@@ -491,7 +492,7 @@ class NovoHerbarioScreen extends Component {
                         xl={8}
                         rules={[{
                             required: true,
-                            message: 'Selecione ou insira um país'
+                            message: this.props.t('novoHerbarioScreen:validacaoPais')
                         }]}
                     >
                         {paises.map(item => (
@@ -500,8 +501,8 @@ class NovoHerbarioScreen extends Component {
                     </SelectedFormField>
 
                     <SelectedFormField
-                        title="Estado:"
-                        placeholder={paisSelecionado ? 'Selecione um estado' : 'Selecione um país primeiro'}
+                        title={this.props.t('novoHerbarioScreen:estado')}
+                        placeholder={paisSelecionado ? this.props.t('novoHerbarioScreen:selecioneEstado') : this.props.t('novoHerbarioScreen:selecionePaisPrimeiro')}
                         fieldName="estado"
                         getFieldDecorator={getFieldDecorator}
                         disabled={!paisSelecionado}
@@ -524,7 +525,7 @@ class NovoHerbarioScreen extends Component {
                         }}
                         others={{
                             loading: fetchingEstados,
-                            notFoundContent: fetchingEstados ? <Spin size="small" /> : 'Nenhum resultado encontrado',
+                            notFoundContent: fetchingEstados ? <Spin size="small" /> : this.props.t('common:nenhumResultadoEncontrado'),
                             allowClear: true
                         }}
                         debounceDelay={200}
@@ -535,7 +536,7 @@ class NovoHerbarioScreen extends Component {
                         xl={8}
                         rules={[{
                             required: true,
-                            message: 'Selecione ou insira um estado'
+                            message: this.props.t('novoHerbarioScreen:validacaoEstado')
                         }]}
                     >
                         {estados.map(item => (
@@ -544,8 +545,8 @@ class NovoHerbarioScreen extends Component {
                     </SelectedFormField>
 
                     <SelectedFormField
-                        title="Cidade:"
-                        placeholder={estadoSelecionado ? 'Selecione uma cidade' : 'Selecione um estado primeiro'}
+                        title={this.props.t('novoHerbarioScreen:cidade')}
+                        placeholder={estadoSelecionado ? this.props.t('novoHerbarioScreen:selecioneCidade') : this.props.t('novoHerbarioScreen:selecioneEstadoPrimeiro')}
                         fieldName="cidade"
                         getFieldDecorator={getFieldDecorator}
                         disabled={!estadoSelecionado}
@@ -556,7 +557,7 @@ class NovoHerbarioScreen extends Component {
                         }}
                         others={{
                             loading: fetchingCidades,
-                            notFoundContent: fetchingCidades ? <Spin size="small" /> : 'Nenhum resultado encontrado',
+                            notFoundContent: fetchingCidades ? <Spin size="small" /> : this.props.t('common:nenhumResultadoEncontrado'),
                             allowClear: true
                         }}
                         debounceDelay={200}
@@ -567,7 +568,7 @@ class NovoHerbarioScreen extends Component {
                         xl={8}
                         rules={[{
                             required: true,
-                            message: 'Selecione ou insira uma cidade'
+                            message: this.props.t('novoHerbarioScreen:validacaoCidade')
                         }]}
                     >
                         {cidades.map(item => (
@@ -579,7 +580,7 @@ class NovoHerbarioScreen extends Component {
                 <Row gutter={8}>
                     <Col xs={24} sm={16} md={16} lg={16} xl={16}>
                         <Col span={24}>
-                            <span>Complemento de localização:</span>
+                            <span>{this.props.t('novoHerbarioScreen:complemento')}</span>
                         </Col>
                         <Col span={24}>
                             <FormItem>
@@ -598,7 +599,7 @@ class NovoHerbarioScreen extends Component {
                                 style={{ width: '100%' }}
                                 onClick={this.handleCancelar}
                             >
-                                Cancelar
+                                {this.props.t('common:cancelar')}
                             </Button>
                         </FormItem>
                     </Col>
@@ -610,7 +611,7 @@ class NovoHerbarioScreen extends Component {
                                 htmlType="submit"
                                 style={{ width: '100%' }}
                             >
-                                Salvar
+                                {this.props.t('novoHerbarioScreen:salvar')}
                             </Button>
                         </FormItem>
                     </Col>
@@ -623,7 +624,7 @@ class NovoHerbarioScreen extends Component {
     render() {
         if (this.state.loading) {
             return (
-                <Spin tip="Carregando...">
+                <Spin tip={this.props.t('common:carregando')}>
                     {this.renderFormulario()}
                 </Spin>
             )
@@ -634,4 +635,4 @@ class NovoHerbarioScreen extends Component {
     }
 }
 
-export default Form.create()(NovoHerbarioScreen)
+export default withTranslation()(Form.create()(NovoHerbarioScreen))

@@ -1,0 +1,29 @@
+{
+  "carregando": "Carregando...",
+
+  "tituloModificacoes": "Modificações",
+
+  "fotosAntigas": "Fotos antigas:",
+  "fotosNovas": "Novas fotos:",
+  "fotos": "Fotos:",
+
+  "observacao": "Observação:",
+
+  "botaoAprovado": "APROVADO",
+  "botaoReprovado": "REPROVADO",
+
+  "colunaCampo": "Campo",
+  "colunaValorAntigo": "Valor antigo",
+  "colunaValorNovo": "Valor novo",
+
+  "erroBuscarPendenciasTitulo": "Falha",
+  "erroBuscarPendenciasMensagem": "Não foi possível obter as pendências, tente novamente.",
+
+  "erroBuscarPendenciasGenerico": "Houve um problema ao buscar as pendências, tente novamente.",
+
+  "atualizacaoTitulo": "Atualização",
+  "sucessoAtualizacaoMensagem": "A pendência foi atualizada com sucesso.",
+  "erroAtualizacaoMensagem": "Houve um problema ao atualizar a pendência.",
+
+  "spinnerCarregando": "Carregando..."
+}

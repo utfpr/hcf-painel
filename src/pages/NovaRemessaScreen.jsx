@@ -16,6 +16,7 @@ import {
 } from 'antd'
 import axios from 'axios'
 import moment from 'moment'
+import { withTranslation } from 'react-i18next'
 
 import { Form } from '@ant-design/compatible'
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
@@ -30,29 +31,6 @@ const { Option } = Select
 const { confirm } = Modal
 const { TextArea } = Input
 
-const columns = [
-    {
-        title: 'Tombo',
-        type: 'text',
-        key: 'hcf'
-    },
-    {
-        title: 'Tipo',
-        type: 'text',
-        key: 'tipo'
-    },
-    {
-        title: 'Data Vencimento',
-        type: 'text',
-        key: 'data_vencimento'
-    },
-    {
-        title: 'Ação',
-        key: 'acao'
-    }
-
-]
-
 class NovaRemessaScreen extends Component {
     constructor(props) {
         super(props)
@@ -62,6 +40,15 @@ class NovaRemessaScreen extends Component {
             data: [],
             visibleModal: false
         }
+    }
+
+    getColumns() {
+        return [
+            { title: this.props.t('novaRemessaScreen:colunaTombo'), type: 'text', key: 'hcf' },
+            { title: this.props.t('novaRemessaScreen:colunaTipo'), type: 'text', key: 'tipo' },
+            { title: this.props.t('novaRemessaScreen:colunaDataVencimento'), type: 'text', key: 'data_vencimento' },
+            { title: this.props.t('novaRemessaScreen:colunaAcao'), key: 'acao' }
+        ]
     }
 
     componentDidMount() {
@@ -108,7 +95,7 @@ class NovaRemessaScreen extends Component {
                 const { response } = err
                 if (response && response.data) {
                     const { error } = response.data
-                    this.notificacao('error', 'Falha', 'Houve um problema ao buscar os dados da remessa, tente novamente.')
+                    this.notificacao('error', this.props.t('common:tituloFalha'), this.props.t('novaRemessaScreen:erroBuscarRemessa'))
                     console.error(error.message)
                 }
             })
@@ -134,7 +121,7 @@ class NovaRemessaScreen extends Component {
         })
             .then(response => {
                 if (response.status !== 200) {
-                    this.notificacao('error', 'Buscar', 'Erro ao buscar a lista de herbários.')
+                    this.notificacao('error', this.props.t('common:pesquisar'), this.props.t('novaRemessaScreen:erroBuscarHerbarios'))
                 }
                 this.setState({
                     loading: false,
@@ -163,7 +150,7 @@ class NovaRemessaScreen extends Component {
                     this.cadastroRemessa(valores)
                 }
             } else {
-                this.notificacao('warning', 'Cadastro/Alteração', 'É necessário adicionar um tombo para a lista de remessa.')
+                this.notificacao('warning', this.props.t('novaRemessaScreen:tituloCadastroAlteracao'), this.props.t('novaRemessaScreen:validacaoAdicionarTombo'))
             }
         }
     }
@@ -199,7 +186,7 @@ class NovaRemessaScreen extends Component {
                     this.setState({
                         loading: false
                     })
-                    this.notificacao('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                    this.notificacao('success', this.props.t('common:tituloSucesso'), this.props.t('novaRemessaScreen:sucessoCadastro'))
                     this.props.history.push('/remessas')
                 }
                 this.props.form.setFields({
@@ -216,9 +203,9 @@ class NovaRemessaScreen extends Component {
                 if (response && response.data) {
                     const { error } = response.data
                     if (response.status === 400) {
-                        this.notificacao('warning', 'Falha', error.message)
+                        this.notificacao('warning', this.props.t('common:tituloFalha'), error.message)
                     } else {
-                        this.notificacao('error', 'Falha', 'Houve um problema ao cadastrar a novo gênero, tente novamente.')
+                        this.notificacao('error', this.props.t('common:tituloFalha'), this.props.t('novaRemessaScreen:erroCadastro'))
                     }
                     console.error(error.message)
                 }
@@ -261,10 +248,10 @@ class NovaRemessaScreen extends Component {
                 this.setState({ loading: false })
                 if (response.status == 204) {
                     this.props.form.resetFields()
-                    this.notificacao('success', 'Edição', 'A remessa foi alterada com sucesso.')
+                    this.notificacao('success', this.props.t('novaRemessaScreen:tituloEdicao'), this.props.t('novaRemessaScreen:sucessoEdicao'))
                     this.props.history.push('/remessas')
                 } else {
-                    this.notificacao('error', 'Edição', 'Houve um problema ao realizar a edição, verifique os dados e tente novamente.')
+                    this.notificacao('error', this.props.t('novaRemessaScreen:tituloEdicao'), this.props.t('novaRemessaScreen:erroEdicao'))
                 }
             })
             .catch(err => {
@@ -310,11 +297,11 @@ class NovaRemessaScreen extends Component {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this
         confirm({
-            title: 'Você tem certeza que deseja excluir da lista esse tombo?',
-            content: 'Ao clicar em SIM, o tombo será excluída.',
-            okText: 'SIM',
+            title: this.props.t('novaRemessaScreen:confirmarExcluirTombo'),
+            content: this.props.t('novaRemessaScreen:descricaoExcluirTombo'),
+            okText: this.props.t('common:sim'),
             okType: 'danger',
-            cancelText: 'NÃO',
+            cancelText: this.props.t('common:nao'),
             onOk() {
                 for (let i = 0; i < self.state.data.length; i++) {
                     if (self.state.data[i].hcf == id) {
@@ -346,7 +333,7 @@ class NovaRemessaScreen extends Component {
             <div>
                 <Form onSubmit={this.onSubmit}>
                     <ModalCadastroComponent
-                        title="Adicionar tombo a remessa"
+                        title={this.props.t('novaRemessaScreen:modalTitulo')}
                         visibleModal={this.state.visibleModal}
                         onCancel={
                             () => {
@@ -385,7 +372,7 @@ class NovaRemessaScreen extends Component {
                         <div>
                             <Row gutter={8}>
                                 <Col span={12}>
-                                    <span>Nº tombo:</span>
+                                    <span>{this.props.t('novaRemessaScreen:numeroTombo')}</span>
                                 </Col>
                             </Row>
                             <Row gutter={8}>
@@ -401,10 +388,10 @@ class NovaRemessaScreen extends Component {
                             </Row>
                             <Row gutter={8}>
                                 <Col span={12}>
-                                    <span>Tipo:</span>
+                                    <span>{this.props.t('novaRemessaScreen:tipo')}</span>
                                 </Col>
                                 <Col span={12}>
-                                    <span>Data de vencimento:</span>
+                                    <span>{this.props.t('novaRemessaScreen:dataVencimento')}</span>
                                 </Col>
                             </Row>
                             <Row gutter={8}>
@@ -414,12 +401,12 @@ class NovaRemessaScreen extends Component {
                                             <Select
                                                 showSearch
                                                 style={{ width: '100%' }}
-                                                placeholder="Selecione um tipo"
+                                                placeholder={this.props.t('novaRemessaScreen:selecioneTipo')}
                                                 optionFilterProp="children"
                                             >
-                                                <Option value="EMPRESTIMO">Emprestimo</Option>
-                                                <Option value="DOACAO">Doação</Option>
-                                                <Option value="PERMUTA">Permuta</Option>
+                                                <Option value="EMPRESTIMO">{this.props.t('novaRemessaScreen:tipoEmprestimo')}</Option>
+                                                <Option value="DOACAO">{this.props.t('novaRemessaScreen:tipoDoacao')}</Option>
+                                                <Option value="PERMUTA">{this.props.t('novaRemessaScreen:tipoPermuta')}</Option>
                                             </Select>
                                         )}
                                     </FormItem>
@@ -437,14 +424,14 @@ class NovaRemessaScreen extends Component {
                     </ModalCadastroComponent>
                     <Row>
                         <Col span={12}>
-                            <h2 style={{ fontWeight: 200 }}>Remessa</h2>
+                            <h2 style={{ fontWeight: 200 }}>{this.props.t('novaRemessaScreen:titulo')}</h2>
                         </Col>
                     </Row>
                     <Divider dashed />
 
                     <Row gutter={8}>
                         <Col span={24}>
-                            <span>Doador:</span>
+                            <span>{this.props.t('novaRemessaScreen:doador')}</span>
                         </Col>
                     </Row>
                     <Row gutter={8}>
@@ -453,12 +440,12 @@ class NovaRemessaScreen extends Component {
                                 {getFieldDecorator('doador', {
                                     rules: [{
                                         required: true,
-                                        message: 'Selecione um doador'
+                                        message: this.props.t('novaRemessaScreen:validacaoDoador')
                                     }]
                                 })(
                                     <Select
                                         showSearch
-                                        placeholder="Selecione um doador"
+                                        placeholder={this.props.t('novaRemessaScreen:selecioneDoador')}
                                         optionFilterProp="children"
                                     >
                                         {this.optionHerbario()}
@@ -469,7 +456,7 @@ class NovaRemessaScreen extends Component {
                     </Row>
                     <Row gutter={8} style={{ marginTop: 16 }}>
                         <Col span={24}>
-                            <span>Receptor:</span>
+                            <span>{this.props.t('novaRemessaScreen:receptor')}</span>
                         </Col>
                     </Row>
                     <Row gutter={8}>
@@ -478,12 +465,12 @@ class NovaRemessaScreen extends Component {
                                 {getFieldDecorator('receptor', {
                                     rules: [{
                                         required: true,
-                                        message: 'Selecione um receptor'
+                                        message: this.props.t('novaRemessaScreen:validacaoReceptor')
                                     }]
                                 })(
                                     <Select
                                         showSearch
-                                        placeholder="Selecione um receptor"
+                                        placeholder={this.props.t('novaRemessaScreen:selecioneReceptor')}
                                         optionFilterProp="children"
                                     >
                                         {this.optionHerbario()}
@@ -495,7 +482,7 @@ class NovaRemessaScreen extends Component {
                     <Row gutter={8} style={{ marginTop: 16 }}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Data de envio:</span>
+                                <span>{this.props.t('novaRemessaScreen:dataEnvio')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
@@ -507,7 +494,7 @@ class NovaRemessaScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Observação:</span>
+                                <span>{this.props.t('novaRemessaScreen:observacao')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
@@ -531,13 +518,13 @@ class NovaRemessaScreen extends Component {
                                     })
                                 }}
                             >
-                                Adicionar tombo
+                                {this.props.t('novaRemessaScreen:adicionarTombo')}
                             </Button>
                         </Col>
                     </Row>
 
                     <SimpleTableComponent
-                        columns={columns}
+                        columns={this.getColumns()}
                         data={this.formataDados(this.state.data)}
                     />
 
@@ -545,7 +532,7 @@ class NovaRemessaScreen extends Component {
 
                     <Row type="flex" justify="end">
                         <Col xs={24} sm={8} md={8} lg={4} xl={4}>
-                            <ButtonComponent titleButton="Salvar" style={{ backgroundColor: '#28a745' }} />
+                            <ButtonComponent titleButton={this.props.t('novaRemessaScreen:salvar')} style={{ backgroundColor: '#28a745' }} />
                         </Col>
                     </Row>
 
@@ -557,7 +544,7 @@ class NovaRemessaScreen extends Component {
     render() {
         if (this.state.loading) {
             return (
-                <Spin tip="Carregando...">
+                <Spin tip={this.props.t('common:carregando')}>
                     {this.renderFormulario()}
                 </Spin>
             )
@@ -568,4 +555,4 @@ class NovaRemessaScreen extends Component {
     }
 }
 
-export default Form.create()(NovaRemessaScreen)
+export default withTranslation()(Form.create()(NovaRemessaScreen))
