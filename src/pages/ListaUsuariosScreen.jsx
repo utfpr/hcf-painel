@@ -5,6 +5,7 @@ import {
     Select, Input, Button, notification
 } from 'antd'
 import axios from 'axios'
+import { withTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import TotalRecordFound from '@/components/TotalRecordsFound'
@@ -20,45 +21,6 @@ const { confirm } = Modal
 const FormItem = Form.Item
 const { Option } = Select
 
-const columns = [
-    {
-        title: 'Nome',
-        type: 'text',
-        key: 'nome',
-        width: 300
-    },
-    {
-        title: 'Tipo',
-        type: 'text',
-        key: 'tipo',
-        width: 300
-    },
-    {
-        title: 'E-mail',
-        type: 'text',
-        key: 'email',
-        width: 300
-    },
-    {
-        title: 'Telefone',
-        type: 'text',
-        key: 'telefone',
-        width: 300
-    },
-    {
-        title: 'Data de criação',
-        type: 'text',
-        key: 'dataCriacao',
-        width: 300
-    },
-    {
-        title: 'Ação',
-        key: 'acao',
-        width: 100
-    }
-
-]
-
 class ListaUsuariosScreen extends Component {
     constructor(props) {
         super(props)
@@ -68,6 +30,17 @@ class ListaUsuariosScreen extends Component {
             loading: true,
             pagina: 1
         }
+    }
+
+    getColumns() {
+        return [
+            { title: this.props.t('listaUsuariosScreen:colunaNome'), type: 'text', key: 'nome', width: 300 },
+            { title: this.props.t('listaUsuariosScreen:colunaTipo'), type: 'text', key: 'tipo', width: 300 },
+            { title: this.props.t('listaUsuariosScreen:colunaEmail'), type: 'text', key: 'email', width: 300 },
+            { title: this.props.t('listaUsuariosScreen:colunaTelefone'), type: 'text', key: 'telefone', width: 300 },
+            { title: this.props.t('listaUsuariosScreen:colunaDataCriacao'), type: 'text', key: 'dataCriacao', width: 300 },
+            { title: this.props.t('listaUsuariosScreen:colunaAcao'), key: 'acao', width: 100 }
+        ]
     }
 
     requisitaExclusao(id) {
@@ -81,7 +54,7 @@ class ListaUsuariosScreen extends Component {
                 })
                 if (response.status === 204) {
                     this.requisitaListaUsuarios(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir', 'O usuário foi excluído com sucesso.')
+                    this.notificacao('success', this.props.t('common:excluir'), this.props.t('listaUsuariosScreen:sucessoExcluirUsuario'))
                 }
             })
             .catch(err => {
@@ -92,13 +65,13 @@ class ListaUsuariosScreen extends Component {
                 if (response && response.data) {
                     const { error } = response.data
                     if (error && error.code) {
-                        this.notificacao('error', 'Erro ao excluir usuário', error.code)
+                        this.notificacao('error', this.props.t('listaUsuariosScreen:erroExcluirUsuario'), error.code)
                     } else {
-                        this.notificacao('error', 'Erro ao excluir usuário', 'Ocorreu um erro inesperado ao tentar excluir o usuário.')
+                        this.notificacao('error', this.props.t('listaUsuariosScreen:erroExcluirUsuario'), this.props.t('listaUsuariosScreen:erroInesperadoExcluirUsuario'))
                     }
                     console.error(error)
                 } else {
-                    this.notificacao('error', 'Erro ao excluir usuário', 'Falha na comunicação com o servidor.')
+                    this.notificacao('error', this.props.t('listaUsuariosScreen:erroExcluirUsuario'), this.props.t('common:erroComunicacaoServidor'))
                 }
             })
     }
@@ -114,11 +87,11 @@ class ListaUsuariosScreen extends Component {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this
         confirm({
-            title: 'Você tem certeza que deseja excluir este usuário?',
-            content: 'Ao clicar em SIM, o usuário será excluído.',
-            okText: 'SIM',
+            title: this.props.t('listaUsuariosScreen:confirmarExcluirUsuario'),
+            content: this.props.t('listaUsuariosScreen:descricaoExcluirUsuario'),
+            okText: this.props.t('common:sim'),
             okType: 'danger',
-            cancelText: 'NÃO',
+            cancelText: this.props.t('common:nao'),
             onOk() {
                 self.requisitaExclusao(id)
             },
@@ -225,12 +198,12 @@ class ListaUsuariosScreen extends Component {
 
     renderPainelBusca(getFieldDecorator) {
         return (
-            <Card title="Buscar usuário">
+            <Card title={this.props.t('listaUsuariosScreen:buscarUsuario')}>
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Nome:</span>
+                                <span>{this.props.t('listaUsuariosScreen:buscarNome')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
@@ -242,7 +215,7 @@ class ListaUsuariosScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>E-mail:</span>
+                                <span>{this.props.t('listaUsuariosScreen:buscarEmail')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
@@ -254,15 +227,15 @@ class ListaUsuariosScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Tipo:</span>
+                                <span>{this.props.t('listaUsuariosScreen:buscarTipo')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('tipo')(
-                                        <Select placeholder="Selecione" allowClear>
-                                            <Option value="1">Curador</Option>
-                                            <Option value="2">Operador</Option>
-                                            <Option value="3">Identificador</Option>
+                                        <Select placeholder={this.props.t('listaUsuariosScreen:selecioneTipo')} allowClear>
+                                            <Option value="1">{this.props.t('listaUsuariosScreen:tipoCurador')}</Option>
+                                            <Option value="2">{this.props.t('listaUsuariosScreen:tipoOperador')}</Option>
+                                            <Option value="3">{this.props.t('listaUsuariosScreen:tipoIdentificador')}</Option>
                                         </Select>
                                     )}
                                 </FormItem>
@@ -272,7 +245,7 @@ class ListaUsuariosScreen extends Component {
                     <Row gutter={8}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Telefone:</span>
+                                <span>{this.props.t('listaUsuariosScreen:buscarTelefone')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
@@ -306,7 +279,7 @@ class ListaUsuariosScreen extends Component {
                                             }}
                                             className="login-form-button"
                                         >
-                                            Limpar
+                                            {this.props.t('common:limpar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -317,7 +290,7 @@ class ListaUsuariosScreen extends Component {
                                             htmlType="submit"
                                             className="login-form-button ant-btn-pesquisar"
                                         >
-                                            Pesquisar
+                                            {this.props.t('common:pesquisar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -333,12 +306,12 @@ class ListaUsuariosScreen extends Component {
         const { getFieldDecorator } = this.props.form
         return (
             <div>
-                <HeaderListComponent title="Listagem de usuários" link="/usuarios/novo" />
+                <HeaderListComponent title={this.props.t('listaUsuariosScreen:titulo')} link="/usuarios/novo" />
                 <Divider dashed />
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
                 <SimpleTableComponent
-                    columns={columns}
+                    columns={this.getColumns()}
                     data={this.state.usuarios}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
@@ -356,4 +329,4 @@ class ListaUsuariosScreen extends Component {
     }
 }
 
-export default Form.create()(ListaUsuariosScreen)
+export default withTranslation()(Form.create()(ListaUsuariosScreen))

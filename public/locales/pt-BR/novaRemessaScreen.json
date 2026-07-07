@@ -1,0 +1,46 @@
+{
+  "titulo": "Remessa",
+
+  "colunaTombo": "Tombo",
+  "colunaTipo": "Tipo",
+  "colunaDataVencimento": "Data Vencimento",
+  "colunaAcao": "Ação",
+
+  "modalTitulo": "Adicionar tombo a remessa",
+  "numeroTombo": "Nº tombo:",
+  "tipo": "Tipo:",
+  "dataVencimento": "Data de vencimento:",
+  "selecioneTipo": "Selecione um tipo",
+  "tipoEmprestimo": "Emprestimo",
+  "tipoDoacao": "Doação",
+  "tipoPermuta": "Permuta",
+
+  "doador": "Doador:",
+  "selecioneDoador": "Selecione um doador",
+  "validacaoDoador": "Selecione um doador",
+  "receptor": "Receptor:",
+  "selecioneReceptor": "Selecione um receptor",
+  "validacaoReceptor": "Selecione um receptor",
+
+  "dataEnvio": "Data de envio:",
+  "observacao": "Observação:",
+
+  "adicionarTombo": "Adicionar tombo",
+  "salvar": "Salvar",
+
+  "erroBuscarRemessa": "Houve um problema ao buscar os dados da remessa, tente novamente.",
+  "erroBuscarHerbarios": "Erro ao buscar a lista de herbários.",
+
+  "validacaoAdicionarTombo": "É necessário adicionar um tombo para a lista de remessa.",
+  "tituloCadastroAlteracao": "Cadastro/Alteração",
+
+  "sucessoCadastro": "O cadastro foi realizado com sucesso.",
+  "erroCadastro": "Houve um problema ao cadastrar a nova remessa, tente novamente.",
+
+  "sucessoEdicao": "A remessa foi alterada com sucesso.",
+  "tituloEdicao": "Edição",
+  "erroEdicao": "Houve um problema ao realizar a edição, verifique os dados e tente novamente.",
+
+  "confirmarExcluirTombo": "Você tem certeza que deseja excluir da lista esse tombo?",
+  "descricaoExcluirTombo": "Ao clicar em SIM, o tombo será excluída."
+}

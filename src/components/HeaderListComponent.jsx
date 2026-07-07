@@ -1,6 +1,7 @@
 import { Component } from 'react'
 
 import { Row, Col, Button } from 'antd'
+import { withTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import { PlusOutlined } from '@ant-design/icons'
@@ -9,7 +10,7 @@ import {
     isCuradorOuOperador
 } from '../helpers/usuarios'
 
-export default class HeaderListComponent extends Component {
+class HeaderListComponent extends Component {
     renderButton() {
         if (this.props.add === undefined && isCuradorOuOperador()) {
             return (
@@ -23,7 +24,7 @@ export default class HeaderListComponent extends Component {
                             width: '100%'
                         }}
                     >
-                        Adicionar
+                        {this.props.t('common:adicionar')}
                     </Button>
                 </Link>
             )
@@ -43,3 +44,5 @@ export default class HeaderListComponent extends Component {
         )
     }
 }
+
+export default withTranslation()(HeaderListComponent)

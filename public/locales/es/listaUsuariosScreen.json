@@ -1,0 +1,28 @@
+{
+  "titulo": "Listado de usuarios",
+
+  "buscarUsuario": "Buscar usuario",
+  "buscarNome": "Nombre:",
+  "buscarEmail": "Correo electrónico:",
+  "buscarTipo": "Tipo:",
+  "buscarTelefone": "Teléfono:",
+  "selecioneTipo": "Seleccione",
+
+  "colunaNome": "Nombre",
+  "colunaTipo": "Tipo",
+  "colunaEmail": "Correo electrónico",
+  "colunaTelefone": "Teléfono",
+  "colunaDataCriacao": "Fecha de creación",
+  "colunaAcao": "Acción",
+
+  "tipoCurador": "Curador",
+  "tipoOperador": "Operador",
+  "tipoIdentificador": "Identificador",
+
+  "confirmarExcluirUsuario": "¿Está seguro de que desea eliminar este usuario?",
+  "descricaoExcluirUsuario": "Al hacer clic en SÍ, el usuario será eliminado.",
+  "sucessoExcluirUsuario": "El usuario fue eliminado con éxito.",
+
+  "erroExcluirUsuario": "Error al eliminar usuario",
+  "erroInesperadoExcluirUsuario": "Ocurrió un error inesperado al intentar eliminar el usuario."
+}

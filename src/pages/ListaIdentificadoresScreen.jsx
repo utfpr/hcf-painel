@@ -4,6 +4,7 @@ import {
     Divider, Modal, Card, Row, Col, Input, Button, notification
 } from 'antd'
 import axios from 'axios'
+import { withTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import TotalRecordFound from '@/components/TotalRecordsFound'
@@ -18,14 +19,6 @@ const { confirm } = Modal
 const FormItem = Form.Item
 
 class ListaIdentificadoresScreen extends Component {
-    columns = [
-        {
-            title: 'Nome',
-            type: 'text',
-            key: 'nome'
-        }
-    ]
-
     constructor(props) {
         super(props)
         this.state = {
@@ -34,13 +27,25 @@ class ListaIdentificadoresScreen extends Component {
             loading: true,
             pagina: 1
         }
+    }
+
+    getColumns() {
+        const columns = [
+            {
+                title: this.props.t('listaIdentificadoresScreen:colunaNome'),
+                type: 'text',
+                key: 'nome'
+            }
+        ]
 
         if (isCuradorOuOperador()) {
-            this.columns.push({
-                title: 'Ação',
+            columns.push({
+                title: this.props.t('listaIdentificadoresScreen:colunaAcao'),
                 key: 'acao'
             })
         }
+
+        return columns
     }
 
     componentDidMount() {
@@ -74,7 +79,7 @@ class ListaIdentificadoresScreen extends Component {
                 })
                 if (response.status === 204) {
                     this.requisitaListaIdentificadores(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir', 'O identificador foi excluído com sucesso.')
+                    this.notificacao('success', this.props.t('common:excluir'), this.props.t('listaIdentificadoresScreen:sucessoExcluirIdentificador'))
                 }
             })
             .catch(err => {
@@ -85,13 +90,13 @@ class ListaIdentificadoresScreen extends Component {
                 if (response && response.data) {
                     const { error } = response.data
                     if (error && error.code) {
-                        this.notificacao('error', 'Erro ao excluir identificador', error.code)
+                        this.notificacao('error', this.props.t('listaIdentificadoresScreen:erroExcluirIdentificador'), error.code)
                     } else {
-                        this.notificacao('error', 'Erro ao excluir identificador', 'Ocorreu um erro inesperado ao tentar excluir o identificador.')
+                        this.notificacao('error', this.props.t('listaIdentificadoresScreen:erroExcluirIdentificador'), this.props.t('listaIdentificadoresScreen:erroInesperadoExcluirIdentificador'))
                     }
                     console.error(error)
                 } else {
-                    this.notificacao('error', 'Erro ao excluir identificador', 'Falha na comunicação com o servidor.')
+                    this.notificacao('error', this.props.t('listaIdentificadoresScreen:erroExcluirIdentificador'), this.props.t('common:erroComunicacaoServidor'))
                 }
             })
     }
@@ -100,11 +105,11 @@ class ListaIdentificadoresScreen extends Component {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this
         confirm({
-            title: 'Você tem certeza que deseja excluir este identificador?',
-            content: 'Ao clicar em SIM, o identificador será excluído.',
-            okText: 'SIM',
+            title: this.props.t('listaIdentificadoresScreen:confirmarExcluirIdentificador'),
+            content: this.props.t('listaIdentificadoresScreen:descricaoExcluirIdentificador'),
+            okText: this.props.t('common:sim'),
             okType: 'danger',
-            cancelText: 'NÃO',
+            cancelText: this.props.t('common:nao'),
             onOk() {
                 self.requisitaExclusao(id)
             },
@@ -166,12 +171,12 @@ class ListaIdentificadoresScreen extends Component {
 
     renderPainelBusca(getFieldDecorator) {
         return (
-            <Card title="Buscar identificador">
+            <Card title={this.props.t('listaIdentificadoresScreen:buscarIdentificador')}>
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Nome:</span>
+                                <span>{this.props.t('listaIdentificadoresScreen:buscarNome')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
@@ -206,7 +211,7 @@ class ListaIdentificadoresScreen extends Component {
                                             }}
                                             className="login-form-button"
                                         >
-                                            Limpar
+                                            {this.props.t('common:limpar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -217,7 +222,7 @@ class ListaIdentificadoresScreen extends Component {
                                             htmlType="submit"
                                             className="login-form-button ant-btn-pesquisar"
                                         >
-                                            Pesquisar
+                                            {this.props.t('common:pesquisar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -234,12 +239,12 @@ class ListaIdentificadoresScreen extends Component {
 
         return (
             <div>
-                <HeaderListComponent title="Listagem de identificadores" link="/identificadores/novo" />
+                <HeaderListComponent title={this.props.t('listaIdentificadoresScreen:titulo')} link="/identificadores/novo" />
                 <Divider dashed />
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
                 <SimpleTableComponent
-                    columns={this.columns}
+                    columns={this.getColumns()}
                     data={this.state.herbarios}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
@@ -257,4 +262,4 @@ class ListaIdentificadoresScreen extends Component {
     }
 }
 
-export default Form.create()(ListaIdentificadoresScreen)
+export default withTranslation()(Form.create()(ListaIdentificadoresScreen))
