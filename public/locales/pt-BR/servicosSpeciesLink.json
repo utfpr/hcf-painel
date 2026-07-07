@@ -1,0 +1,40 @@
+{
+  "tituloSpeciesLink": "SpeciesLink",
+
+  "tituloBuscarInformacoes": "Buscar informações no SpeciesLink",
+
+  "desejaAtualizarAgora": "Deseja atualizar agora?",
+  "botaoAtualizar": "Atualizar",
+  "processoExecutando": "EXECUTANDO!!! AGUARDE...",
+
+  "ultimaAtualizacao": "A última atualização foi feita {{horario}} e durou {{duracao}}.",
+
+  "atualizacaoProgramada": "Atualização programada",
+  "periodicidade": "Periodicidade:",
+
+  "placeholderSelecionarPeriodicidade": "Selecione a periodicidade desejada",
+  "periodicidadeSemanal": "A cada semana",
+  "periodicidadeMensal": "A cada mês",
+  "periodicidadeDoisMeses": "A cada dois meses",
+
+  "botaoDefinirAtualizacaoProgramada": "Definir atualização programada",
+
+  "placeholderSelecionarLog": "Selecione o LOG desejado",
+  "verificarLogSaida": "Verificar LOG de saída",
+
+  "erroAgendarAtualizacao": "Não foi possível agendar o novo horário de atualização.",
+  "erroProcessoEmExecucao": "O processo de atualização está sendo executado no momento.",
+
+  "sucessoAtualizacaoInicializada": "O processo de atualização será inicializado em breve.",
+
+  "mensagemAgendamentoSegunda": "O processo de atualização foi agendado para toda segunda-feira à meia-noite.",
+  "mensagemAgendamentoTerca": "O processo de atualização foi agendado para toda terça-feira à meia-noite.",
+  "mensagemAgendamentoQuarta": "O processo de atualização foi agendado para toda quarta-feira à meia-noite.",
+  "mensagemAgendamentoQuinta": "O processo de atualização foi agendado para toda quinta-feira à meia-noite.",
+  "mensagemAgendamentoSexta": "O processo de atualização foi agendado para toda sexta-feira à meia-noite.",
+  "mensagemAgendamentoSabado": "O processo de atualização foi agendado para todo sábado à meia-noite.",
+  "mensagemAgendamentoDomingo": "O processo de atualização foi agendado para todo domingo à meia-noite.",
+
+  "mensagemAgendamentoMensal": "O processo de atualização foi agendado e será feito a cada um mês.",
+  "mensagemAgendamentoDoisMeses": "O processo de atualização foi agendado e será feito a cada dois meses."
+}

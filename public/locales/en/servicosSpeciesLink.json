@@ -1,0 +1,40 @@
+{
+  "tituloSpeciesLink": "SpeciesLink",
+
+  "tituloBuscarInformacoes": "Retrieve Information from SpeciesLink",
+
+  "desejaAtualizarAgora": "Would you like to update now?",
+  "botaoAtualizar": "Update",
+  "processoExecutando": "RUNNING!!! PLEASE WAIT...",
+
+  "ultimaAtualizacao": "The last update was performed on {{horario}} and took {{duracao}}.",
+
+  "atualizacaoProgramada": "Scheduled Update",
+  "periodicidade": "Frequency:",
+
+  "placeholderSelecionarPeriodicidade": "Select the desired frequency",
+  "periodicidadeSemanal": "Every week",
+  "periodicidadeMensal": "Every month",
+  "periodicidadeDoisMeses": "Every two months",
+
+  "botaoDefinirAtualizacaoProgramada": "Set Scheduled Update",
+
+  "placeholderSelecionarLog": "Select the desired LOG",
+  "verificarLogSaida": "View Output Log",
+
+  "erroAgendarAtualizacao": "Unable to schedule the new update time.",
+  "erroProcessoEmExecucao": "The update process is currently running.",
+
+  "sucessoAtualizacaoInicializada": "The update process will start shortly.",
+
+  "mensagemAgendamentoSegunda": "The update process has been scheduled to run every Monday at midnight.",
+  "mensagemAgendamentoTerca": "The update process has been scheduled to run every Tuesday at midnight.",
+  "mensagemAgendamentoQuarta": "The update process has been scheduled to run every Wednesday at midnight.",
+  "mensagemAgendamentoQuinta": "The update process has been scheduled to run every Thursday at midnight.",
+  "mensagemAgendamentoSexta": "The update process has been scheduled to run every Friday at midnight.",
+  "mensagemAgendamentoSabado": "The update process has been scheduled to run every Saturday at midnight.",
+  "mensagemAgendamentoDomingo": "The update process has been scheduled to run every Sunday at midnight.",
+
+  "mensagemAgendamentoMensal": "The update process has been scheduled and will run every month.",
+  "mensagemAgendamentoDoisMeses": "The update process has been scheduled and will run every two months."
+}
