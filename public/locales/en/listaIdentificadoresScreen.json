@@ -1,0 +1,16 @@
+{
+  "titulo": "Identifiers list",
+
+  "buscarIdentificador": "Search identifier",
+  "buscarNome": "Name:",
+
+  "colunaNome": "Name",
+  "colunaAcao": "Action",
+
+  "confirmarExcluirIdentificador": "Are you sure you want to delete this identifier?",
+  "descricaoExcluirIdentificador": "By clicking YES, the identifier will be deleted.",
+  "sucessoExcluirIdentificador": "The identifier has been successfully deleted.",
+
+  "erroExcluirIdentificador": "Error deleting identifier",
+  "erroInesperadoExcluirIdentificador": "An unexpected error occurred while trying to delete the identifier."
+}
