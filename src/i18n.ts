@@ -57,7 +57,21 @@ void i18n
       'listaTaxonomiaVariedade',
       'exportacaoScreen',
       'livroTombo',
-      'buttonExport'
+      'buttonExport',
+      'listaIdentificadoresScreen',
+      'novoIdentificadorScreen',
+      'listaColetoresScreen',
+      'novoColetorScreen',
+      'listaHerbariosScreen',
+      'novoHerbarioScreen',
+      'listaRemessasScreen',
+      'novaRemessaScreen',
+      'listaUsuariosScreen',
+      'novoUsuarioScreen',
+      'relatorioCoordenadaForaPoligonoScreen',
+      'relatorioLocalColetaPeriodoScreen',
+      'relatorioQtdPeriodoScreen',
+      'relatorioTombosPorCidadeScreen'
     ],
     defaultNS: 'common',
 

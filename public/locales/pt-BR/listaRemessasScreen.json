@@ -1,0 +1,34 @@
+{
+  "titulo": "Remessas",
+
+  "colunaCodigo": "Código",
+  "colunaDataEnvio": "Data de envio",
+  "colunaDoador": "Doador",
+  "colunaReceptor": "Receptor",
+  "colunaObservacao": "Observação",
+  "colunaAcao": "Ação",
+
+  "subColunaTombo": "Tombo",
+  "subColunaTipo": "Tipo",
+  "subColunaDataVencimento": "Data Vencimento",
+  "subColunaAcao": "Ação",
+
+  "devolver": "Devolver",
+
+  "buscarRemessas": "Buscar remessas",
+  "numeroRemessa": "Número da remessa:",
+  "numeroTombo": "Número do tombo:",
+  "herbario": "Herbário:",
+  "selecioneHerbario": "Selecione",
+
+  "confirmarExcluirRemessa": "Você tem certeza que deseja excluir esta remessa?",
+  "descricaoExcluirRemessa": "Ao clicar em SIM, a remessa será excluída.",
+  "sucessoExcluirRemessa": "A remessa foi excluída com sucesso.",
+  "tituloExcluirRemessa": "Excluir remessa",
+
+  "confirmarDevolverTombo": "Você tem certeza que deseja devolver este tombo?",
+  "descricaoDevolverTombo": "Ao clicar em SIM, o tombo será devolvido.",
+  "sucessoDevolverTombo": "O tombo foi devolvido com sucesso.",
+  "tituloDevolverTombo": "Devolver tombo",
+  "erroDevolverTombo": "Erro ao devolver o tombo"
+}

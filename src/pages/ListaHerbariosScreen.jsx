@@ -4,6 +4,7 @@ import {
     Divider, Modal, Card, Row, Col, Input, Button, notification
 } from 'antd'
 import axios from 'axios'
+import { withTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import TotalRecordFound from '@/components/TotalRecordsFound'
@@ -18,33 +19,6 @@ const { confirm } = Modal
 const FormItem = Form.Item
 
 class ListaHerbariosScreen extends Component {
-    columns = [
-        {
-            title: 'Sigla',
-            type: 'text',
-            key: 'sigla',
-            width: 100
-        },
-        {
-            title: 'Nome',
-            type: 'text',
-            key: 'nome',
-            width: 400
-        },
-        {
-            title: 'Endereço',
-            type: 'text',
-            key: 'endereco',
-            width: 400
-        },
-        {
-            title: 'E-mail',
-            type: 'text',
-            key: 'email',
-            width: 400
-        }
-    ]
-
     constructor(props) {
         super(props)
         this.state = {
@@ -53,13 +27,44 @@ class ListaHerbariosScreen extends Component {
             loading: true,
             pagina: 1
         }
+    }
+
+    getColumns() {
+        const columns = [
+            {
+                title: this.props.t('listaHerbariosScreen:colunaSigla'),
+                type: 'text',
+                key: 'sigla',
+                width: 100
+            },
+            {
+                title: this.props.t('listaHerbariosScreen:colunaNome'),
+                type: 'text',
+                key: 'nome',
+                width: 400
+            },
+            {
+                title: this.props.t('listaHerbariosScreen:colunaEndereco'),
+                type: 'text',
+                key: 'endereco',
+                width: 400
+            },
+            {
+                title: this.props.t('listaHerbariosScreen:colunaEmail'),
+                type: 'text',
+                key: 'email',
+                width: 400
+            }
+        ]
 
         if (isCuradorOuOperador()) {
-            this.columns.push({
-                title: 'Ação',
+            columns.push({
+                title: this.props.t('listaHerbariosScreen:colunaAcao'),
                 key: 'acao'
             })
         }
+
+        return columns
     }
 
     componentDidMount() {
@@ -100,7 +105,7 @@ class ListaHerbariosScreen extends Component {
                 })
                 if (response.status === 204) {
                     this.requisitaListaHerbarios(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir', 'O herbário foi excluído com sucesso.')
+                    this.notificacao('success', this.props.t('common:excluir'), this.props.t('listaHerbariosScreen:sucessoExcluirHerbario'))
                 }
             })
             .catch(err => {
@@ -111,13 +116,13 @@ class ListaHerbariosScreen extends Component {
                 if (response && response.data) {
                     const { error } = response.data
                     if (error && error.code) {
-                        this.notificacao('error', 'Erro ao excluir herbário', error.code)
+                        this.notificacao('error', this.props.t('listaHerbariosScreen:erroExcluirHerbario'), error.code)
                     } else {
-                        this.notificacao('error', 'Erro ao excluir herbário', 'Ocorreu um erro inesperado ao tentar excluir o herbário.')
+                        this.notificacao('error', this.props.t('listaHerbariosScreen:erroExcluirHerbario'), this.props.t('listaHerbariosScreen:erroInesperadoExcluirHerbario'))
                     }
                     console.error(error)
                 } else {
-                    this.notificacao('error', 'Erro ao excluir herbário', 'Falha na comunicação com o servidor.')
+                    this.notificacao('error', this.props.t('listaHerbariosScreen:erroExcluirHerbario'), this.props.t('common:erroComunicacaoServidor'))
                 }
             })
     }
@@ -158,11 +163,11 @@ class ListaHerbariosScreen extends Component {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this
         confirm({
-            title: 'Você tem certeza que deseja excluir este herbário?',
-            content: 'Ao clicar em SIM, o herbário será excluído.',
-            okText: 'SIM',
+            title: this.props.t('listaHerbariosScreen:confirmarExcluirHerbario'),
+            content: this.props.t('listaHerbariosScreen:descricaoExcluirHerbario'),
+            okText: this.props.t('common:sim'),
             okType: 'danger',
-            cancelText: 'NÃO',
+            cancelText: this.props.t('common:nao'),
             onOk() {
                 self.requisitaExclusao(id)
             },
@@ -211,9 +216,9 @@ class ListaHerbariosScreen extends Component {
                 const { response } = err
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
-                        this.notificacao('warning', 'Falha', response.data.error.message)
+                        this.notificacao('warning', this.props.t('common:tituloFalha'), response.data.error.message)
                     } else {
-                        this.notificacao('error', 'Falha', 'Houve um problema ao buscar os herbários, tente novamente.')
+                        this.notificacao('error', this.props.t('common:tituloFalha'), this.props.t('listaHerbariosScreen:erroBuscarHerbarios'))
                     }
                     const { error } = response.data
                     console.error(error.message)
@@ -230,7 +235,7 @@ class ListaHerbariosScreen extends Component {
                 })
                 this.requisitaListaHerbarios(valores, this.state.pagina)
             } else {
-                this.notificacao('warning', 'Buscar', 'Informe ao menos um campo para realizar a busca.')
+                this.notificacao('warning', this.props.t('common:pesquisar'), this.props.t('listaHerbariosScreen:validacaoBusca'))
             }
         }
     }
@@ -242,12 +247,12 @@ class ListaHerbariosScreen extends Component {
 
     renderPainelBusca(getFieldDecorator) {
         return (
-            <Card title="Buscar herbário">
+            <Card title={this.props.t('listaHerbariosScreen:buscarHerbario')}>
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Sigla:</span>
+                                <span>{this.props.t('listaHerbariosScreen:buscarSigla')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
@@ -259,7 +264,7 @@ class ListaHerbariosScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Nome:</span>
+                                <span>{this.props.t('listaHerbariosScreen:buscarNome')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
@@ -271,7 +276,7 @@ class ListaHerbariosScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>E-mail:</span>
+                                <span>{this.props.t('listaHerbariosScreen:buscarEmail')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
@@ -307,7 +312,7 @@ class ListaHerbariosScreen extends Component {
                                             }}
                                             className="login-form-button"
                                         >
-                                            Limpar
+                                            {this.props.t('common:limpar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -318,7 +323,7 @@ class ListaHerbariosScreen extends Component {
                                             htmlType="submit"
                                             className="login-form-button ant-btn-pesquisar"
                                         >
-                                            Pesquisar
+                                            {this.props.t('common:pesquisar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -335,12 +340,12 @@ class ListaHerbariosScreen extends Component {
 
         return (
             <div>
-                <HeaderListComponent title="Herbários" link="/herbarios/novo" />
+                <HeaderListComponent title={this.props.t('listaHerbariosScreen:titulo')} link="/herbarios/novo" />
                 <Divider dashed />
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
                 <SimpleTableComponent
-                    columns={this.columns}
+                    columns={this.getColumns()}
                     data={this.state.herbarios}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
@@ -358,4 +363,4 @@ class ListaHerbariosScreen extends Component {
     }
 }
 
-export default Form.create()(ListaHerbariosScreen)
+export default withTranslation()(Form.create()(ListaHerbariosScreen))

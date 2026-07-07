@@ -1,0 +1,16 @@
+{
+  "titulo": "Listado de colectores",
+
+  "buscarColetor": "Buscar colector",
+  "buscarNome": "Nombre:",
+
+  "colunaNome": "Nombre",
+  "colunaAcao": "Acción",
+
+  "confirmarExcluirColetor": "¿Está seguro de que desea eliminar este colector?",
+  "descricaoExcluirColetor": "Al hacer clic en SÍ, el colector será eliminado.",
+  "sucessoExcluirColetor": "El colector fue eliminado con éxito.",
+
+  "erroExcluirColetor": "Error al eliminar colector",
+  "erroInesperadoExcluirColetor": "Ocurrió un error inesperado al intentar eliminar el colector."
+}
