@@ -1,0 +1,16 @@
+{
+  "titulo": "Coletor",
+
+  "nome": "Nome:",
+  "validacaoNome": "Insira o nome do coletor",
+
+  "salvar": "Salvar",
+
+  "sucessoCadastro": "Coletor cadastrado com sucesso.",
+  "erroCadastro": "Houve um problema ao cadastrar o coletor, tente novamente.",
+
+  "sucessoAtualizacao": "Coletor atualizado com sucesso.",
+  "erroAtualizacao": "Houve um problema ao atualizar o coletor, tente novamente.",
+
+  "erroBuscarColetor": "Houve um problema ao buscar os dados do coletor, tente novamente."
+}

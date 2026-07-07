@@ -56,6 +56,8 @@ void i18n
       'authService',
       'listaTaxonomiaVariedade',
       'exportacaoScreen',
+      'listaColetoresScreen',
+      'novoColetorScreen',
       'listaHerbariosScreen',
       'novoHerbarioScreen',
       'listaRemessasScreen',
