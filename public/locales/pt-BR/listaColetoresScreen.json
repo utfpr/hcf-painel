@@ -1,0 +1,16 @@
+{
+  "titulo": "Listagem de coletores",
+
+  "buscarColetor": "Buscar coletor",
+  "buscarNome": "Nome:",
+
+  "colunaNome": "Nome",
+  "colunaAcao": "Ação",
+
+  "confirmarExcluirColetor": "Você tem certeza que deseja excluir este coletor?",
+  "descricaoExcluirColetor": "Ao clicar em SIM, o coletor será excluído.",
+  "sucessoExcluirColetor": "O coletor foi excluído com sucesso.",
+
+  "erroExcluirColetor": "Erro ao excluir coletor",
+  "erroInesperadoExcluirColetor": "Ocorreu um erro inesperado ao tentar excluir o coletor."
+}

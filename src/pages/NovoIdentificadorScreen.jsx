@@ -11,6 +11,7 @@ import {
     Spin
 } from 'antd'
 import axios from 'axios'
+import { withTranslation } from 'react-i18next'
 
 import { Form } from '@ant-design/compatible'
 
@@ -56,11 +57,11 @@ class NovoIdentificadorScreen extends Component {
         try {
             await axios.post('/identificadores', valores)
 
-            this.notificacao('success', 'Sucesso', 'Identificador cadastrado com sucesso.')
+            this.notificacao('success', this.props.t('common:tituloSucesso'), this.props.t('novoIdentificadorScreen:sucessoCadastro'))
 
             this.props.history.push('/identificadores')
         } catch (err) {
-            this.notificacao('error', 'Falha', 'Houve um problema ao cadastrar o identificador, tente novamente.')
+            this.notificacao('error', this.props.t('common:tituloFalha'), this.props.t('novoIdentificadorScreen:erroCadastro'))
         } finally {
             this.setState({ loading: false })
         }
@@ -74,7 +75,7 @@ class NovoIdentificadorScreen extends Component {
 
             this.props.form.setFields({ nome: { value: data.nome } })
         } catch (err) {
-            this.notificacao('error', 'Falha', 'Houve um problema ao buscar os dados do identificador, tente novamente.')
+            this.notificacao('error', this.props.t('common:tituloFalha'), this.props.t('novoIdentificadorScreen:erroBuscarIdentificador'))
         } finally {
             this.setState({ loading: false })
         }
@@ -86,11 +87,11 @@ class NovoIdentificadorScreen extends Component {
         try {
             await axios.put(`/identificadores/${this.props.match.params.identificador_id}`, valores)
 
-            this.notificacao('success', 'Sucesso', 'Identificador atualizado com sucesso.')
+            this.notificacao('success', this.props.t('common:tituloSucesso'), this.props.t('novoIdentificadorScreen:sucessoAtualizacao'))
 
             this.props.history.push('/identificadores')
         } catch (err) {
-            this.notificacao('error', 'Falha', 'Houve um problema ao atualizar o identificador, tente novamente.')
+            this.notificacao('error', this.props.t('common:tituloFalha'), this.props.t('novoIdentificadorScreen:erroAtualizacao'))
         } finally {
             this.setState({ loading: false })
         }
@@ -102,7 +103,7 @@ class NovoIdentificadorScreen extends Component {
             <Form onSubmit={this.onSubmit}>
                 <Row>
                     <Col span={12}>
-                        <h2 style={{ fontWeight: 200 }}>Identificador</h2>
+                        <h2 style={{ fontWeight: 200 }}>{this.props.t('novoIdentificadorScreen:titulo')}</h2>
                     </Col>
                 </Row>
                 <Divider dashed />
@@ -110,14 +111,14 @@ class NovoIdentificadorScreen extends Component {
                 <Row gutter={8}>
                     <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                         <Col span={24}>
-                            <span>Nome:</span>
+                            <span>{this.props.t('novoIdentificadorScreen:nome')}</span>
                         </Col>
                         <Col span={24}>
                             <FormItem>
                                 {getFieldDecorator('nome', {
                                     rules: [{
                                         required: true,
-                                        message: 'Insira o nome do identificador'
+                                        message: this.props.t('novoIdentificadorScreen:validacaoNome')
                                     }]
                                 })(
                                     <Input
@@ -140,7 +141,7 @@ class NovoIdentificadorScreen extends Component {
                                 htmlType="submit"
                                 className="login-form-button"
                             >
-                                Salvar
+                                {this.props.t('novoIdentificadorScreen:salvar')}
                             </Button>
                         </FormItem>
                     </Col>
@@ -153,7 +154,7 @@ class NovoIdentificadorScreen extends Component {
     render() {
         if (this.state.loading) {
             return (
-                <Spin tip="Carregando...">
+                <Spin tip={this.props.t('common:carregando')}>
                     {this.renderFormulario()}
                 </Spin>
             )
@@ -164,4 +165,4 @@ class NovoIdentificadorScreen extends Component {
     }
 }
 
-export default Form.create()(NovoIdentificadorScreen)
+export default withTranslation()(Form.create()(NovoIdentificadorScreen))

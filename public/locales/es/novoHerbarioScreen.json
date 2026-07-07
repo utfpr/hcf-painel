@@ -1,0 +1,38 @@
+{
+  "titulo": "Herbario",
+
+  "nome": "Nombre:",
+  "validacaoNome": "Ingrese el nombre del herbario",
+  "sigla": "Sigla:",
+  "email": "Correo electrónico:",
+  "validacaoEmail": "Ingrese el correo electrónico del herbario",
+
+  "endereco": "Dirección:",
+  "validacaoEndereco": "Ingrese la dirección del herbario",
+  "numero": "Número:",
+  "validacaoNumero": "Ingrese el número de la dirección del herbario",
+
+  "pais": "País:",
+  "selecionePais": "Seleccione un país",
+  "validacaoPais": "Seleccione o ingrese un país",
+  "estado": "Estado:",
+  "selecioneEstado": "Seleccione un estado",
+  "selecionePaisPrimeiro": "Seleccione un país primero",
+  "validacaoEstado": "Seleccione o ingrese un estado",
+  "cidade": "Ciudad:",
+  "selecioneCidade": "Seleccione una ciudad",
+  "selecioneEstadoPrimeiro": "Seleccione un estado primero",
+  "validacaoCidade": "Seleccione o ingrese una ciudad",
+
+  "complemento": "Complemento de ubicación:",
+
+  "salvar": "Guardar",
+
+  "erroBuscarPaises": "Hubo un problema al buscar los países, intente nuevamente.",
+  "erroBuscarEstados": "Hubo un problema al buscar los estados, intente nuevamente.",
+  "erroBuscarCidades": "Hubo un problema al buscar las ciudades, intente nuevamente.",
+
+  "erroCadastro": "Hubo un problema al registrar el herbario, intente nuevamente.",
+  "erroAtualizacao": "Hubo un problema al actualizar el herbario, intente nuevamente.",
+  "erroBuscarHerbario": "Hubo un problema al buscar los datos del herbario, intente nuevamente."
+}
