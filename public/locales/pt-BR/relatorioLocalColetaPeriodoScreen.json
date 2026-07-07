@@ -1,0 +1,33 @@
+{
+  "titulo": "Relatório de Locais de Coleta por Local e Intervalo de Data",
+
+  "filtros": "Filtros do relatório",
+  "pais": "País:",
+  "selecionePais": "Selecione um país",
+  "estado": "Estado:",
+  "selecioneEstado": "Selecione um estado",
+  "cidade": "Cidade:",
+  "selecioneCidade": "Selecione uma cidade",
+  "local": "Local:",
+  "selecioneLocal": "Selecione o local de coleta",
+  "dataInicial": "Data inicial:",
+  "dataFinal": "Data final:",
+  "outrasOpcoes": "Outras opções:",
+  "mostrarCoordenadas": "Mostrar coordenadas",
+
+  "gerarPDF": "Gerar PDF",
+
+  "erroBuscarPaises": "Falha ao buscar países.",
+  "erroBuscarEstados": "Falha ao buscar estados.",
+  "erroBuscarCidades": "Falha ao buscar cidades.",
+  "erroBuscarLocais": "Falha ao buscar locais de coleta.",
+  "erroBuscarLocaisWarning": "Erro ao buscar os locais de coleta.",
+  "erroServidorBuscarLocais": "Erro do servidor ao buscar os locais de coleta.",
+  "erroBuscarDados": "Erro ao buscar os dados do relatório.",
+  "erroServidorBuscarDados": "Erro de servidor ao buscar os dados do relatório.",
+
+  "exportarPDF": "Exportar PDF",
+  "sucessoExportarPDF": "PDF gerado com sucesso.",
+  "erroExportarPDF": "Erro ao exportar o PDF.",
+  "erroServidorExportarPDF": "Erro de servidor ao exportar o PDF."
+}

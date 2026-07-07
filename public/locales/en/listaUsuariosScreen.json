@@ -1,0 +1,28 @@
+{
+  "titulo": "Users list",
+
+  "buscarUsuario": "Search user",
+  "buscarNome": "Name:",
+  "buscarEmail": "E-mail:",
+  "buscarTipo": "Type:",
+  "buscarTelefone": "Phone:",
+  "selecioneTipo": "Select",
+
+  "colunaNome": "Name",
+  "colunaTipo": "Type",
+  "colunaEmail": "E-mail",
+  "colunaTelefone": "Phone",
+  "colunaDataCriacao": "Creation date",
+  "colunaAcao": "Action",
+
+  "tipoCurador": "Curator",
+  "tipoOperador": "Operator",
+  "tipoIdentificador": "Identifier",
+
+  "confirmarExcluirUsuario": "Are you sure you want to delete this user?",
+  "descricaoExcluirUsuario": "By clicking YES, the user will be deleted.",
+  "sucessoExcluirUsuario": "The user has been successfully deleted.",
+
+  "erroExcluirUsuario": "Error deleting user",
+  "erroInesperadoExcluirUsuario": "An unexpected error occurred while trying to delete the user."
+}

@@ -1,0 +1,38 @@
+{
+  "titulo": "Herbarium",
+
+  "nome": "Name:",
+  "validacaoNome": "Please enter the herbarium name",
+  "sigla": "Acronym:",
+  "email": "E-mail:",
+  "validacaoEmail": "Please enter the herbarium e-mail",
+
+  "endereco": "Address:",
+  "validacaoEndereco": "Please enter the herbarium address",
+  "numero": "Number:",
+  "validacaoNumero": "Please enter the herbarium address number",
+
+  "pais": "Country:",
+  "selecionePais": "Select a country",
+  "validacaoPais": "Select or enter a country",
+  "estado": "State:",
+  "selecioneEstado": "Select a state",
+  "selecionePaisPrimeiro": "Select a country first",
+  "validacaoEstado": "Select or enter a state",
+  "cidade": "City:",
+  "selecioneCidade": "Select a city",
+  "selecioneEstadoPrimeiro": "Select a state first",
+  "validacaoCidade": "Select or enter a city",
+
+  "complemento": "Location complement:",
+
+  "salvar": "Save",
+
+  "erroBuscarPaises": "There was a problem fetching the countries, please try again.",
+  "erroBuscarEstados": "There was a problem fetching the states, please try again.",
+  "erroBuscarCidades": "There was a problem fetching the cities, please try again.",
+
+  "erroCadastro": "There was a problem registering the herbarium, please try again.",
+  "erroAtualizacao": "There was a problem updating the herbarium, please try again.",
+  "erroBuscarHerbario": "There was a problem fetching the herbarium data, please try again."
+}
