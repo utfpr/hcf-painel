@@ -56,6 +56,7 @@ void i18n
       'authService',
       'listaTaxonomiaVariedade',
       'exportacaoScreen',
+      'servicosReflora',
       'verPendencia',
       'livroTombo',
       'buttonExport',

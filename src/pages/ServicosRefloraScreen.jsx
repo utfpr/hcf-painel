@@ -6,7 +6,7 @@ import {
 } from 'antd'
 import axios from 'axios'
 import moment from 'moment'
-
+import { withTranslation } from 'react-i18next'
 import { Form } from '@ant-design/compatible'
 
 import HeaderServicesComponent from '../components/HeaderServicesComponent'
@@ -263,19 +263,19 @@ class ServicosRefloraScreen extends Component {
     mensagemSemanal = diaDaSemana => {
         switch (diaDaSemana) {
             case 1:
-                return 'O processo de atualização foi agendado para toda segunda - feira a meia - noite.'
+                return this.props.t('servicosReflora:mensagemPeriodicidadeSemanalSegunda')
             case 2:
-                return 'O processo de atualização foi agendado para toda terça - feira a meia - noite.'
+                return this.props.t('servicosReflora:mensagemPeriodicidadeSemanalTerca')
             case 3:
-                return 'O processo de atualização foi agendado para toda quarta - feira a meia - noite.'
+                return this.props.t('servicosReflora:mensagemPeriodicidadeSemanalQuarta')
             case 4:
-                return 'O processo de atualização foi agendado para toda quinta - feira a meia - noite.'
+                return this.props.t('servicosReflora:mensagemPeriodicidadeSemanalQuinta')
             case 5:
-                return 'O processo de atualização foi agendado para toda sexta - feira a meia - noite.'
+                return this.props.t('servicosReflora:mensagemPeriodicidadeSemanalSexta')
             case 6:
-                return 'O processo de atualização foi agendado para todo sábado a meia - noite.'
+                return this.props.t('servicosReflora:mensagemPeriodicidadeSemanalSabado')
             case 7:
-                return 'O processo de atualização foi agendado para todo domingo a meia - noite.'
+                return this.props.t('servicosReflora:mensagemPeriodicidadeSemanalDomingo')
             default:
                 break
         }
@@ -287,7 +287,7 @@ class ServicosRefloraScreen extends Component {
      * @returns string, uma mensagem equivalente quando o usuário define a periodicidade mensal.
      */
     mensagemMensal = () => {
-        return 'O processo de atualização foi agendado e será feito a cada um meses.'
+        return this.props.t('servicosReflora:mensagemPeriodicidadeMensal')
     }
 
     /**
@@ -296,7 +296,7 @@ class ServicosRefloraScreen extends Component {
      * @returns string, uma mensagem equivalente quando o usuário define a periodicidade a cada dois meses.
      */
     mensagem2Mensal = () => {
-        return 'O processo de atualização foi agendado e será feito a cada dois meses.'
+        return this.props.t('servicosReflora:mensagemPeriodicidadeDoisMeses')
     }
 
     /**
@@ -313,16 +313,16 @@ class ServicosRefloraScreen extends Component {
         axios.get('/reflora', { params }).then(response => {
             if (response.status === 200) {
                 if (response.data.result === 'failed') {
-                    this.exibeNotificacao('error', 'Falha', 'Não foi possível agendar o novo horário de atualização.')
+                    this.exibeNotificacao('error', this.props.t('common:tituloFalha'), this.props.t('servicosReflora:erroAgendarAtualizacao'))
                 } else {
                     if (params.periodicidade === 2) {
-                        this.exibeNotificacao('success', 'Sucesso', this.mensagemSemanal(moment().isoWeekday()))
+                        this.exibeNotificacao('success', this.props.t('common:tituloSucesso'), this.mensagemSemanal(moment().isoWeekday()))
                     }
                     if (params.periodicidade === 3) {
-                        this.exibeNotificacao('success', 'Sucesso', this.mensagemMensal())
+                        this.exibeNotificacao('success', this.props.t('common:tituloSucesso'), this.mensagemMensal())
                     }
                     if (params.periodicidade === 4) {
-                        this.exibeNotificacao('success', 'Sucesso', this.mensagem2Mensal())
+                        this.exibeNotificacao('success', this.props.t('common:tituloSucesso'), this.mensagem2Mensal())
                     }
                 }
             }
@@ -343,9 +343,9 @@ class ServicosRefloraScreen extends Component {
         axios.get('/reflora', { params }).then(response => {
             if (response.status === 200) {
                 if (response.data.result === 'failed') {
-                    this.exibeNotificacao('error', 'Falha', 'O processo de atualização está sendo executado no momento.')
+                    this.exibeNotificacao('error', this.props.t('common:tituloFalha'), this.props.t('servicosReflora:erroProcessoExecutando'))
                 } else {
-                    this.exibeNotificacao('success', 'Sucesso', 'O processo de atualização será inicializado em breve.')
+                    this.exibeNotificacao('success', this.props.t('common:tituloSucesso'), this.props.t('servicosReflora:infoProcessoInicializando'))
                 }
             }
         })
@@ -361,30 +361,26 @@ class ServicosRefloraScreen extends Component {
      */
     renderPainelBuscarInformacoes() {
         return (
-            <Card title="Buscar informações no Reflora">
+            <Card title={this.props.t('servicosReflora:tituloCardBuscarReflora')}>
                 <Row gutter={6}>
                     <Col span={6}>
-                        <span>Deseja atualizar agora?</span>
+                        <span>{this.props.t('servicosReflora:perguntaAtualizarAgora')}</span>
                     </Col>
                     <Col span={6} style={{ textAlign: 'center' }}>
-                        {!this.state.executando ? <Button type="primary" htmlType="submit" className="login-form-button" onClick={this.comparaInformacoesReflora}> Atualizar </Button> : <span style={{ fontWeight: 'bold' }}>EXECUTANDO!!! AGUARDE...</span>}
+                        {!this.state.executando ? <Button type="primary" htmlType="submit" className="login-form-button" onClick={this.comparaInformacoesReflora}>{this.props.t('servicosReflora:botaoAtualizar')}</Button> : <span style={{ fontWeight: 'bold' }}>{this.props.t('servicosReflora:processoExecutando')}</span>}
                     </Col>
                     <Col span={6} style={{ textAlign: 'center' }}>
                         <span style={{ fontWeight: 'bold' }}>
-                            A última atualização foi feita
-                            {' '}
-                            {this.state.horarioUltimaAtualizacao}
-                            {' '}
-                            e durou
-                            {' '}
-                            {this.state.duracaoAtualizacao}
-                            .
+                            {this.props.t('servicosReflora:ultimaAtualizacao', {
+                                horario: this.state.horarioUltimaAtualizacao,
+                                duracao: this.state.duracaoAtualizacao
+                            })}
                         </span>
                     </Col>
                 </Row>
                 <Row gutter={6} style={{ marginTop: 16 }}>
                     <Col span={6}>
-                        <span>Atualização programada</span>
+                        <span>{this.props.t('servicosReflora:labelAtualizacaoProgramada')}</span>
                     </Col>
                     <Col span={6} style={{ textAlign: 'center' }}>
                         <FormItem>
@@ -395,20 +391,20 @@ class ServicosRefloraScreen extends Component {
 
                 <Row gutter={6} style={{ marginTop: 16 }}>
                     <Col span={6}>
-                        <span>Periodicidade:</span>
+                        <span>{this.props.t('servicosReflora:labelPeriodicidade')}</span>
                     </Col>
                 </Row>
                 <Row gutter={6}>
                     <Col span={6}>
                         <Select
-                            placeholder="Selecione a periodicidade desejada"
+                            placeholder={this.props.t('servicosReflora:placeholderPeriodicidade')}
                             onChange={this.programaPeriodicidadeAtualizacao}
                             value={this.state.periodicidadeAtualizacao !== '' ? this.state.periodicidadeAtualizacao : ''}
                             disabled={this.state.desabilitaCamposAtualizacaoProgramada}
                         >
-                            <Option value="SEMANAL">A cada semana</Option>
-                            <Option value="1MES">A cada mês</Option>
-                            <Option value="2MESES">A cada dois meses</Option>
+                            <Option value="SEMANAL">{this.props.t('servicosReflora:opcaoPeriodicidadeSemanal')}</Option>
+                            <Option value="1MES">{this.props.t('servicosReflora:opcaoPeriodicidadeMensal')}</Option>
+                            <Option value="2MESES">{this.props.t('servicosReflora:opcaoPeriodicidadeDoisMeses')}</Option>
                         </Select>
                     </Col>
                     <Col span={6}>
@@ -419,12 +415,12 @@ class ServicosRefloraScreen extends Component {
                             disabled={this.state.desabilitaCamposAtualizacaoProgramada}
                             onClick={this.programaAtualizacao}
                         >
-                            Definir atualização programada
+                            {this.props.t('servicosReflora:botaoDefinirAtualizacaoProgramada')}
                         </Button>
                     </Col>
                     <Col span={6} style={{ textAlign: 'center' }}>
                         <Select
-                            placeholder="Selecione o LOG desejado"
+                            placeholder={this.props.t('servicosReflora:placeholderSelecionarLog')}
                             onChange={this.conteudoLogSelecionado}
                         >
                             {this.state.nomeLog.map((saida, chave) => {
@@ -437,7 +433,7 @@ class ServicosRefloraScreen extends Component {
                 <Row gutter={6}>
                     <Col span={24}>
                         <Collapse accordion>
-                            <Panel header="Verificar LOG de saída" key={this.state.escondeResultadoLog}>
+                            <Panel header={this.props.t('servicosReflora:verificarLogSaida')} key={this.state.escondeResultadoLog}>
                                 {this.state.saidaLOG.map((saida, chave) => {
                                     if (saida.includes('Erro')) {
                                         return <p key={chave} style={{ fontFamily: 'Courier New', color: 'red' }}>{saida}</p>
@@ -463,7 +459,7 @@ class ServicosRefloraScreen extends Component {
     render() {
         return (
             <Form>
-                <HeaderServicesComponent title="Reflora" />
+                <HeaderServicesComponent title={this.props.t('servicosReflora:headerReflora')} />
                 <Divider dashed />
                 {this.renderPainelBuscarInformacoes()}
                 <Divider dashed />
@@ -472,5 +468,7 @@ class ServicosRefloraScreen extends Component {
     }
 }
 
-// Exportar essa classe como padrão
-export default Form.create()(ServicosRefloraScreen)
+const ServicosRefloraScreenWithForm =
+    Form.create()(ServicosRefloraScreen)
+
+export default withTranslation()(ServicosRefloraScreenWithForm)
