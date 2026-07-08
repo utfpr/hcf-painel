@@ -1,0 +1,20 @@
+{
+  "titulo": "Listagem de pendências",
+  "colNumeroTombo": "Nº Tombo",
+  "colNomeUsuario": "Nome usuário",
+  "colDataCriacao": "Data de criação",
+  "colStatus": "Status",
+  "colObservacao": "Observação",
+  "colAcao": "Ação",
+  "buscarPendencias": "Buscar pendências",
+  "nomeUsuario": "Nome de usuário:",
+  "placeholderNome": "Marcelo Caxambu",
+  "status": "Status:",
+  "placeholderSelecione": "Selecione",
+  "statusEsperando": "Esperando",
+  "statusAprovado": "Aprovado",
+  "statusReprovado": "Reprovado",
+  "pendenciaExcluida": "A pendência foi excluída com sucesso.",
+  "confirmExcluirTitulo": "Você tem certeza que deseja excluir esta pendência?",
+  "confirmExcluirConteudo": "Ao clicar em SIM, a pendência será excluída."
+}

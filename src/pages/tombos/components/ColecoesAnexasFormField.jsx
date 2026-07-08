@@ -3,6 +3,7 @@ import React from 'react'
 import {
     Col, Radio, Tag, Input
 } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 import { Form } from '@ant-design/compatible'
 
@@ -14,11 +15,12 @@ const { TextArea } = Input
 const ColecoesAnexasFormField = ({
     getFieldDecorator, colecaoInicial, onChange, value
 }) => {
+    const { t } = useTranslation('tombo')
     return (
         <>
             <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                 <Col span={24}>
-                    <span>Coleções anexas:</span>
+                    <span>{t('annexCollections')}</span>
                 </Col>
                 <Col span={24}>
                     <FormItem>
@@ -36,7 +38,7 @@ const ColecoesAnexasFormField = ({
             </Col>
             <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                 <Col span={24}>
-                    <span> Observações da coleção anexa: </span>
+                    <span>{t('siteCollectionObservations')}</span>
                 </Col>
                 <Col span={24}>
                     <FormItem>

@@ -1,6 +1,5 @@
 {
   "tombos": "Accessions",
-  
   "taxonomia": "Taxonomy",
   "reinos": "Kingdoms",
   "familias": "Families",
@@ -10,26 +9,21 @@
   "subespecies": "Subspecies",
   "variedades": "Varieties",
   "autores": "Authors",
-
   "locais": "Locations",
   "estados": "States",
   "cidades": "Cities",
   "localColeta": "Collection Sites",
-
   "remessas": "Shipments",
   "pendencias": "Pending Issues",
   "usuarios": "Users",
   "identificadores": "Identifiers",
   "coletores": "Collectors",
   "herbarios": "Herbaria",
-
   "fichas": "Records",
   "fichaTombo": "Accession Record",
-
   "geolocalizacao": "Geolocation",
   "mapaCompleto": "Full Map",
   "filtrosAvancados": "Advanced Filters",
-
   "relatorios": "Reports",
   "relatorioPorPeriodo": "Period Report",
   "inventarioEspecies": "Species Inventory",
@@ -41,8 +35,7 @@
   "quantidadeFamiliaGenero": "Quantity by Family and Genus",
   "codigoBarras": "Barcode",
   "diagnosticoErrosPosicionamento": "Positioning Error Diagnosis",
-
   "exportacao": "Export",
-
-  "servicos": "Services"
+  "servicos": "Services",
+  "idioma": "Language"
 }
