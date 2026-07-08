@@ -9,29 +9,25 @@ void i18n
   .use(initReactI18next)
   .init({
     fallbackLng: 'pt-BR',
-
     supportedLngs: [
       'pt-BR',
       'en',
       'es'
     ],
-
     detection: {
       order: [
         'localStorage',
         'path'
       ],
-      caches: ['localStorage']
+      caches: [
         'navigator',
         'path',
-        'localStorage',
+        'localStorage'
       ]
     },
-
     backend: {
       loadPath: '/locales/{{lng}}/{{ns}}.json'
     },
-
     ns: [
       'common',
       'simpleTableComponent',
@@ -87,7 +83,6 @@ void i18n
       'cidadeContainer',
     ],
     defaultNS: 'common',
-
     interpolation: {
       escapeValue: false
     }
