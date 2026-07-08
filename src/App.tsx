@@ -64,6 +64,10 @@ import NovoTomboScreen from './pages/tombos/NovoTomboScreen'
 import UnauthorizedScreen from './pages/UnauthorizedScreen'
 import PendenciaPagina from './pages/VerPendenciaScreen'
 import RelatorioPorPeriodo from './pages/RelatorioPorPeriodo'
+import RfidConfiguracao from './pages/RfidConfiguracao'
+import RfidConferencia from './pages/RfidConferencia'
+import RfidVinculacao from './pages/RfidVinculacao'
+import RfidInventario from './pages/RfidInventario'
 import DashboardScreen from './pages/DashboardScreen'
 import RelatorioCoordenadaForaPoligonoScreen from './pages/RelatorioCoordenadaForaPoligonoScreen'
 import RelatorioTombosPorCidadeScreen from './pages/RelatorioTombosPorCidadeScreen'
@@ -277,6 +281,26 @@ export function App() {
           authed={Boolean(auth.user?.id)}
           path="/relatorio-quantidade-familia-generos"
           component={RelatorioQuantidadeScreen}
+        />
+        <PrivateRoute
+          authed={Boolean(auth.user?.id)}
+          path="/rfid-configuracao"
+          component={RfidConfiguracao}
+        />
+        <PrivateRoute
+          authed={Boolean(auth.user?.id)}
+          path="/rfid-conferencia"
+          component={RfidConferencia}
+        />
+        <PrivateRoute
+          authed={Boolean(auth.user?.id)}
+          path="/rfid-vinculacao"
+          component={RfidVinculacao}
+        />
+        <PrivateRoute
+          authed={Boolean(auth.user?.id)}
+          path="/rfid-inventario"
+          component={RfidInventario}
         />
         <Route path="/dashboard" component={DashboardScreen} />
         <PrivateRoute
