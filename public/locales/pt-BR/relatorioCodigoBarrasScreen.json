@@ -1,0 +1,9 @@
+{
+  "titulo": "Relatório de Código de Barras",
+  "filtros": "Filtros do relatório",
+  "intervaloData": "Intervalo de data:",
+  "gerarPaginaImpressao": "Gerar página para impressão",
+  "notifBuscarDados": "Buscar dados",
+  "erroBuscarDados": "Erro ao buscar os dados do relatório.",
+  "erroServidorBuscarDados": "Erro de servidor ao buscar os dados do relatório."
+}
