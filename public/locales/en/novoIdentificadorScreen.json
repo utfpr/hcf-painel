@@ -1,0 +1,16 @@
+{
+  "titulo": "Identifier",
+
+  "nome": "Name:",
+  "validacaoNome": "Please enter the identifier name",
+
+  "salvar": "Save",
+
+  "sucessoCadastro": "Identifier registered successfully.",
+  "erroCadastro": "There was a problem registering the identifier, please try again.",
+
+  "sucessoAtualizacao": "Identifier updated successfully.",
+  "erroAtualizacao": "There was a problem updating the identifier, please try again.",
+
+  "erroBuscarIdentificador": "There was a problem fetching the identifier data, please try again."
+}

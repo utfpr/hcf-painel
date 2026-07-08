@@ -1,0 +1,34 @@
+{
+  "titulo": "Shipments",
+
+  "colunaCodigo": "Code",
+  "colunaDataEnvio": "Shipping date",
+  "colunaDoador": "Donor",
+  "colunaReceptor": "Receiver",
+  "colunaObservacao": "Notes",
+  "colunaAcao": "Action",
+
+  "subColunaTombo": "Voucher",
+  "subColunaTipo": "Type",
+  "subColunaDataVencimento": "Due date",
+  "subColunaAcao": "Action",
+
+  "devolver": "Return",
+
+  "buscarRemessas": "Search shipments",
+  "numeroRemessa": "Shipment number:",
+  "numeroTombo": "Voucher number:",
+  "herbario": "Herbarium:",
+  "selecioneHerbario": "Select",
+
+  "confirmarExcluirRemessa": "Are you sure you want to delete this shipment?",
+  "descricaoExcluirRemessa": "By clicking YES, the shipment will be deleted.",
+  "sucessoExcluirRemessa": "The shipment has been successfully deleted.",
+  "tituloExcluirRemessa": "Delete shipment",
+
+  "confirmarDevolverTombo": "Are you sure you want to return this voucher?",
+  "descricaoDevolverTombo": "By clicking YES, the voucher will be returned.",
+  "sucessoDevolverTombo": "The voucher has been successfully returned.",
+  "tituloDevolverTombo": "Return voucher",
+  "erroDevolverTombo": "Error returning voucher"
+}

@@ -1,0 +1,34 @@
+{
+  "titulo": "Remesas",
+
+  "colunaCodigo": "Código",
+  "colunaDataEnvio": "Fecha de envío",
+  "colunaDoador": "Donante",
+  "colunaReceptor": "Receptor",
+  "colunaObservacao": "Observación",
+  "colunaAcao": "Acción",
+
+  "subColunaTombo": "Voucher",
+  "subColunaTipo": "Tipo",
+  "subColunaDataVencimento": "Fecha de vencimiento",
+  "subColunaAcao": "Acción",
+
+  "devolver": "Devolver",
+
+  "buscarRemessas": "Buscar remesas",
+  "numeroRemessa": "Número de remesa:",
+  "numeroTombo": "Número del voucher:",
+  "herbario": "Herbario:",
+  "selecioneHerbario": "Seleccione",
+
+  "confirmarExcluirRemessa": "¿Está seguro de que desea eliminar esta remesa?",
+  "descricaoExcluirRemessa": "Al hacer clic en SÍ, la remesa será eliminada.",
+  "sucessoExcluirRemessa": "La remesa fue eliminada con éxito.",
+  "tituloExcluirRemessa": "Eliminar remesa",
+
+  "confirmarDevolverTombo": "¿Está seguro de que desea devolver este voucher?",
+  "descricaoDevolverTombo": "Al hacer clic en SÍ, el voucher será devuelto.",
+  "sucessoDevolverTombo": "El voucher fue devuelto con éxito.",
+  "tituloDevolverTombo": "Devolver voucher",
+  "erroDevolverTombo": "Error al devolver el voucher"
+}

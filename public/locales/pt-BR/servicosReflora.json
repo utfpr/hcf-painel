@@ -1,0 +1,43 @@
+{
+  "tituloCardBuscarReflora": "Buscar informações no Reflora",
+
+  "perguntaAtualizarAgora": "Deseja atualizar agora?",
+  "botaoAtualizar": "Atualizar",
+
+  "processoExecutando": "EXECUTANDO!!! AGUARDE...",
+
+  "ultimaAtualizacao": "A última atualização foi feita {{horario}} e durou {{duracao}}.",
+
+  "tituloAtualizacaoProgramada": "Atualização programada",
+
+  "labelAtualizacaoProgramada": "Atualização programada",
+
+  "labelPeriodicidade": "Periodicidade:",
+  "placeholderPeriodicidade": "Selecione a periodicidade desejada",
+
+  "opcaoPeriodicidadeSemanal": "A cada semana",
+  "opcaoPeriodicidadeMensal": "A cada mês",
+  "opcaoPeriodicidadeDoisMeses": "A cada dois meses",
+
+  "botaoDefinirAtualizacaoProgramada": "Definir atualização programada",
+
+  "placeholderSelecionarLog": "Selecione o LOG desejado",
+  "verificarLogSaida": "Verificar LOG de saída",
+
+  "headerReflora": "Reflora",
+
+  "erroAgendarAtualizacao": "Não foi possível agendar o novo horário de atualização.",
+  "erroProcessoExecutando": "O processo de atualização está sendo executado no momento.",
+  "infoProcessoInicializando": "O processo de atualização será inicializado em breve.",
+
+  "mensagemPeriodicidadeSemanalSegunda": "O processo de atualização foi agendado para toda segunda-feira a meia-noite.",
+  "mensagemPeriodicidadeSemanalTerca": "O processo de atualização foi agendado para toda terça-feira a meia-noite.",
+  "mensagemPeriodicidadeSemanalQuarta": "O processo de atualização foi agendado para toda quarta-feira a meia-noite.",
+  "mensagemPeriodicidadeSemanalQuinta": "O processo de atualização foi agendado para toda quinta-feira a meia-noite.",
+  "mensagemPeriodicidadeSemanalSexta": "O processo de atualização foi agendado para toda sexta-feira a meia-noite.",
+  "mensagemPeriodicidadeSemanalSabado": "O processo de atualização foi agendado para todo sábado a meia-noite.",
+  "mensagemPeriodicidadeSemanalDomingo": "O processo de atualização foi agendado para todo domingo a meia-noite.",
+
+  "mensagemPeriodicidadeMensal": "O processo de atualização foi agendado e será feito a cada um mês.",
+  "mensagemPeriodicidadeDoisMeses": "O processo de atualização foi agendado e será feito a cada dois meses."
+}

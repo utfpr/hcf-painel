@@ -1,0 +1,31 @@
+{
+  "titulo": "Usuario",
+
+  "nome": "Nombre:",
+  "validacaoNome": "Ingrese el nombre del usuario",
+  "email": "Correo electrónico:",
+  "validacaoEmail": "Ingrese el correo electrónico del usuario",
+  "tipo": "Tipo:",
+  "validacaoTipo": "Seleccione el tipo del usuario",
+  "ra": "RA:",
+  "telefone": "Teléfono:",
+  "senha": "Contraseña:",
+  "validacaoSenha": "Ingrese la contraseña del usuario.",
+
+  "tipoCurador": "Curador",
+  "tipoOperador": "Operador",
+  "tipoIdentificador": "Identificador",
+
+  "salvar": "Guardar",
+
+  "tituloCadastro": "Registro",
+  "sucessoCadastro": "El usuario fue registrado con éxito.",
+  "erroCadastro": "Hubo un problema al realizar el registro, verifique los datos e intente nuevamente.",
+  "erroCadastroEmailUnico": "Hubo un problema al realizar el registro, el correo electrónico debe ser único por usuario, verifique los datos e intente nuevamente.",
+
+  "tituloEdicao": "Edición",
+  "sucessoEdicao": "El usuario fue actualizado con éxito.",
+  "erroEdicao": "Hubo un problema al realizar la edición, verifique los datos e intente nuevamente.",
+
+  "erroBuscarUsuario": "Hubo un problema al buscar los datos del usuario, intente nuevamente."
+}

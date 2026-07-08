@@ -1,0 +1,19 @@
+{
+  "tituloLivroTombo": "Libro de Registro",
+
+  "dataInicialColeta": "Fecha inicial de recolección:",
+  "dataFinalColeta": "Fecha final de recolección:",
+  "genero": "Género:",
+
+  "especie": "Especie:",
+  "familia": "Familia:",
+
+  "selecaoCamposExportacao": "Seleccione los campos a exportar:",
+
+  "codFamilia": "Código de familia",
+  "dataColeta": "Fecha de recolección",
+  "familiaOpcao": "Familia",
+  "especieOpcao": "Especie",
+  "generoOpcao": "Género",
+  "quantidade": "Cantidad"
+}

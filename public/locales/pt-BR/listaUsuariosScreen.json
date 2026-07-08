@@ -1,0 +1,28 @@
+{
+  "titulo": "Listagem de usuários",
+
+  "buscarUsuario": "Buscar usuário",
+  "buscarNome": "Nome:",
+  "buscarEmail": "E-mail:",
+  "buscarTipo": "Tipo:",
+  "buscarTelefone": "Telefone:",
+  "selecioneTipo": "Selecione",
+
+  "colunaNome": "Nome",
+  "colunaTipo": "Tipo",
+  "colunaEmail": "E-mail",
+  "colunaTelefone": "Telefone",
+  "colunaDataCriacao": "Data de criação",
+  "colunaAcao": "Ação",
+
+  "tipoCurador": "Curador",
+  "tipoOperador": "Operador",
+  "tipoIdentificador": "Identificador",
+
+  "confirmarExcluirUsuario": "Você tem certeza que deseja excluir este usuário?",
+  "descricaoExcluirUsuario": "Ao clicar em SIM, o usuário será excluído.",
+  "sucessoExcluirUsuario": "O usuário foi excluído com sucesso.",
+
+  "erroExcluirUsuario": "Erro ao excluir usuário",
+  "erroInesperadoExcluirUsuario": "Ocorreu um erro inesperado ao tentar excluir o usuário."
+}

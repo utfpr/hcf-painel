@@ -1,0 +1,26 @@
+{
+  "titulo": "Informe de Vouchers por Ciudad",
+
+  "filtros": "Filtros del informe",
+  "pais": "País:",
+  "selecionePais": "Seleccione un país",
+  "estado": "Estado:",
+  "selecioneEstado": "Seleccione un estado",
+  "cidade": "Ciudad:",
+  "selecioneCidade": "Seleccione una ciudad",
+  "outrasOpcoes": "Otras opciones:",
+  "mostrarCoordenadas": "Mostrar coordenadas",
+
+  "gerarPDF": "Generar PDF",
+
+  "erroBuscarPaises": "Error al buscar países.",
+  "erroBuscarEstados": "Error al buscar estados.",
+  "erroBuscarCidades": "Error al buscar ciudades.",
+  "erroBuscarDados": "Error al buscar los datos del informe.",
+  "erroServidorBuscarDados": "Error del servidor al buscar los datos del informe.",
+
+  "exportarPDF": "Exportar PDF",
+  "sucessoExportarPDF": "PDF generado con éxito.",
+  "erroExportarPDF": "Error al exportar el PDF.",
+  "erroServidorExportarPDF": "Error del servidor al exportar el PDF."
+}

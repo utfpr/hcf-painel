@@ -1,0 +1,19 @@
+{
+  "tituloLivroTombo": "Accession Book",
+
+  "dataInicialColeta": "Collection start date:",
+  "dataFinalColeta": "Collection end date:",
+  "genero": "Genus:",
+
+  "especie": "Species:",
+  "familia": "Family:",
+
+  "selecaoCamposExportacao": "Select the fields to export:",
+
+  "codFamilia": "Family Code",
+  "dataColeta": "Collection Date",
+  "familiaOpcao": "Family",
+  "especieOpcao": "Species",
+  "generoOpcao": "Genus",
+  "quantidade": "Quantity"
+}
