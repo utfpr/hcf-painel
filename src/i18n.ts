@@ -22,6 +22,10 @@ void i18n
         'path'
       ],
       caches: ['localStorage']
+        'navigator',
+        'path',
+        'localStorage',
+      ]
     },
 
     backend: {
@@ -75,7 +79,9 @@ void i18n
       'relatorioCoordenadaForaPoligonoScreen',
       'relatorioLocalColetaPeriodoScreen',
       'relatorioQtdPeriodoScreen',
-      'relatorioTombosPorCidadeScreen'
+      'relatorioTombosPorCidadeScreen',
+      'cidadeComponent',
+      'cidadeContainer',
     ],
     defaultNS: 'common',
 

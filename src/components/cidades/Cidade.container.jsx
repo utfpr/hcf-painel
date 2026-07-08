@@ -4,12 +4,12 @@ import { Form, notification, Modal } from 'antd'
 import axios from 'axios'
 
 import { isCuradorOuOperador } from '@/helpers/usuarios'
-
+import { withTranslation } from 'react-i18next'
 import CidadesComponent from './Cidade.component'
 
 const { confirm } = Modal
 
-const CidadesContainer = () => {
+const CidadesContainer = ({ t }) => {
     const [form] = Form.useForm()
     const [cidadesOriginais, setCidadesOriginais] = useState([])
     const [cidades, setCidades] = useState([])
@@ -44,7 +44,7 @@ const CidadesContainer = () => {
                 atualizaPagina(pagina, pageSize, ordenadas)
             }
         } catch {
-            notification.error({ message: 'Erro', description: 'Falha ao buscar cidades.' })
+            notification.error({ message: t('common:erro'), description: t('listaCidadesContainer:erroBuscarCidades') })
         } finally {
             setLoading(false)
         }
@@ -57,7 +57,7 @@ const CidadesContainer = () => {
                 setEstados(response.data)
             }
         } catch {
-            notification.error({ message: 'Erro', description: 'Falha ao buscar estados.' })
+            notification.error({ message: t('common:erro'), description: t('listaCidadesContainer:erroBuscarEstados') })
         }
     }
 
@@ -68,7 +68,7 @@ const CidadesContainer = () => {
                 setPaises(response.data)
             }
         } catch {
-            notification.error({ message: 'Erro', description: 'Falha ao buscar países.' })
+            notification.error({ message: t('common:erro'), description: t('listaCidadesContainer:erroBuscarPaises') })
         }
     }
 
@@ -87,11 +87,11 @@ const CidadesContainer = () => {
 
     const handleExcluir = id => {
         confirm({
-            title: 'Você tem certeza que deseja excluir esta cidade?',
-            content: 'Ao clicar em SIM, a cidade será excluída.',
-            okText: 'SIM',
+            title: t('listaCidadesContainer:confirmarExcluirCidade'),
+            content: t('listaCidadesContainer:descricaoExcluirCidade'),
+            okText: t('common:sim'),
             okType: 'danger',
-            cancelText: 'NÃO',
+            cancelText: t('common:nao'),
             onOk: () => requisitaExclusao(id)
         })
     }
@@ -103,10 +103,10 @@ const CidadesContainer = () => {
             const novas = cidadesOriginais.filter(c => c.id !== id)
             setCidadesOriginais(novas)
             atualizaPagina(pagina, pageSize, novas)
-            notification.success({ message: 'Sucesso', description: 'Cidade excluída com sucesso.' })
+            notification.success({ message: t('common:tituloSucesso'), description: t('listaCidadesContainer:sucessoExcluirCidade') })
         } catch (err) {
-            const mensagem = err.response?.data?.error?.mensagem || 'Falha ao excluir a cidade.'
-            notification.error({ message: 'Erro', description: mensagem })
+            const mensagem = err.response?.data?.error?.mensagem || t('listaCidadesContainer:erroExcluirCidade')
+            notification.error({ message: t('common:erro'), description: mensagem })
         } finally {
             setLoading(false)
         }
@@ -118,22 +118,22 @@ const CidadesContainer = () => {
             if (idCidade === -1) {
                 const resp = await axios.post('/cidades', values)
                 await requisitaListaCidades()
-                notification.success({ message: 'Sucesso', description: 'Cidade cadastrada com sucesso.' })
+                notification.success({ message: t('common:tituloSucesso'), description: t('listaCidadesContainer:sucessoCadastroCidade') })
             } else {
                 await axios.put(`/cidades/${idCidade}`, values)
                 await requisitaListaCidades()
-                notification.success({ message: 'Sucesso', description: 'Cidade atualizada com sucesso.' })
+                notification.success({ message: t('common:tituloSucesso'), description: t('listaCidadesContainer:sucessoAtualizarCidade') })
             }
             setVisibleModal(false)
             setIdCidade(-1)
         } catch (err) {
             if (err.response?.data?.error?.code === 308) {
                 notification.error({
-                    message: 'Cidade já cadastrada',
+                    message: t('listaCidadesContainer:cidadeJaCadastrada'),
                     description: err.response.data.error.mensagem
                 })
             } else {
-                notification.warning({ message: 'Falha', description: 'Houve um problema ao salvar a cidade.' })
+                notification.warning({ message: t('common:tituloFalha'), description: t('listaCidadesContainer:erroSalvarCidade') })
             }
         } finally {
             setLoadingModal(false)
@@ -144,7 +144,7 @@ const CidadesContainer = () => {
         form.resetFields()
         if (cidade) {
             setVisibleModal(true)
-            setTituloModal('Atualizar')
+            setTituloModal(t('common:atualizar'))
             setIdCidade(cidade.id)
             form.setFieldsValue({
                 nomeCidade: cidade.nome,
@@ -155,7 +155,7 @@ const CidadesContainer = () => {
         } else {
             form.resetFields()
             setVisibleModal(true)
-            setTituloModal('Cadastrar')
+            setTituloModal(t('common:cadastrar'))
             setIdCidade(-1)
         }
     }
@@ -220,4 +220,4 @@ const CidadesContainer = () => {
     )
 }
 
-export default CidadesContainer
+export default withTranslation()(CidadesContainer)
