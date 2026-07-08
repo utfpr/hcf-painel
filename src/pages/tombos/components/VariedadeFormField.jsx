@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Select, Spin } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 import SelectedFormFiled from './SelectedFormFiled'
 
@@ -10,6 +11,7 @@ const VariedadeFormField = ({
     initialValue, variedades, getFieldDecorator, onClickAddMore, onChange, validateStatus, autor,
     onSearch, loading = false, debounceDelay = 200, disabled = false
 }) => {
+    const { t } = useTranslation('tombo')
     const optionVariedades = () => variedades?.map(item => (
         <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
     ))
@@ -21,9 +23,9 @@ const VariedadeFormField = ({
             md={12}
             lg={12}
             xl={12}
-            title="Variedade:"
+            title={t('variety')}
             initialValue={initialValue}
-            placeholder="Digite para buscar variedades..."
+            placeholder={t('searchVarieties')}
             fieldName="variedade"
             getFieldDecorator={getFieldDecorator}
             onClickAddMore={onClickAddMore}
@@ -36,7 +38,7 @@ const VariedadeFormField = ({
             others={{
                 allowClear: true,
                 loading: loading,
-                notFoundContent: loading ? <Spin size="small" /> : 'Nenhuma variedade encontrada',
+                notFoundContent: loading ? <Spin size="small" /> : t('noneFoundEntity', { entity: t('variety').replace(':', '').toLowerCase() }),
                 filterOption: onSearch ? false : undefined
             }}
         >

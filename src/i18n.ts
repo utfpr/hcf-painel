@@ -18,9 +18,13 @@ void i18n
 
     detection: {
       order: [
+        'localStorage',
+        'path'
+      ],
+      caches: ['localStorage']
+        'navigator',
         'path',
         'localStorage',
-        'navigator'
       ]
     },
 
@@ -56,6 +60,7 @@ void i18n
       'authService',
       'listaTaxonomiaVariedade',
       'exportacaoScreen',
+      'tombo',
       'servicosSpeciesLink',
       'servicosReflora',
       'verPendencia',
@@ -77,7 +82,9 @@ void i18n
       'relatorioTombosPorCidadeScreen',
       'relatorioColetaLocalPeriodoScreen',
       'relatorioColetaPeriodoScreen',
-      'relatorioColetorPeriodoScreen'
+      'relatorioColetorPeriodoScreen',
+      'cidadeComponent',
+      'cidadeContainer',
     ],
     defaultNS: 'common',
 
