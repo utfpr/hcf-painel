@@ -15,6 +15,7 @@ import TableColetaPorLocalData from '@/components/TableColetaPorLocalData'
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import { LoadingOutlined } from '@ant-design/icons'
+import { withTranslation } from 'react-i18next'
 
 const FormItem = Form.Item
 const { RangePicker } = DatePicker
@@ -104,9 +105,9 @@ class RelatorioColetorPeriodoScreen extends Component {
                         metadados: data.metadados
                     })
                 } else if (response.status === 400) {
-                    this.notificacao('warning', 'Buscar dados', 'Erro ao buscar os dados do relatório.')
+                    this.notificacao('warning', this.props.t('relatorioColetorPeriodoScreen:notifBuscarDados'), this.props.t('relatorioColetorPeriodoScreen:erroBuscarDados'))
                 } else {
-                    this.notificacao('error', 'Error', 'Erro de servidor ao buscar os dados do relatório.')
+                    this.notificacao('error', this.props.t('common:error'), this.props.t('relatorioColetorPeriodoScreen:erroServidorBuscarDados'))
                 }
             })
             .catch(err => {
@@ -176,7 +177,7 @@ class RelatorioColetorPeriodoScreen extends Component {
             responseType: 'arraybuffer'
         }).then(response => {
             if (response.status === 200) {
-                this.notificacao('success', 'Exportar PDF', 'PDF gerado com sucesso.')
+                this.notificacao('success', this.props.t('relatorioColetorPeriodoScreen:notifExportarPDF'), this.props.t('relatorioColetorPeriodoScreen:pdfSucesso'))
                 const file = new Blob([response.data], { type: 'application/pdf' })
                 const fileUrl = URL.createObjectURL(file)
                 const anchor = document.createElement('a')
@@ -188,9 +189,9 @@ class RelatorioColetorPeriodoScreen extends Component {
                 anchor.click()
                 URL.revokeObjectURL(fileUrl)
             } else if (response.status === 400) {
-                this.notificacao('warning', 'Exportar PDF', 'Erro ao exportar o PDF.')
+                this.notificacao('warning', this.props.t('relatorioColetorPeriodoScreen:notifExportarPDF'), this.props.t('relatorioColetorPeriodoScreen:erroExportarPDF'))
             } else {
-                this.notificacao('error', 'Error', 'Erro de servidor ao exportar o PDF.')
+                this.notificacao('error', this.props.t('common:error'), this.props.t('relatorioColetorPeriodoScreen:erroServidorExportarPDF'))
             }
         })
             .catch(err => {
@@ -247,7 +248,7 @@ class RelatorioColetorPeriodoScreen extends Component {
                     {modeloNovo && this.state.loadingExportNovo
                         ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ marginRight: 8 }} />
                         : ''}
-                    Gerar PDF modelo 2
+                    {this.props.t('relatorioColetorPeriodoScreen:gerarPDFModelo2')}
                 </Button>
             )
         }
@@ -264,9 +265,9 @@ class RelatorioColetorPeriodoScreen extends Component {
                 {!sintetico && this.state.loadingExport2
                     ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ marginRight: 8 }} />
                     : ''}
-                Gerar PDF
+                {this.props.t('relatorioColetorPeriodoScreen:gerarPDF')}
                 {' '}
-                {sintetico ? 'Sintético' : 'Analítico'}
+                {sintetico ? this.props.t('relatorioColetorPeriodoScreen:sintetico') : this.props.t('relatorioColetorPeriodoScreen:analitico')}
             </Button>
         )
     }
@@ -275,18 +276,18 @@ class RelatorioColetorPeriodoScreen extends Component {
         const { form } = this.props
         const { getFieldDecorator } = form
         return (
-            <Card title="Filtros do relatório">
+            <Card title={this.props.t('relatorioColetorPeriodoScreen:filtros')}>
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col span={24}>
-                            <span>Coletor:</span>
+                            <span>{this.props.t('relatorioColetorPeriodoScreen:coletor')}</span>
                         </Col>
                     </Row>
                     <Row gutter={8}>
                         <Col span={24}>
                             <FormItem>
                                 {getFieldDecorator('coletor')(
-                                    <Input placeholder="John" type="text" />
+                                    <Input placeholder={this.props.t('relatorioColetorPeriodoScreen:placeholderColetor')} type="text" />
                                 )}
                             </FormItem>
                         </Col>
@@ -294,7 +295,7 @@ class RelatorioColetorPeriodoScreen extends Component {
 
                     <Row gutter={8}>
                         <Col span={24}>
-                            <span>Intervalo de data:</span>
+                            <span>{this.props.t('relatorioColetorPeriodoScreen:intervaloData')}</span>
                         </Col>
                     </Row>
                     <Row gutter={8}>
@@ -345,7 +346,7 @@ class RelatorioColetorPeriodoScreen extends Component {
                                             }}
                                             className="login-form-button"
                                         >
-                                            Limpar
+                                            {this.props.t('common:limpar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -356,7 +357,7 @@ class RelatorioColetorPeriodoScreen extends Component {
                                             htmlType="submit"
                                             className="login-form-button ant-btn-pesquisar"
                                         >
-                                            Pesquisar
+                                            {this.props.t('common:pesquisar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -380,7 +381,7 @@ class RelatorioColetorPeriodoScreen extends Component {
                     }}
                 >
                     <Col xs={24} sm={14} md={18} lg={20} xl={20}>
-                        <h2 style={{ fontWeight: 200 }}>Relatório de Coleta por Coletor e Intervalo de Data</h2>
+                        <h2 style={{ fontWeight: 200 }}>{this.props.t('relatorioColetorPeriodoScreen:titulo')}</h2>
                     </Col>
                     <Col xs={24} sm={10} md={6} lg={4} xl={4} style={{ display: 'flex', justifyContent: 'flex-end' }}>
                         <div style={{ display: 'flex', gap: '10px' }}>
@@ -407,4 +408,6 @@ class RelatorioColetorPeriodoScreen extends Component {
         )
     }
 }
-export default Form.create()(RelatorioColetorPeriodoScreen)
+const RelatorioColetorPeriodoScreenWithForm = Form.create()(RelatorioColetorPeriodoScreen)
+
+export default withTranslation()(RelatorioColetorPeriodoScreenWithForm)

@@ -74,7 +74,10 @@ void i18n
       'relatorioCoordenadaForaPoligonoScreen',
       'relatorioLocalColetaPeriodoScreen',
       'relatorioQtdPeriodoScreen',
-      'relatorioTombosPorCidadeScreen'
+      'relatorioTombosPorCidadeScreen',
+      'relatorioColetaLocalPeriodoScreen',
+      'relatorioColetaPeriodoScreen',
+      'relatorioColetorPeriodoScreen'
     ],
     defaultNS: 'common',
 
