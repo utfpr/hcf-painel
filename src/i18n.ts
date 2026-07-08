@@ -18,9 +18,9 @@ void i18n
 
     detection: {
       order: [
+        'navigator',
         'path',
         'localStorage',
-        'navigator'
       ]
     },
 
@@ -74,7 +74,9 @@ void i18n
       'relatorioCoordenadaForaPoligonoScreen',
       'relatorioLocalColetaPeriodoScreen',
       'relatorioQtdPeriodoScreen',
-      'relatorioTombosPorCidadeScreen'
+      'relatorioTombosPorCidadeScreen',
+      'estadoContainer',
+      'estadoComponent',
     ],
     defaultNS: 'common',
 

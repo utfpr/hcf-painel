@@ -1,0 +1,27 @@
+{
+  "estados": "Estados",
+
+  "buscarEstado": "Buscar estado",
+  "buscarNomeEstado": "Nombre del estado:",
+  "buscarPais": "País:",
+
+  "cadastroNomeEstado": "Nombre",
+  "cadastroSigla": "Sigla",
+  "cadastroPais": "País",
+
+  "colunaEstado": "Estado",
+  "colunaSigla": "Sigla",
+  "colunaPais": "País",
+  "colunaAcao": "Acción",
+
+  "placeholderNomeEstado": "São Paulo",
+  "placeholderSigla": "SP",
+  "placeholderSelecionarPais": "Seleccione un país (opcional)",
+  "placeholderPesquisarPais": "Seleccione o busque el país",
+
+  "preencherCamposObrigatorios": "Rellene los campos obligatorios.",
+  "validacaoInformarEstado": "Informe el nombre del estado",
+  "validacaoInformarSigla": "Informe la sigla",
+  "validacaoApenasLetras": "La sigla debe contener solo letras",
+  "validacaoInformarPais": "Informe el país"
+}
