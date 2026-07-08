@@ -21,8 +21,8 @@ void i18n
         'localStorage'
       ],
       caches: [
-        'path',
         'navigator',
+        'path',
         'localStorage'
       ]
     },
@@ -84,7 +84,8 @@ void i18n
       'relatorioColetaPeriodoScreen',
       'relatorioColetorPeriodoScreen',
       'cidadeComponent',
-      'cidadeContainer'
+      'cidadeContainer',
+      'perfilScreen'
     ],
     defaultNS: 'common',
     interpolation: {
