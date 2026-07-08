@@ -1,9 +1,10 @@
 import React from 'react'
 import { Card, List, Progress, Typography } from 'antd'
+import { withTranslation } from 'react-i18next'
 
 const { Text } = Typography
 
-const RankingCard = ({ titulo, icone, dadosRanking }) => {
+const RankingCard = ({ titulo, icone, dadosRanking, t }) => {
     if (!dadosRanking || !dadosRanking.ranking) return null
 
     const maxValor = dadosRanking.ranking.length > 0 ? dadosRanking.ranking[0].total : 1
@@ -16,7 +17,7 @@ const RankingCard = ({ titulo, icone, dadosRanking }) => {
         <Card
             title={<><span style={{ marginRight: 8 }}>{icone}</span>{titulo}</>}
             bordered={false}
-            extra={<Text type="secondary">Total: {formatadorK(dadosRanking.total)}</Text>}
+            extra={<Text type="secondary">{t('rankingCard:total')} {formatadorK(dadosRanking.total)}</Text>}
             style={{ height: '100%' }}
             bodyStyle={{ padding: '12px 24px' }}
         >
@@ -56,4 +57,4 @@ const RankingCard = ({ titulo, icone, dadosRanking }) => {
     )
 }
 
-export default RankingCard
+export default withTranslation()(RankingCard)

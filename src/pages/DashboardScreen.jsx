@@ -9,12 +9,13 @@ import {
     UserOutlined
 } from '@ant-design/icons'
 import axios from 'axios'
+import { withTranslation } from 'react-i18next'
 
 import MetricCard from '../components/MetricCard'
 import RankingCard from '../components/RankingCard'
 import ComparativeAreaChart from '../components/ComparativeAreaChart'
 
-const DashboardScreen = () => {
+const DashboardScreen = ({ t }) => {
     const [loadingTombo, setLoadingTombo] = useState(true)
     const [tomboData, setTomboData] = useState(null)
     const [loadingTemporal, setLoadingTemporal] = useState(true)
@@ -30,8 +31,8 @@ const DashboardScreen = () => {
                 }
             } catch (error) {
                 notification.error({
-                    message: 'Erro',
-                    description: 'Não foi possível carregar as informações, tente novamente mais tarde.'
+                    message: t('common:erro'),
+                    description: t('dashboardScreen:erroCarregar')
                 })
             } finally {
                 setLoadingTombo(false)
@@ -50,8 +51,8 @@ const DashboardScreen = () => {
                 }
             } catch (error) {
                 notification.error({
-                    message: 'Erro',
-                    description: 'Não foi possível carregar as informações, tente novamente mais tarde.'
+                    message: t('common:erro'),
+                    description: t('dashboardScreen:erroCarregar')
                 })
             } finally {
                 setLoadingTemporal(false)
@@ -76,7 +77,7 @@ const DashboardScreen = () => {
     if (loadingTombo || !tomboData) {
         return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
-                <Spin size="large" tip="Carregando..." />
+                <Spin size="large" tip={t('common:carregando')} />
             </div>
         )
     }
@@ -88,33 +89,33 @@ const DashboardScreen = () => {
         <div style={{ padding: '24px', backgroundColor: '#f0f2f5', minHeight: '100vh' }}>
             <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
                 <Col xs={24} sm={12} md={8} style={{ flex: 1 }}>
-                    <MetricCard 
-                        title="Total de Tombos" 
-                        value={tombos.total} 
-                        prefix={<DatabaseOutlined />} 
-                        valueColor="#1890ff" 
+                    <MetricCard
+                        title={t('dashboardScreen:totalTombos')}
+                        value={tombos.total}
+                        prefix={<DatabaseOutlined />}
+                        valueColor="#1890ff"
                     />
                 </Col>
                 <Col xs={24} sm={12} md={8} style={{ flex: 1 }}>
-                    <MetricCard 
-                        title="Internos" 
-                        value={tombos.internos} 
-                        prefix={<EnvironmentOutlined />} 
+                    <MetricCard
+                        title={t('dashboardScreen:internos')}
+                        value={tombos.internos}
+                        prefix={<EnvironmentOutlined />}
                     />
                 </Col>
                 <Col xs={24} sm={12} md={8} style={{ flex: 1 }}>
-                    <MetricCard 
-                        title="Externos" 
-                        value={tombos.externos} 
-                        prefix={<BankOutlined />} 
+                    <MetricCard
+                        title={t('dashboardScreen:externos')}
+                        value={tombos.externos}
+                        prefix={<BankOutlined />}
                     />
                 </Col>
                 <Col xs={24} sm={12} md={8} style={{ flex: 1 }}>
-                    <MetricCard 
-                        title="Fotos" 
-                        value={tombos.fotos} 
-                        prefix={<CameraOutlined />} 
-                        valueColor="#722ed1" 
+                    <MetricCard
+                        title={t('dashboardScreen:fotos')}
+                        value={tombos.fotos}
+                        prefix={<CameraOutlined />}
+                        valueColor="#722ed1"
                     />
                 </Col>
             </Row>
@@ -125,7 +126,7 @@ const DashboardScreen = () => {
                         <ComparativeAreaChart
                             loading={loadingTemporal}
                             data={chartData}
-                            centerTitle={`Ano ${temporalData.meta.ano_referencia}`}
+                            centerTitle={t('dashboardScreen:ano', { ano: temporalData.meta.ano_referencia })}
                             labelAtual={temporalData.meta.ano_referencia.toString()}
                             labelPassado={temporalData.meta.ano_comparacao.toString()}
                             dataKeyAtual={temporalData.meta.ano_referencia.toString()}
@@ -143,29 +144,29 @@ const DashboardScreen = () => {
 
             <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
                 <Col xs={24} lg={8}>
-                    <RankingCard titulo="Top Famílias" icone={<TagOutlined style={{ color: '#13c2c2' }} />} dadosRanking={taxonomia.familias} />
+                    <RankingCard titulo={t('dashboardScreen:topFamilias')} icone={<TagOutlined style={{ color: '#13c2c2' }} />} dadosRanking={taxonomia.familias} />
                 </Col>
                 <Col xs={24} lg={8}>
-                    <RankingCard titulo="Top Gêneros" icone={<TagOutlined style={{ color: '#eb2f96' }} />} dadosRanking={taxonomia.generos} />
+                    <RankingCard titulo={t('dashboardScreen:topGeneros')} icone={<TagOutlined style={{ color: '#eb2f96' }} />} dadosRanking={taxonomia.generos} />
                 </Col>
                 <Col xs={24} lg={8}>
-                    <RankingCard titulo="Top Espécies" icone={<TagOutlined style={{ color: '#fa8c16' }} />} dadosRanking={taxonomia.especies} />
+                    <RankingCard titulo={t('dashboardScreen:topEspecies')} icone={<TagOutlined style={{ color: '#fa8c16' }} />} dadosRanking={taxonomia.especies} />
                 </Col>
             </Row>
 
             <Row gutter={[16, 16]}>
                 <Col xs={24} lg={8}>
-                    <RankingCard titulo="Top Coletores" icone={<UserOutlined style={{ color: '#2f54eb' }} />} dadosRanking={coletores} />
+                    <RankingCard titulo={t('dashboardScreen:topColetores')} icone={<UserOutlined style={{ color: '#2f54eb' }} />} dadosRanking={coletores} />
                 </Col>
                 <Col xs={24} lg={8}>
-                    <RankingCard titulo="Top Municípios" icone={<EnvironmentOutlined style={{ color: '#fa541c' }} />} dadosRanking={municipios} />
+                    <RankingCard titulo={t('dashboardScreen:topMunicipios')} icone={<EnvironmentOutlined style={{ color: '#fa541c' }} />} dadosRanking={municipios} />
                 </Col>
                 <Col xs={24} lg={8}>
-                    <RankingCard titulo="Top Herbários" icone={<BankOutlined style={{ color: '#722ed1' }} />} dadosRanking={herbarios} />
+                    <RankingCard titulo={t('dashboardScreen:topHerbarios')} icone={<BankOutlined style={{ color: '#722ed1' }} />} dadosRanking={herbarios} />
                 </Col>
             </Row>
         </div>
     )
 }
 
-export default DashboardScreen
+export default withTranslation()(DashboardScreen)
