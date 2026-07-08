@@ -1,0 +1,15 @@
+{
+  "titulo": "Collection Report by Date Range",
+  "filtros": "Report filters",
+  "intervaloData": "Date range:",
+  "gerarPDF": "Generate PDF",
+  "sintetico": "Summary",
+  "analitico": "Detailed",
+  "notifBuscarDados": "Fetch data",
+  "erroBuscarDados": "Error fetching the report data.",
+  "erroServidorBuscarDados": "Server error while fetching the report data.",
+  "notifExportarPDF": "Export PDF",
+  "pdfSucesso": "PDF generated successfully.",
+  "erroExportarPDF": "Error exporting the PDF.",
+  "erroServidorExportarPDF": "Server error while exporting the PDF."
+}

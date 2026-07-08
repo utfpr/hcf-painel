@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Select, Spin } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 import SelectedFormFiled from './SelectedFormFiled'
 
@@ -10,6 +11,7 @@ const EspecieFormField = ({
     initialValue, especies, getFieldDecorator, onClickAddMore, onChange, validateStatus, autor,
     onSearch, loading = false, debounceDelay = 200, disabled = false
 }) => {
+    const { t } = useTranslation('tombo')
     const optionEspecie = () => especies?.map(item => (
         <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
     ))
@@ -21,9 +23,9 @@ const EspecieFormField = ({
             md={12}
             lg={12}
             xl={12}
-            title="Espécie:"
+            title={t('species')}
             initialValue={initialValue}
-            placeholder="Digite para buscar espécies..."
+            placeholder={t('searchSpecies')}
             fieldName="especie"
             getFieldDecorator={getFieldDecorator}
             onClickAddMore={onClickAddMore}
@@ -36,7 +38,7 @@ const EspecieFormField = ({
             others={{
                 allowClear: true,
                 loading: loading,
-                notFoundContent: loading ? <Spin size="small" /> : 'Nenhuma espécie encontrada',
+                notFoundContent: loading ? <Spin size="small" /> : t('noneFoundEntity', { entity: t('species').replace(':', '').toLowerCase() }),
                 filterOption: onSearch ? false : undefined
             }}
         >

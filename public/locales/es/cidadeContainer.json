@@ -1,0 +1,17 @@
+{
+  "confirmarExcluirCidade": "¿Está seguro de que desea eliminar esta ciudad?",
+  "descricaoExcluirCidade": "Al hacer clic en SÍ, la ciudad será eliminada.",
+
+  "sucessoExcluirCidade": "Ciudad eliminada con éxito.",
+  "sucessoCadastroCidade": "Ciudad registrada con éxito.",
+  "sucessoAtualizarCidade": "Ciudad actualizada con éxito.",
+
+  "cidadeJaCadastrada": "Ciudad ya registrada",
+
+  "erroBuscarCidades": "Error al buscar ciudades.",
+  "erroBuscarEstados": "Error al buscar estados.",
+  "erroBuscarPaises": "Error al buscar países.",
+
+  "erroExcluirCidade": "Error al eliminar la ciudad.",
+  "erroSalvarCidade": "Hubo un problema al guardar la ciudad."
+}

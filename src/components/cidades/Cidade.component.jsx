@@ -9,18 +9,12 @@ import ModalCadastroComponent from '@/components/ModalCadastroComponent'
 import SimpleTableComponent from '@/components/SimpleTableComponent'
 import converteDecimalParaGrausMinutosSegundos from '@/helpers/conversoes/Coordenadas'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
+import { withTranslation } from 'react-i18next'
 
 const { Option } = Select
 
-const columns = [
-    { title: 'Cidade', dataIndex: 'nome', key: 'nome' },
-    { title: 'Estado', dataIndex: 'estadoNome', key: 'estadoNome' },
-    { title: 'Latitude', dataIndex: 'latitude', key: 'latitude' },
-    { title: 'Longitude', dataIndex: 'longitude', key: 'longitude' },
-    { title: 'Ação', key: 'acao' }
-]
-
 const CidadesComponent = ({
+    t,
     form,
     cidades,
     estados,
@@ -65,6 +59,14 @@ const CidadesComponent = ({
         acao: renderActionButtons(item)
     }))
 
+    const columns = [
+        { title: t('cidadeComponent:colunaCidade'), dataIndex: 'nome', key: 'nome' },
+        { title: t('cidadeComponent:colunaEstado'), dataIndex: 'estadoNome', key: 'estadoNome' },
+        { title: t('cidadeComponent:colunaLatitude'), dataIndex: 'latitude', key: 'latitude' },
+        { title: t('cidadeComponent:colunaLongitude'), dataIndex: 'longitude', key: 'longitude' },
+        { title: t('cidadeComponent:colunaAcao'), key: 'acao' }
+    ]
+
     const finalColumns = isCuradorOuOperador
         ? columns
         : columns.filter(col => col.key !== 'acao')
@@ -100,8 +102,8 @@ const CidadesComponent = ({
 
             if (!isLatitudeValida || !isLongitudeValida) {
                 notification.error({
-                    message: 'Erro de validação',
-                    description: 'Latitude deve estar entre -90° e +90°, e longitude entre -180° e +180°.'
+                    message: t('cidadeComponent:erroValidacaoCoordenadas'),
+                    description: t('cidadeComponent:descricaoErroValidacaoCoordenadas')
                 })
                 return
             }
@@ -116,8 +118,8 @@ const CidadesComponent = ({
             }
         } catch {
             notification.warning({
-                message: 'Falha',
-                description: 'Preencha os campos obrigatórios.'
+                message: t('common:tituloFalha'),
+                description: t('cidadeComponent:preencherCamposObrigatorios')
             })
         }
     }
@@ -126,7 +128,7 @@ const CidadesComponent = ({
         <div>
             <Row gutter={24} style={{ marginBottom: '20px' }}>
                 <Col xs={24} sm={14} md={18} lg={20} xl={20}>
-                    <h2 style={{ fontWeight: 200 }}>Cidades</h2>
+                    <h2 style={{ fontWeight: 200 }}>{t('cidadeComponent:cidades')}</h2>
                 </Col>
                 <Col xs={24} sm={10} md={6} lg={4} xl={4}>
                     {isCuradorOuOperador && (
@@ -140,30 +142,30 @@ const CidadesComponent = ({
                                 width: '100%'
                             }}
                         >
-                            Adicionar
+                            {t('common:adicionar')}
                         </Button>
                     )}
                 </Col>
             </Row>
             <Divider dashed />
-            <Card title="Buscar cidade">
+            <Card title={t('cidadeComponent:buscarCidade')}>
                 <Form form={form} onFinish={handleSearch}>
                     <Row gutter={8}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-                            <Col span={24}><span>Nome da cidade:</span></Col>
+                            <Col span={24}><span>{t('cidadeComponent:buscarNomeCidade')}</span></Col>
                             <Col span={24}>
                                 <Form.Item name="nome">
-                                    <Input placeholder="Curitiba" type="text" />
+                                    <Input placeholder={t('cidadeComponent:placeholderNomeCidade')} type="text" />
                                 </Form.Item>
                             </Col>
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-                            <Col span={24}><span>País:</span></Col>
+                            <Col span={24}><span>{t('cidadeComponent:buscarPais')}</span></Col>
                             <Col span={24}>
                                 <Form.Item name="paisId">
                                     <Select
                                         showSearch
-                                        placeholder="Selecione um país (opcional)"
+                                        placeholder={t('cidadeComponent:placeholderSelecionarPais')}
                                         onChange={paisId => {
                                             form.setFieldsValue({ estadoId: undefined })
                                             const novosEstados = estados.filter(e => e.pais_id === paisId)
@@ -181,12 +183,12 @@ const CidadesComponent = ({
                             </Col>
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-                            <Col span={24}><span>Estado:</span></Col>
+                            <Col span={24}><span>{t('cidadeComponent:buscarEstado')}</span></Col>
                             <Col span={24}>
                                 <Form.Item name="estadoId">
                                     <Select
                                         showSearch
-                                        placeholder={form.getFieldValue('paisId') ? 'Selecione um estado' : 'Selecione um país primeiro'}
+                                        placeholder={form.getFieldValue('paisId') ? t('cidadeComponent:placeholderSelecionarEstado') : t('cidadeComponent:placeholderSelecionarPaisPrimeiro')}
                                         disabled={!form.getFieldValue('paisId')}
                                         optionFilterProp="children"
                                         filterOption={(input, option) =>
@@ -209,7 +211,7 @@ const CidadesComponent = ({
                                             onClick={onLimparBusca}
                                             className="login-form-button"
                                         >
-                                            Limpar
+                                            {t('common:limpar')}
                                         </Button>
                                     </Form.Item>
                                 </Col>
@@ -220,7 +222,7 @@ const CidadesComponent = ({
                                             htmlType="submit"
                                             className="login-form-button ant-btn-pesquisar"
                                         >
-                                            Pesquisar
+                                            {t('common:pesquisar')}
                                         </Button>
                                     </Form.Item>
                                 </Col>
@@ -248,21 +250,21 @@ const CidadesComponent = ({
                 <Form form={form} layout="vertical">
                     <Row gutter={8}>
                         <Col span={24}>
-                            <Form.Item label="Nome" name="nomeCidade" rules={[{ required: true, message: 'Informe o nome da cidade' }]}>
-                                <Input placeholder="Curitiba" />
+                            <Form.Item label={t('cidadeComponent:cadastroNomeCidade')} name="nomeCidade" rules={[{ required: true, message: t('cidadeComponent:validacaoInformarCidade') }]}>
+                                <Input placeholder={t('cidadeComponent:placeholderNomeCidade')} />
                             </Form.Item>
                         </Col>
                     </Row>
                     <Row gutter={8}>
                         <Col span={24}>
                             <Form.Item
-                                label="Estado"
+                                label={t('cidadeComponent:cadastroEstado')}
                                 name="estadoId"
-                                rules={[{ required: true, message: 'Informe o estado' }]}
+                                rules={[{ required: true, message: t('cidadeComponent:validacaoInformarEstado') }]}
                             >
                                 <Select
                                     showSearch
-                                    placeholder="Selecione ou pesquise o estado"
+                                    placeholder={t('cidadeComponent:placeholderSelecionarEstadoCadastro')}
                                     optionFilterProp="children"
                                     filterOption={(input, option) =>
                                         (option?.children ?? '').toLowerCase().includes(input.toLowerCase())}
@@ -281,14 +283,14 @@ const CidadesComponent = ({
                     </Row>
                     <Row gutter={8}>
                         <Col span={12}>
-                            <Form.Item label="Latitude" name="latitude">
+                            <Form.Item label={t('cidadeComponent:cadastroLatitude')} name="latitude">
                                 <CoordenadaInputText longitude={false} />
                             </Form.Item>
                         </Col>
                     </Row>
                     <Row gutter={8}>
                         <Col span={12}>
-                            <Form.Item label="Longitude" name="longitude">
+                            <Form.Item label={t('cidadeComponent:cadastroLongitude')} name="longitude">
                                 <CoordenadaInputText longitude />
                             </Form.Item>
                         </Col>
@@ -299,4 +301,4 @@ const CidadesComponent = ({
     )
 }
 
-export default CidadesComponent
+export default withTranslation()(CidadesComponent)

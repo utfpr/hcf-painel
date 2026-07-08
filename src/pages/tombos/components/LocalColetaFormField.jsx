@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Select, Spin } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 import SelectedFormFiled from './SelectedFormFiled'
 
@@ -18,6 +19,7 @@ const LocalColetaFormField = ({
     debounceDelay = 200,
     disabled = false
 }) => {
+    const { t } = useTranslation('tombo')
     const optionLocalColeta = () => locaisColeta.map(d => <Option key={d.id}>{d.descricao}</Option>)
 
     return (
@@ -27,9 +29,9 @@ const LocalColetaFormField = ({
             md={16}
             lg={8}
             xl={8}
-            title="Local de coleta:"
+            title={t('siteCollection')}
             initialValue={initialValue ? { key: initialValue } : undefined}
-            placeholder="Busque pelo local de coleta"
+            placeholder={t('searchSites')}
             fieldName="complemento"
             getFieldDecorator={getFieldDecorator}
             getFieldError={getFieldError}
@@ -40,7 +42,7 @@ const LocalColetaFormField = ({
             others={{
                 allowClear: true,
                 loading: loading,
-                notFoundContent: loading ? <Spin size="small" /> : 'Nenhum país encontrado',
+                notFoundContent: loading ? <Spin size="small" /> : t('noneFoundEntity', { entity: t('siteCollection').replace(':', '').toLowerCase() }),
                 filterOption: onSearch ? false : undefined
             }}
 
