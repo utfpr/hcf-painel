@@ -20,9 +20,9 @@ void i18n
         'path'
       ],
       caches: [
-        'navigator',
         'path',
-        'localStorage'
+        'localStorage',
+        'navigator'
       ]
     },
     backend: {
@@ -81,6 +81,8 @@ void i18n
       'relatorioColetorPeriodoScreen',
       'cidadeComponent',
       'cidadeContainer',
+      'fichaTomboScreen',
+      'fichaTomboActions'
     ],
     defaultNS: 'common',
     interpolation: {

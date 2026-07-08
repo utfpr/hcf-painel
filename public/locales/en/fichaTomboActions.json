@@ -1,0 +1,21 @@
+{
+  "labelComCodigo": "Print Record Sheet (with barcode)",
+  "titleComCodigo": "Print sheet with barcode",
+  "labelSemCodigo": "Print Record Sheet (without barcode)",
+  "titleSemCodigo": "Print sheet without barcode",
+  "labelReduzida": "Print Reduced Record Sheet",
+  "titleReduzida": "Print reduced sheet",
+  "erroCarregarCodigos": "Unable to load the barcodes.",
+  "impressaoIniciada": "Printing started!",
+  "erroIniciarImpressao": "Unable to start printing.",
+  "tombo": "Record:",
+  "quantidadeCopias": "Number of copies",
+  "informeQuantidade": "Enter the number of copies",
+  "permitidoEntre": "Allowed between 1 and 3",
+  "carregandoCodigos": "Loading barcodes...",
+  "nenhumCodigo": "No barcode available for this record.",
+  "codigoBarras": "Barcode",
+  "selecioneCodigo": "Select a barcode",
+  "placeholderSelecione": "Select the code",
+  "imprimir": "Print"
+}

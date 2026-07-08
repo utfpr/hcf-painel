@@ -1,0 +1,21 @@
+{
+  "labelComCodigo": "Imprimir Ficha Tombo (com código de barras)",
+  "titleComCodigo": "Imprimir ficha com código de barras",
+  "labelSemCodigo": "Imprimir Ficha Tombo (sem código de barras)",
+  "titleSemCodigo": "Imprimir ficha sem código de barras",
+  "labelReduzida": "Imprimir Ficha Tombo Reduzida",
+  "titleReduzida": "Imprimir ficha reduzida",
+  "erroCarregarCodigos": "Não foi possível carregar os códigos de barras.",
+  "impressaoIniciada": "Impressão iniciada!",
+  "erroIniciarImpressao": "Não foi possível iniciar a impressão.",
+  "tombo": "Tombo:",
+  "quantidadeCopias": "Quantidade de cópias",
+  "informeQuantidade": "Informe a quantidade de cópias",
+  "permitidoEntre": "Permitido entre 1 e 3",
+  "carregandoCodigos": "Carregando códigos de barras...",
+  "nenhumCodigo": "Nenhum código de barras disponível para este tombo.",
+  "codigoBarras": "Código de barras",
+  "selecioneCodigo": "Selecione um código de barras",
+  "placeholderSelecione": "Selecione o código",
+  "imprimir": "Imprimir"
+}
