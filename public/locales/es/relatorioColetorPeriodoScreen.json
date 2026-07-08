@@ -1,0 +1,18 @@
+{
+  "titulo": "Collection Report by Collector and Date Range",
+  "filtros": "Report filters",
+  "coletor": "Collector:",
+  "placeholderColetor": "John",
+  "intervaloData": "Date range:",
+  "gerarPDF": "Generate PDF",
+  "gerarPDFModelo2": "Generate PDF model 2",
+  "sintetico": "Summary",
+  "analitico": "Detailed",
+  "notifBuscarDados": "Fetch data",
+  "erroBuscarDados": "Error fetching the report data.",
+  "erroServidorBuscarDados": "Server error while fetching the report data.",
+  "notifExportarPDF": "Export PDF",
+  "pdfSucesso": "PDF generated successfully.",
+  "erroExportarPDF": "Error exporting the PDF.",
+  "erroServidorExportarPDF": "Server error while exporting the PDF."
+}

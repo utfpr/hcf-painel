@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Select, Spin } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 import SelectedFormFiled from './SelectedFormFiled'
 
@@ -10,6 +11,7 @@ const FamiliaFormField = ({
     initialValue, familias, getFieldDecorator, onClickAddMore, onChange, validateStatus,
     getFieldError, onSearch, loading = false, debounceDelay = 200, disabled = false
 }) => {
+    const { t } = useTranslation('tombo')
     const optionFamilia = () => familias?.map(item => (
         <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
     ))
@@ -21,9 +23,9 @@ const FamiliaFormField = ({
             md={12}
             lg={12}
             xl={12}
-            title="Família:"
+            title={t('family')}
             initialValue={initialValue}
-            placeholder="Digite para buscar famílias..."
+            placeholder={t('searchFamilies')}
             fieldName="familia"
             getFieldDecorator={getFieldDecorator}
             onClickAddMore={onClickAddMore}
@@ -35,7 +37,7 @@ const FamiliaFormField = ({
             others={{
                 allowClear: true,
                 loading: loading,
-                notFoundContent: loading ? <Spin size="small" /> : 'Nenhuma família encontrada',
+                notFoundContent: loading ? <Spin size="small" /> : t('noneFoundEntity', { entity: t('family').replace(':', '').toLowerCase() }),
                 filterOption: onSearch ? false : undefined,
                 status: getFieldError && getFieldError('familia') ? 'error' : ''
             }}

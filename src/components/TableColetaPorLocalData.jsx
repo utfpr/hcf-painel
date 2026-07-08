@@ -1,34 +1,35 @@
 import { Skeleton, Table } from 'antd'
+import { withTranslation } from 'react-i18next'
 
-const columns = [
-    {
-        title: 'Data',
-        dataIndex: 'data',
-        key: 'data'
-    },
-    {
-        title: 'Família',
-        dataIndex: 'familia',
-        key: 'familia'
-    },
-    {
-        title: 'Espécie',
-        dataIndex: 'especie',
-        key: 'especie'
-    },
-    {
-        title: 'Autor',
-        dataIndex: 'autor',
-        key: 'autor'
-    },
-    {
-        title: 'Tombo',
-        dataIndex: 'tombo',
-        key: 'tombo'
-    }
-]
+const TableColetaPorLocalData = ({ data, loading, t }) => {
+    const columns = [
+        {
+            title: t('tableColetaPorLocalData:colData'),
+            dataIndex: 'data',
+            key: 'data'
+        },
+        {
+            title: t('tableColetaPorLocalData:colFamilia'),
+            dataIndex: 'familia',
+            key: 'familia'
+        },
+        {
+            title: t('tableColetaPorLocalData:colEspecie'),
+            dataIndex: 'especie',
+            key: 'especie'
+        },
+        {
+            title: t('tableColetaPorLocalData:colAutor'),
+            dataIndex: 'autor',
+            key: 'autor'
+        },
+        {
+            title: t('tableColetaPorLocalData:colTombo'),
+            dataIndex: 'tombo',
+            key: 'tombo'
+        }
+    ]
 
-const TableColetaPorLocalData = ({ data, loading }) => {
     if (!data) return <div />
     if (data.length === 0) return <div />
     if (loading) {
@@ -50,4 +51,4 @@ const TableColetaPorLocalData = ({ data, loading }) => {
     )
 }
 
-export default TableColetaPorLocalData
+export default withTranslation()(TableColetaPorLocalData)

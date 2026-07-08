@@ -1,0 +1,18 @@
+{
+  "titulo": "Relatório de Coleta por Coletor e Intervalo de Data",
+  "filtros": "Filtros do relatório",
+  "coletor": "Coletor:",
+  "placeholderColetor": "John",
+  "intervaloData": "Intervalo de data:",
+  "gerarPDF": "Gerar PDF",
+  "gerarPDFModelo2": "Gerar PDF modelo 2",
+  "sintetico": "Sintético",
+  "analitico": "Analítico",
+  "notifBuscarDados": "Buscar dados",
+  "erroBuscarDados": "Erro ao buscar os dados do relatório.",
+  "erroServidorBuscarDados": "Erro de servidor ao buscar os dados do relatório.",
+  "notifExportarPDF": "Exportar PDF",
+  "pdfSucesso": "PDF gerado com sucesso.",
+  "erroExportarPDF": "Erro ao exportar o PDF.",
+  "erroServidorExportarPDF": "Erro de servidor ao exportar o PDF."
+}
