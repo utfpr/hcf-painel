@@ -11,13 +11,14 @@ import {
     Spin
 } from 'antd'
 import axios from 'axios'
+import { withTranslation } from 'react-i18next'
 
 import { PlusCircleOutlined, MinusCircleOutlined } from '@ant-design/icons'
 
 const { Panel } = Collapse
 const { Option } = Select
 
-const FilterTombos = ({ onChange }) => {
+const FilterTombos = ({ onChange, t}) => {
     const [selectedFilters, setSelectedFilters] = useState([])
     const [filterValues, setFilterValues] = useState({})
 
@@ -148,11 +149,11 @@ const FilterTombos = ({ onChange }) => {
     const availableFilters = [
         {
             key: 'identificador_id',
-            label: 'Identificador',
+            label: t('filterTombos:labelIdentificador'),
             component: (
                 <Select
                     showSearch
-                    placeholder="Digite o nome do identificador"
+                    placeholder={t('filterTombos:placeholderIdentificador')}
                     filterOption={false}
                     onSearch={buscarIdentificadorPorNome}
                     onSelect={selecionarIdentificadorPorNome}
@@ -163,7 +164,7 @@ const FilterTombos = ({ onChange }) => {
                     notFoundContent={
                         loadingIdentificador
                             ? <Spin size="small" />
-                            : 'Nenhum resultado'
+                            : t('filterTombos:nenhumResultado')
                     }
                     style={{ width: '100%' }}
                 >
@@ -177,11 +178,11 @@ const FilterTombos = ({ onChange }) => {
         },
         {
             key: 'coletor_id',
-            label: 'Coletor',
+            label: t('filterTombos:labelColetor'),
             component: (
                 <Select
                     showSearch
-                    placeholder="Digite o nome do coletor"
+                    placeholder={t('filterTombos:placeholderColetor')}
                     filterOption={false}
                     onSearch={buscarColetorPorNome}
                     onSelect={selecionarColetorPorNome}
@@ -192,7 +193,7 @@ const FilterTombos = ({ onChange }) => {
                     notFoundContent={
                         loadingColetor
                             ? <Spin size="small" />
-                            : 'Nenhum resultado'
+                            : t('filterTombos:nenhumResultado')
                     }
                     style={{ width: '100%' }}
                 >
@@ -206,12 +207,12 @@ const FilterTombos = ({ onChange }) => {
         },
         {
             key: 'numero_coleta',
-            label: 'Número de Coleta',
+            label: t('filterTombos:labelNumeroColeta'),
             component: (
                 <Select
                     showSearch
                     optionFilterProp="children"
-                    placeholder="Selecione um coletor primeiro"
+                    placeholder={t('filterTombos:placeholderNumeroColeta')}
                     disabled={!filterValues.coletor_id}
                     onChange={value => handleFilterChange('numero_coleta', value || undefined)}
                     allowClear
@@ -219,7 +220,7 @@ const FilterTombos = ({ onChange }) => {
                     notFoundContent={
                         loadingNumeroColeta
                             ? <Spin size="small" />
-                            : 'Nenhum número de coleta disponível'
+                            : t('filterTombos:nenhumNumeroColeta')
                     }
                     style={{ width: '100%' }}
                 >
@@ -269,7 +270,7 @@ const FilterTombos = ({ onChange }) => {
                 trigger={['click']}
             >
                 <Button icon={<PlusCircleOutlined />}>
-                    Adicionar Filtro
+                    {t('filterTombos:adicionarFiltro')}
                 </Button>
             </Dropdown>
 
@@ -291,7 +292,7 @@ const FilterTombos = ({ onChange }) => {
                                     }}
                                 >
                                     <MinusCircleOutlined style={{ marginRight: -3 }} />
-                                    Remover
+                                    {t('filterTombos:remover')}
                                 </Button>
                             )}
                         >
@@ -306,4 +307,4 @@ const FilterTombos = ({ onChange }) => {
     )
 }
 
-export default FilterTombos
+export default withTranslation()(FilterTombos)

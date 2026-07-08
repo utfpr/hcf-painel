@@ -16,6 +16,7 @@ import { Form } from '@ant-design/compatible'
 import {
     DeleteOutlined, EditOutlined, ExportOutlined, SearchOutlined
 } from '@ant-design/icons'
+import { withTranslation } from 'react-i18next'
 
 import FilterTombos from '../components/FilterTombos'
 import HeaderListComponent from '../components/HeaderListComponent'
@@ -29,44 +30,6 @@ const { confirm } = Modal
 const FormItem = Form.Item
 const { Option } = Select
 const { Panel } = Collapse
-
-const columns = [
-    {
-        title: 'HCF',
-        type: 'number',
-        key: 'hcf',
-        width: 100
-    },
-    {
-        title: 'Nome popular',
-        type: 'text',
-        key: 'nomePopular',
-        width: 200
-    },
-    {
-        title: 'Nome científico',
-        type: 'text',
-        key: 'nomeCientifico',
-        width: 200
-    },
-    {
-        title: 'Data de coleta',
-        type: 'text',
-        key: 'data',
-        width: 100
-    },
-    {
-        title: 'Coletor',
-        type: 'text',
-        key: 'coletor',
-        width: 200
-    },
-    {
-        title: 'Ação',
-        key: 'acao',
-        width: 120
-    }
-]
 
 class ListaTombosScreen extends Component {
     constructor(props) {
@@ -97,7 +60,7 @@ class ListaTombosScreen extends Component {
                 })
                 if (response.status === 204) {
                     this.requisitaListaTombos(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir tombo', 'O tombo foi excluído com sucesso.')
+                    this.notificacao('success', this.props.t('listaTombosScreen:notifExcluirTombo'), this.props.t('listaTombosScreen:tomboExcluido'))
                 }
             })
             .catch(err => {
@@ -107,9 +70,9 @@ class ListaTombosScreen extends Component {
                 const { response } = err
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                        this.openNotificationWithIcon('warning', this.props.t('common:tituloFalha'), response.data.error.message)
                     } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao excluir o tombo, tente novamente.')
+                        this.openNotificationWithIcon('error', this.props.t('common:tituloFalha'), this.props.t('listaTombosScreen:erroExcluirTombo'))
                     }
                     const { error } = response.data
                     console.error(error.message)
@@ -128,11 +91,11 @@ class ListaTombosScreen extends Component {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this
         confirm({
-            title: 'Você tem certeza que deseja excluir este tombo?',
-            content: 'Ao clicar em SIM, o tombo será excluído.',
-            okText: 'SIM',
+            title: this.props.t('listaTombosScreen:confirmExcluirTitulo'),
+            content: this.props.t('listaTombosScreen:confirmExcluirConteudo'),
+            okText: this.props.t('common:sim'),
             okType: 'danger',
-            cancelText: 'NÃO',
+            cancelText: this.props.t('common:nao'),
             onOk() {
                 self.requisitaExclusao(id)
             },
@@ -277,12 +240,12 @@ class ListaTombosScreen extends Component {
                     loading: false
                 })
             } else {
-                this.notificacao('warning', 'Buscar tombos', 'Erro ao buscar os tombos.')
+                this.notificacao('warning', this.props.t('listaTombosScreen:notifBuscarTombos'), this.props.t('listaTombosScreen:erroBuscarTombos'))
                 this.setState({ loading: false })
             }
         } catch (err) {
             this.setState({ loading: false })
-            this.notificacao('error', 'Erro', 'Falha ao buscar tombos.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('listaTombosScreen:erroBuscarTombosFalha'))
         }
     }
 
@@ -323,13 +286,14 @@ class ListaTombosScreen extends Component {
     }
 
     renderPainelBusca(getFieldDecorator) {
+        const { t } = this.props
         return (
-            <Card title="Buscar tombo">
+            <Card title={t('listaTombosScreen:buscarTombo')}>
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>HCF:</span>
+                                <span>{t('listaTombosScreen:labelHcf')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
@@ -344,14 +308,14 @@ class ListaTombosScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Tipo:</span>
+                                <span>{t('listaTombosScreen:labelTipo')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('tipo')(
-                                        <Select placeholder="Selecione" allowClear>
-                                            <Option value="1">Parátipo</Option>
-                                            <Option value="2">Isótipo</Option>
+                                        <Select placeholder={t('listaTombosScreen:placeholderSelecione')} allowClear>
+                                            <Option value="1">{t('listaTombosScreen:tipoParatipo')}</Option>
+                                            <Option value="2">{t('listaTombosScreen:tipoIsotipo')}</Option>
                                         </Select>
                                     )}
                                 </FormItem>
@@ -359,16 +323,16 @@ class ListaTombosScreen extends Component {
                         </Col>
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Situação:</span>
+                                <span>{t('listaTombosScreen:labelSituacao')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('situacao')(
-                                        <Select placeholder="Selecione" allowClear>
-                                            <Option value="regular">Regular</Option>
-                                            <Option value="permutado">Permutado</Option>
-                                            <Option value="emprestado">Emprestado</Option>
-                                            <Option value="doado">Doado</Option>
+                                        <Select placeholder={t('listaTombosScreen:placeholderSelecione')} allowClear>
+                                            <Option value="regular">{t('listaTombosScreen:situacaoRegular')}</Option>
+                                            <Option value="permutado">{t('listaTombosScreen:situacaoPermutado')}</Option>
+                                            <Option value="emprestado">{t('listaTombosScreen:situacaoEmprestado')}</Option>
+                                            <Option value="doado">{t('listaTombosScreen:situacaoDoado')}</Option>
                                         </Select>
                                     )}
                                 </FormItem>
@@ -379,36 +343,36 @@ class ListaTombosScreen extends Component {
                     <Row gutter={8}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Nome científico:</span>
+                                <span>{t('listaTombosScreen:labelNomeCientifico')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('nomeCientifico')(
-                                        <Input placeholder="Passiflora edulis" type="text" />
+                                        <Input placeholder={t('listaTombosScreen:placeholderNomeCientifico')} type="text" />
                                     )}
                                 </FormItem>
                             </Col>
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Nome popular:</span>
+                                <span>{t('listaTombosScreen:labelNomePopular')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('nomePopular')(
-                                        <Input placeholder="Maracujá" type="text" />
+                                        <Input placeholder={t('listaTombosScreen:placeholderNomePopular')} type="text" />
                                     )}
                                 </FormItem>
                             </Col>
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Código de barras da foto:</span>
+                                <span>{t('listaTombosScreen:labelCodigoBarraFoto')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('codigoBarraFoto')(
-                                        <Input placeholder="Digite o código de barras" type="text" />
+                                        <Input placeholder={t('listaTombosScreen:placeholderCodigoBarraFoto')} type="text" />
                                     )}
                                 </FormItem>
                             </Col>
@@ -437,7 +401,7 @@ class ListaTombosScreen extends Component {
                                     }}
                                     className="login-form-button"
                                 >
-                                    Limpar
+                                    {t('common:limpar')}
                                 </Button>
                             </FormItem>
                         </Col>
@@ -448,7 +412,7 @@ class ListaTombosScreen extends Component {
                                     htmlType="submit"
                                     className="login-form-button ant-btn-pesquisar"
                                 >
-                                    Pesquisar
+                                    {t('common:pesquisar')}
                                 </Button>
                             </FormItem>
                         </Col>
@@ -501,7 +465,7 @@ class ListaTombosScreen extends Component {
             .map(extraiApenasChave)
 
         if (campos.length < 1 || campos.length > 5) {
-            this.openNotificationWithIcon('warning', 'Alerta', 'Selecione o mínimo de 1 e o máximo de 5 colunas para exportar.')
+            this.openNotificationWithIcon('warning', this.props.t('listaTombosScreen:alerta'), this.props.t('listaTombosScreen:erroMinMaxColunas'))
             return
         }
 
@@ -512,12 +476,12 @@ class ListaTombosScreen extends Component {
         ].filter(item => item === true)
 
         if (grupos.length === 0) {
-            this.openNotificationWithIcon('warning', 'Alerta', 'Informe um período, tombos específicos ou período de datas para exportar')
+            this.openNotificationWithIcon('warning', this.props.t('listaTombosScreen:alerta'), this.props.t('listaTombosScreen:erroInformePeriodo'))
             return
         }
 
         if (grupos.length > 1) {
-            this.openNotificationWithIcon('warning', 'Alerta', 'A exportação dos dados deve ser feita por um período, tombos específicos ou período de datas, nunca utilizando dois ou mais')
+            this.openNotificationWithIcon('warning', this.props.t('listaTombosScreen:alerta'), this.props.t('listaTombosScreen:erroExportacaoUnica'))
             return
         }
 
@@ -572,11 +536,12 @@ class ListaTombosScreen extends Component {
 
     renderExportar(getFieldDecorator) {
         const { fetching, data } = this.state
+        const { t } = this.props
 
         return (
             <Form onSubmit={this.handleSubmitExport}>
                 <Collapse accordion>
-                    <Panel header="Selecione os campos a serem exportados:" key="1">
+                    <Panel header={t('listaTombosScreen:panelHeaderCampos')} key="1">
 
                         <Row gutter={8}>
                             <Col xs={24} sm={24} md={12} lg={4} xl={4}>
@@ -584,7 +549,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('hcf')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="red">HCF</Tag>
+                                            <Tag color="red">{t('listaTombosScreen:tagHcf')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -594,7 +559,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('data_coleta')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="magenta">Data da Coleta</Tag>
+                                            <Tag color="magenta">{t('listaTombosScreen:tagDataColeta')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -604,7 +569,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('familia')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="red">Família</Tag>
+                                            <Tag color="red">{t('listaTombosScreen:tagFamilia')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -614,7 +579,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('subfamilia')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="green">Subfamília</Tag>
+                                            <Tag color="green">{t('listaTombosScreen:tagSubfamilia')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -624,7 +589,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('genero')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="red">Gênero</Tag>
+                                            <Tag color="red">{t('listaTombosScreen:tagGenero')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -634,7 +599,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('especie')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="blue">Espécie</Tag>
+                                            <Tag color="blue">{t('listaTombosScreen:tagEspecie')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -644,7 +609,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('subespecie')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="blue">Subespécie</Tag>
+                                            <Tag color="blue">{t('listaTombosScreen:tagSubespecie')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -654,7 +619,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('variedade')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="red">Variedade</Tag>
+                                            <Tag color="red">{t('listaTombosScreen:tagVariedade')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -664,7 +629,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('sequencia')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="gold">Sequencia do tombo</Tag>
+                                            <Tag color="gold">{t('listaTombosScreen:tagSequencia')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -674,7 +639,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('codigo_barra')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="gold">Codigo de barra</Tag>
+                                            <Tag color="gold">{t('listaTombosScreen:tagCodigoBarra')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -684,7 +649,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('latitude')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="purple">Latitude</Tag>
+                                            <Tag color="purple">{t('listaTombosScreen:tagLatitude')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -694,7 +659,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('longitude')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="green">Longitude</Tag>
+                                            <Tag color="green">{t('listaTombosScreen:tagLongitude')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -704,7 +669,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('altitude')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="green">Altitude</Tag>
+                                            <Tag color="green">{t('listaTombosScreen:tagAltitude')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -714,7 +679,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('numero_coleta')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="volcano">Nº Coleta</Tag>
+                                            <Tag color="volcano">{t('listaTombosScreen:tagNumeroColeta')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -724,7 +689,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('coletores')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="geekblue">Coletores</Tag>
+                                            <Tag color="geekblue">{t('listaTombosScreen:tagColetores')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -734,7 +699,7 @@ class ListaTombosScreen extends Component {
                         <Row gutter={8}>
                             <Col xs={24} sm={12} md={12} lg={12} xl={12}>
                                 <Col span={24}>
-                                    <span>A partir de:</span>
+                                    <span>{t('listaTombosScreen:aPartirDe')}</span>
                                 </Col>
                                 <Col span={24}>
                                     <FormItem>
@@ -748,7 +713,7 @@ class ListaTombosScreen extends Component {
                             </Col>
                             <Col xs={24} sm={12} md={12} lg={12} xl={12}>
                                 <Col span={24}>
-                                    <span>Até:</span>
+                                    <span>{t('listaTombosScreen:ate')}</span>
                                 </Col>
                                 <Col span={24}>
                                     <FormItem>
@@ -763,12 +728,12 @@ class ListaTombosScreen extends Component {
                         </Row>
                         <br />
                         <Row gutter={8} type="flex" justify="center">
-                            <span>OU</span>
+                            <span>{t('listaTombosScreen:ou')}</span>
                         </Row>
                         <Row gutter={8} style={{ marginTop: '20px' }}>
                             <Col span={24}>
                                 <Col span={24}>
-                                    <span>Numeros dos tombos a serem exportados:</span>
+                                    <span>{t('listaTombosScreen:numerosTombos')}</span>
                                 </Col>
                                 <Col span={24}>
                                     <FormItem>
@@ -792,13 +757,13 @@ class ListaTombosScreen extends Component {
                         </Row>
                         <br />
                         <Row gutter={8} type="flex" justify="center">
-                            <span>OU</span>
+                            <span>{t('listaTombosScreen:ou')}</span>
                         </Row>
                         <br />
                         <Row gutter={8}>
                             <Col xs={24} sm={12} md={12} lg={12} xl={12}>
                                 <Col span={24}>
-                                    <span>A partir da data de tombo:</span>
+                                    <span>{t('listaTombosScreen:aPartirDataTombo')}</span>
                                 </Col>
                                 <Col span={24}>
                                     <FormItem>
@@ -806,7 +771,7 @@ class ListaTombosScreen extends Component {
                                             <DatePicker
                                                 style={{ width: '100%' }}
                                                 format="DD/MM/YYYY"
-                                                placeholder="Seleciona a data de tombo inicial"
+                                                placeholder={t('listaTombosScreen:placeholderDataInicial')}
                                             />
                                         )}
                                     </FormItem>
@@ -814,7 +779,7 @@ class ListaTombosScreen extends Component {
                             </Col>
                             <Col xs={24} sm={12} md={12} lg={12} xl={12}>
                                 <Col span={24}>
-                                    <span>Até a data de tombo:</span>
+                                    <span>{t('listaTombosScreen:ateDataTombo')}</span>
                                 </Col>
                                 <Col span={24}>
                                     <FormItem>
@@ -822,7 +787,7 @@ class ListaTombosScreen extends Component {
                                             <DatePicker
                                                 style={{ width: '100%' }}
                                                 format="DD/MM/YYYY"
-                                                placeholder="Seleciona a data de tombo final"
+                                                placeholder={t('listaTombosScreen:placeholderDataFinal')}
                                             />
                                         )}
                                     </FormItem>
@@ -837,7 +802,7 @@ class ListaTombosScreen extends Component {
                                 htmlType="submit"
                                 style={{ backgroundColor: '#FF7F00', borderColor: '#FF7F00' }}
                             >
-                                Exportar
+                                {t('listaTombosScreen:exportar')}
                             </Button>
                         </Row>
                     </Panel>
@@ -849,9 +814,49 @@ class ListaTombosScreen extends Component {
 
     render() {
         const { getFieldDecorator } = this.props.form
+        const { t } = this.props
+
+        const columns = [
+            {
+                title: t('listaTombosScreen:colHcf'),
+                type: 'number',
+                key: 'hcf',
+                width: 100
+            },
+            {
+                title: t('listaTombosScreen:colNomePopular'),
+                type: 'text',
+                key: 'nomePopular',
+                width: 200
+            },
+            {
+                title: t('listaTombosScreen:colNomeCientifico'),
+                type: 'text',
+                key: 'nomeCientifico',
+                width: 200
+            },
+            {
+                title: t('listaTombosScreen:colDataColeta'),
+                type: 'text',
+                key: 'data',
+                width: 100
+            },
+            {
+                title: t('listaTombosScreen:colColetor'),
+                type: 'text',
+                key: 'coletor',
+                width: 200
+            },
+            {
+                title: t('listaTombosScreen:colAcao'),
+                key: 'acao',
+                width: 120
+            }
+        ]
+
         return (
             <div>
-                <HeaderListComponent title="Tombos" link="/tombos/novo" />
+                <HeaderListComponent title={t('listaTombosScreen:titulo')} link="/tombos/novo" />
                 <Divider dashed />
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
@@ -874,4 +879,6 @@ class ListaTombosScreen extends Component {
         )
     }
 }
-export default Form.create()(ListaTombosScreen)
+const ListaTombosScreenWithForm = Form.create()(ListaTombosScreen)
+
+export default withTranslation()(ListaTombosScreenWithForm)
