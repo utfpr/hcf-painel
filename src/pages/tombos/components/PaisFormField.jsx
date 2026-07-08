@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Select, Spin } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 import SelectedFormFiled from './SelectedFormFiled'
 
@@ -9,6 +10,7 @@ const { Option } = Select
 const PaisFormField = ({
     initialValue, paises, getFieldDecorator, onClickAddMore, onChange, validateStatus, onSearch, loading = false, debounceDelay = 200, disabled = false
 }) => {
+    const { t } = useTranslation('tombo')
     const optionPaises = () => paises.map(item => (
         <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
     ))
@@ -19,9 +21,9 @@ const PaisFormField = ({
             md={8}
             lg={8}
             xl={8}
-            title="País:"
+            title={t('country')}
             initialValue={initialValue}
-            placeholder="Selecione um pais"
+            placeholder={t('selectCountry')}
             fieldName="pais"
             getFieldDecorator={getFieldDecorator}
             onClickAddMore={onClickAddMore}
@@ -33,7 +35,7 @@ const PaisFormField = ({
             others={{
                 allowClear: true,
                 loading: loading,
-                notFoundContent: loading ? <Spin size="small" /> : 'Nenhum país encontrado',
+                notFoundContent: loading ? <Spin size="small" /> : t('noneFoundEntity', { entity: t('country').replace(':', '').toLowerCase() }),
                 filterOption: onSearch ? false : undefined
             }}
         >

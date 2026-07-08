@@ -18,6 +18,10 @@ void i18n
 
     detection: {
       order: [
+        'localStorage',
+        'path'
+      ],
+      caches: ['localStorage']
         'navigator',
         'path',
         'localStorage',
@@ -56,6 +60,7 @@ void i18n
       'authService',
       'listaTaxonomiaVariedade',
       'exportacaoScreen',
+      'tombo',
       'servicosSpeciesLink',
       'servicosReflora',
       'verPendencia',

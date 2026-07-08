@@ -9,6 +9,7 @@ import {
 import axios from 'axios'
 import debounce from 'lodash.debounce'
 import moment from 'moment'
+import { withTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import TotalRecordFound from '@/components/TotalRecordsFound'
@@ -30,45 +31,47 @@ const FormItem = Form.Item
 const { Option } = Select
 const { Panel } = Collapse
 
-const columns = [
+const buildColumns = t => [
     {
-        title: 'HCF',
+        title: t('tombo:tableHcf'),
         type: 'number',
         key: 'hcf',
         width: 100
     },
     {
-        title: 'Nome popular',
+        title: t('tombo:tablePopularName'),
         type: 'text',
         key: 'nomePopular',
         width: 200
     },
     {
-        title: 'Nome científico',
+        title: t('tombo:tableScientificName'),
         type: 'text',
         key: 'nomeCientifico',
         width: 200
     },
     {
-        title: 'Data de coleta',
+        title: t('tombo:tableCollectionDate'),
         type: 'text',
         key: 'data',
         width: 100
     },
     {
-        title: 'Coletor',
+        title: t('tombo:tableCollector'),
         type: 'text',
         key: 'coletor',
         width: 200
     },
     {
-        title: 'Ação',
+        title: t('tombo:tableAction'),
         key: 'acao',
         width: 120
     }
 ]
 
 class ListaTombosScreen extends Component {
+    tTombo = (key, options) => this.props.t(`tombo:${key}`, options)
+
     constructor(props) {
         super(props)
         this.state = {
@@ -97,7 +100,7 @@ class ListaTombosScreen extends Component {
                 })
                 if (response.status === 204) {
                     this.requisitaListaTombos(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir tombo', 'O tombo foi excluído com sucesso.')
+                    this.notificacao('success', this.tTombo('deleteTomboTitle'), this.tTombo('deleteTomboSuccess'))
                 }
             })
             .catch(err => {
@@ -107,9 +110,9 @@ class ListaTombosScreen extends Component {
                 const { response } = err
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                        this.openNotificationWithIcon('warning', this.props.t('common:tituloFalha'), response.data.error.message)
                     } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao excluir o tombo, tente novamente.')
+                        this.openNotificationWithIcon('error', this.props.t('common:tituloFalha'), this.tTombo('deleteTomboError'))
                     }
                     const { error } = response.data
                     console.error(error.message)
@@ -128,11 +131,11 @@ class ListaTombosScreen extends Component {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this
         confirm({
-            title: 'Você tem certeza que deseja excluir este tombo?',
-            content: 'Ao clicar em SIM, o tombo será excluído.',
-            okText: 'SIM',
+            title: this.tTombo('deleteTomboConfirmTitle'),
+            content: this.tTombo('deleteTomboConfirmContent'),
+            okText: this.props.t('common:sim'),
             okType: 'danger',
-            cancelText: 'NÃO',
+            cancelText: this.props.t('common:nao'),
             onOk() {
                 self.requisitaExclusao(id)
             },
@@ -277,12 +280,12 @@ class ListaTombosScreen extends Component {
                     loading: false
                 })
             } else {
-                this.notificacao('warning', 'Buscar tombos', 'Erro ao buscar os tombos.')
+                this.notificacao('warning', this.tTombo('searchTombos'), this.tTombo('searchTombosError'))
                 this.setState({ loading: false })
             }
         } catch (err) {
             this.setState({ loading: false })
-            this.notificacao('error', 'Erro', 'Falha ao buscar tombos.')
+            this.notificacao('error', this.props.t('common:erro'), this.tTombo('searchTombosFailure'))
         }
     }
 
@@ -324,12 +327,12 @@ class ListaTombosScreen extends Component {
 
     renderPainelBusca(getFieldDecorator) {
         return (
-            <Card title="Buscar tombo">
+            <Card title={this.tTombo('searchTombo')}>
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>HCF:</span>
+                                <span>{`${this.tTombo('tableHcf')}:`}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
@@ -344,14 +347,14 @@ class ListaTombosScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Tipo:</span>
+                                <span>{this.tTombo('type')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('tipo')(
-                                        <Select placeholder="Selecione" allowClear>
-                                            <Option value="1">Parátipo</Option>
-                                            <Option value="2">Isótipo</Option>
+                                        <Select placeholder={this.tTombo('select')} allowClear>
+                                            <Option value="1">{this.tTombo('paratype')}</Option>
+                                            <Option value="2">{this.tTombo('isotype')}</Option>
                                         </Select>
                                     )}
                                 </FormItem>
@@ -359,16 +362,16 @@ class ListaTombosScreen extends Component {
                         </Col>
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Situação:</span>
+                                <span>{this.tTombo('status')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('situacao')(
-                                        <Select placeholder="Selecione" allowClear>
-                                            <Option value="regular">Regular</Option>
-                                            <Option value="permutado">Permutado</Option>
-                                            <Option value="emprestado">Emprestado</Option>
-                                            <Option value="doado">Doado</Option>
+                                        <Select placeholder={this.tTombo('select')} allowClear>
+                                            <Option value="regular">{this.tTombo('regular')}</Option>
+                                            <Option value="permutado">{this.tTombo('swapped')}</Option>
+                                            <Option value="emprestado">{this.tTombo('borrowed')}</Option>
+                                            <Option value="doado">{this.tTombo('donated')}</Option>
                                         </Select>
                                     )}
                                 </FormItem>
@@ -379,36 +382,36 @@ class ListaTombosScreen extends Component {
                     <Row gutter={8}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Nome científico:</span>
+                                <span>{this.tTombo('detailScientificName')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('nomeCientifico')(
-                                        <Input placeholder="Passiflora edulis" type="text" />
+                                        <Input placeholder={this.tTombo('scientificNamePlaceholder')} type="text" />
                                     )}
                                 </FormItem>
                             </Col>
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Nome popular:</span>
+                                <span>{this.tTombo('popularName')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('nomePopular')(
-                                        <Input placeholder="Maracujá" type="text" />
+                                        <Input placeholder={this.tTombo('popularNamePlaceholder')} type="text" />
                                     )}
                                 </FormItem>
                             </Col>
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Código de barras da foto:</span>
+                                <span>{this.tTombo('barcodePhoto')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('codigoBarraFoto')(
-                                        <Input placeholder="Digite o código de barras" type="text" />
+                                        <Input placeholder={this.tTombo('barcodePhotoPlaceholder')} type="text" />
                                     )}
                                 </FormItem>
                             </Col>
@@ -437,7 +440,7 @@ class ListaTombosScreen extends Component {
                                     }}
                                     className="login-form-button"
                                 >
-                                    Limpar
+                                    {this.tTombo('clear')}
                                 </Button>
                             </FormItem>
                         </Col>
@@ -448,7 +451,7 @@ class ListaTombosScreen extends Component {
                                     htmlType="submit"
                                     className="login-form-button ant-btn-pesquisar"
                                 >
-                                    Pesquisar
+                                    {this.props.t('common:pesquisar')}
                                 </Button>
                             </FormItem>
                         </Col>
@@ -501,7 +504,7 @@ class ListaTombosScreen extends Component {
             .map(extraiApenasChave)
 
         if (campos.length < 1 || campos.length > 5) {
-            this.openNotificationWithIcon('warning', 'Alerta', 'Selecione o mínimo de 1 e o máximo de 5 colunas para exportar.')
+            this.openNotificationWithIcon('warning', this.tTombo('alert'), this.tTombo('exportMinMaxColumns'))
             return
         }
 
@@ -512,12 +515,12 @@ class ListaTombosScreen extends Component {
         ].filter(item => item === true)
 
         if (grupos.length === 0) {
-            this.openNotificationWithIcon('warning', 'Alerta', 'Informe um período, tombos específicos ou período de datas para exportar')
+            this.openNotificationWithIcon('warning', this.tTombo('alert'), this.tTombo('exportProvideFilter'))
             return
         }
 
         if (grupos.length > 1) {
-            this.openNotificationWithIcon('warning', 'Alerta', 'A exportação dos dados deve ser feita por um período, tombos específicos ou período de datas, nunca utilizando dois ou mais')
+            this.openNotificationWithIcon('warning', this.tTombo('alert'), this.tTombo('exportOnlyOneGroup'))
             return
         }
 
@@ -576,7 +579,7 @@ class ListaTombosScreen extends Component {
         return (
             <Form onSubmit={this.handleSubmitExport}>
                 <Collapse accordion>
-                    <Panel header="Selecione os campos a serem exportados:" key="1">
+                    <Panel header={this.tTombo('exportSelectFields')} key="1">
 
                         <Row gutter={8}>
                             <Col xs={24} sm={24} md={12} lg={4} xl={4}>
@@ -584,7 +587,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('hcf')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="red">HCF</Tag>
+                                            <Tag color="red">{this.tTombo('tableHcf')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -594,7 +597,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('data_coleta')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="magenta">Data da Coleta</Tag>
+                                            <Tag color="magenta">{this.tTombo('exportCollectionDate')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -604,7 +607,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('familia')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="red">Família</Tag>
+                                            <Tag color="red">{this.tTombo('family').replace(':', '')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -614,7 +617,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('subfamilia')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="green">Subfamília</Tag>
+                                            <Tag color="green">{this.tTombo('subfamily').replace(':', '')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -624,7 +627,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('genero')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="red">Gênero</Tag>
+                                            <Tag color="red">{this.tTombo('genus').replace(':', '')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -634,7 +637,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('especie')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="blue">Espécie</Tag>
+                                            <Tag color="blue">{this.tTombo('species').replace(':', '')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -644,7 +647,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('subespecie')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="blue">Subespécie</Tag>
+                                            <Tag color="blue">{this.tTombo('subspecies').replace(':', '')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -654,7 +657,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('variedade')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="red">Variedade</Tag>
+                                            <Tag color="red">{this.tTombo('variety').replace(':', '')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -664,7 +667,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('sequencia')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="gold">Sequencia do tombo</Tag>
+                                            <Tag color="gold">{this.tTombo('sequenceTombo')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -674,7 +677,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('codigo_barra')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="gold">Codigo de barra</Tag>
+                                            <Tag color="gold">{this.tTombo('barcode')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -684,7 +687,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('latitude')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="purple">Latitude</Tag>
+                                            <Tag color="purple">{this.tTombo('latitude').replace(':', '')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -694,7 +697,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('longitude')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="green">Longitude</Tag>
+                                            <Tag color="green">{this.tTombo('longitude').replace(':', '')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -704,7 +707,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('altitude')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="green">Altitude</Tag>
+                                            <Tag color="green">{this.tTombo('altitude').replace(':', '')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -714,7 +717,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('numero_coleta')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="volcano">Nº Coleta</Tag>
+                                            <Tag color="volcano">{this.tTombo('collectionNumberShort')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -724,7 +727,7 @@ class ListaTombosScreen extends Component {
                                     {getFieldDecorator('coletores')(
                                         <Checkbox>
                                             {' '}
-                                            <Tag color="geekblue">Coletores</Tag>
+                                            <Tag color="geekblue">{this.tTombo('collectors').replace(':', '')}</Tag>
                                         </Checkbox>
                                     )}
                                 </FormItem>
@@ -734,7 +737,7 @@ class ListaTombosScreen extends Component {
                         <Row gutter={8}>
                             <Col xs={24} sm={12} md={12} lg={12} xl={12}>
                                 <Col span={24}>
-                                    <span>A partir de:</span>
+                                    <span>{this.tTombo('from')}</span>
                                 </Col>
                                 <Col span={24}>
                                     <FormItem>
@@ -748,7 +751,7 @@ class ListaTombosScreen extends Component {
                             </Col>
                             <Col xs={24} sm={12} md={12} lg={12} xl={12}>
                                 <Col span={24}>
-                                    <span>Até:</span>
+                                    <span>{this.tTombo('until')}</span>
                                 </Col>
                                 <Col span={24}>
                                     <FormItem>
@@ -763,12 +766,12 @@ class ListaTombosScreen extends Component {
                         </Row>
                         <br />
                         <Row gutter={8} type="flex" justify="center">
-                            <span>OU</span>
+                            <span>{this.tTombo('or')}</span>
                         </Row>
                         <Row gutter={8} style={{ marginTop: '20px' }}>
                             <Col span={24}>
                                 <Col span={24}>
-                                    <span>Numeros dos tombos a serem exportados:</span>
+                                    <span>{this.tTombo('exportSpecificTombos')}</span>
                                 </Col>
                                 <Col span={24}>
                                     <FormItem>
@@ -792,13 +795,13 @@ class ListaTombosScreen extends Component {
                         </Row>
                         <br />
                         <Row gutter={8} type="flex" justify="center">
-                            <span>OU</span>
+                            <span>{this.tTombo('or')}</span>
                         </Row>
                         <br />
                         <Row gutter={8}>
                             <Col xs={24} sm={12} md={12} lg={12} xl={12}>
                                 <Col span={24}>
-                                    <span>A partir da data de tombo:</span>
+                                    <span>{this.tTombo('fromTomboDate')}</span>
                                 </Col>
                                 <Col span={24}>
                                     <FormItem>
@@ -806,7 +809,7 @@ class ListaTombosScreen extends Component {
                                             <DatePicker
                                                 style={{ width: '100%' }}
                                                 format="DD/MM/YYYY"
-                                                placeholder="Seleciona a data de tombo inicial"
+                                                placeholder={this.tTombo('selectInitialTomboDate')}
                                             />
                                         )}
                                     </FormItem>
@@ -814,7 +817,7 @@ class ListaTombosScreen extends Component {
                             </Col>
                             <Col xs={24} sm={12} md={12} lg={12} xl={12}>
                                 <Col span={24}>
-                                    <span>Até a data de tombo:</span>
+                                    <span>{this.tTombo('untilTomboDate')}</span>
                                 </Col>
                                 <Col span={24}>
                                     <FormItem>
@@ -822,7 +825,7 @@ class ListaTombosScreen extends Component {
                                             <DatePicker
                                                 style={{ width: '100%' }}
                                                 format="DD/MM/YYYY"
-                                                placeholder="Seleciona a data de tombo final"
+                                                placeholder={this.tTombo('selectFinalTomboDate')}
                                             />
                                         )}
                                     </FormItem>
@@ -837,7 +840,7 @@ class ListaTombosScreen extends Component {
                                 htmlType="submit"
                                 style={{ backgroundColor: '#FF7F00', borderColor: '#FF7F00' }}
                             >
-                                Exportar
+                                {this.tTombo('export')}
                             </Button>
                         </Row>
                     </Panel>
@@ -851,12 +854,12 @@ class ListaTombosScreen extends Component {
         const { getFieldDecorator } = this.props.form
         return (
             <div>
-                <HeaderListComponent title="Tombos" link="/tombos/novo" />
+                <HeaderListComponent title={this.tTombo('listTitle')} link="/tombos/novo" />
                 <Divider dashed />
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
                 <SimpleTableComponent
-                    columns={columns}
+                    columns={buildColumns(this.props.t)}
                     data={this.state.tombos}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
@@ -874,4 +877,4 @@ class ListaTombosScreen extends Component {
         )
     }
 }
-export default Form.create()(ListaTombosScreen)
+export default withTranslation()(Form.create()(ListaTombosScreen))

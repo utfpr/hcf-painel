@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Select, Spin } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 import SelectedFormFiled from './SelectedFormFiled'
 
@@ -10,6 +11,7 @@ const SoloFormField = ({
     initialValue, solos, getFieldDecorator, onClickAddMore, onChange, validateStatus,
     onSearch, loading = false, debounceDelay = 200
 }) => {
+    const { t } = useTranslation('tombo')
     const optionSolos = () => solos.map(item => (
         <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
     ))
@@ -21,9 +23,9 @@ const SoloFormField = ({
             md={12}
             lg={12}
             xl={12}
-            title="Solo:"
+            title={t('soil')}
             initialValue={initialValue}
-            placeholder="Digite para buscar solos..."
+            placeholder={t('searchSoils')}
             fieldName="solo"
             getFieldDecorator={getFieldDecorator}
             onClickAddMore={onClickAddMore}
@@ -34,7 +36,7 @@ const SoloFormField = ({
             others={{
                 allowClear: true,
                 loading: loading,
-                notFoundContent: loading ? <Spin size="small" /> : 'Nenhum solo encontrado',
+                notFoundContent: loading ? <Spin size="small" /> : t('noneFoundEntity', { entity: t('soil').replace(':', '').toLowerCase() }),
                 filterOption: onSearch ? false : undefined
             }}
         >
