@@ -1,0 +1,17 @@
+{
+  "confirmarExcluirCidade": "Você tem certeza que deseja excluir esta cidade?",
+  "descricaoExcluirCidade": "Ao clicar em SIM, a cidade será excluída.",
+
+  "sucessoExcluirCidade": "Cidade excluída com sucesso.",
+  "sucessoCadastroCidade": "Cidade cadastrada com sucesso.",
+  "sucessoAtualizarCidade": "Cidade atualizada com sucesso.",
+
+  "cidadeJaCadastrada": "Cidade já cadastrada",
+
+  "erroBuscarCidades": "Falha ao buscar cidades.",
+  "erroBuscarEstados": "Falha ao buscar estados.",
+  "erroBuscarPaises": "Falha ao buscar países.",
+
+  "erroExcluirCidade": "Falha ao excluir a cidade.",
+  "erroSalvarCidade": "Houve um problema ao salvar a cidade."
+}
