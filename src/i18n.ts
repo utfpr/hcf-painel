@@ -76,11 +76,12 @@ void i18n
       'relatorioLocalColetaPeriodoScreen',
       'relatorioQtdPeriodoScreen',
       'relatorioTombosPorCidadeScreen',
+      'relatorioCodigoBarrasScreen',
       'relatorioColetaLocalPeriodoScreen',
       'relatorioColetaPeriodoScreen',
       'relatorioColetorPeriodoScreen',
       'cidadeComponent',
-      'cidadeContainer',
+      'cidadeContainer'
     ],
     defaultNS: 'common',
     interpolation: {
