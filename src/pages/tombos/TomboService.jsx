@@ -152,16 +152,6 @@ export const requisitaNumeroHcfService = getResponse => {
         })
 }
 
-export const requisitaProximoNumeroHcfService = getResponse => {
-    return axios.get('/tombos/proximo_numero')
-        .then(response => {
-            getResponse(response)
-        })
-        .catch(error => {
-            catchError(error)
-        })
-}
-
 export const requisitaEstadosService = (getResponse, id) => {
     return axios.get('/estados', {
         params: {
