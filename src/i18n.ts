@@ -76,6 +76,7 @@ void i18n
       'relatorioLocalColetaPeriodoScreen',
       'relatorioQtdPeriodoScreen',
       'relatorioTombosPorCidadeScreen',
+      'listaPendenciasScreen',
       'relatorioCodigoBarrasScreen',
       'relatorioColetaLocalPeriodoScreen',
       'relatorioColetaPeriodoScreen',
