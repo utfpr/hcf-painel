@@ -20,11 +20,7 @@ void i18n
         'navigator',
         'localStorage'
       ],
-      caches: [
-        'navigator',
-        'path',
-        'localStorage'
-      ]
+      caches: ['localStorage']
     },
     backend: {
       loadPath: '/locales/{{lng}}/{{ns}}.json'
