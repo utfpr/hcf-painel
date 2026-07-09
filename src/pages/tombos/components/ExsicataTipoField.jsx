@@ -3,6 +3,7 @@ import React from 'react'
 import {
     Col, Radio, Tag
 } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 import { Form } from '@ant-design/compatible'
 
@@ -13,10 +14,11 @@ const RadioGroup = Radio.Group
 const ExsicataTipoFormField = ({
     getFieldDecorator, onChange, value
 }) => {
+    const { t } = useTranslation('tombo')
     return (
         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
             <Col span={24}>
-                <span>Tipo da exsicata:</span>
+                <span>{t('exsicataType')}</span>
             </Col>
             <Col span={24}>
                 <FormItem>

@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Select, Spin } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 import SelectedFormFiled from './SelectedFormFiled'
 
@@ -10,6 +11,7 @@ const SubfamiliaFormField = ({
     initialValue, subfamilias, getFieldDecorator, onClickAddMore, onChange, validateStatus, autor,
     onSearch, loading = false, debounceDelay = 200, disabled = false
 }) => {
+    const { t } = useTranslation('tombo')
     const optionSubfamilias = () => subfamilias?.map(item => (
         <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
     ))
@@ -21,9 +23,9 @@ const SubfamiliaFormField = ({
             md={12}
             lg={12}
             xl={12}
-            title="Subfamília:"
+            title={t('subfamily')}
             initialValue={initialValue}
-            placeholder="Digite para buscar subfamílias..."
+            placeholder={t('searchSubfamilies')}
             fieldName="subfamilia"
             getFieldDecorator={getFieldDecorator}
             onClickAddMore={onClickAddMore}
@@ -36,7 +38,7 @@ const SubfamiliaFormField = ({
             others={{
                 allowClear: true,
                 loading: loading,
-                notFoundContent: loading ? <Spin size="small" /> : 'Nenhuma subfamília encontrada',
+                notFoundContent: loading ? <Spin size="small" /> : t('noneFoundEntity', { entity: t('subfamily').replace(':', '').toLowerCase() }),
                 filterOption: onSearch ? false : undefined
             }}
         >

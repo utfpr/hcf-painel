@@ -1,0 +1,15 @@
+{
+  "titulo": "Relatório de Coleta Intervalo de Data",
+  "filtros": "Filtros do relatório",
+  "intervaloData": "Intervalo de data:",
+  "gerarPDF": "Gerar PDF",
+  "sintetico": "Sintético",
+  "analitico": "Analítico",
+  "notifBuscarDados": "Buscar dados",
+  "erroBuscarDados": "Erro ao buscar os dados do relatório.",
+  "erroServidorBuscarDados": "Erro de servidor ao buscar os dados do relatório.",
+  "notifExportarPDF": "Exportar PDF",
+  "pdfSucesso": "PDF gerado com sucesso.",
+  "erroExportarPDF": "Erro ao exportar o PDF.",
+  "erroServidorExportarPDF": "Erro de servidor ao exportar o PDF."
+}

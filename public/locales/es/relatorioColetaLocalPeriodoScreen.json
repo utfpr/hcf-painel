@@ -1,0 +1,17 @@
+{
+  "titulo": "Informe de Colecta por Local e Intervalo de Fecha",
+  "filtros": "Filtros del informe",
+  "local": "Local:",
+  "placeholderLocal": "RPPN Moreira Sales",
+  "intervaloData": "Intervalo de fecha:",
+  "gerarPDF": "Generar PDF",
+  "sintetico": "Sintético",
+  "analitico": "Analítico",
+  "notifBuscarDados": "Buscar datos",
+  "erroBuscarDados": "Error al buscar los datos del informe.",
+  "erroServidorBuscarDados": "Error del servidor al buscar los datos del informe.",
+  "notifExportarPDF": "Exportar PDF",
+  "pdfSucesso": "PDF generado con éxito.",
+  "erroExportarPDF": "Error al exportar el PDF.",
+  "erroServidorExportarPDF": "Error del servidor al exportar el PDF."
+}

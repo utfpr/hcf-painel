@@ -1,0 +1,17 @@
+{
+  "confirmarExcluirCidade": "Are you sure you want to delete this city?",
+  "descricaoExcluirCidade": "By clicking YES, the city will be deleted.",
+
+  "sucessoExcluirCidade": "City deleted successfully.",
+  "sucessoCadastroCidade": "City registered successfully.",
+  "sucessoAtualizarCidade": "City updated successfully.",
+
+  "cidadeJaCadastrada": "City already registered",
+
+  "erroBuscarCidades": "Failed to fetch cities.",
+  "erroBuscarEstados": "Failed to fetch states.",
+  "erroBuscarPaises": "Failed to fetch countries.",
+
+  "erroExcluirCidade": "Failed to delete the city.",
+  "erroSalvarCidade": "There was a problem saving the city."
+}

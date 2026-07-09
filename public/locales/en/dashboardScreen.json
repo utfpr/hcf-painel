@@ -1,0 +1,14 @@
+{
+  "totalTombos": "Total Records",
+  "internos": "Internal",
+  "externos": "External",
+  "fotos": "Photos",
+  "ano": "Year {{ano}}",
+  "topFamilias": "Top Families",
+  "topGeneros": "Top Genera",
+  "topEspecies": "Top Species",
+  "topColetores": "Top Collectors",
+  "topMunicipios": "Top Municipalities",
+  "topHerbarios": "Top Herbaria",
+  "erroCarregar": "Unable to load the information, please try again later."
+}
