@@ -80,7 +80,8 @@ void i18n
       'relatorioColetaPeriodoScreen',
       'relatorioColetorPeriodoScreen',
       'cidadeComponent',
-      'cidadeContainer'
+      'cidadeContainer',
+      'perfilScreen'
     ],
     defaultNS: 'common',
     interpolation: {
