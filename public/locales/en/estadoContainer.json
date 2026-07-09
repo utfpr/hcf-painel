@@ -1,0 +1,15 @@
+{
+  "confirmarExcluirEstado": "Are you sure you want to delete this state?",
+  "descricaoExcluirEstado": "When you click YES, the state will be deleted.",
+
+  "sucessoExcluirEstado": "The state was successfully deleted.",
+  "sucessoCadastroEstado": "State successfully registered.",
+  "sucessoAtualizarEstado": "State successfully updated.",
+
+  "estadoJaCadastrado": "Name, code or DDD of the state is already registered.",
+
+  "erroBuscarPaises": "Failed to fetch countries.",
+  "erroBuscarEstados": "Failed to fetch states.",
+  "erroExcluirEstado": "Failed to delete the state.",
+  "erroSalvarEstado": "There was a problem saving the state."
+}

@@ -1,0 +1,15 @@
+{
+  "confirmarExcluirEstado": "¿Está seguro de que desea eliminar este estado?",
+  "descricaoExcluirEstado": "Cuando haga clic en SÍ, el estado se eliminará.",
+
+  "sucessoExcluirEstado": "El estado fue eliminado con éxito.",
+  "sucessoCadastroEstado": "Estado registrado con éxito.",
+  "sucessoAtualizarEstado": "Estado actualizado con éxito.",
+
+  "estadoJaCadastrado": "El nombre, sigla o DDD del estado ya está registrado.",
+
+  "erroBuscarPaises": "Error al buscar países.",
+  "erroBuscarEstados": "Error al buscar estados.",
+  "erroExcluirEstado": "Error al eliminar el estado.",
+  "erroSalvarEstado": "Hubo un problema al guardar el estado."
+}

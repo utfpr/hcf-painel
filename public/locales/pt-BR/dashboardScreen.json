@@ -1,0 +1,14 @@
+{
+  "totalTombos": "Total de Tombos",
+  "internos": "Internos",
+  "externos": "Externos",
+  "fotos": "Fotos",
+  "ano": "Ano {{ano}}",
+  "topFamilias": "Top Famílias",
+  "topGeneros": "Top Gêneros",
+  "topEspecies": "Top Espécies",
+  "topColetores": "Top Coletores",
+  "topMunicipios": "Top Municípios",
+  "topHerbarios": "Top Herbários",
+  "erroCarregar": "Não foi possível carregar as informações, tente novamente mais tarde."
+}

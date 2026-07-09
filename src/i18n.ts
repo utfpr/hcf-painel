@@ -16,14 +16,11 @@ void i18n
     ],
     detection: {
       order: [
-        'localStorage',
-        'path'
-      ],
-      caches: [
+        'navigator',
         'path',
-        'localStorage',
-        'navigator'
-      ]
+        'localStorage'
+      ],
+      caches: ['localStorage']
     },
     backend: {
       loadPath: '/locales/{{lng}}/{{ns}}.json'
@@ -76,13 +73,22 @@ void i18n
       'relatorioLocalColetaPeriodoScreen',
       'relatorioQtdPeriodoScreen',
       'relatorioTombosPorCidadeScreen',
+      'estadoContainer',
+      'estadoComponent',
+      'rankingCard',
+      'dashboardScreen',
+      'comparativeAreaChart',
+      'listaLocalColetaScreen',
+      'listaPendenciasScreen',
+      'relatorioCodigoBarrasScreen',
       'relatorioColetaLocalPeriodoScreen',
       'relatorioColetaPeriodoScreen',
       'relatorioColetorPeriodoScreen',
       'cidadeComponent',
       'cidadeContainer',
       'fichaTomboScreen',
-      'fichaTomboActions'
+      'fichaTomboActions',
+      'perfilScreen'
     ],
     defaultNS: 'common',
     interpolation: {

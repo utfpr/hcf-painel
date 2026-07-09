@@ -1,0 +1,9 @@
+{
+  "titulo": "Informe de Código de Barras",
+  "filtros": "Filtros del informe",
+  "intervaloData": "Intervalo de fecha:",
+  "gerarPaginaImpressao": "Generar página para impresión",
+  "notifBuscarDados": "Buscar datos",
+  "erroBuscarDados": "Error al buscar los datos del informe.",
+  "erroServidorBuscarDados": "Error del servidor al buscar los datos del informe."
+}

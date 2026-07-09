@@ -1,0 +1,9 @@
+{
+  "titulo": "Barcode Report",
+  "filtros": "Report filters",
+  "intervaloData": "Date range:",
+  "gerarPaginaImpressao": "Generate page for printing",
+  "notifBuscarDados": "Fetch data",
+  "erroBuscarDados": "Error fetching the report data.",
+  "erroServidorBuscarDados": "Server error while fetching the report data."
+}

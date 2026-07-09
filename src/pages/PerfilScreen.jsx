@@ -2,10 +2,11 @@ import React, { Component } from 'react'
 
 import { Button, Card, Col, Divider, Form, Input, Modal, Row, Spin, notification } from 'antd'
 import axios from 'axios'
+import { withTranslation } from 'react-i18next'
 
 import { broker } from '@/libraries/events/Broker'
 
-export default class PerfilScreen extends Component {
+class PerfilScreen extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -31,16 +32,16 @@ export default class PerfilScreen extends Component {
                         })
                     } else {
                         notification.error({
-                            message: 'Erro',
-                            description: 'Não foi possível carregar as informações do usuário.'
+                            message: this.props.t('common:erro'),
+                            description: this.props.t('perfilScreen:erroCarregarUsuario')
                         })
                         this.setState({ loading: false })
                     }
                 })
                 .catch(() => {
                     notification.error({
-                        message: 'Erro',
-                        description: 'Houve um problema ao buscar os dados do usuário. Tente novamente.'
+                        message: this.props.t('common:erro'),
+                        description: this.props.t('perfilScreen:erroBuscarUsuario')
                     })
                     this.setState({ loading: false })
                 })
@@ -73,15 +74,15 @@ export default class PerfilScreen extends Component {
         })
             .then(() => {
                 notification.success({
-                    message: 'Sucesso',
-                    description: 'Senha atualizada com sucesso.'
+                    message: this.props.t('common:tituloSucesso'),
+                    description: this.props.t('perfilScreen:senhaAtualizadaSucesso')
                 })
                 this.setState({ modalVisible: false })
             })
             .catch(() => {
                 notification.error({
-                    message: 'Erro',
-                    description: 'Não foi possível atualizar a senha. Verifique os dados e tente novamente.'
+                    message: this.props.t('common:erro'),
+                    description: this.props.t('perfilScreen:erroAtualizarSenha')
                 })
             })
             .finally(() => {
@@ -103,8 +104,8 @@ export default class PerfilScreen extends Component {
         })
             .then(() => {
                 notification.success({
-                    message: 'Sucesso',
-                    description: 'Perfil atualizado com sucesso.'
+                    message: this.props.t('common:tituloSucesso'),
+                    description: this.props.t('perfilScreen:perfilAtualizadoSucesso')
                 })
 
                 const updatedUser = { ...user, nome: values.nome, telefone: values.telefone }
@@ -119,8 +120,8 @@ export default class PerfilScreen extends Component {
             })
             .catch(() => {
                 notification.error({
-                    message: 'Erro',
-                    description: 'Não foi possível atualizar o perfil. Tente novamente.'
+                    message: this.props.t('common:erro'),
+                    description: this.props.t('perfilScreen:erroAtualizarPerfil')
                 })
             })
             .finally(() => {
@@ -129,42 +130,43 @@ export default class PerfilScreen extends Component {
     }
 
     render() {
+        const { t } = this.props
         const { user, loading, modalVisible, confirmLoading, updateProfileModalVisible } = this.state
 
         if (loading) {
-            return <Spin tip="Carregando..." />
+            return <Spin tip={t('common:carregando')} />
         }
 
         return (
-            <Card title="Perfil do Usuário" style={{ maxWidth: 600, margin: '0 auto' }}>
+            <Card title={t('perfilScreen:tituloPerfil')} style={{ maxWidth: 600, margin: '0 auto' }}>
                 <Row gutter={[16, 16]}>
                     <Col span={24}>
                         <div>
-                            <strong>Nome:</strong>
+                            <strong>{t('perfilScreen:dadosNome')}</strong>
                         </div>
                         <div>{user.nome}</div>
                     </Col>
                     <Col span={24}>
                         <div>
-                            <strong>E-mail:</strong>
+                            <strong>{t('perfilScreen:dadosEmail')}</strong>
                         </div>
                         <div>{user.email}</div>
                     </Col>
                     <Col span={24}>
                         <div>
-                            <strong>Telefone:</strong>
+                            <strong>{t('perfilScreen:dadosTelefone')}</strong>
                         </div>
-                        <div>{user.telefone || 'Não informado'}</div>
+                        <div>{user.telefone || t('perfilScreen:naoInformado')}</div>
                     </Col>
                     <Col span={24}>
                         <div>
-                            <strong>RA:</strong>
+                            <strong>{t('perfilScreen:dadosRa')}</strong>
                         </div>
-                        <div>{user.ra || 'Não informado'}</div>
+                        <div>{user.ra || t('perfilScreen:naoInformado')}</div>
                     </Col>
                     <Col span={24}>
                         <div>
-                            <strong>Tipo de Usuário:</strong>
+                            <strong>{t('perfilScreen:dadosTipoUsuario')}</strong>
                         </div>
                         <div>{user.tipos_usuario.tipo}</div>
                     </Col>
@@ -172,15 +174,15 @@ export default class PerfilScreen extends Component {
                 <Divider />
                 <Row gutter={[16, 16]} justify="center">
                     <Col>
-                        <Button type="primary" onClick={this.handleOpenUpdateProfileModal}>Atualizar Perfil</Button>
+                        <Button type="primary" onClick={this.handleOpenUpdateProfileModal}>{t('perfilScreen:atualizarPerfil')}</Button>
                     </Col>
                     <Col>
-                        <Button type="default" onClick={this.handleOpenModal}>Atualizar Senha</Button>
+                        <Button type="default" onClick={this.handleOpenModal}>{t('perfilScreen:atualizarSenha')}</Button>
                     </Col>
                 </Row>
 
                 <Modal
-                    title="Atualizar Perfil"
+                    title={t('perfilScreen:atualizarPerfil')}
                     visible={updateProfileModalVisible}
                     onCancel={this.handleCloseUpdateProfileModal}
                     footer={null}
@@ -193,62 +195,62 @@ export default class PerfilScreen extends Component {
                         onFinish={this.handleUpdateProfile}
                     >
                         <Form.Item
-                            label="Nome"
+                            label={t('perfilScreen:formNome')}
                             name="nome"
                             labelCol={{ span: 24 }}
                             wrapperCol={{ span: 24 }}
-                            rules={[{ message: 'Insira o nome.' }]}
+                            rules={[{ message: t('perfilScreen:insiraNome') }]}
                         >
                             <Input />
                         </Form.Item>
                         <Form.Item
-                            label="Telefone"
+                            label={t('perfilScreen:formTelefone')}
                             name="telefone"
                             labelCol={{ span: 24 }}
                             wrapperCol={{ span: 24 }}
-                            rules={[{ message: 'Insira o telefone.' }]}
+                            rules={[{ message: t('perfilScreen:insiraTelefone') }]}
                         >
                             <Input />
                         </Form.Item>
                         <Form.Item>
                             <Button type="primary" htmlType="submit" loading={confirmLoading} block>
-                                Atualizar Perfil
+                                {t('perfilScreen:atualizarPerfil')}
                             </Button>
                         </Form.Item>
                     </Form>
                 </Modal>
 
                 <Modal
-                    title="Atualizar Senha"
+                    title={t('perfilScreen:atualizarSenha')}
                     visible={modalVisible}
                     onCancel={this.handleCloseModal}
                     footer={null}
                 >
                     <Form onFinish={this.handleUpdatePassword}>
                         <Form.Item
-                            label="Senha Atual"
+                            label={t('perfilScreen:senhaAtual')}
                             name="senhaAtual"
                             labelCol={{ span: 24 }}
                             wrapperCol={{ span: 24 }}
-                            rules={[{ message: 'Insira sua senha atual.' }]}
+                            rules={[{ message: t('perfilScreen:insiraSenhaAtual') }]}
                         >
                             <Input.Password />
                         </Form.Item>
                         <Form.Item
-                            label="Nova Senha"
+                            label={t('perfilScreen:novaSenha')}
                             name="novaSenha"
                             labelCol={{ span: 24 }}
                             wrapperCol={{ span: 24 }}
                             rules={[
-                                { message: 'Insira a nova senha.' },
-                                { min: 6, message: 'A senha deve ter no mínimo 6 caracteres.' }
+                                { message: t('perfilScreen:insiraNovaSenha') },
+                                { min: 6, message: t('perfilScreen:senhaMinima') }
                             ]}
                         >
                             <Input.Password />
                         </Form.Item>
                         <Form.Item>
                             <Button type="primary" htmlType="submit" loading={confirmLoading} block>
-                                Atualizar Senha
+                                {t('perfilScreen:atualizarSenha')}
                             </Button>
                         </Form.Item>
                     </Form>
@@ -257,3 +259,5 @@ export default class PerfilScreen extends Component {
         )
     }
 }
+
+export default withTranslation()(PerfilScreen)

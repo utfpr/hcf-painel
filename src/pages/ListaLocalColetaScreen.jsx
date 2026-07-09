@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom'
 import TotalRecordsFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons'
+import { withTranslation } from 'react-i18next'
 
 import HeaderListComponent from '../components/HeaderListComponent'
 import ModalCadastroComponent from '../components/ModalCadastroComponent'
@@ -20,33 +21,6 @@ const { confirm } = Modal
 const { Option } = Select
 const FormItem = Form.Item
 
-const columns = [
-    {
-        title: 'Nome do Local',
-        type: 'text',
-        key: 'nome'
-    },
-    {
-        title: 'País',
-        type: 'text',
-        key: 'pais'
-    },
-    {
-        title: 'Estado',
-        type: 'text',
-        key: 'estado'
-    },
-    {
-        title: 'Cidade',
-        type: 'text',
-        key: 'cidade'
-    },
-    {
-        title: 'Ação',
-        key: 'acao'
-    }
-]
-
 class ListaLocaisColeta extends Component {
     constructor(props) {
         super(props)
@@ -57,7 +31,7 @@ class ListaLocaisColeta extends Component {
             pagina: 1,
             visibleModal: false,
             loadingModal: false,
-            titulo: 'Cadastrar',
+            titulo: props.t('common:cadastrar'),
             id: -1,
             valores: {},
             paises: [],
@@ -103,7 +77,7 @@ class ListaLocaisColeta extends Component {
             }
         } catch (err) {
             this.setState({ fetchingPaises: false })
-            this.notificacao('error', 'Erro', 'Falha ao buscar países.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('listaLocalColetaScreen:erroBuscarPaises'))
         }
     }
 
@@ -126,7 +100,7 @@ class ListaLocaisColeta extends Component {
             }
         } catch (err) {
             this.setState({ fetchingEstados: false })
-            this.notificacao('error', 'Erro', 'Falha ao buscar estados.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('listaLocalColetaScreen:erroBuscarEstados'))
         }
     }
 
@@ -149,7 +123,7 @@ class ListaLocaisColeta extends Component {
             }
         } catch (err) {
             this.setState({ fetchingCidades: false })
-            this.notificacao('error', 'Erro', 'Falha ao buscar cidades.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('listaLocalColetaScreen:erroBuscarCidades'))
         }
     }
 
@@ -193,7 +167,7 @@ class ListaLocaisColeta extends Component {
 
                 this.setState({
                     visibleModal: true,
-                    titulo: 'Atualizar',
+                    titulo: this.props.t('common:atualizar'),
                     id: local.id,
                     nomeLocal: local.descricao,
                     paisSelecionado: paisId,
@@ -209,7 +183,7 @@ class ListaLocaisColeta extends Component {
                 })
             }
         } catch (err) {
-            this.notificacao('error', 'Erro', 'Falha ao buscar dados do local.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('listaLocalColetaScreen:erroBuscarDadosLocal'))
         }
     }
 
@@ -250,15 +224,15 @@ class ListaLocaisColeta extends Component {
                     loading: false
                 })
             } else if (response.status === 400) {
-                this.notificacao('warning', 'Buscar locais', 'Erro ao buscar os locais de coleta.')
+                this.notificacao('warning', this.props.t('listaLocalColetaScreen:notifBuscarLocais'), this.props.t('listaLocalColetaScreen:erroBuscarLocais'))
                 this.setState({ loading: false })
             } else {
-                this.notificacao('error', 'Erro', 'Erro do servidor ao buscar os locais de coleta.')
+                this.notificacao('error', this.props.t('common:erro'), this.props.t('listaLocalColetaScreen:erroServidorBuscarLocais'))
                 this.setState({ loading: false })
             }
         } catch (err) {
             this.setState({ loading: false })
-            this.notificacao('error', 'Erro', 'Falha ao buscar locais de coleta.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('listaLocalColetaScreen:erroBuscarLocaisFalha'))
         }
     }
 
@@ -290,10 +264,10 @@ class ListaLocaisColeta extends Component {
 
             if (response.status === 204) {
                 this.requisitaListaLocais(this.state.valores, this.state.pagina)
-                this.notificacao('success', 'Sucesso', 'Local de coleta cadastrado com sucesso.')
+                this.notificacao('success', this.props.t('common:tituloSucesso'), this.props.t('listaLocalColetaScreen:localCadastrado'))
             }
         } catch (err) {
-            this.notificacao('error', 'Falha', 'Houve um problema ao cadastrar o local de coleta.')
+            this.notificacao('error', this.props.t('common:tituloFalha'), this.props.t('listaLocalColetaScreen:erroCadastrarLocal'))
         } finally {
             this.setState({ loadingModal: false })
             this.limparCamposModal()
@@ -313,10 +287,10 @@ class ListaLocaisColeta extends Component {
 
             if (response.status === 200) {
                 this.requisitaListaLocais(this.state.valores, this.state.pagina)
-                this.notificacao('success', 'Sucesso', 'Local de coleta atualizado com sucesso.')
+                this.notificacao('success', this.props.t('common:tituloSucesso'), this.props.t('listaLocalColetaScreen:localAtualizado'))
             }
         } catch (err) {
-            this.notificacao('error', 'Falha', 'Houve um problema ao atualizar o local de coleta.')
+            this.notificacao('error', this.props.t('common:tituloFalha'), this.props.t('listaLocalColetaScreen:erroAtualizarLocal'))
         } finally {
             this.setState({ loadingModal: false })
             this.limparCamposModal()
@@ -329,20 +303,20 @@ class ListaLocaisColeta extends Component {
 
             if (response.status === 204) {
                 this.requisitaListaLocais(this.state.valores, this.state.pagina)
-                this.notificacao('success', 'Excluir local', 'O local de coleta foi excluído com sucesso.')
+                this.notificacao('success', this.props.t('listaLocalColetaScreen:notifExcluirLocal'), this.props.t('listaLocalColetaScreen:localExcluido'))
             }
         } catch (err) {
-            this.notificacao('error', 'Falha', 'Houve um problema ao excluir o local de coleta.')
+            this.notificacao('error', this.props.t('common:tituloFalha'), this.props.t('listaLocalColetaScreen:erroExcluirLocal'))
         }
     }
 
     mostraMensagemDelete = id => {
         confirm({
-            title: 'Você tem certeza que deseja excluir este local de coleta?',
-            content: 'Ao clicar em SIM, o local será excluído.',
-            okText: 'SIM',
+            title: this.props.t('listaLocalColetaScreen:confirmExcluirTitulo'),
+            content: this.props.t('listaLocalColetaScreen:confirmExcluirConteudo'),
+            okText: this.props.t('common:sim'),
             okType: 'danger',
-            cancelText: 'NÃO',
+            cancelText: this.props.t('common:nao'),
             onOk: () => {
                 this.requisitaExclusao(id)
             }
@@ -376,14 +350,14 @@ class ListaLocaisColeta extends Component {
                         await this.requisitaPaises()
                         this.setState({
                             visibleModal: true,
-                            titulo: 'Cadastrar',
+                            titulo: this.props.t('common:cadastrar'),
                             id: -1
                         })
                         this.limparCamposModal()
                     }}
                     style={{ backgroundColor: '#5CB85C', borderColor: '#5CB85C', width: '100%' }}
                 >
-                    Adicionar
+                    {this.props.t('common:adicionar')}
                 </Button>
             )
         }
@@ -391,19 +365,20 @@ class ListaLocaisColeta extends Component {
     }
 
     renderPainelBusca = getFieldDecorator => {
+        const { t } = this.props
         const { paises, estados, cidades, fetchingPaises, fetchingEstados, fetchingCidades } = this.state
         const paisSelecionadoBusca = this.props.form.getFieldValue('pais')
         const estadoSelecionadoBusca = this.props.form.getFieldValue('estado')
 
         return (
-            <Card title="Buscar local de coleta">
+            <Card title={t('listaLocalColetaScreen:buscarLocal')}>
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={[8, 20]}>
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
-                            <FormItem label="Nome do Local:">
+                            <FormItem label={t('listaLocalColetaScreen:labelNomeLocal')}>
                                 {getFieldDecorator('descricao')(
                                     <Input
-                                        placeholder="Buscar por nome do local"
+                                        placeholder={t('listaLocalColetaScreen:placeholderNomeLocal')}
                                         allowClear
                                     />
                                 )}
@@ -411,8 +386,8 @@ class ListaLocaisColeta extends Component {
                         </Col>
 
                         <SelectedFormField
-                            title="País:"
-                            placeholder="Selecione um país"
+                            title={t('listaLocalColetaScreen:labelPais')}
+                            placeholder={t('listaLocalColetaScreen:placeholderPais')}
                             fieldName="pais"
                             getFieldDecorator={getFieldDecorator}
                             onSearch={searchText => {
@@ -433,7 +408,7 @@ class ListaLocaisColeta extends Component {
                             }}
                             others={{
                                 loading: fetchingPaises,
-                                notFoundContent: fetchingPaises ? <Spin size="small" /> : 'Nenhum resultado encontrado',
+                                notFoundContent: fetchingPaises ? <Spin size="small" /> : t('common:nenhumResultadoEncontrado'),
                                 allowClear: true
                             }}
                             debounceDelay={200}
@@ -449,8 +424,8 @@ class ListaLocaisColeta extends Component {
                         </SelectedFormField>
 
                         <SelectedFormField
-                            title="Estado:"
-                            placeholder={paisSelecionadoBusca ? 'Selecione um estado' : 'Selecione um país primeiro'}
+                            title={t('listaLocalColetaScreen:labelEstado')}
+                            placeholder={paisSelecionadoBusca ? t('listaLocalColetaScreen:placeholderEstado') : t('listaLocalColetaScreen:placeholderEstadoAntes')}
                             fieldName="estado"
                             getFieldDecorator={getFieldDecorator}
                             disabled={false}
@@ -475,7 +450,7 @@ class ListaLocaisColeta extends Component {
                             }}
                             others={{
                                 loading: fetchingEstados,
-                                notFoundContent: fetchingEstados ? <Spin size="small" /> : 'Nenhum resultado encontrado',
+                                notFoundContent: fetchingEstados ? <Spin size="small" /> : t('common:nenhumResultadoEncontrado'),
                                 allowClear: true
                             }}
                             debounceDelay={200}
@@ -491,8 +466,8 @@ class ListaLocaisColeta extends Component {
                         </SelectedFormField>
 
                         <SelectedFormField
-                            title="Cidade:"
-                            placeholder={estadoSelecionadoBusca ? 'Selecione uma cidade' : 'Selecione um estado primeiro'}
+                            title={t('listaLocalColetaScreen:labelCidade')}
+                            placeholder={estadoSelecionadoBusca ? t('listaLocalColetaScreen:placeholderCidade') : t('listaLocalColetaScreen:placeholderCidadeAntes')}
                             fieldName="cidade"
                             getFieldDecorator={getFieldDecorator}
                             disabled={false}
@@ -508,7 +483,7 @@ class ListaLocaisColeta extends Component {
                             }}
                             others={{
                                 loading: fetchingCidades,
-                                notFoundContent: fetchingCidades ? <Spin size="small" /> : 'Nenhum resultado encontrado',
+                                notFoundContent: fetchingCidades ? <Spin size="small" /> : t('common:nenhumResultadoEncontrado'),
                                 allowClear: true
                             }}
                             debounceDelay={200}
@@ -548,7 +523,7 @@ class ListaLocaisColeta extends Component {
                                             }}
                                             className="login-form-button"
                                         >
-                                            Limpar
+                                            {t('common:limpar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -559,7 +534,7 @@ class ListaLocaisColeta extends Component {
                                             htmlType="submit"
                                             className="login-form-button ant-btn-pesquisar"
                                         >
-                                            Pesquisar
+                                            {t('common:pesquisar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -573,6 +548,34 @@ class ListaLocaisColeta extends Component {
 
     renderFormulario = () => {
         const { getFieldDecorator } = this.props.form
+        const { t } = this.props
+
+        const columns = [
+            {
+                title: t('listaLocalColetaScreen:colNome'),
+                type: 'text',
+                key: 'nome'
+            },
+            {
+                title: t('listaLocalColetaScreen:colPais'),
+                type: 'text',
+                key: 'pais'
+            },
+            {
+                title: t('listaLocalColetaScreen:colEstado'),
+                type: 'text',
+                key: 'estado'
+            },
+            {
+                title: t('listaLocalColetaScreen:colCidade'),
+                type: 'text',
+                key: 'cidade'
+            },
+            {
+                title: t('listaLocalColetaScreen:colAcao'),
+                key: 'acao'
+            }
+        ]
 
         return (
             <div>
@@ -591,7 +594,7 @@ class ListaLocaisColeta extends Component {
                             if (this.state.nomeLocal && this.state.nomeLocal.trim() !== '' && this.state.cidadeSelecionada) {
                                 this.cadastraNovoLocal()
                             } else {
-                                this.notificacao('warning', 'Falha', 'Informe o nome do local de coleta e selecione país, estado e cidade.')
+                                this.notificacao('warning', this.props.t('common:tituloFalha'), this.props.t('listaLocalColetaScreen:informeNomeLocal'))
                             }
                         } else if (this.state.nomeLocal && this.state.nomeLocal.trim() !== '' && this.state.cidadeSelecionada) {
                             this.atualizaLocal()
@@ -608,7 +611,7 @@ class ListaLocaisColeta extends Component {
 
                 <Row gutter={24} style={{ marginBottom: '20px' }}>
                     <Col xs={24} sm={14} md={18} lg={20} xl={20}>
-                        <h2 style={{ fontWeight: 200 }}>Locais de Coleta</h2>
+                        <h2 style={{ fontWeight: 200 }}>{t('listaLocalColetaScreen:titulo')}</h2>
                     </Col>
                     <Col xs={24} sm={10} md={6} lg={4} xl={4}>
                         {this.renderAdd()}
@@ -638,13 +641,14 @@ class ListaLocaisColeta extends Component {
 
     renderModalConteudo = () => {
         const { getFieldDecorator } = this.props.form
+        const { t } = this.props
         const { paises, estados, cidades, fetchingPaises, fetchingEstados, fetchingCidades, paisSelecionado, estadoSelecionado } = this.state
 
         return (
             <div>
                 <Row gutter={8}>
                     <Col span={24}>
-                        <span>Nome do Local de Coleta:</span>
+                        <span>{t('listaLocalColetaScreen:labelNomeLocalModal')}</span>
                     </Col>
                 </Row>
                 <Row gutter={8}>
@@ -652,7 +656,7 @@ class ListaLocaisColeta extends Component {
                         <FormItem>
                             {getFieldDecorator('nomeLocalModal')(
                                 <Input
-                                    placeholder="RPPN Moreira Sales"
+                                    placeholder={t('listaLocalColetaScreen:placeholderNomeLocalModal')}
                                     onChange={e => this.setState({ nomeLocal: e.target.value })}
                                 />
                             )}
@@ -662,8 +666,8 @@ class ListaLocaisColeta extends Component {
 
                 <Row gutter={8} style={{ marginTop: 16 }}>
                     <SelectedFormField
-                        title="País:"
-                        placeholder="Selecione um país"
+                        title={t('listaLocalColetaScreen:labelPais')}
+                        placeholder={t('listaLocalColetaScreen:placeholderPais')}
                         fieldName="paisModal"
                         getFieldDecorator={getFieldDecorator}
                         onSearch={searchText => {
@@ -705,8 +709,8 @@ class ListaLocaisColeta extends Component {
 
                 <Row gutter={8} style={{ marginTop: 16 }}>
                     <SelectedFormField
-                        title="Estado:"
-                        placeholder={paisSelecionado ? 'Selecione um estado' : 'Selecione um país primeiro'}
+                        title={t('listaLocalColetaScreen:labelEstado')}
+                        placeholder={paisSelecionado ? t('listaLocalColetaScreen:placeholderEstado') : t('listaLocalColetaScreen:placeholderEstadoAntes')}
                         fieldName="estadoModal"
                         getFieldDecorator={getFieldDecorator}
                         disabled={!paisSelecionado}
@@ -748,8 +752,8 @@ class ListaLocaisColeta extends Component {
 
                 <Row gutter={8} style={{ marginTop: 16 }}>
                     <SelectedFormField
-                        title="Cidade:"
-                        placeholder={estadoSelecionado ? 'Selecione uma cidade' : 'Selecione um estado primeiro'}
+                        title={t('listaLocalColetaScreen:labelCidade')}
+                        placeholder={estadoSelecionado ? t('listaLocalColetaScreen:placeholderCidade') : t('listaLocalColetaScreen:placeholderCidadeAntes')}
                         fieldName="cidadeModal"
                         getFieldDecorator={getFieldDecorator}
                         disabled={!estadoSelecionado}
@@ -789,4 +793,6 @@ class ListaLocaisColeta extends Component {
     }
 }
 
-export default Form.create()(ListaLocaisColeta)
+const ListaLocaisColetaWithForm = Form.create()(ListaLocaisColeta)
+
+export default withTranslation()(ListaLocaisColetaWithForm)
