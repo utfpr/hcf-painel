@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom'
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import { DeleteOutlined, SearchOutlined } from '@ant-design/icons'
+import { withTranslation } from 'react-i18next'
 
 import SimpleTableComponent from '../components/SimpleTableComponent'
 import { formatarDataBDtoDataHora } from '../helpers/conversoes/ConversoesData'
@@ -16,39 +17,6 @@ import { formatarDataBDtoDataHora } from '../helpers/conversoes/ConversoesData'
 const { confirm } = Modal
 const FormItem = Form.Item
 const { Option } = Select
-
-const columns = [
-    {
-        title: 'Nº Tombo',
-        type: 'text',
-        key: 'hcf'
-    },
-    {
-        title: 'Nome usuário',
-        type: 'text',
-        key: 'usuario'
-    },
-    {
-        title: 'Data de criação',
-        type: 'text',
-        key: 'dataCriacao'
-    },
-    {
-        title: 'Status',
-        type: 'text',
-        key: 'status'
-    },
-    {
-        title: 'Observação',
-        type: 'text',
-        key: 'observacao'
-    },
-    {
-        title: 'Ação',
-        key: 'acao'
-    }
-
-]
 
 class ListaPendenciasScreen extends Component {
     constructor(props) {
@@ -66,7 +34,7 @@ class ListaPendenciasScreen extends Component {
             .then(response => {
                 if (response.status === 204) {
                     this.requisitaListaPendencias(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir', 'A pendência foi excluída com sucesso.')
+                    this.notificacao('success', this.props.t('common:excluir'), this.props.t('listaPendenciasScreen:pendenciaExcluida'))
                 }
             })
             .catch(err => {
@@ -89,11 +57,11 @@ class ListaPendenciasScreen extends Component {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this
         confirm({
-            title: 'Você tem certeza que deseja excluir esta pendência?',
-            content: 'Ao clicar em SIM, a pendência será excluída.',
-            okText: 'SIM',
+            title: this.props.t('listaPendenciasScreen:confirmExcluirTitulo'),
+            content: this.props.t('listaPendenciasScreen:confirmExcluirConteudo'),
+            okText: this.props.t('common:sim'),
             okType: 'danger',
-            cancelText: 'NÃO',
+            cancelText: this.props.t('common:nao'),
             onOk() {
                 self.requisitaExclusao(id)
             },
@@ -187,33 +155,34 @@ class ListaPendenciasScreen extends Component {
     }
 
     renderPainelBusca(getFieldDecorator) {
+        const { t } = this.props
         return (
-            <Card title="Buscar pendências">
+            <Card title={t('listaPendenciasScreen:buscarPendencias')}>
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                             <Col span={24}>
-                                <span>Nome de usuário:</span>
+                                <span>{t('listaPendenciasScreen:nomeUsuario')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('nome')(
-                                        <Input placeholder="Marcelo Caxambu" type="text" />
+                                        <Input placeholder={t('listaPendenciasScreen:placeholderNome')} type="text" />
                                     )}
                                 </FormItem>
                             </Col>
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                             <Col span={24}>
-                                <span>Status:</span>
+                                <span>{t('listaPendenciasScreen:status')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('status')(
-                                        <Select placeholder="Selecione" allowClear>
-                                            <Option value="ESPERANDO">Esperando</Option>
-                                            <Option value="APROVADO">Aprovado</Option>
-                                            <Option value="REPROVADO">Reprovado</Option>
+                                        <Select placeholder={t('listaPendenciasScreen:placeholderSelecione')} allowClear>
+                                            <Option value="ESPERANDO">{t('listaPendenciasScreen:statusEsperando')}</Option>
+                                            <Option value="APROVADO">{t('listaPendenciasScreen:statusAprovado')}</Option>
+                                            <Option value="REPROVADO">{t('listaPendenciasScreen:statusReprovado')}</Option>
                                         </Select>
                                     )}
                                 </FormItem>
@@ -243,7 +212,7 @@ class ListaPendenciasScreen extends Component {
                                             }}
                                             className="login-form-button"
                                         >
-                                            Limpar
+                                            {t('common:limpar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -254,7 +223,7 @@ class ListaPendenciasScreen extends Component {
                                             htmlType="submit"
                                             className="login-form-button ant-btn-pesquisar"
                                         >
-                                            Pesquisar
+                                            {t('common:pesquisar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -268,11 +237,45 @@ class ListaPendenciasScreen extends Component {
 
     render() {
         const { getFieldDecorator } = this.props.form
+        const { t } = this.props
+
+        const columns = [
+            {
+                title: t('listaPendenciasScreen:colNumeroTombo'),
+                type: 'text',
+                key: 'hcf'
+            },
+            {
+                title: t('listaPendenciasScreen:colNomeUsuario'),
+                type: 'text',
+                key: 'usuario'
+            },
+            {
+                title: t('listaPendenciasScreen:colDataCriacao'),
+                type: 'text',
+                key: 'dataCriacao'
+            },
+            {
+                title: t('listaPendenciasScreen:colStatus'),
+                type: 'text',
+                key: 'status'
+            },
+            {
+                title: t('listaPendenciasScreen:colObservacao'),
+                type: 'text',
+                key: 'observacao'
+            },
+            {
+                title: t('listaPendenciasScreen:colAcao'),
+                key: 'acao'
+            }
+        ]
+
         return (
             <div>
                 <Row gutter={24} style={{ marginBottom: '20px' }}>
                     <Col span={20}>
-                        <h2 style={{ fontWeight: 200 }}>Listagem de pendências</h2>
+                        <h2 style={{ fontWeight: 200 }}>{t('listaPendenciasScreen:titulo')}</h2>
                     </Col>
                 </Row>
                 <Divider dashed />
@@ -297,4 +300,6 @@ class ListaPendenciasScreen extends Component {
     }
 }
 
-export default Form.create()(ListaPendenciasScreen)
+const ListaPendenciasScreenWithForm = Form.create()(ListaPendenciasScreen)
+
+export default withTranslation()(ListaPendenciasScreenWithForm)

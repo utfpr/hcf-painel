@@ -14,6 +14,7 @@ import TableColetaPorLocalData from '@/components/TableColetaPorLocalData'
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import { LoadingOutlined } from '@ant-design/icons'
+import { withTranslation } from 'react-i18next'
 
 const FormItem = Form.Item
 const { RangePicker } = DatePicker
@@ -102,9 +103,9 @@ class RelatorioInventarioEspeciesScreen extends Component {
                         metadados: data.metadados
                     })
                 } else if (response.status === 400) {
-                    this.notificacao('warning', 'Buscar dados', 'Erro ao buscar os dados do relatório.')
+                    this.notificacao('warning', this.props.t('relatorioColetaPeriodoScreen:notifBuscarDados'), this.props.t('relatorioColetaPeriodoScreen:erroBuscarDados'))
                 } else {
-                    this.notificacao('error', 'Error', 'Erro de servidor ao buscar os dados do relatório.')
+                    this.notificacao('error', this.props.t('common:error'), this.props.t('relatorioColetaPeriodoScreen:erroServidorBuscarDados'))
                 }
             })
             .catch(err => {
@@ -166,7 +167,7 @@ class RelatorioInventarioEspeciesScreen extends Component {
             responseType: 'arraybuffer'
         }).then(response => {
             if (response.status === 200) {
-                this.notificacao('success', 'Exportar PDF', 'PDF gerado com sucesso.')
+                this.notificacao('success', this.props.t('relatorioColetaPeriodoScreen:notifExportarPDF'), this.props.t('relatorioColetaPeriodoScreen:pdfSucesso'))
                 const file = new Blob([response.data], { type: 'application/pdf' })
                 const fileUrl = URL.createObjectURL(file)
                 const anchor = document.createElement('a')
@@ -178,9 +179,9 @@ class RelatorioInventarioEspeciesScreen extends Component {
                 anchor.click()
                 URL.revokeObjectURL(fileUrl)
             } else if (response.status === 400) {
-                this.notificacao('warning', 'Exportar PDF', 'Erro ao exportar o PDF.')
+                this.notificacao('warning', this.props.t('relatorioColetaPeriodoScreen:notifExportarPDF'), this.props.t('relatorioColetaPeriodoScreen:erroExportarPDF'))
             } else {
-                this.notificacao('error', 'Error', 'Erro de servidor ao exportar o PDF.')
+                this.notificacao('error', this.props.t('common:error'), this.props.t('relatorioColetaPeriodoScreen:erroServidorExportarPDF'))
             }
         })
             .catch(err => {
@@ -235,9 +236,9 @@ class RelatorioInventarioEspeciesScreen extends Component {
                 {!sintetico && this.state.loadingExport2
                     ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ marginRight: 8 }} />
                     : ''}
-                Gerar PDF
+                {this.props.t('relatorioColetaPeriodoScreen:gerarPDF')}
                 {' '}
-                {sintetico ? 'Sintético' : 'Analítico'}
+                {sintetico ? this.props.t('relatorioColetaPeriodoScreen:sintetico') : this.props.t('relatorioColetaPeriodoScreen:analitico')}
             </Button>
         )
     }
@@ -246,12 +247,12 @@ class RelatorioInventarioEspeciesScreen extends Component {
         const { form } = this.props
         const { getFieldDecorator } = form
         return (
-            <Card title="Filtros do relatório">
+            <Card title={this.props.t('relatorioColetaPeriodoScreen:filtros')}>
                 <Form onSubmit={this.onSubmit}>
 
                     <Row gutter={8}>
                         <Col span={24}>
-                            <span>Intervalo de data:</span>
+                            <span>{this.props.t('relatorioColetaPeriodoScreen:intervaloData')}</span>
                         </Col>
                     </Row>
                     <Row gutter={8}>
@@ -302,7 +303,7 @@ class RelatorioInventarioEspeciesScreen extends Component {
                                             }}
                                             className="login-form-button"
                                         >
-                                            Limpar
+                                            {this.props.t('common:limpar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -313,7 +314,7 @@ class RelatorioInventarioEspeciesScreen extends Component {
                                             htmlType="submit"
                                             className="login-form-button ant-btn-pesquisar"
                                         >
-                                            Pesquisar
+                                            {this.props.t('common:pesquisar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -337,7 +338,7 @@ class RelatorioInventarioEspeciesScreen extends Component {
                     }}
                 >
                     <Col xs={24} sm={14} md={18} lg={20} xl={20}>
-                        <h2 style={{ fontWeight: 200 }}>Relatório de Coleta Intervalo de Data</h2>
+                        <h2 style={{ fontWeight: 200 }}>{this.props.t('relatorioColetaPeriodoScreen:titulo')}</h2>
                     </Col>
                     <Col xs={24} sm={10} md={6} lg={4} xl={4} style={{ display: 'flex', justifyContent: 'flex-end' }}>
                         <div style={{ display: 'flex', gap: '10px' }}>
@@ -363,4 +364,6 @@ class RelatorioInventarioEspeciesScreen extends Component {
         )
     }
 }
-export default Form.create()(RelatorioInventarioEspeciesScreen)
+const RelatorioColetaPeriodoScreenWithForm = Form.create()(RelatorioInventarioEspeciesScreen)
+
+export default withTranslation()(RelatorioColetaPeriodoScreenWithForm)

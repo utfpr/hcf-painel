@@ -1,0 +1,32 @@
+{
+  "cidades": "Cities",
+
+  "buscarCidade": "Search city",
+  "buscarNomeCidade": "City name:",
+  "buscarPais": "Country:",
+  "buscarEstado": "State:",
+
+  "cadastroNomeCidade": "Name:",
+  "cadastroEstado": "State:",
+  "cadastroLatitude": "Latitude:",
+  "cadastroLongitude": "Longitude:",
+
+  "colunaCidade": "City",
+  "colunaEstado": "State",
+  "colunaLatitude": "Latitude",
+  "colunaLongitude": "Longitude",
+  "colunaAcao": "Action",
+
+  "placeholderNomeCidade": "Curitiba",
+  "placeholderSelecionarPais": "Select a country (optional)",
+  "placeholderSelecionarEstado": "Select a state",
+  "placeholderSelecionarPaisPrimeiro": "Select a country first",
+  "placeholderSelecionarEstadoCadastro": "Select or search for the state",
+
+  "erroValidacaoCoordenadas": "Validation error",
+  "descricaoErroValidacaoCoordenadas": "Latitude must be between -90° and +90°, and longitude between -180° and +180°.",
+
+  "preencherCamposObrigatorios": "Please fill in the required fields.",
+  "validacaoInformarCidade": "Please provide the city name",
+  "validacaoInformarEstado": "Please select the state"
+}

@@ -13,32 +13,35 @@ import {
 } from 'antd'
 
 import { PrinterOutlined } from '@ant-design/icons'
+import { useTranslation } from 'react-i18next'
 
 import { fichaTomboUrl } from '../../../config/api'
 import { requisitaCodigoBarrasService } from '../TomboService'
 
-const TIPOS = {
+const buildTipos = t => ({
     comCodigo: {
-        label: 'Imprimir Ficha Tombo (com código de barras)',
-        title: 'Imprimir ficha com código de barras',
+        label: t('printSheetWithCode'),
+        title: t('printSheetWithCodeTitle'),
         color: '#277a01',
         imprimir_cod: 1
     },
     semCodigo: {
-        label: 'Imprimir Ficha Tombo (sem código de barras)',
-        title: 'Imprimir ficha sem código de barras',
+        label: t('printSheetWithoutCode'),
+        title: t('printSheetWithoutCodeTitle'),
         color: '#0066ff',
         imprimir_cod: 0
     },
     reduzida: {
-        label: 'Imprimir Ficha Tombo Reduzida',
-        title: 'Imprimir ficha reduzida',
+        label: t('printReducedSheet'),
+        title: t('printReducedSheetTitle'),
         color: '#e67e00',
         imprimir_cod: 2
     }
-}
+})
 
 const FichaTomboActions = ({ hcf }) => {
+    const { t } = useTranslation('tombo')
+    const TIPOS = buildTipos(t)
     const [state, setState] = useState({
         open: false,
         tipo: 'comCodigo',
@@ -58,14 +61,19 @@ const FichaTomboActions = ({ hcf }) => {
             setLoadingCodigos(true)
             try {
                 let response = null
-                await requisitaCodigoBarrasService(resp => { response = resp }, hcf)
+                await requisitaCodigoBarrasService(
+                    resp => {
+                        response = resp
+                    },
+                    hcf
+                )
                 const lista = response?.data?.map(c => c.codigo_barra) ?? []
                 setCodigos(lista)
                 if (lista.length > 0) {
                     form.setFieldsValue({ codigoSelecionado: lista[0] })
                 }
             } catch {
-                message.error('Não foi possível carregar os códigos de barras.')
+                message.error(t('loadBarcodesError'))
                 setCodigos([])
             } finally {
                 setLoadingCodigos(false)
@@ -89,11 +97,11 @@ const FichaTomboActions = ({ hcf }) => {
                 url += `&code=${valores.codigoSelecionado}`
             }
 
-            message.success('Impressão iniciada!')
+            message.success(t('printStarted'))
             window.open(url, '_blank')
             fechar()
         } catch {
-            message.error('Não foi possível iniciar a impressão.')
+            message.error(t('printStartError'))
         } finally {
             setPrinting(false)
         }
@@ -105,7 +113,7 @@ const FichaTomboActions = ({ hcf }) => {
     const modalContent = () => (
         <div style={{ display: 'grid', gap: 12 }}>
             <div>
-                <strong>Tombo:</strong>
+                <strong>{t('tomboLabel')}</strong>
                 {' '}
                 {hcf ?? '-'}
             </div>
@@ -113,13 +121,13 @@ const FichaTomboActions = ({ hcf }) => {
             <Form form={form} layout="vertical" initialValues={{ copias: 1 }}>
                 <Form.Item
                     name="copias"
-                    label="Quantidade de cópias"
+                    label={t('copiesQuantity')}
                     rules={[
-                        { required: true, message: 'Informe a quantidade de cópias' },
+                        { required: true, message: t('informCopies') },
                         {
                             validator: (_, v) => (v >= 1 && v <= 3
                                 ? Promise.resolve()
-                                : Promise.reject(new Error('Permitido entre 1 e 3')))
+                                : Promise.reject(new Error(t('allow1to3'))))
                         }
                     ]}
                 >
@@ -132,24 +140,24 @@ const FichaTomboActions = ({ hcf }) => {
                 </Form.Item>
 
                 {tipo === 'comCodigo' && loadingCodigos && (
-                    <Spin tip="Carregando códigos de barras..." />
+                    <Spin tip={t('loadingBarcodes')} />
                 )}
                 {tipo === 'comCodigo' && !loadingCodigos && codigos.length === 0 && (
                     <Alert
                         type="warning"
                         showIcon
-                        message="Nenhum código de barras disponível para este tombo."
+                        message={t('noBarcodeAvailableForTombo')}
                     />
                 )}
                 {tipo === 'comCodigo' && !loadingCodigos && codigos.length > 0 && (
                     <Form.Item
                         name="codigoSelecionado"
-                        label="Código de barras"
-                        rules={[{ required: true, message: 'Selecione um código de barras' }]}
+                        label={t('selectBarcode')}
+                        rules={[{ required: true, message: t('selectBarcodeRequired') }]}
                     >
                         <Select
                             options={codigos.map(c => ({ value: c, label: c }))}
-                            placeholder="Selecione o código"
+                            placeholder={t('selectCode')}
                             showSearch
                             filterOption={(input, option) => option?.label.toLowerCase().includes(input.toLowerCase())}
                         />
@@ -180,8 +188,8 @@ const FichaTomboActions = ({ hcf }) => {
                 open={state.open}
                 onOk={semCodigos ? fechar : confirmarImpressao}
                 onCancel={fechar}
-                okText={semCodigos ? 'Cancelar' : 'Imprimir'}
-                cancelText="Cancelar"
+                okText={semCodigos ? t('common:cancelar', { ns: 'common' }) : t('print')}
+                cancelText={t('common:cancelar', { ns: 'common' })}
                 cancelButtonProps={semCodigos ? { style: { display: 'none' } } : undefined}
                 confirmLoading={printing}
                 destroyOnClose

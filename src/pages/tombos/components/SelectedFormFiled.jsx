@@ -20,7 +20,7 @@ const SelectedFormField = ({
     xs, sm, md, lg, xl, onSearch, others, debounceDelay = 200,
     disabled = false, extra
 }) => {
-    const { t } = useTranslation('selectedFormField')
+    const { t } = useTranslation(['selectedFormField', 'tombo', 'common'])
     const [searchLoading, setSearchLoading] = useState(false)
     const [lastSearchValue, setLastSearchValue] = useState('')
 
@@ -72,7 +72,7 @@ const SelectedFormField = ({
                     })(
                         <Select
                             style={{ width: '100%' }}
-                            mode={title === 'Identificadores:' ? 'multiple' : ''}
+                            mode={title === t('tombo:identifier') ? 'multiple' : ''}
                             showSearch
                             placeholder={disabled ? t('selecioneNivelSuperiorPrimeiro') : placeholder}
                             optionFilterProp="children"
@@ -82,7 +82,7 @@ const SelectedFormField = ({
                             loading={searchLoading || others?.loading}
                             filterOption={onSearch ? false : undefined}
                             disabled={disabled}
-                            notFoundContent={others?.notFoundContent || (searchLoading || others?.loading ? <Spin size="small" /> : 'Nenhum resultado encontrado')}
+                            notFoundContent={others?.notFoundContent || (searchLoading || others?.loading ? <Spin size="small" /> : t('common:nenhumResultadoEncontrado'))}
                             {...others}
                         >
                             {children}
@@ -99,7 +99,7 @@ const SelectedFormField = ({
                 ? (
                         <Col span={24}>
                             <span>
-                                <b>Autor:</b>
+                                <b>{t('tombo:authorLabel')}</b>
                                 {' '}
                                 {autor}
                             </span>

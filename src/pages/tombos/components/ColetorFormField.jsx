@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Select } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 import SelectedFormFiled from './SelectedFormFiled'
 
@@ -19,6 +20,7 @@ const ColetorFormField = ({
     others = {},
     ...selectProps
 }) => {
+    const { t } = useTranslation('tombo')
     const optionColetor = () => coletores.map(item => (
         <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
     ))
@@ -32,9 +34,9 @@ const ColetorFormField = ({
             md={24}
             lg={24}
             xl={24}
-            title="Coletor:"
+            title={t('collector')}
             initialValue={initialValue}
-            placeholder="Selecione os coletores"
+            placeholder={t('searchCollectors')}
             fieldName="coletores"
             getFieldDecorator={getFieldDecorator}
             onClickAddMore={onClickAddMore}

@@ -2,7 +2,7 @@ import { Component } from 'react'
 
 import {
     Layout, Menu, Col, Spin, Button, Row,
-    Divider
+    Divider, Select
 } from 'antd'
 import axios from 'axios'
 import { withTranslation } from 'react-i18next'
@@ -45,13 +45,38 @@ class MainLayout extends Component {
         this.state = {
             collapsed: false,
             loading: false,
-            openKeys: []
+            openKeys: [],
+            language: this.getCurrentLanguage()
         }
     }
 
     componentDidMount() {
         document.title = IS_PROD ? 'HCF' : `HCF — ${APP_ENV.toUpperCase()}`
     }
+
+    getCurrentLanguage = () => {
+        const language = this.props.i18n?.resolvedLanguage || this.props.i18n?.language || 'pt-BR'
+        return language.toLowerCase().startsWith('pt') ? 'pt-BR' : language
+    }
+
+    handleChangeLanguage = value => {
+        this.props.i18n?.changeLanguage(value)
+        this.setState({ language: value })
+    }
+
+    renderLanguageSelector = () => (
+        <Select
+            size="small"
+            value={this.state.language}
+            onChange={this.handleChangeLanguage}
+            style={{ width: 140 }}
+            aria-label={this.props.t('mainLayout:idioma')}
+        >
+            <Select.Option value="pt-BR">{this.props.t('tombo:languagePortuguese')}</Select.Option>
+            <Select.Option value="en">{this.props.t('tombo:languageEnglish')}</Select.Option>
+            <Select.Option value="es">{this.props.t('tombo:languageSpanish')}</Select.Option>
+        </Select>
+    )
 
     onOpenChange = openKeys => {
         this.setState({ openKeys })
@@ -467,6 +492,10 @@ class MainLayout extends Component {
 
                                             <Divider type="vertical" />
 
+                                            {this.renderLanguageSelector()}
+
+                                            <Divider type="vertical" />
+
                                             <Link to="/perfil">
                                                 <Button size="small">{this.props.t('common:perfil')}</Button>
                                             </Link>
@@ -482,9 +511,15 @@ class MainLayout extends Component {
                                         </div>
                                     )
                                 : (
-                                        <Link to="/inicio">
-                                            <Button>{this.props.t('common:sair')}</Button>
-                                        </Link>
+                                        <div>
+                                            {this.renderLanguageSelector()}
+
+                                            <Divider type="vertical" />
+
+                                            <Link to="/inicio">
+                                                <Button>{this.props.t('common:sair')}</Button>
+                                            </Link>
+                                        </div>
                                     )}
                         </Row>
                     </Header>
