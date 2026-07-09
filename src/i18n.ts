@@ -86,6 +86,8 @@ void i18n
       'relatorioColetorPeriodoScreen',
       'cidadeComponent',
       'cidadeContainer',
+      'fichaTomboScreen',
+      'fichaTomboActions',
       'perfilScreen'
     ],
     defaultNS: 'common',
