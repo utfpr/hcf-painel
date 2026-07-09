@@ -16,8 +16,8 @@ void i18n
     ],
     detection: {
       order: [
-        'path',
         'navigator',
+        'path',
         'localStorage'
       ],
       caches: ['localStorage']
@@ -73,6 +73,8 @@ void i18n
       'relatorioLocalColetaPeriodoScreen',
       'relatorioQtdPeriodoScreen',
       'relatorioTombosPorCidadeScreen',
+      'estadoContainer',
+      'estadoComponent',
       'rankingCard',
       'dashboardScreen',
       'comparativeAreaChart',
