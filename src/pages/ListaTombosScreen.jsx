@@ -17,7 +17,6 @@ import { Form } from '@ant-design/compatible'
 import {
     DeleteOutlined, EditOutlined, ExportOutlined, SearchOutlined
 } from '@ant-design/icons'
-import { withTranslation } from 'react-i18next'
 
 import FilterTombos from '../components/FilterTombos'
 import HeaderListComponent from '../components/HeaderListComponent'
