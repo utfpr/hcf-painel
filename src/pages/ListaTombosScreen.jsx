@@ -9,6 +9,7 @@ import {
 import axios from 'axios'
 import debounce from 'lodash.debounce'
 import moment from 'moment'
+import { withTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import TotalRecordFound from '@/components/TotalRecordsFound'
@@ -32,6 +33,8 @@ const { Option } = Select
 const { Panel } = Collapse
 
 class ListaTombosScreen extends Component {
+    tTombo = (key, options) => this.props.t(`tombo:${key}`, options)
+
     constructor(props) {
         super(props)
         this.state = {
@@ -861,7 +864,7 @@ class ListaTombosScreen extends Component {
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
                 <SimpleTableComponent
-                    columns={columns}
+                    columns={buildColumns(this.props.t)}
                     data={this.state.tombos}
                     metadados={this.state.metadados}
                     loading={this.state.loading}

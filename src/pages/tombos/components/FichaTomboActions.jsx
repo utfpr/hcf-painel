@@ -13,32 +13,34 @@ import {
 } from 'antd'
 
 import { PrinterOutlined } from '@ant-design/icons'
+import { withTranslation } from 'react-i18next'
 
 import { fichaTomboUrl } from '../../../config/api'
 import { requisitaCodigoBarrasService } from '../TomboService'
 
-const TIPOS = {
+const getTipos = t => ({
     comCodigo: {
-        label: 'Imprimir Ficha Tombo (com código de barras)',
-        title: 'Imprimir ficha com código de barras',
+        label: t('fichaTomboActions:labelComCodigo'),
+        title: t('fichaTomboActions:titleComCodigo'),
         color: '#277a01',
         imprimir_cod: 1
     },
     semCodigo: {
-        label: 'Imprimir Ficha Tombo (sem código de barras)',
-        title: 'Imprimir ficha sem código de barras',
+        label: t('fichaTomboActions:labelSemCodigo'),
+        title: t('fichaTomboActions:titleSemCodigo'),
         color: '#0066ff',
         imprimir_cod: 0
     },
     reduzida: {
-        label: 'Imprimir Ficha Tombo Reduzida',
-        title: 'Imprimir ficha reduzida',
+        label: t('fichaTomboActions:labelReduzida'),
+        title: t('fichaTomboActions:titleReduzida'),
         color: '#e67e00',
         imprimir_cod: 2
     }
-}
+})
 
-const FichaTomboActions = ({ hcf }) => {
+const FichaTomboActions = ({ hcf, t }) => {
+    const TIPOS = getTipos(t)
     const [state, setState] = useState({
         open: false,
         tipo: 'comCodigo',
@@ -65,7 +67,7 @@ const FichaTomboActions = ({ hcf }) => {
                     form.setFieldsValue({ codigoSelecionado: lista[0] })
                 }
             } catch {
-                message.error('Não foi possível carregar os códigos de barras.')
+                message.error(t('fichaTomboActions:erroCarregarCodigos'))
                 setCodigos([])
             } finally {
                 setLoadingCodigos(false)
@@ -89,11 +91,11 @@ const FichaTomboActions = ({ hcf }) => {
                 url += `&code=${valores.codigoSelecionado}`
             }
 
-            message.success('Impressão iniciada!')
+            message.success(t('fichaTomboActions:impressaoIniciada'))
             window.open(url, '_blank')
             fechar()
         } catch {
-            message.error('Não foi possível iniciar a impressão.')
+            message.error(t('fichaTomboActions:erroIniciarImpressao'))
         } finally {
             setPrinting(false)
         }
@@ -105,7 +107,7 @@ const FichaTomboActions = ({ hcf }) => {
     const modalContent = () => (
         <div style={{ display: 'grid', gap: 12 }}>
             <div>
-                <strong>Tombo:</strong>
+                <strong>{t('fichaTomboActions:tombo')}</strong>
                 {' '}
                 {hcf ?? '-'}
             </div>
@@ -113,13 +115,13 @@ const FichaTomboActions = ({ hcf }) => {
             <Form form={form} layout="vertical" initialValues={{ copias: 1 }}>
                 <Form.Item
                     name="copias"
-                    label="Quantidade de cópias"
+                    label={t('fichaTomboActions:quantidadeCopias')}
                     rules={[
-                        { required: true, message: 'Informe a quantidade de cópias' },
+                        { required: true, message: t('fichaTomboActions:informeQuantidade') },
                         {
                             validator: (_, v) => (v >= 1 && v <= 3
                                 ? Promise.resolve()
-                                : Promise.reject(new Error('Permitido entre 1 e 3')))
+                                : Promise.reject(new Error(t('fichaTomboActions:permitidoEntre'))))
                         }
                     ]}
                 >
@@ -132,24 +134,24 @@ const FichaTomboActions = ({ hcf }) => {
                 </Form.Item>
 
                 {tipo === 'comCodigo' && loadingCodigos && (
-                    <Spin tip="Carregando códigos de barras..." />
+                    <Spin tip={t('fichaTomboActions:carregandoCodigos')} />
                 )}
                 {tipo === 'comCodigo' && !loadingCodigos && codigos.length === 0 && (
                     <Alert
                         type="warning"
                         showIcon
-                        message="Nenhum código de barras disponível para este tombo."
+                        message={t('fichaTomboActions:nenhumCodigo')}
                     />
                 )}
                 {tipo === 'comCodigo' && !loadingCodigos && codigos.length > 0 && (
                     <Form.Item
                         name="codigoSelecionado"
-                        label="Código de barras"
-                        rules={[{ required: true, message: 'Selecione um código de barras' }]}
+                        label={t('fichaTomboActions:codigoBarras')}
+                        rules={[{ required: true, message: t('fichaTomboActions:selecioneCodigo') }]}
                     >
                         <Select
                             options={codigos.map(c => ({ value: c, label: c }))}
-                            placeholder="Selecione o código"
+                            placeholder={t('fichaTomboActions:placeholderSelecione')}
                             showSearch
                             filterOption={(input, option) => option?.label.toLowerCase().includes(input.toLowerCase())}
                         />
@@ -180,8 +182,8 @@ const FichaTomboActions = ({ hcf }) => {
                 open={state.open}
                 onOk={semCodigos ? fechar : confirmarImpressao}
                 onCancel={fechar}
-                okText={semCodigos ? 'Cancelar' : 'Imprimir'}
-                cancelText="Cancelar"
+                okText={semCodigos ? t('common:cancelar') : t('fichaTomboActions:imprimir')}
+                cancelText={t('common:cancelar')}
                 cancelButtonProps={semCodigos ? { style: { display: 'none' } } : undefined}
                 confirmLoading={printing}
                 destroyOnClose
@@ -193,4 +195,4 @@ const FichaTomboActions = ({ hcf }) => {
     )
 }
 
-export default FichaTomboActions
+export default withTranslation()(FichaTomboActions)

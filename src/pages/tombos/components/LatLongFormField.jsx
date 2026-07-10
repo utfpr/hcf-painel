@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Col, InputNumber } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 import { Form } from '@ant-design/compatible'
 
@@ -17,6 +18,7 @@ const validaCoordenadaDecimal = (valor, isLongitude) => {
 }
 
 const LatLongFormField = ({ getFieldDecorator, form, onCoordenadaChange }) => {
+    const { t } = useTranslation('tombo')
     // Validador customizado para latitude
     const validadorLatitude = (rule, value, callback) => {
         const longitude = form?.getFieldValue('longitude')
@@ -25,7 +27,7 @@ const LatLongFormField = ({ getFieldDecorator, form, onCoordenadaChange }) => {
         if (value === undefined || value === null || value === '') {
             // Longitude também deve estar vazia
             if (longitude !== undefined && longitude !== null && longitude !== '') {
-                callback('Latitude é obrigatória quando longitude está preenchida')
+                callback(t('latitude') + ' ' + t('common:erro', { ns: 'common' }))
                 return
             }
             callback()
@@ -34,7 +36,7 @@ const LatLongFormField = ({ getFieldDecorator, form, onCoordenadaChange }) => {
 
         // Valida o valor
         if (!validaCoordenadaDecimal(value, false)) {
-            callback('Latitude inválida (deve estar entre -90 e 90)')
+            callback(`${t('latitude')} inválida (deve estar entre -90 e 90)`)
             return
         }
 
@@ -49,7 +51,7 @@ const LatLongFormField = ({ getFieldDecorator, form, onCoordenadaChange }) => {
         if (value === undefined || value === null || value === '') {
             // Latitude também deve estar vazia
             if (latitude !== undefined && latitude !== null && latitude !== '') {
-                callback('Longitude é obrigatória quando latitude está preenchida')
+                callback(t('longitude') + ' ' + t('common:erro', { ns: 'common' }))
                 return
             }
             callback()
@@ -58,7 +60,7 @@ const LatLongFormField = ({ getFieldDecorator, form, onCoordenadaChange }) => {
 
         // Valida o valor
         if (!validaCoordenadaDecimal(value, true)) {
-            callback('Longitude inválida (deve estar entre -180 e 180)')
+            callback(`${t('longitude')} inválida (deve estar entre -180 e 180)`)
             return
         }
 
@@ -69,7 +71,7 @@ const LatLongFormField = ({ getFieldDecorator, form, onCoordenadaChange }) => {
         <>
             <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                 <Col span={24}>
-                    <span>Latitude:</span>
+                    <span>{t('latitude')}</span>
                 </Col>
                 <Col span={24}>
                     <FormItem>
@@ -92,7 +94,7 @@ const LatLongFormField = ({ getFieldDecorator, form, onCoordenadaChange }) => {
             </Col>
             <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                 <Col span={24}>
-                    <span>Longitude:</span>
+                    <span>{t('longitude')}</span>
                 </Col>
                 <Col span={24}>
                     <FormItem>
@@ -116,7 +118,7 @@ const LatLongFormField = ({ getFieldDecorator, form, onCoordenadaChange }) => {
             </Col>
             <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                 <Col span={24}>
-                    <span>Altitude:</span>
+                    <span>{t('altitude')}</span>
                 </Col>
                 <Col span={24}>
                     <FormItem>

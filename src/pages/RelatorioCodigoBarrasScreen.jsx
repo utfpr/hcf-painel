@@ -15,6 +15,7 @@ import GradeDeCartoes from '@/components/GradeCartoes'
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import { LoadingOutlined } from '@ant-design/icons'
+import { withTranslation } from 'react-i18next'
 
 const FormItem = Form.Item
 const { RangePicker } = DatePicker
@@ -99,9 +100,9 @@ class RelatorioCodigoBarrasScreen extends Component {
                         metadados: data.metadados
                     })
                 } else if (response.status === 400) {
-                    this.notificacao('warning', 'Buscar dados', 'Erro ao buscar os dados do relatório.')
+                    this.notificacao('warning', this.props.t('relatorioCodigoBarrasScreen:notifBuscarDados'), this.props.t('relatorioCodigoBarrasScreen:erroBuscarDados'))
                 } else {
-                    this.notificacao('error', 'Error', 'Erro de servidor ao buscar os dados do relatório.')
+                    this.notificacao('error', this.props.t('common:error'), this.props.t('relatorioCodigoBarrasScreen:erroServidorBuscarDados'))
                 }
             })
             .catch(err => {
@@ -145,7 +146,7 @@ class RelatorioCodigoBarrasScreen extends Component {
                 {this.state.loadingExport
                     ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ marginRight: 8 }} />
                     : ''}
-                Gerar página para impressão
+                {this.props.t('relatorioCodigoBarrasScreen:gerarPaginaImpressao')}
             </Button>
         )
     }
@@ -154,12 +155,12 @@ class RelatorioCodigoBarrasScreen extends Component {
         const { form } = this.props
         const { getFieldDecorator } = form
         return (
-            <Card title="Filtros do relatório">
+            <Card title={this.props.t('relatorioCodigoBarrasScreen:filtros')}>
                 <Form onSubmit={this.onSubmit}>
 
                     <Row gutter={8}>
                         <Col span={24}>
-                            <span>Intervalo de data:</span>
+                            <span>{this.props.t('relatorioCodigoBarrasScreen:intervaloData')}</span>
                         </Col>
                     </Row>
                     <Row gutter={8}>
@@ -210,7 +211,7 @@ class RelatorioCodigoBarrasScreen extends Component {
                                             }}
                                             className="login-form-button"
                                         >
-                                            Limpar
+                                            {this.props.t('common:limpar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -221,7 +222,7 @@ class RelatorioCodigoBarrasScreen extends Component {
                                             htmlType="submit"
                                             className="login-form-button ant-btn-pesquisar"
                                         >
-                                            Pesquisar
+                                            {this.props.t('common:pesquisar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -245,7 +246,7 @@ class RelatorioCodigoBarrasScreen extends Component {
                     }}
                 >
                     <Col xs={24} sm={14} md={18} lg={20} xl={20}>
-                        <h2 style={{ fontWeight: 200 }}>Relatório de Código de Barras</h2>
+                        <h2 style={{ fontWeight: 200 }}>{this.props.t('relatorioCodigoBarrasScreen:titulo')}</h2>
                     </Col>
                     <Col xs={24} sm={10} md={6} lg={4} xl={4} style={{ display: 'flex', justifyContent: 'flex-end' }}>
                         <div style={{ display: 'flex', gap: '10px' }}>
@@ -270,4 +271,6 @@ class RelatorioCodigoBarrasScreen extends Component {
         )
     }
 }
-export default Form.create()(RelatorioCodigoBarrasScreen)
+const RelatorioCodigoBarrasScreenWithForm = Form.create()(RelatorioCodigoBarrasScreen)
+
+export default withTranslation()(RelatorioCodigoBarrasScreenWithForm)

@@ -1,0 +1,27 @@
+{
+  "estados": "Estados",
+
+  "buscarEstado": "Buscar estado",
+  "buscarNomeEstado": "Nome do estado:",
+  "buscarPais": "País:",
+
+  "cadastroNomeEstado": "Nome",
+  "cadastroSigla": "Sigla",
+  "cadastroPais": "País",
+
+  "colunaEstado": "Estado",
+  "colunaSigla": "Sigla",
+  "colunaPais": "País",
+  "colunaAcao": "Ação",
+
+  "placeholderNomeEstado": "Paraná",
+  "placeholderSigla": "PR",
+  "placeholderSelecionarPais": "Selecione um país (opcional)",
+  "placeholderPesquisarPais": "Selecione ou pesquise o país",
+
+  "preencherCamposObrigatorios": "Preencha os campos obrigatórios.",
+  "validacaoInformarEstado": "Informe o nome do estado",
+  "validacaoInformarSigla": "Informe a sigla",
+  "validacaoApenasLetras": "A sigla deve conter apenas letras",
+  "validacaoInformarPais": "Informe o país"
+}

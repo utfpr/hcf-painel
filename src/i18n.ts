@@ -9,25 +9,22 @@ void i18n
   .use(initReactI18next)
   .init({
     fallbackLng: 'pt-BR',
-
     supportedLngs: [
       'pt-BR',
       'en',
       'es'
     ],
-
     detection: {
       order: [
+        'navigator',
         'path',
-        'localStorage',
-        'navigator'
-      ]
+        'localStorage'
+      ],
+      caches: ['localStorage']
     },
-
     backend: {
       loadPath: '/locales/{{lng}}/{{ns}}.json'
     },
-
     ns: [
       'common',
       'simpleTableComponent',
@@ -56,6 +53,7 @@ void i18n
       'authService',
       'listaTaxonomiaVariedade',
       'exportacaoScreen',
+      'tombo',
       'servicosSpeciesLink',
       'servicosReflora',
       'verPendencia',
@@ -77,9 +75,24 @@ void i18n
       'relatorioTombosPorCidadeScreen',
       'filterTombos',
       'listaTombosScreen'
+      'estadoContainer',
+      'estadoComponent',
+      'rankingCard',
+      'dashboardScreen',
+      'comparativeAreaChart',
+      'listaLocalColetaScreen',
+      'listaPendenciasScreen',
+      'relatorioCodigoBarrasScreen',
+      'relatorioColetaLocalPeriodoScreen',
+      'relatorioColetaPeriodoScreen',
+      'relatorioColetorPeriodoScreen',
+      'cidadeComponent',
+      'cidadeContainer',
+      'fichaTomboScreen',
+      'fichaTomboActions',
+      'perfilScreen'
     ],
     defaultNS: 'common',
-
     interpolation: {
       escapeValue: false
     }

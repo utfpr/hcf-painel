@@ -1,0 +1,13 @@
+{
+  "titulo": "Record Sheet",
+  "colHcf": "HCF",
+  "colDataColeta": "Collection date",
+  "colNomeCientifico": "Scientific name",
+  "colAcao": "Action",
+  "labelHcf": "HCF:",
+  "labelDataColeta": "Collection date:",
+  "labelNomeCientifico": "Scientific name:",
+  "tituloModal": "Sheet printing",
+  "imprimir": "Print",
+  "informeNumeroCopias": "Enter the number of copies:"
+}

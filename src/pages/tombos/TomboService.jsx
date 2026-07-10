@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+import i18n from '../../i18n'
+
 const catchError = error => {
     const { response } = error
     if (response.status === 400) {
@@ -10,7 +12,7 @@ const catchError = error => {
         console.error(error.message)
     }
     window.location.reload()
-    throw new Error('')
+    throw new Error(i18n.t('tombo:tomboLoadError', { message: i18n.t('common:erro') }))
 }
 
 export const excluirFotoTomboService = (getResponse, codBarras) => {
@@ -143,7 +145,7 @@ export const requisitaCadastroTomboService = (getResponse, json) => {
 }
 
 export const requisitaNumeroHcfService = getResponse => {
-    return axios.get('/tombos/filtrar_ultimo_numero')
+    return axios.get('/tombos/proximo_numero')
         .then(response => {
             getResponse(response)
         })

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Card, Statistic, Spin, Button, Space, Typography } from 'antd'
 import { ArrowUpOutlined, ArrowDownOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons'
+import { withTranslation } from 'react-i18next'
 import {
     ResponsiveContainer, AreaChart, Area, XAxis, YAxis,
     CartesianGrid, Tooltip as RechartsTooltip, Legend
@@ -21,7 +22,8 @@ const ComparativeAreaChart = ({
     variacaoPorcentagem,
     onBack,
     onForward,
-    disableForward
+    disableForward,
+    t
 }) => {
     const isPositivo = variacaoPorcentagem >= 0
 
@@ -37,10 +39,10 @@ const ComparativeAreaChart = ({
                 </Space>
 
                 <div style={{ display: 'flex', gap: '24px' }}>
-                    <Statistic title={`Total ${labelAtual}`} value={valorAtual} valueStyle={{ fontWeight: 'bold' }} />
-                    <Statistic title={`Total ${labelPassado}`} value={valorPassado} valueStyle={{ color: '#8c8c8c' }} />
+                    <Statistic title={t('comparativeAreaChart:total', { label: labelAtual })} value={valorAtual} valueStyle={{ fontWeight: 'bold' }} />
+                    <Statistic title={t('comparativeAreaChart:total', { label: labelPassado })} value={valorPassado} valueStyle={{ color: '#8c8c8c' }} />
                     <Statistic
-                        title="Variação"
+                        title={t('comparativeAreaChart:variacao')}
                         value={Math.abs(variacaoPorcentagem)}
                         precision={2}
                         valueStyle={{ color: isPositivo ? '#3f8600' : '#cf1322' }}
@@ -100,4 +102,4 @@ const ComparativeAreaChart = ({
     )
 }
 
-export default ComparativeAreaChart
+export default withTranslation()(ComparativeAreaChart)
