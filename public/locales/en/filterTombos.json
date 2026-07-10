@@ -1,0 +1,12 @@
+{
+  "labelIdentificador": "Identifier",
+  "labelColetor": "Collector",
+  "labelNumeroColeta": "Collection Number",
+  "placeholderIdentificador": "Type the identifier's name",
+  "placeholderColetor": "Type the collector's name",
+  "placeholderNumeroColeta": "Select a collector first",
+  "nenhumResultado": "No results",
+  "nenhumNumeroColeta": "No collection number available",
+  "adicionarFiltro": "Add Filter",
+  "remover": "Remove"
+}

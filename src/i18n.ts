@@ -73,6 +73,8 @@ void i18n
       'relatorioLocalColetaPeriodoScreen',
       'relatorioQtdPeriodoScreen',
       'relatorioTombosPorCidadeScreen',
+      'filterTombos',
+      'listaTombosScreen',
       'estadoContainer',
       'estadoComponent',
       'rankingCard',
