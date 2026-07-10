@@ -74,7 +74,7 @@ void i18n
       'relatorioQtdPeriodoScreen',
       'relatorioTombosPorCidadeScreen',
       'filterTombos',
-      'listaTombosScreen'
+      'listaTombosScreen',
       'estadoContainer',
       'estadoComponent',
       'rankingCard',
