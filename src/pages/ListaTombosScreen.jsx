@@ -863,7 +863,7 @@ class ListaTombosScreen extends Component {
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
                 <SimpleTableComponent
-                    columns={buildColumns(this.props.t)}
+                    columns={columns}
                     data={this.state.tombos}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
