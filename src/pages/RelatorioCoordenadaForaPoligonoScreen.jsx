@@ -35,7 +35,7 @@ class RelatorioCoordenadaForaPoligonoScreen extends Component {
     }
 
     componentDidMount() {
-        this.requisitaDadosDoRelatorio()
+        // não carregar automaticamente - aguardar o usuário clicar em Pesquisar
         this.requisitaPaises()
     }
 
@@ -349,9 +349,9 @@ class RelatorioCoordenadaForaPoligonoScreen extends Component {
                                                     estadoId: null,
                                                     cidadeId: null,
                                                     estados: [],
-                                                    cidades: []
-                                                }, () => {
-                                                    this.requisitaDadosDoRelatorio()
+                                                    cidades: [],
+                                                    dados: [],
+                                                    metadados: {}
                                                 })
                                             }}
                                             className="login-form-button"
