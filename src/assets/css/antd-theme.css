@@ -28,11 +28,12 @@
 }
 
 /* Links */
-.ant-typography a {
+.ant-typography a,
+a {
   color: var(--primary-green) !important;
 }
 
-.ant-typography a:hover {
+:is(.ant-typography a, a):hover {
   color: #00994A !important;
 }
 
@@ -124,6 +125,41 @@
   color: var(--primary-green) !important;
 }
 
+/* Row Input */
+.ant-form-item-row:is(:focus-within, :hover) .ant-input-affix-wrapper {
+  border-color: var(--primary-green) !important;
+  box-shadow: 0 0 0 2px rgba(0, 122, 51, 0.2) !important; 
+}
+
+.ant-form-item-row:is(:focus-within, :hover) .ant-input-affix-wrapper .ant-input {
+  border-color: transparent !important; 
+  box-shadow: none !important;  
+}
+
+.ant-form-item-row .ant-input-affix-wrapper .ant-input-suffix .ant-btn-icon-only {
+  background-color: transparent !important;  
+}
+
+/* Icons */
+.anticon-mail, 
+.anticon-lock,
+.anticon-eye {
+  color: rgba(0, 0, 0, 0.25) !important; 
+}
+
+.anticon-eye:is(:hover, :focus) {
+  color: var(--primary-green) !important;    
+  filter: drop-shadow(0px 0px 2px rgba(0, 122, 51, 0.6)) !important;
+}
+
+.anticon-eye-invisible {
+  color: var(--primary-green) !important;  
+}
+
+.anticon-eye-invisible:is(:hover, :focus) {
+  filter: drop-shadow(0px 0px 2px rgba(0, 122, 51, 0.6)) !important;
+}
+
 /* DatePicker */
 .ant-picker:is(:hover, :focus, :active),
 .ant-picker-focused {
@@ -131,8 +167,12 @@
   box-shadow: 0 0 0 2px rgba(0, 122, 51, 0.2) !important;
 }
 
-:is(.ant-picker:is(:hover, :focus, :active), .ant-picker-focused) .ant-picker-input .ant-picker-suffix {
+:is(.ant-picker:is(:hover, :focus, :active), .ant-picker-focused) .ant-picker-suffix {
   color: var(--primary-green) !important;
+}
+
+.ant-picker .ant-picker-active-bar {
+  background-color: var(--primary-green) !important; 
 }
 
 /* Table */
