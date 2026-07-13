@@ -70,7 +70,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.botao-gerar-codigo {
+.botao-gerar-codigo { 
     display: inline-flex;
     align-items: center;
 
@@ -80,8 +80,9 @@
 
     &:hover,
     &:focus {
-        color: #009944;
-        border-color: #009944;
+        color: #00B300 !important;
+        border-color: #00B300 !important;
+        box-shadow: 0 0 0 2px rgba(0, 122, 51, 0.2) !important;
     }
 }
 
