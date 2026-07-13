@@ -8,6 +8,12 @@
 
 .login-form-forgot {
   float: right;
+  color: #007A33; 
+}
+
+.login-form-forgot:hover {
+  color: #009E4A; 
+  
 }
 
 .login-form-button {
