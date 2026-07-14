@@ -38,10 +38,10 @@ const RfidInventario: React.FC<RouteComponentProps> = ({ history }) => {
     return () => { isLendoRef.current = false }
   }, [verificarHardware])
 
-  const validarTagNoBackend = async (epcLegivel: string, tid: string) => {
+  const validarTagNoBackend = async (tid: string) => {
     try {
-      const epcCodificado = encodeURIComponent(epcLegivel)
-      const response = await axios.get(`/rfids/validar/${epcCodificado}`)
+      const tidCodificado = encodeURIComponent(tid)
+      const response = await axios.get(`/rfids/validar-tid/${tidCodificado}`)
 
       if (response.status === 200 && response.data.valido) {
         const { tombo_hcf, nome_cientifico, coletor_principal, status_rfid } = response.data.dados
@@ -109,7 +109,7 @@ const RfidInventario: React.FC<RouteComponentProps> = ({ history }) => {
                 })
                 return novasTags
               })
-              tagsNovasParaValidar.forEach(tagApi => validarTagNoBackend(tagApi.EPC_NOT_HEX, tagApi.TID))
+              tagsNovasParaValidar.forEach(tagApi => validarTagNoBackend(tagApi.TID))
             }
           }
         }

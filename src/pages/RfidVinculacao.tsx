@@ -18,6 +18,11 @@ export interface TomboPendente {
   coletor_principal?: string
 }
 
+export interface EscritaRfidResponse {
+  success?: boolean
+  tid?: string
+}
+
 const RfidVinculacao: React.FC<RouteComponentProps> = ({ history }) => {
   const { apiUrl, identificador, hardwareOnline, validandoHardware, statusConexao, verificarHardware } = useRfidStore()
 
@@ -100,6 +105,8 @@ const RfidVinculacao: React.FC<RouteComponentProps> = ({ history }) => {
     return urls[Math.floor(Math.random() * urls.length)];
   }, [tomboSelecionado]);
 
+  const tidValido = (tid?: string | null): tid is string => Boolean(tid && tid.trim() && tid.trim().toUpperCase() !== 'N/A')
+
   const iniciarVinculacao = async () => {
     if (!tomboSelecionado) return
     if (!hardwareOnline || statusConexao !== 'CONECTADO') {
@@ -138,11 +145,14 @@ const RfidVinculacao: React.FC<RouteComponentProps> = ({ history }) => {
       setEtapaGravacao('Gravando RFID...')
 
       try {
-        const responseWrite = await axios.post(`${apiUrl}/escrita/${identificador}`, { data: epcGerado })
+        const responseWrite = await axios.post<EscritaRfidResponse>(`${apiUrl}/escrita/${identificador}`, { data: epcGerado })
+        const tidRetornado = responseWrite.data.tid
 
-        if (responseWrite.status === 200 && responseWrite.data.success === true) {
-          tidLido = responseWrite.data.tid;
-          statusFinal = 'CONCLUIDO';
+        if (responseWrite.status === 200 && responseWrite.data.success === true && tidValido(tidRetornado)) {
+          tidLido = tidRetornado.trim()
+          statusFinal = 'CONCLUIDO'
+        } else {
+          statusFinal = 'FALHA'
         }
       } catch (hardwareError) {
         statusFinal = 'FALHA'
