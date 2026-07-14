@@ -14,8 +14,11 @@ import {
 } from 'antd'
 import { SearchOutlined, ClearOutlined, ReloadOutlined } from '@ant-design/icons'
 import axios from 'axios'
+import moment from 'moment'
 
 const { Option } = Select
+
+const formatarDataHora = (data?: string) => (data ? moment(data).format('DD/MM/YYYY HH:mm:ss') : '-')
 
 const RfidConferencia: React.FC = () => {
     const [form] = Form.useForm()
@@ -113,6 +116,21 @@ const RfidConferencia: React.FC = () => {
             key: 'tid',
             render: (text: string) => text ? text : <span style={{ color: '#ccc' }}>N/A</span>
         },
+
+        {
+            title: 'Data de criação',
+            dataIndex: 'created_at',
+            key: 'created_at',
+            render: (data: string) => formatarDataHora(data),
+        },
+
+        {
+            title: 'Data da última atualização',
+            dataIndex: 'updated_at',
+            key: 'updated_at',
+            render: (data: string) => formatarDataHora(data),
+        },
+
         {
             title: 'Status',
             dataIndex: 'status',
