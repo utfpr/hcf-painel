@@ -26,3 +26,7 @@ background-image: url("img/arrow-left_bbbbbb_14.png");
 .leaflet-control-navbar-home-disabled {
 background-image: url("img/home_bbbbbb_14.png");
 }
+
+.leaflet-control-layers .leaflet-control-layers-selector {
+accent-color: #007A33 !important; 
+}
