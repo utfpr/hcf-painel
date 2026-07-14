@@ -225,13 +225,13 @@ const TombosPorIntervaloTempoComponent: React.FC<TombosPorIntervaloTempoProps> =
                   boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                   padding: '12px'
                 }}
-                cursor={{ fill: 'rgba(24, 144, 255, 0.05)' }}
+                cursor={{ fill: 'rgba(0, 122, 51, 0.05)' }}
                 formatter={value => [`${String(value)} ${t('relatorioPorPeriodo:tombos')}`, t('relatorioPorPeriodo:quantidade')]}
               />
               <Legend wrapperStyle={{ paddingTop: '20px' }} />
               <Bar
                 dataKey="quantidade"
-                fill="#1890ff"
+                fill="#007A33"
                 name={t('relatorioPorPeriodo:quantidadeTombos')}
                 radius={[
                   6,
