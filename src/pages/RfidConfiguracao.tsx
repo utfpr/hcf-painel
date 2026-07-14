@@ -1,27 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import {
-  Row,
-  Col,
-  Divider,
-  Card,
-  Select,
-  Button,
-  Input,
-  notification,
-  Tag,
-  Spin,
-  Modal,
-  Alert
-} from 'antd'
-import {
-  ApiOutlined,
-  CheckCircleOutlined,
-  DisconnectOutlined,
-  ReloadOutlined,
-  EditOutlined,
-  WarningOutlined,
-  StopOutlined
-} from '@ant-design/icons'
+import { useTranslation } from 'react-i18next'
+import { Row, Col, Divider, Card, Select, Button, Input, notification, Tag, Spin, Modal, Alert } from 'antd'
+import { ApiOutlined, CheckCircleOutlined, DisconnectOutlined, ReloadOutlined, EditOutlined, WarningOutlined, StopOutlined } from '@ant-design/icons'
 import axios from 'axios'
 import { useRfidStore } from '../stores/useRfidStore'
 
@@ -37,19 +17,25 @@ const getDefaultIdentifier = (tipoDispositivo: string) => {
 }
 
 const RfidConfiguracao: React.FC = () => {
+  const { t } = useTranslation('rfid')
   const {
-    apiUrl, tipoDispositivo, identificador, portaSerial,
-    hardwareOnline, statusConexao,
-    setConfig, conectar, desconectar, verificarHardware
+    apiUrl,
+    tipoDispositivo,
+    identificador,
+    portaSerial,
+    hardwareOnline,
+    statusConexao,
+    setConfig,
+    conectar,
+    desconectar,
+    verificarHardware
   } = useRfidStore()
 
   const [modalUrlVisible, setModalUrlVisible] = useState<boolean>(false)
   const [novaUrlInput, setNovaUrlInput] = useState<string>('')
-
   const [infoSO, setInfoSO] = useState<string | null>(null)
   const [uptime, setUptime] = useState<string | null>(null)
   const [carregandoDiagnostico, setCarregandoDiagnostico] = useState<boolean>(true)
-
   const [portasSeriais, setPortasSeriais] = useState<string[]>([])
   const [carregandoPortas, setCarregandoPortas] = useState<boolean>(false)
 
@@ -61,20 +47,20 @@ const RfidConfiguracao: React.FC = () => {
     setCarregandoPortas(true)
     try {
       const response = await axios.get(`${apiUrl}/debug/scan`, { timeout: 5000 })
-      const data = response.data.dispositivos;
-      const ports = data.map((disp: any) => disp.porta);
-
+      const data = response.data.dispositivos || []
+      const ports = data.map((disp: any) => disp.porta)
       setPortasSeriais(ports)
+
       if (ports.length === 0) {
-        notificacao('info', 'Nenhuma porta', 'Não foram encontradas portas seriais disponíveis na máquina.')
+        notificacao('info', t('notifications.noPortTitle'), t('notifications.noPortDescription'))
       }
     } catch (error) {
-      notificacao('warning', 'Scan Falhou', 'Não foi possível buscar as portas seriais da máquina local.')
+      notificacao('warning', t('notifications.scanFailedTitle'), t('notifications.scanFailedDescription'))
       setPortasSeriais([])
     } finally {
       setCarregandoPortas(false)
     }
-  }, [apiUrl])
+  }, [apiUrl, t])
 
   const buscarDiagnostico = useCallback(async () => {
     setCarregandoDiagnostico(true)
@@ -83,8 +69,8 @@ const RfidConfiguracao: React.FC = () => {
     try {
       const response = await axios.get(`${apiUrl}/status`, { timeout: 3000 })
       if (response.status === 200) {
-        setInfoSO(response.data.so || 'Sistema Local')
-        setUptime(response.data.tempo_atividade || 'Uptime indisponível')
+        setInfoSO(response.data.so || t('config.localSystem'))
+        setUptime(response.data.tempo_atividade || t('config.uptimeUnavailable'))
       }
     } catch (error) {
       setInfoSO(null)
@@ -92,7 +78,7 @@ const RfidConfiguracao: React.FC = () => {
     } finally {
       setCarregandoDiagnostico(false)
     }
-  }, [apiUrl, verificarHardware])
+  }, [apiUrl, t, verificarHardware])
 
   useEffect(() => {
     buscarDiagnostico()
@@ -105,32 +91,27 @@ const RfidConfiguracao: React.FC = () => {
   }, [tipoDispositivo, infoSO, buscarPortasSeriais])
 
   const handleTipoDispositivoChange = (value: string) => {
-    setConfig({
-      tipoDispositivo: value,
-      identificador: getDefaultIdentifier(value),
-      portaSerial: ''
-    })
+    setConfig({ tipoDispositivo: value, identificador: getDefaultIdentifier(value), portaSerial: '' })
     if (statusConexao === 'CONECTADO') desconectar()
   }
 
   const handleConectar = async () => {
     if (statusConexao === 'CONECTADO') {
-      notificacao('info', 'Aviso', 'O dispositivo já está conectado e pronto para uso.')
+      notificacao('info', t('common.warning'), t('notifications.alreadyConnected'))
       return
     }
 
     if (tipoDispositivo === 'HEXAPAD' && !portaSerial) {
-      notificacao('warning', 'Porta Serial', 'Selecione a porta serial para comunicar com o Hexapad.')
+      notificacao('warning', t('notifications.serialPortTitle'), t('notifications.serialPortRequired'))
       return
     }
 
     const sucesso = await conectar()
-
     if (sucesso) {
-      notificacao('success', 'Conectado', `Dispositivo (${tipoDispositivo}) inicializado com sucesso.`)
+      notificacao('success', t('common.connected'), t('notifications.deviceConnected', { device: tipoDispositivo }))
       buscarDiagnostico()
     } else {
-      notificacao('error', 'Erro de Conexão', `Falha ao tentar inicializar o hardware. Verifique o serviço.`)
+      notificacao('error', t('notifications.connectionErrorTitle'), t('notifications.hardwareInitFailed'))
     }
   }
 
@@ -141,28 +122,26 @@ const RfidConfiguracao: React.FC = () => {
 
   const salvarNovaUrl = () => {
     if (!novaUrlInput.trim()) {
-      notificacao('warning', 'Atenção', 'O endereço não pode ficar vazio.')
+      notificacao('warning', t('common.attention'), t('notifications.emptyAddress'))
       return
     }
 
     const cleanUrl = novaUrlInput.trim()
     setConfig({ apiUrl: cleanUrl })
     if (statusConexao === 'CONECTADO') desconectar()
-
     setModalUrlVisible(false)
-    notificacao('info', 'Endereço atualizado', 'O endereço do serviço local foi alterado.')
-
+    notificacao('info', t('notifications.addressUpdatedTitle'), t('notifications.addressUpdatedDescription'))
     setTimeout(buscarDiagnostico, 100)
   }
 
   const renderStatusTag = () => {
     switch (statusConexao) {
       case 'CONECTADO':
-        return <Tag color="success" icon={<CheckCircleOutlined />}>Hardware Pronto</Tag>
+        return <Tag color="success" icon={<CheckCircleOutlined />}>{t('config.hardwareReady')}</Tag>
       case 'CONECTANDO':
-        return <Tag color="processing" icon={<Spin size="small" />}> Inicializando...</Tag>
+        return <Tag color="processing" icon={<Spin size="small" />}> {t('common.initializing')}</Tag>
       default:
-        return <Tag color="default" icon={<DisconnectOutlined />}>Desconectado</Tag>
+        return <Tag color="default" icon={<DisconnectOutlined />}>{t('common.disconnected')}</Tag>
     }
   }
 
@@ -170,20 +149,19 @@ const RfidConfiguracao: React.FC = () => {
     <div style={{ padding: '24px' }}>
       <Row>
         <Col span={24}>
-          <h2 style={{ fontWeight: 200 }}>Configuração de Dispositivo RFID</h2>
+          <h2 style={{ fontWeight: 200 }}>{t('config.title')}</h2>
         </Col>
       </Row>
       <Divider dashed />
 
       <Row gutter={[16, 16]}>
         <Col xs={24} lg={16}>
-          <Card title="Configuração" bordered={false} style={{ height: '100%' }}>
-
+          <Card title={t('config.cardTitle')} bordered={false} style={{ height: '100%' }}>
             <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
               <Col span={24}>
                 <div style={{ display: 'flex', alignItems: 'flex-end', gap: '8px' }}>
                   <div style={{ flex: 1 }}>
-                    <span style={{ color: '#8c8c8c' }}>Endereço do Serviço:</span>
+                    <span style={{ color: '#8c8c8c' }}>{t('config.serviceAddress')}</span>
                     <Input
                       value={apiUrl}
                       disabled
@@ -196,7 +174,7 @@ const RfidConfiguracao: React.FC = () => {
                     icon={<EditOutlined />}
                     onClick={abrirModalEdicaoUrl}
                   >
-                    Editar
+                    {t('common.edit')}
                   </Button>
                 </div>
               </Col>
@@ -204,7 +182,7 @@ const RfidConfiguracao: React.FC = () => {
 
             <Row gutter={[16, 16]}>
               <Col xs={24} sm={12}>
-                <span>Dispositivo:</span>
+                <span>{t('config.deviceLabel')}</span>
                 <Select
                   value={tipoDispositivo}
                   onChange={handleTipoDispositivoChange}
@@ -213,11 +191,11 @@ const RfidConfiguracao: React.FC = () => {
                 >
                   <Option value="CHAINWAY_NATIVE">Chainway R3</Option>
                   <Option value="HEXAPAD">Acura Hexapad</Option>
-                  <Option value="MOCK">Emulador (MOCK)</Option>
+                  <Option value="MOCK">{t('connection.mockEmulator')}</Option>
                 </Select>
               </Col>
               <Col xs={24} sm={12}>
-                <span>Identificador:</span>
+                <span>{t('config.identifierLabel')}</span>
                 <Input
                   value={identificador}
                   disabled
@@ -229,7 +207,7 @@ const RfidConfiguracao: React.FC = () => {
             {tipoDispositivo === 'HEXAPAD' && (
               <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
                 <Col xs={24} sm={12}>
-                  <span>Porta Serial (Connection):</span>
+                  <span>{t('config.serialPortLabel')}</span>
                   <div style={{ display: 'flex', gap: '8px', marginTop: 8 }}>
                     <Select
                       value={portaSerial || undefined}
@@ -238,7 +216,7 @@ const RfidConfiguracao: React.FC = () => {
                         if (statusConexao === 'CONECTADO') desconectar()
                       }}
                       style={{ flex: 1 }}
-                      placeholder="Ex: COM1"
+                      placeholder={t('config.serialPortPlaceholder')}
                       loading={carregandoPortas}
                       disabled={!hardwareOnline && statusConexao === 'DESCONECTADO'}
                     >
@@ -251,7 +229,7 @@ const RfidConfiguracao: React.FC = () => {
                       onClick={buscarPortasSeriais}
                       loading={carregandoPortas}
                       disabled={!hardwareOnline && statusConexao === 'DESCONECTADO'}
-                      title="Escanear portas novamente"
+                      title={t('config.scanPortsAgain')}
                     />
                   </div>
                 </Col>
@@ -270,7 +248,7 @@ const RfidConfiguracao: React.FC = () => {
                   disabled={statusConexao === 'CONECTADO' || (!hardwareOnline && statusConexao === 'DESCONECTADO')}
                   style={{ width: '100%', maxWidth: '300px' }}
                 >
-                  {statusConexao === 'CONECTADO' ? 'Hardware Inicializado' : 'Inicializar e Conectar'}
+                  {statusConexao === 'CONECTADO' ? t('config.hardwareInitialized') : t('config.initializeAndConnect')}
                 </Button>
               </Col>
             </Row>
@@ -279,9 +257,9 @@ const RfidConfiguracao: React.FC = () => {
 
         <Col xs={24} lg={8}>
           <Card
-            title={
+            title={(
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span>Diagnóstico</span>
+                <span>{t('config.diagnostics')}</span>
                 <Button
                   type="link"
                   icon={<ReloadOutlined />}
@@ -290,28 +268,28 @@ const RfidConfiguracao: React.FC = () => {
                   loading={carregandoDiagnostico}
                 />
               </div>
-            }
+            )}
             bordered={false}
             style={{ height: '100%', backgroundColor: '#fafafa' }}
           >
             {carregandoDiagnostico ? (
               <div style={{ textAlign: 'center', padding: '40px 0' }}>
                 <Spin size="large" />
-                <div style={{ marginTop: 16, color: '#8c8c8c' }}>Testando comunicação...</div>
+                <div style={{ marginTop: 16, color: '#8c8c8c' }}>{t('config.testingCommunication')}</div>
               </div>
             ) : !hardwareOnline && statusConexao === 'DESCONECTADO' ? (
               <Alert
-                message={<span style={{ fontWeight: 'bold' }}>Serviço Inacessível</span>}
-                description={
+                message={<span style={{ fontWeight: 'bold' }}>{t('config.serviceInaccessible')}</span>}
+                description={(
                   <div style={{ marginTop: 8 }}>
-                    <p>Não foi possível realizar a comunicação com a API do dispositivo RFID.</p>
-                    <b>Verifique:</b>
+                    <p>{t('config.serviceCommunicationError')}</p>
+                    <b>{t('config.check')}</b>
                     <ul style={{ paddingLeft: 16, marginTop: 4, marginBottom: 0 }}>
-                      <li>Se o executável local está aberto.</li>
-                      <li>Se o endereço do serviço está correto.</li>
+                      <li>{t('config.checkExecutableOpen')}</li>
+                      <li>{t('config.checkServiceAddress')}</li>
                     </ul>
                   </div>
-                }
+                )}
                 type="error"
                 showIcon
                 icon={<StopOutlined />}
@@ -320,7 +298,7 @@ const RfidConfiguracao: React.FC = () => {
               <>
                 <Row style={{ marginBottom: 16 }}>
                   <Col span={24}>
-                    <span style={{ color: '#8c8c8c' }}>Status do Leitor:</span>
+                    <span style={{ color: '#8c8c8c' }}>{t('config.readerStatus')}</span>
                     <div style={{ marginTop: 8 }}>
                       {renderStatusTag()}
                     </div>
@@ -331,7 +309,7 @@ const RfidConfiguracao: React.FC = () => {
 
                 <Row style={{ marginBottom: 16 }}>
                   <Col span={24}>
-                    <span style={{ color: '#8c8c8c' }}>Sistema Operacional:</span>
+                    <span style={{ color: '#8c8c8c' }}>{t('config.operatingSystem')}</span>
                     <div style={{ marginTop: 4, fontWeight: 500 }}>
                       {infoSO}
                     </div>
@@ -340,7 +318,7 @@ const RfidConfiguracao: React.FC = () => {
 
                 <Row>
                   <Col span={24}>
-                    <span style={{ color: '#8c8c8c' }}>Tempo de Atividade (Uptime):</span>
+                    <span style={{ color: '#8c8c8c' }}>{t('config.uptime')}</span>
                     <div style={{ marginTop: 4, fontWeight: 500 }}>
                       {uptime}
                     </div>
@@ -353,23 +331,23 @@ const RfidConfiguracao: React.FC = () => {
       </Row>
 
       <Modal
-        title={<span style={{ color: '#cf1322' }}><WarningOutlined /> Configuração Avançada</span>}
+        title={<span style={{ color: '#cf1322' }}><WarningOutlined /> {t('config.advancedConfig')}</span>}
         visible={modalUrlVisible}
         onOk={salvarNovaUrl}
         onCancel={() => setModalUrlVisible(false)}
-        okText="Salvar URL"
-        cancelText="Cancelar"
+        okText={t('common.saveUrl')}
+        cancelText={t('common.cancel')}
         okButtonProps={{ danger: true }}
         destroyOnClose
       >
         <Alert
-          message="Aviso de Comunicação"
-          description="Apenas altere a URL da API se você tiver conhecimento da porta configurada na máquina hospedeira."
+          message={t('config.communicationWarning')}
+          description={t('config.urlWarningDescription')}
           type="warning"
           showIcon
           style={{ marginBottom: 16 }}
         />
-        <p style={{ fontWeight: 500 }}>Endereço do Serviço Local:</p>
+        <p style={{ fontWeight: 500 }}>{t('config.localServiceAddress')}</p>
         <Input
           value={novaUrlInput}
           onChange={e => setNovaUrlInput(e.target.value)}

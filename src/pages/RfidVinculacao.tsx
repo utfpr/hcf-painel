@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Row, Col, Divider, Card, Select, Button, notification, Spin, Descriptions, Alert, Tooltip, Image, Tag } from 'antd'
 import { LinkOutlined, ScanOutlined, SettingOutlined, DisconnectOutlined } from '@ant-design/icons'
 import axios from 'axios'
@@ -25,6 +26,7 @@ export interface EscritaRfidResponse {
 
 const RfidVinculacao: React.FC<RouteComponentProps> = ({ history }) => {
   const { apiUrl, identificador, hardwareOnline, validandoHardware, statusConexao, verificarHardware } = useRfidStore()
+  const { t } = useTranslation('rfid')
 
   const [tombos, setTombos] = useState<TomboPendente[]>([])
   const [tomboSelecionado, setTomboSelecionado] = useState<TomboPendente | null>(null)
@@ -65,7 +67,7 @@ const RfidVinculacao: React.FC<RouteComponentProps> = ({ history }) => {
         setPaginaAtual(page)
       }
     } catch (error) {
-      notificacao('error', 'Erro', 'Falha ao buscar os tombos para vinculação.')
+      notificacao('error', t('common.error'), t('notifications.tombosFetchFailure'))
     } finally {
       setLoadingTombos(false)
     }
@@ -110,21 +112,21 @@ const RfidVinculacao: React.FC<RouteComponentProps> = ({ history }) => {
   const iniciarVinculacao = async () => {
     if (!tomboSelecionado) return
     if (!hardwareOnline || statusConexao !== 'CONECTADO') {
-      notificacao('warning', 'Dispositivo indisponível', 'Configure o dispositivo antes de gravar.')
+      notificacao('warning', t('notifications.deviceUnavailableTitle'), t('notifications.configureDeviceBeforeWrite'))
       return
     }
 
     setIsGravando(true)
 
     try {
-      setEtapaGravacao('Verificando comunicação com o Leitor RFID...')
+      setEtapaGravacao(t('notifications.checkingReaderCommunication'))
       await verificarHardware()
 
       if (useRfidStore.getState().statusConexao !== 'CONECTADO') {
-        throw new Error('Dispositivo offline')
+        throw new Error(t('notifications.deviceOffline'))
       }
     } catch (error) {
-      notificacao('error', 'Comunicação Perdida', 'O serviço RFID parou de responder.')
+      notificacao('error', t('notifications.communicationLostTitle'), t('notifications.rfidServiceStopped'))
       setIsGravando(false)
       return
     }
@@ -135,14 +137,14 @@ const RfidVinculacao: React.FC<RouteComponentProps> = ({ history }) => {
     let tidLido: string = ''
 
     try {
-      setEtapaGravacao('Solicitando EPC para o servidor...')
+      setEtapaGravacao(t('notifications.requestingEpc'))
       const responseInit = await axios.post('/rfids/iniciar-gravacao', { tombo_foto_id: tomboSelecionado.id })
 
-      if (responseInit.status !== 200 && responseInit.status !== 201) throw new Error('Falha no servidor.')
+      if (responseInit.status !== 200 && responseInit.status !== 201) throw new Error(t('notifications.serverFailure'))
 
       vinculacaoId = responseInit.data.rfid.id
       epcGerado = responseInit.data.rfid.epc
-      setEtapaGravacao('Gravando RFID...')
+      setEtapaGravacao(t('notifications.writingRfid'))
 
       try {
         const responseWrite = await axios.post<EscritaRfidResponse>(`${apiUrl}/escrita/${identificador}`, { data: epcGerado })
@@ -158,18 +160,18 @@ const RfidVinculacao: React.FC<RouteComponentProps> = ({ history }) => {
         statusFinal = 'FALHA'
       }
 
-      setEtapaGravacao('Sincronizando com o servidor...')
+      setEtapaGravacao(t('notifications.syncingServer'))
       await axios.put(`/rfids/finalizar-gravacao/${vinculacaoId}`, { status: statusFinal, tid: tidLido })
 
       if (statusFinal === 'CONCLUIDO') {
-        notificacao('success', 'Gravação Concluída!', `RFID vinculado a ${tomboSelecionado.codigo_barra}.`)
+        notificacao('success', t('notifications.writeCompletedTitle'), t('notifications.rfidLinked', { barcode: tomboSelecionado.codigo_barra }))
         resetarTela()
       } else {
-        notificacao('error', 'Falha', 'Não foi possível gravar na tag física.')
+        notificacao('error', t('common.failure'), t('notifications.physicalWriteFailure'))
         setIsGravando(false)
       }
     } catch (error: any) {
-      notificacao('error', 'Operação Abortada', error.message || 'Ocorreu um erro durante a vinculação.')
+      notificacao('error', t('notifications.operationAbortedTitle'), error.message || t('notifications.linkError'))
       setIsGravando(false)
     }
   }
@@ -177,13 +179,13 @@ const RfidVinculacao: React.FC<RouteComponentProps> = ({ history }) => {
   return (
     <div style={{ padding: '24px' }}>
       <Row justify="space-between" align="middle" style={{ marginBottom: '20px' }}>
-        <Col><h2 style={{ fontWeight: 200, margin: 0 }}>Vinculação de Tag RFID</h2></Col>
+        <Col><h2 style={{ fontWeight: 200, margin: 0 }}>{t('link.title')}</h2></Col>
         <Col>
           {!validandoHardware && (!hardwareOnline || statusConexao !== 'CONECTADO') && (
-            <Tag color="error" icon={<DisconnectOutlined />} style={{ marginRight: 16 }}>Serviço Desconectado</Tag>
+            <Tag color="error" icon={<DisconnectOutlined />} style={{ marginRight: 16 }}>{t('common.disconnectedService')}</Tag>
           )}
           <Button icon={<SettingOutlined />} onClick={() => history.push('/rfid-configuracao')} danger={!hardwareOnline}>
-            Configurações RFID
+            {t('common.rfidSettings')}
           </Button>
         </Col>
       </Row>
@@ -195,10 +197,10 @@ const RfidVinculacao: React.FC<RouteComponentProps> = ({ history }) => {
       <Spin spinning={isGravando} tip={etapaGravacao} size="large">
         <Row gutter={[24, 24]}>
           <Col span={24}>
-            <Card title="Selecionar foto" bordered={false} style={{ height: '100%' }}>
+            <Card title={t('link.selectPhoto')} bordered={false} style={{ height: '100%' }}>
               <Select
                 showSearch
-                placeholder="Pesquisar por tombo/codigo de barras"
+                placeholder={t('link.searchPlaceholder')}
                 style={{ width: '100%', marginTop: 8 }}
                 loading={loadingTombos}
                 value={tomboSelecionado?.id}
@@ -206,23 +208,23 @@ const RfidVinculacao: React.FC<RouteComponentProps> = ({ history }) => {
                 onSearch={handleSearch}
                 onPopupScroll={handlePopupScroll}
                 filterOption={false}
-                notFoundContent={loadingTombos ? <Spin size="small" /> : 'Nenhum tombo encontrado'}
+                notFoundContent={loadingTombos ? <Spin size="small" /> : t('link.noTomboFound')}
                 options={tombos.map(t => ({ label: `${t.tombo_hcf} - ${t.codigo_barra}`, value: t.id }))}
               />
             </Card>
           </Col>
 
           <Col span={24}>
-            <Card title="Confirmação" bordered={false} style={{ height: '100%' }}>
+            <Card title={t('link.confirmation')} bordered={false} style={{ height: '100%' }}>
               {tomboSelecionado ? (
                 <>
-                  <Descriptions title="Detalhes" bordered size="small" column={1}>
-                    <Descriptions.Item label="Tombo"><strong style={{ color: '#1890ff' }}>{tomboSelecionado.tombo_hcf}</strong></Descriptions.Item>
-                    <Descriptions.Item label="Código de barras">{tomboSelecionado.codigo_barra}</Descriptions.Item>
-                    <Descriptions.Item label="Nome científico">{tomboSelecionado.nome_cientifico || '-'}</Descriptions.Item>
-                    <Descriptions.Item label="Coletor principal">{tomboSelecionado.coletor_principal || '-'}</Descriptions.Item>
-                    <Descriptions.Item label="Foto">
-                      <Image width={200} src={tomboSelecionado.caminho_foto || imagemAleatoriaFallback} alt="Foto do item" fallback="https://placehold.co/200x150" />
+                  <Descriptions title={t('link.details')} bordered size="small" column={1}>
+                    <Descriptions.Item label={t('conference.tombo')}><strong style={{ color: '#1890ff' }}>{tomboSelecionado.tombo_hcf}</strong></Descriptions.Item>
+                    <Descriptions.Item label={t('link.barcode')}>{tomboSelecionado.codigo_barra}</Descriptions.Item>
+                    <Descriptions.Item label={t('link.scientificName')}>{tomboSelecionado.nome_cientifico || '-'}</Descriptions.Item>
+                    <Descriptions.Item label={t('link.mainCollector')}>{tomboSelecionado.coletor_principal || '-'}</Descriptions.Item>
+                    <Descriptions.Item label={t('link.photo')}>
+                      <Image width={200} src={tomboSelecionado.caminho_foto || imagemAleatoriaFallback} alt={t('link.photoAlt')} fallback="https://placehold.co/200x150" />
                     </Descriptions.Item>
                   </Descriptions>
                   <Divider dashed style={{ margin: '16px 0' }} />
@@ -240,14 +242,14 @@ const RfidVinculacao: React.FC<RouteComponentProps> = ({ history }) => {
                         color: hardwareOnline ? '#fff' : 'rgba(0,0,0,0.25)'
                       }}
                     >
-                      {validandoHardware ? 'Verificando Hardware...' : 'Iniciar Gravação'}
+                      {validandoHardware ? t('link.checkingHardware') : t('link.startWrite')}
                     </Button>
                   </div>
                 </>
               ) : (
                 <div style={{ textAlign: 'center', padding: '40px 20px', color: '#bfbfbf' }}>
                   <LinkOutlined style={{ fontSize: '48px', marginBottom: '16px' }} />
-                  <p>Sem informações para vinculação.</p>
+                  <p>{t('link.noLinkInfo')}</p>
                 </div>
               )}
             </Card>

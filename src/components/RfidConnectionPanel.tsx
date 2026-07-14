@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { Alert, Button, Col, Form, Input, Row, Select, Space, Typography, notification } from 'antd'
 import { ApiOutlined, CheckCircleOutlined, DisconnectOutlined, ReloadOutlined } from '@ant-design/icons'
 import { useRfidStore } from '../stores/useRfidStore'
@@ -12,10 +13,18 @@ const getDefaultIdentifier = (tipoDispositivo: string) => (
 
 const RfidConnectionPanel: React.FC = () => {
   const {
-    apiUrl, tipoDispositivo, identificador,
-    hardwareOnline, validandoHardware, statusConexao,
-    setConfig, verificarHardware, conectar, desconectar
+    apiUrl,
+    tipoDispositivo,
+    identificador,
+    hardwareOnline,
+    validandoHardware,
+    statusConexao,
+    setConfig,
+    verificarHardware,
+    conectar,
+    desconectar
   } = useRfidStore()
+  const { t } = useTranslation('rfid')
 
   const notificacao = (type: 'success' | 'warning' | 'error' | 'info', titulo: string, descricao: string) => {
     notification[type]({ message: titulo, description: descricao, placement: 'topRight' })
@@ -23,15 +32,15 @@ const RfidConnectionPanel: React.FC = () => {
 
   const handleConectar = async () => {
     if (!apiUrl.trim()) {
-      notificacao('warning', 'URL obrigatória', 'Informe o endereço da API local do RFID.')
+      notificacao('warning', t('notifications.urlRequiredTitle'), t('notifications.urlRequiredDescription'))
       return
     }
 
     const sucesso = await conectar()
     if (sucesso) {
-      notificacao('success', 'Leitor pronto', 'O dispositivo RFID foi inicializado com sucesso.')
+      notificacao('success', t('notifications.readerReadyTitle'), t('notifications.readerReadyDescription'))
     } else {
-      notificacao('error', 'Falha na conexão', 'Não foi possível inicializar o leitor RFID.')
+      notificacao('error', t('notifications.connectionFailureTitle'), t('notifications.connectionFailureDescription'))
     }
   }
 
@@ -41,10 +50,7 @@ const RfidConnectionPanel: React.FC = () => {
   }
 
   const handleChangeDispositivo = (value: string) => {
-    setConfig({
-      tipoDispositivo: value,
-      identificador: getDefaultIdentifier(value)
-    })
+    setConfig({ tipoDispositivo: value, identificador: getDefaultIdentifier(value) })
     if (statusConexao === 'CONECTADO') desconectar()
   }
 
@@ -53,21 +59,21 @@ const RfidConnectionPanel: React.FC = () => {
     if (statusConexao === 'CONECTADO') desconectar()
   }
 
-  if (hardwareOnline && statusConexao === 'CONECTADO' && !validandoHardware) {
+  if (hardwareOnline && statusConexao === 'CONECTADO') {
     return (
       <Alert
         type="success"
         showIcon
         icon={<CheckCircleOutlined />}
-        message={<Text strong>Leitor RFID pronto para uso</Text>}
-        description={
+        message={<Text strong>{t('connection.readerReady')}</Text>}
+        description={(
           <Space size="middle" style={{ marginTop: 4 }}>
-            <Text>Usando o dispositivo <strong>{tipoDispositivo}</strong></Text>
+            <Text>{t('connection.usingDevice')} <strong>{tipoDispositivo}</strong></Text>
             <Button size="small" type="link" onClick={desconectar} danger>
-              Desconectar / Alterar
+              {t('common.disconnectChange')}
             </Button>
           </Space>
-        }
+        )}
         style={{ marginBottom: 24, padding: '12px 20px' }}
       />
     )
@@ -78,14 +84,13 @@ const RfidConnectionPanel: React.FC = () => {
       type="warning"
       showIcon
       icon={<DisconnectOutlined />}
-      message={<Text strong>Leitor RFID não está conectado</Text>}
-      style={{ marginBottom: 24, padding: '16px 24px' }}
-      description={
+      message={<Text strong>{t('connection.readerNotConnected')}</Text>}
+      description={(
         <div style={{ marginTop: 16 }}>
           <Form layout="vertical">
             <Row gutter={[16, 16]} align="bottom">
               <Col xs={24} lg={8}>
-                <Form.Item label="Endereço do serviço (Local)" style={{ marginBottom: 0 }}>
+                <Form.Item label={t('connection.serviceAddressLocal')} style={{ marginBottom: 0 }}>
                   <Input
                     value={apiUrl}
                     onChange={handleChangeApiUrl}
@@ -95,20 +100,20 @@ const RfidConnectionPanel: React.FC = () => {
               </Col>
 
               <Col xs={24} sm={12} lg={6}>
-                <Form.Item label="Dispositivo" style={{ marginBottom: 0 }}>
+                <Form.Item label={t('common.device')} style={{ marginBottom: 0 }}>
                   <Select
                     value={tipoDispositivo}
                     onChange={handleChangeDispositivo}
                     style={{ width: '100%' }}
                   >
-                    <Option value="CHAINWAY_NATIVE">Chainway (Nativo)</Option>
-                    <Option value="MOCK">Emulador (MOCK)</Option>
+                    <Option value="CHAINWAY_NATIVE">{t('connection.chainwayNative')}</Option>
+                    <Option value="MOCK">{t('connection.mockEmulator')}</Option>
                   </Select>
                 </Form.Item>
               </Col>
 
               <Col xs={24} sm={12} lg={6}>
-                <Form.Item label="Identificador" style={{ marginBottom: 0 }}>
+                <Form.Item label={t('common.identifier')} style={{ marginBottom: 0 }}>
                   <Input
                     value={identificador}
                     onChange={handleChangeIdentificador}
@@ -123,7 +128,7 @@ const RfidConnectionPanel: React.FC = () => {
                       icon={<ReloadOutlined />}
                       onClick={verificarHardware}
                       loading={validandoHardware}
-                      title="Verificar status atual"
+                      title={t('common.checkCurrentStatus')}
                     />
                     <Button
                       type="primary"
@@ -132,7 +137,7 @@ const RfidConnectionPanel: React.FC = () => {
                       loading={statusConexao === 'CONECTANDO'}
                       style={{ backgroundColor: '#faad14', borderColor: '#faad14', color: '#fff' }}
                     >
-                      Conectar
+                      {t('common.connect')}
                     </Button>
                   </Space>
                 </Form.Item>
@@ -142,11 +147,12 @@ const RfidConnectionPanel: React.FC = () => {
 
           <div style={{ marginTop: 12 }}>
             <Text type="secondary" style={{ fontSize: '13px' }}>
-              * Ajuste os parâmetros acima e clique em conectar para liberar a tela.
+              {t('connection.connectHelp')}
             </Text>
           </div>
         </div>
-      }
+      )}
+      style={{ marginBottom: 24, padding: '16px 24px' }}
     />
   )
 }
