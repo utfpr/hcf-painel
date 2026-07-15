@@ -90,7 +90,8 @@ void i18n
       'cidadeContainer',
       'fichaTomboScreen',
       'fichaTomboActions',
-      'perfilScreen'
+      'perfilScreen',
+      'rfid'
     ],
     defaultNS: 'common',
     interpolation: {
