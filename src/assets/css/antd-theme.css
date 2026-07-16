@@ -15,7 +15,7 @@
   border-color: var(--primary-green) !important;
 }
 
-.ant-btn-primary:is(:hover, :focus, :active) {
+.ant-btn-primary:not(:disabled):is(:hover, :focus, :active) {
   background-color: #00994A !important;
   border-color: transparent !important;
 }
@@ -25,17 +25,17 @@
   color: black !important; 
 }
 
-.ant-btn-secondary:is(:hover, :focus, :active) {
+.ant-btn-secondary:not(:disabled):is(:hover, :focus, :active) {
   color: var(--primary-green) !important;
   border-color: var(--primary-green) !important;
 }
 
-.ant-btn-secondary:is(:hover, :focus, :active) a {
+.ant-btn-secondary:not(:disabled):is(:hover, :focus, :active) a {
   color: var(--primary-green) !important;
 }
 
 /* Botão Padrão */
-.ant-btn-default:is(:hover, :focus, :active) {
+.ant-btn-default:not(:disabled):is(:hover, :focus, :active) {
   border-color: var(--primary-green) !important; 
   color: var(--primary-green) !important; 
   box-shadow: 0 0 0 2px rgba(0, 122, 51, 0.2) !important;
@@ -50,7 +50,7 @@
   transition: filter 0.5s; 
 }
 
-.ant-btn-dangerous:hover {
+.ant-btn-dangerous:not(:disabled):hover {
   background-color: transparent !important; 
   border-color: red !important;  
   box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.2) !important;
