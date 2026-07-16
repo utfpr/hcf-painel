@@ -41,6 +41,23 @@
   box-shadow: 0 0 0 2px rgba(0, 122, 51, 0.2) !important;
 }
 
+/* Botão Dangerous */
+.ant-btn-dangerous {
+  transition: color 0.5s, text-shadow 0.5s, border-color 0.5s, box-shadow 0.5s; 
+}
+
+.ant-btn-dangerous .anticon {
+  transition: filter 0.5s; 
+}
+
+.ant-btn-dangerous:hover {
+  background-color: transparent !important; 
+  border-color: red !important;  
+  box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.2) !important;
+  color: red !important;
+  
+}
+
 /* Links */
 .ant-typography a {
   color: var(--primary-green) !important;
@@ -345,6 +362,14 @@
   background-color: #ffffff !important;
 }
 
+/* Popconfirm */
+.ant-popconfirm .ant-btn-default:is(:hover, :focus, :active) {
+  color: red !important; 
+  border-color: red !important; 
+  box-shadow: 0 0 0 1px rgba(255, 0, 0, 0.2) !important;
+}
+
+
 /* Cores de aviso (warning) */
 .ant-alert-warning {
   background-color: #fffbe6 !important;
@@ -441,6 +466,14 @@
   color: #000000 !important;
 }
 
+.ant-card .anticon-reload {
+  color: rgba(0, 0, 0, 0.25) !important; 
+}
+
+.ant-card .anticon-reload:is(:hover, :focus) {
+  color: var(--primary-green) !important; 
+}
+
 /* Collapse */
 .ant-collapse-header {
   color: #000000 !important;
@@ -466,22 +499,8 @@
   filter: drop-shadow(0px 0px 1px rgba(0, 122, 51, 0.5)); 
 }
 
-.ant-collapse-extra .ant-btn-dangerous {
-  transition: color 0.5s, text-shadow 0.5s; 
-}
-
-.ant-collapse-extra .ant-btn-dangerous .anticon-minus-circle {
-  transition: filter 0.5s; 
-}
-
-.ant-collapse-extra .ant-btn-dangerous:hover {
-  background-color: transparent !important; 
-  color: red !important;
-  text-shadow: 0px 0px 8px rgb(255, 77, 79);  
-}
-
-.ant-collapse-extra .ant-btn-dangerous:hover .anticon-minus-circle {
-  filter: drop-shadow(0px 0px 4px rgb(255, 77, 79));
+.ant-collapse-item .ant-collapse-header .ant-collapse-extra .ant-btn-dangerous:hover {
+  border-color: transparent !important; 
 }
 
 /* Tree */
