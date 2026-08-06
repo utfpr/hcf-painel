@@ -1,0 +1,16 @@
+{
+  "titulo": "Identificador",
+
+  "nome": "Nombre:",
+  "validacaoNome": "Ingrese el nombre del identificador",
+
+  "salvar": "Guardar",
+
+  "sucessoCadastro": "Identificador registrado con éxito.",
+  "erroCadastro": "Hubo un problema al registrar el identificador, intente nuevamente.",
+
+  "sucessoAtualizacao": "Identificador actualizado con éxito.",
+  "erroAtualizacao": "Hubo un problema al actualizar el identificador, intente nuevamente.",
+
+  "erroBuscarIdentificador": "Hubo un problema al buscar los datos del identificador, intente nuevamente."
+}

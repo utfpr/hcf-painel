@@ -4,25 +4,26 @@ import { Table, Button, message, Modal, Input, Image, Tooltip } from 'antd'
 import axios from 'axios'
 
 import UploadPicturesComponent from '@/components/UploadPicturesComponent'
+import i18n from '@/i18n'
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 
 import { uploadsUrl } from '../config/api'
 
-export const BarcodeColumns = [
+export const getBarcodeColumns = () => [
     {
-        title: 'Código de Barras',
+        title: i18n.t('tombo:barcode'),
         type: 'number',
         key: 'codigo_barra',
         width: 520
     },
-    { title: 'Imagem anexada', key: 'preview', width: 220 },
+    { title: i18n.t('tombo:attachedImage'), key: 'preview', width: 220 },
     {
-        title: 'Anexar Imagem ao código',
+        title: i18n.t('tombo:attachImageToCode'),
         type: 'text',
         key: 'anexar',
         width: 180
     },
-    { title: 'Ação', key: 'acao', width: 120 }
+    { title: i18n.t('tombo:tableAction'), key: 'acao', width: 120 }
 ]
 
 export default class BarcodeTableComponent extends Component {
@@ -43,7 +44,7 @@ export default class BarcodeTableComponent extends Component {
 
     constructor(props) {
         super(props)
-        this.columns = this.buildColumns(BarcodeColumns)
+        this.columns = this.buildColumns(getBarcodeColumns())
     }
 
     componentDidMount() {
@@ -481,22 +482,22 @@ export default class BarcodeTableComponent extends Component {
 
     handleDeleteRow = (record, index) => {
         Modal.confirm({
-            title: 'Excluir código',
+            title: i18n.t('tombo:deleteCodeTitle'),
             content: (
                 <div>
-                    Tem certeza que deseja excluir permanentemente o código:
+                    {i18n.t('tombo:deleteCodeQuestion')}
                     {' '}
                     <b>{record?.codigo_barra}</b>
                     ?
                     <br />
                     <span style={{ color: '#cf1322' }}>
-                        O código será permanentemente perdido!
+                        {i18n.t('tombo:codePermanentlyLost')}
                     </span>
                 </div>
             ),
-            okText: 'Sim, quero excluir',
+            okText: i18n.t('tombo:deleteCodeConfirm'),
             okType: 'danger',
-            cancelText: 'Cancelar',
+            cancelText: i18n.t('common:cancelar'),
             onOk: () => {
                 const formatted = record?.codigo_barra
 
@@ -512,7 +513,7 @@ export default class BarcodeTableComponent extends Component {
                         }
                     },
                     () => {
-                        message.success(`Código removido: ${formatted}`)
+                        message.success(i18n.t('tombo:codeRemoved', { code: formatted }))
                         this.emitChangeData()
                         this.emitChangePhotos()
                         this.emitDeleted({
@@ -543,9 +544,7 @@ export default class BarcodeTableComponent extends Component {
                 const payload = resp?.data ?? resp?.body ?? resp
                 const base = this.extractBaseNumberFromPayload(payload)
                 if (!Number.isFinite(base)) {
-                    message.warning(
-                        'O Último Tombo registrado não possui código registrado. Sugerindo sequência a partir de: 41800'
-                    )
+                    message.warning(i18n.t('tombo:noLastBarcodeSuggest'))
                     previousNumber = 41800
                 } else {
                     previousNumber = base
@@ -563,9 +562,7 @@ export default class BarcodeTableComponent extends Component {
                     const payload = resp?.data ?? resp?.body ?? resp
                     const base = this.extractBaseNumberFromPayload(payload)
                     if (!Number.isFinite(base)) {
-                        message.warning(
-                            'O Último Tombo registrado não possui código registrado. Sugerindo sequência a partir de: 41800'
-                        )
+                        message.warning(i18n.t('tombo:noLastBarcodeSuggest'))
                         previousNumber = 41800
                     } else {
                         previousNumber = base
@@ -585,7 +582,7 @@ export default class BarcodeTableComponent extends Component {
             })
         } catch (e) {
             console.error('Erro ao preparar geração:', e)
-            message.error('Erro ao preparar geração do código.')
+            message.error(i18n.t('tombo:prepareCodeGenerationError'))
         } finally {
             this.setState({ isGenerating: false })
         }
@@ -604,7 +601,7 @@ export default class BarcodeTableComponent extends Component {
         const newNumber = this.parseNumber(newCodeInput)
         if (!Number.isFinite(newNumber) || newNumber <= 0) {
             message.warning(
-                'Informe um novo código válido (número ou HCF completo).'
+                i18n.t('tombo:validNewCode')
             )
             return
         }

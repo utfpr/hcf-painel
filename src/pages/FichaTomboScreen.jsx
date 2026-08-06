@@ -9,35 +9,13 @@ import axios from 'axios'
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import { PrinterOutlined, SearchOutlined } from '@ant-design/icons'
+import { withTranslation } from 'react-i18next'
 
 import SimpleTableComponent from '../components/SimpleTableComponent'
 import { fichaTomboUrl } from '../config/api'
 import FichaTomboActions from './tombos/components/FichaTomboActions'
 
 const FormItem = Form.Item
-
-const columns = [
-    {
-        title: 'HCF',
-        key: 'hcf',
-        width: 100
-    },
-    {
-        title: 'Data coleta',
-        key: 'data_coleta',
-        width: 500
-    },
-    {
-        title: 'Nome científico',
-        key: 'nome_cientifico',
-        width: 500
-    },
-    {
-        title: 'Ação',
-        key: 'acao',
-        width: 100
-    }
-]
 
 class FichaTomboScreen extends Component {
     constructor(props) {
@@ -159,33 +137,57 @@ class FichaTomboScreen extends Component {
 
     render() {
         const { getFieldDecorator } = this.props.form
+        const { t } = this.props
+
+        const columns = [
+            {
+                title: t('fichaTomboScreen:colHcf'),
+                key: 'hcf',
+                width: 100
+            },
+            {
+                title: t('fichaTomboScreen:colDataColeta'),
+                key: 'data_coleta',
+                width: 500
+            },
+            {
+                title: t('fichaTomboScreen:colNomeCientifico'),
+                key: 'nome_cientifico',
+                width: 500
+            },
+            {
+                title: t('fichaTomboScreen:colAcao'),
+                key: 'acao',
+                width: 100
+            }
+        ]
 
         return (
             <Form onSubmit={this.handleFormSubmit}>
                 <Row>
                     <Col span="24">
-                        <h2 style={{ fontWeight: 200 }}>Ficha tombo</h2>
+                        <h2 style={{ fontWeight: 200 }}>{t('fichaTomboScreen:titulo')}</h2>
                     </Col>
                 </Row>
                 <Divider dashed />
 
                 <Row gutter="8">
                     <Col span="2">
-                        <FormItem label={<span>HCF:</span>}>
+                        <FormItem label={<span>{t('fichaTomboScreen:labelHcf')}</span>}>
                             {getFieldDecorator('hcf')(
                                 <Input type="text" />
                             )}
                         </FormItem>
                     </Col>
                     <Col span="4">
-                        <FormItem label={<span>Data de coleta:</span>}>
+                        <FormItem label={<span>{t('fichaTomboScreen:labelDataColeta')}</span>}>
                             {getFieldDecorator('data_coleta')(
                                 <Input type="text" />
                             )}
                         </FormItem>
                     </Col>
                     <Col span="6">
-                        <FormItem label={<span>Nome científico:</span>}>
+                        <FormItem label={<span>{t('fichaTomboScreen:labelNomeCientifico')}</span>}>
                             {getFieldDecorator('nome_cientifico')(
                                 <Input type="text" />
                             )}
@@ -195,7 +197,7 @@ class FichaTomboScreen extends Component {
                 <Row gutter="8" style={{ marginTop: 32 }}>
                     <Col span="24">
                         <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
-                            Pesquisar
+                            {t('common:pesquisar')}
                         </Button>
                     </Col>
 
@@ -218,14 +220,14 @@ class FichaTomboScreen extends Component {
                 />
 
                 <Modal
-                    title="Impressão de ficha"
+                    title={t('fichaTomboScreen:tituloModal')}
                     visible={this.state.modalVisible}
                     onOk={this.confirmarImpressao}
                     onCancel={() => this.setState({ modalVisible: false })}
-                    okText="Imprimir"
-                    cancelText="Cancelar"
+                    okText={t('fichaTomboScreen:imprimir')}
+                    cancelText={t('common:cancelar')}
                 >
-                    <p>Informe o número de cópias:</p>
+                    <p>{t('fichaTomboScreen:informeNumeroCopias')}</p>
                     <InputNumber
                         min={1}
                         max={3}
@@ -238,4 +240,6 @@ class FichaTomboScreen extends Component {
     }
 }
 
-export default Form.create()(FichaTomboScreen)
+const FichaTomboScreenWithForm = Form.create()(FichaTomboScreen)
+
+export default withTranslation()(FichaTomboScreenWithForm)

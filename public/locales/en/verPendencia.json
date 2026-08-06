@@ -1,0 +1,29 @@
+{
+  "carregando": "Loading...",
+
+  "tituloModificacoes": "Changes",
+
+  "fotosAntigas": "Old photos:",
+  "fotosNovas": "New photos:",
+  "fotos": "Photos:",
+
+  "observacao": "Observation:",
+
+  "botaoAprovado": "APPROVED",
+  "botaoReprovado": "REJECTED",
+
+  "colunaCampo": "Field",
+  "colunaValorAntigo": "Old value",
+  "colunaValorNovo": "New value",
+
+  "erroBuscarPendenciasTitulo": "Failure",
+  "erroBuscarPendenciasMensagem": "Could not retrieve the pending items, please try again.",
+
+  "erroBuscarPendenciasGenerico": "There was a problem fetching the pending items, please try again.",
+
+  "atualizacaoTitulo": "Update",
+  "sucessoAtualizacaoMensagem": "The pending item was successfully updated.",
+  "erroAtualizacaoMensagem": "There was a problem updating the pending item.",
+
+  "spinnerCarregando": "Loading..."
+}

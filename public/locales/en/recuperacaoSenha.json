@@ -1,0 +1,39 @@
+{
+  "recuperarSenha": "Recover Password",
+  "descricaoRecuperarSenha": "Enter your email address to receive a password reset link.",
+  "validacaoInformeEmail": "Please enter your email address.",
+  "validacaoEmailInvalido": "Invalid email address.",
+  "placeholderEmail": "youremail@example.com",
+  "enviarLinkRecuperacao": "Send Recovery Link",
+  "mensagemSeguranca": "*For security reasons, the response is generic (it does not reveal whether the email exists).",
+  "mensagemSucessoRecuperacao": "If an account with this email exists, we will send recovery instructions.",
+  "mensagemErroRecuperacao": "Error requesting password recovery.",
+  "mensagemFalhaSolicitacao": "Failed to send request. Please try again.",
+
+  "definirNovaSenha": "Set New Password",
+  "descricaoNovaSenha": "Create a strong password for your account.",
+
+  "novaSenha": "New Password",
+  "confirmarSenha": "Confirm Password",
+
+  "validacaoNovaSenha": "Please enter a new password.",
+  "validacaoMinimoCaracteres": "Minimum of 8 characters.",
+  "validacaoConfirmarSenha": "Please confirm your password.",
+  "validacaoSenhasNaoCoincidem": "Passwords do not match.",
+
+  "forca": "Strength:",
+  "senhaMuitoFraca": "Very Weak",
+  "senhaFraca": "Weak",
+  "senhaOk": "Fair",
+  "senhaBoa": "Good",
+  "senhaForte": "Strong",
+
+  "salvarNovaSenha": "Save New Password",
+
+  "erroSenhasNaoCoincidem": "Passwords do not match.",
+  "erroTokenInvalido": "Missing or invalid reset token.",
+  "erroRedefinirSenha": "Error resetting password.",
+  "erroFalhaRedefinirSenha": "Failed to reset password. Please try again.",
+
+  "sucessoSenhaRedefinida": "Password reset successfully! Please log in with your new password."
+}

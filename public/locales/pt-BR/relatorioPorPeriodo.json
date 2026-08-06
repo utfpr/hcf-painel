@@ -1,0 +1,46 @@
+{
+  "relatorioTombosPeriodo": "Relatório de Tombos por Período",
+
+  "alerta": "Alerta",
+  "erro": "Erro",
+
+  "selecionePeriodoValido": "Selecione um período válido",
+  "dataInicioAnteriorDataFim": "A data de início deve ser anterior à data de fim",
+
+  "falhaBuscarDadosRelatorio": "Falha ao buscar dados do relatório",
+
+  "dia": "dia",
+  "semana": "semana",
+  "mes": "mês",
+  "ano": "ano",
+
+  "filtrosRelatorio": "Filtros do relatório",
+  "periodo": "Período",
+  "dataInicial": "Data inicial",
+  "dataFinal": "Data final",
+  "subTextoPeriodo": "Período:",
+  "subTextoDias": "dias",
+  "subTextoSemanas": "semanas",
+  "subTextoMeses": "meses",
+  "granularidade": "Granularidade",
+  "selecioneGranularidade": "Selecione a granularidade",
+  "granularidadeDia": "Dia",
+  "maxGranularidadeDias": "(máx. 30 dias)",
+  "granularidadeSemana": "Semana",
+  "maxGranularidadeSemanas": "(máx. 30 semanas)",
+  "granularidadeMes": "Mês",
+  "maxGranularidadeMeses": "(máx. 30 meses)",
+  "granularidadeAno": "Ano",
+  "buscar": "Buscar",
+
+  "carregandoDadosEstatisticos": "Carregando dados estatísticos...",
+  "nenhumDadoDisponivel": "Nenhum dado disponível para o período selecionado.",
+  "ajusteGranularidadeDatas": "Tente ajustar a granularidade ou o intervalo de datas.",
+  "analiseTombosDistribuicaoTemporal": "Análise de Tombos - Distribuição Temporal",
+  
+  "barChartSemana": "Semana", 
+  "tombos": "tombos",
+  "quantidade": "Quantidade",
+  "quantidadeTombos": "Quantidade de Tombos"
+}
+ 

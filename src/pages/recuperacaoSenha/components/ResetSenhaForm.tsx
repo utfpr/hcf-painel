@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react'
 import {
   Form, Input, Button, Typography, message, Progress, Space
 } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 const { Title, Paragraph } = Typography
 
@@ -10,6 +11,7 @@ type Props = { onSuccess?: () => void }
 type CatchError = { message: string }
 
 function usePasswordStrength(pwd: string) {
+  const { t } = useTranslation()
   return useMemo(() => {
     if (!pwd) return {
       score: 0, label: '', percent: 0
@@ -23,19 +25,20 @@ function usePasswordStrength(pwd: string) {
     ]
     const score = checks.filter(Boolean).length
     const labels = [
-      'Muito fraca',
-      'Fraca',
-      'Ok',
-      'Boa',
-      'Forte'
+      t('recuperacaoSenha:senhaMuitoFraca'),
+      t('recuperacaoSenha:senhaFraca'),
+      t('recuperacaoSenha:senhaOk'),
+      t('recuperacaoSenha:senhaBoa'),
+      t('recuperacaoSenha:senhaForte')
     ]
     return {
       score, label: labels[score - 1] || '', percent: (score / 5) * 100
     }
-  }, [pwd])
+  }, [pwd, t])
 }
 
 export default function ResetSenhaForm({ onSuccess }: Props) {
+  const { t } = useTranslation()
   const [form] = Form.useForm()
   const [loading, setLoading] = useState(false)
   const pwd = Form.useWatch('password', form) as string || ''
@@ -43,7 +46,7 @@ export default function ResetSenhaForm({ onSuccess }: Props) {
 
   const handleFinish = async (values: { password: string; confirm: string }) => {
     if (values.password !== values.confirm) {
-      await message.error('As senhas não coincidem.')
+      await message.error(t('recuperacaoSenha:erroSenhasNaoCoincidem'))
       return
     }
 
@@ -51,7 +54,7 @@ export default function ResetSenhaForm({ onSuccess }: Props) {
     const token = query.get('token')
 
     if (!token) {
-      await message.error('Token de redefinição ausente ou inválido.')
+      await message.error(t('recuperacaoSenha:erroTokenInvalido'))
       return
     }
 
@@ -69,15 +72,15 @@ export default function ResetSenhaForm({ onSuccess }: Props) {
 
       if (!response.ok) {
         const data = await response.json().catch(() => ({})) as { mensagem?: string }
-        throw new Error(data.mensagem || 'Erro ao redefinir senha.')
+        throw new Error(data.mensagem || t('recuperacaoSenha:erroRedefinirSenha'))
       }
-      await message.success('Senha redefinida com sucesso! Faça login com a nova senha.')
+      await message.success(t('recuperacaoSenha:sucessoSenhaRedefinida'))
       window.location.href = '/inicio'
       onSuccess?.()
       form.resetFields()
     } catch (e: unknown) {
       const err = e as CatchError
-      await message.error(err.message || 'Falha ao redefinir senha. Tente novamente.')
+      await message.error(err.message || t('recuperacaoSenha:erroFalhaRedefinirSenha'))
     } finally {
       setLoading(false)
     }
@@ -85,18 +88,18 @@ export default function ResetSenhaForm({ onSuccess }: Props) {
 
   return (
     <div className="w-full max-w-md mx-auto p-4">
-      <Title level={3} style={{ marginBottom: 4, textAlign: 'center' }}>Definir nova senha</Title>
+      <Title level={3} style={{ marginBottom: 4, textAlign: 'center' }}>{t('recuperacaoSenha:definirNovaSenha')}</Title>
       <Paragraph type="secondary" style={{ marginTop: 0, textAlign: 'center' }}>
-        Crie uma senha forte para sua conta.
+        {t('recuperacaoSenha:descricaoNovaSenha')}
       </Paragraph>
 
       <Form layout="vertical" form={form} onFinish={handleFinish}>
         <Form.Item
           name="password"
-          label="Nova senha"
+          label={t('recuperacaoSenha:novaSenha')}
           rules={[
-            { required: true, message: 'Informe a nova senha.' },
-            { min: 8, message: 'Mínimo de 8 caracteres.' }
+            { required: true, message: t('recuperacaoSenha:validacaoNovaSenha') },
+            { min: 8, message: t('recuperacaoSenha:validacaoMinimoCaracteres') }
           ]}
           hasFeedback
         >
@@ -107,7 +110,7 @@ export default function ResetSenhaForm({ onSuccess }: Props) {
           <Space direction="vertical" style={{ width: '100%' }}>
             <Progress percent={Math.round(strength.percent)} showInfo={false} />
             <Paragraph type="secondary" style={{ margin: 0 }}>
-              Força:
+              {t('recuperacaoSenha:forca')}
               {' '}
               {strength.label || '—'}
             </Paragraph>
@@ -116,15 +119,15 @@ export default function ResetSenhaForm({ onSuccess }: Props) {
 
         <Form.Item
           name="confirm"
-          label="Confirmar senha"
+          label={t('recuperacaoSenha:confirmarSenha')}
           dependencies={['password']}
           hasFeedback
           rules={[
-            { required: true, message: 'Confirme a senha.' },
+            { required: true, message: t('recuperacaoSenha:validacaoConfirmarSenha') },
             ({ getFieldValue }) => ({
               validator(_, value) {
                 if (!value || getFieldValue('password') === value) return Promise.resolve()
-                return Promise.reject(new Error('As senhas não coincidem.'))
+                return Promise.reject(new Error(t('recuperacaoSenha:validacaoSenhasNaoCoincidem')))
               }
             })
           ]}
@@ -134,7 +137,7 @@ export default function ResetSenhaForm({ onSuccess }: Props) {
 
         <Form.Item>
           <Button type="primary" htmlType="submit" block loading={loading}>
-            Salvar nova senha
+            {t('recuperacaoSenha:salvarNovaSenha')}
           </Button>
         </Form.Item>
       </Form>

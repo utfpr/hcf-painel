@@ -1,0 +1,38 @@
+{
+  "titulo": "Herbário",
+
+  "nome": "Nome:",
+  "validacaoNome": "Insira o nome do herbário",
+  "sigla": "Sigla:",
+  "email": "E-mail:",
+  "validacaoEmail": "Insira o e-mail do herbário",
+
+  "endereco": "Endereço:",
+  "validacaoEndereco": "Insira o logradouro do herbário",
+  "numero": "Número:",
+  "validacaoNumero": "Insira o numero do logradouro do herbário",
+
+  "pais": "País:",
+  "selecionePais": "Selecione um país",
+  "validacaoPais": "Selecione ou insira um país",
+  "estado": "Estado:",
+  "selecioneEstado": "Selecione um estado",
+  "selecionePaisPrimeiro": "Selecione um país primeiro",
+  "validacaoEstado": "Selecione ou insira um estado",
+  "cidade": "Cidade:",
+  "selecioneCidade": "Selecione uma cidade",
+  "selecioneEstadoPrimeiro": "Selecione um estado primeiro",
+  "validacaoCidade": "Selecione ou insira uma cidade",
+
+  "complemento": "Complemento de localização:",
+
+  "salvar": "Salvar",
+
+  "erroBuscarPaises": "Houve um problema ao buscar os países, tente novamente.",
+  "erroBuscarEstados": "Houve um problema ao buscar os estados, tente novamente.",
+  "erroBuscarCidades": "Houve um problema ao buscar as cidades, tente novamente.",
+
+  "erroCadastro": "Houve um problema ao cadastrar o herbário, tente novamente.",
+  "erroAtualizacao": "Houve um problema ao atualizar o herbário, tente novamente.",
+  "erroBuscarHerbario": "Houve um problema ao buscar os dados do herbário, tente novamente."
+}

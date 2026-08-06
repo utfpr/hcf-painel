@@ -1,0 +1,12 @@
+{
+  "labelIdentificador": "Identificador",
+  "labelColetor": "Coletor",
+  "labelNumeroColeta": "Número de Coleta",
+  "placeholderIdentificador": "Digite o nome do identificador",
+  "placeholderColetor": "Digite o nome do coletor",
+  "placeholderNumeroColeta": "Selecione um coletor primeiro",
+  "nenhumResultado": "Nenhum resultado",
+  "nenhumNumeroColeta": "Nenhum número de coleta disponível",
+  "adicionarFiltro": "Adicionar Filtro",
+  "remover": "Remover"
+}

@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Select, Spin } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 import SelectedFormFiled from './SelectedFormFiled'
 
@@ -10,6 +11,7 @@ const CidadeFormField = ({
     initialValue, cidades, getFieldDecorator, onClickAddMore, onChange, validateStatus, getFieldError, onSearch,
     loading = false, debounceDelay = 200, disabled = false, help
 }) => {
+    const { t } = useTranslation('tombo')
     const errorList = getFieldError && getFieldError('cidade')
     const hasError = errorList && errorList.length > 0
     const finalStatus = hasError ? 'error' : (validateStatus || '')
@@ -36,9 +38,9 @@ const CidadeFormField = ({
             md={8}
             lg={8}
             xl={8}
-            title="Cidade:"
+            title={t('city')}
             initialValue={initialValue}
-            placeholder="Selecione uma cidade"
+            placeholder={t('selectCity')}
             fieldName="cidade"
             getFieldDecorator={getFieldDecorator}
             getFieldError={getFieldError}
@@ -48,7 +50,7 @@ const CidadeFormField = ({
             extra={hasError ? null : warningMessage}
             rules={[{
                 required: true,
-                message: 'Escolha uma cidade'
+                message: t('chooseCity')
             }]}
             onSearch={onSearch}
             debounceDelay={debounceDelay}
@@ -56,7 +58,7 @@ const CidadeFormField = ({
             others={{
                 allowClear: true,
                 loading,
-                notFoundContent: loading ? <Spin size="small" /> : 'Nenhum país encontrado',
+                notFoundContent: loading ? <Spin size="small" /> : t('noneFoundEntity', { entity: t('city').replace(':', '').toLowerCase() }),
                 filterOption: onSearch ? false : undefined,
                 status: finalStatus
             }}

@@ -1,0 +1,43 @@
+{
+  "tituloCardBuscarReflora": "Search information in Reflora",
+
+  "perguntaAtualizarAgora": "Do you want to update now?",
+  "botaoAtualizar": "Update",
+
+  "processoExecutando": "RUNNING!!! PLEASE WAIT...",
+
+  "ultimaAtualizacao": "The last update was performed at {{horario}} and lasted {{duracao}}.",
+
+  "tituloAtualizacaoProgramada": "Scheduled update",
+
+  "labelAtualizacaoProgramada": "Scheduled update",
+
+  "labelPeriodicidade": "Frequency:",
+  "placeholderPeriodicidade": "Select the desired frequency",
+
+  "opcaoPeriodicidadeSemanal": "Every week",
+  "opcaoPeriodicidadeMensal": "Every month",
+  "opcaoPeriodicidadeDoisMeses": "Every two months",
+
+  "botaoDefinirAtualizacaoProgramada": "Set scheduled update",
+
+  "placeholderSelecionarLog": "Select the LOG file",
+  "verificarLogSaida": "Check output LOG",
+
+  "headerReflora": "Reflora",
+
+  "erroAgendarAtualizacao": "It was not possible to schedule the new update time.",
+  "erroProcessoExecutando": "The update process is currently running.",
+  "infoProcessoInicializando": "The update process will start shortly.",
+
+  "mensagemPeriodicidadeSemanalSegunda": "The update process has been scheduled for every Monday at midnight.",
+  "mensagemPeriodicidadeSemanalTerca": "The update process has been scheduled for every Tuesday at midnight.",
+  "mensagemPeriodicidadeSemanalQuarta": "The update process has been scheduled for every Wednesday at midnight.",
+  "mensagemPeriodicidadeSemanalQuinta": "The update process has been scheduled for every Thursday at midnight.",
+  "mensagemPeriodicidadeSemanalSexta": "The update process has been scheduled for every Friday at midnight.",
+  "mensagemPeriodicidadeSemanalSabado": "The update process has been scheduled for every Saturday at midnight.",
+  "mensagemPeriodicidadeSemanalDomingo": "The update process has been scheduled for every Sunday at midnight.",
+
+  "mensagemPeriodicidadeMensal": "The update process has been scheduled and will run every month.",
+  "mensagemPeriodicidadeDoisMeses": "The update process has been scheduled and will run every two months."
+}

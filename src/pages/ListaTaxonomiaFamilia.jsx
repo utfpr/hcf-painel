@@ -6,6 +6,7 @@ import {
     Select, Spin
 } from 'antd'
 import axios from 'axios'
+import { withTranslation } from 'react-i18next'
 
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { recaptchaKey } from '@/config/api'
@@ -22,30 +23,6 @@ const FormItem = Form.Item
 
 const { Option } = Select
 
-const columns = [
-    {
-        title: 'Família',
-        type: 'text',
-        key: 'familia',
-        dataIndex: 'familia',
-        sorter: true,
-        width: '46.5%'
-    },
-    {
-        title: 'Reino',
-        type: 'text',
-        key: 'reino',
-        dataIndex: 'reino',
-        sorter: true,
-        width: '46.5%'
-    },
-    {
-        title: 'Ação',
-        key: 'acao',
-        width: 100
-    }
-]
-
 class ListaTaxonomiaFamilia extends Component {
     constructor(props) {
         super(props)
@@ -58,7 +35,7 @@ class ListaTaxonomiaFamilia extends Component {
             loadingModal: false,
             loading: false,
             fetchingReinos: false,
-            titulo: 'Cadastrar',
+            titulo: this.props.t('common:cadastrar'),
             id: -1
         }
     }
@@ -74,7 +51,7 @@ class ListaTaxonomiaFamilia extends Component {
                 })
                 if (response.status === 204) {
                     this.requisitaListaFamilia(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir família', 'A família foi excluída com sucesso.')
+                    this.notificacao('success', this.props.t('listaTaxonomiaFamilia:excluirFamilia'), this.props.t('listaTaxonomiaFamilia:familiaExcluidaSucesso'))
                 }
             })
             .catch(err => {
@@ -85,13 +62,13 @@ class ListaTaxonomiaFamilia extends Component {
                 if (response && response.data) {
                     const { error } = response.data
                     if (error && error.code) {
-                        this.notificacao('error', 'Erro ao excluir família', error.code)
+                        this.notificacao('error', this.props.t('listaTaxonomiaFamilia:erroExcluirFamilia'), error.code)
                     } else {
-                        this.notificacao('error', 'Erro ao excluir família', 'Ocorreu um erro inesperado ao tentar excluir a família.')
+                        this.notificacao('error', this.props.t('listaTaxonomiaFamilia:erroExcluirFamilia'), this.props.t('listaTaxonomiaFamilia:erroExcluirFamiliaInesperado'))
                     }
                     console.error(error)
                 } else {
-                    this.notificacao('error', 'Erro ao excluir família', 'Falha na comunicação com o servidor.')
+                    this.notificacao('error', this.props.t('listaTaxonomiaFamilia:erroExcluirFamilia'), this.props.t('common:erroComunicacaoServidor'))
                 }
             })
     }
@@ -107,11 +84,11 @@ class ListaTaxonomiaFamilia extends Component {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this
         confirm({
-            title: 'Você tem certeza que deseja excluir esta família?',
-            content: 'Ao clicar em SIM, a família será excluída.',
-            okText: 'SIM',
+            title: this.props.t('listaTaxonomiaFamilia:confirmacaoExcluirFamilia'),
+            content: this.props.t('listaTaxonomiaFamilia:descricaoExcluirFamilia'),
+            okText: this.props.t('common:sim'),
             okType: 'danger',
-            cancelText: 'NÃO',
+            cancelText: this.props.t('common:nao'),
             onOk() {
                 self.requisitaExclusao(id)
             },
@@ -139,7 +116,7 @@ class ListaTaxonomiaFamilia extends Component {
                         this.setState({
                             visibleModal: true,
                             id: item.id,
-                            titulo: 'Atualizar'
+                            titulo: this.props.t('common:atualizar')
                         })
                     }}
                     >
@@ -190,9 +167,9 @@ class ListaTaxonomiaFamilia extends Component {
                 const token = await window.grecaptcha.execute(recaptchaKey, { action: 'familias' })
                 params.recaptchaToken = token
             } catch (error) {
-                console.error('Erro ao executar reCAPTCHA:', error)
+                console.error(this.props.t('common:erroExecutarRecaptcha'), error)
                 this.setState({ loading: false })
-                this.notificacao('error', 'Erro', 'Falha ao validar reCAPTCHA.')
+                this.notificacao('error', this.props.t('common:erro'), this.props.t('common:erroValidarRecaptcha'))
                 return
             }
         }
@@ -207,9 +184,9 @@ class ListaTaxonomiaFamilia extends Component {
                         metadados: data.metadados
                     })
                 } else if (response.status === 400) {
-                    this.notificacao('warning', 'Buscar família', 'Erro ao buscar as famílias.')
+                    this.notificacao('warning', this.props.t('listaTaxonomiaFamilia:notificacaoBuscarFamilia'), this.props.t('listaTaxonomiaFamilia:erroBuscarFamilias'))
                 } else {
-                    this.notificacao('error', 'Error', 'Erro de servidor ao buscar as famílias.')
+                    this.notificacao('error', this.props.t('common:error'), this.props.t('listaTaxonomiaFamilia:erroServidorBuscarFamilias'))
                 }
             })
             .catch(err => {
@@ -251,11 +228,11 @@ class ListaTaxonomiaFamilia extends Component {
                 })
                 if (response.status === 204) {
                     this.requisitaListaFamilia()
-                    this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                    this.openNotificationWithIcon('success', this.props.t('common:sucesso'), this.props.t('common:cadastroRealizadoSucesso'))
                 } else if (response.status === 400) {
-                    this.openNotificationWithIcon('warning', 'Falha', response.data.error)
+                    this.openNotificationWithIcon('warning', this.props.t('common:falha'), response.data.error)
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar a nova família, tente novamente.')
+                    this.openNotificationWithIcon('error', this.props.t('common:falha'), this.props.t('listaTaxonomiaFamilia:erroCadastrarFamilia'))
                 }
                 this.props.form.setFields({
                     nomeFamilia: {
@@ -272,7 +249,7 @@ class ListaTaxonomiaFamilia extends Component {
                     const { error } = response.data
                     console.error(error.message)
 
-                    this.openNotificationWithIcon('error', 'Falha', 'Família já cadastrada.')
+                    this.openNotificationWithIcon('error', this.props.t('common:falha'), this.props.t('listaTaxonomiaFamilia:erroFamiliaJaCadastrada'))
                 }
             })
             .catch(this.catchRequestError)
@@ -291,11 +268,11 @@ class ListaTaxonomiaFamilia extends Component {
                 })
                 if (response.status === 204) {
                     this.requisitaListaFamilia()
-                    this.openNotificationWithIcon('success', 'Sucesso', 'A atualização foi realizada com sucesso.')
+                    this.openNotificationWithIcon('success', this.props.t('common:sucesso'), this.props.t('common:atualizacaoRealizadaSucesso'))
                 } else if (response.status === 400) {
-                    this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                    this.openNotificationWithIcon('warning', this.props.t('common:falha'), response.data.error.message)
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao atualizar a família, tente novamente.')
+                    this.openNotificationWithIcon('error', this.props.t('common:falha'), this.props.t('listaTaxonomiaFamilia:erroAtualizarFamilia'))
                 }
                 this.props.form.setFields({
                     nomeFamilia: {
@@ -319,11 +296,11 @@ class ListaTaxonomiaFamilia extends Component {
     renderPainelBusca() {
         const { getFieldDecorator } = this.props.form
         return (
-            <Card title="Buscar família">
+            <Card title={this.props.t('listaTaxonomiaFamilia:buscarFamilia')}>
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col span={24}>
-                            <span>Nome da família:</span>
+                            <span>{this.props.t('listaTaxonomiaFamilia:nomeFamilia')}</span>
                         </Col>
                     </Row>
                     <Row gutter={8}>
@@ -359,7 +336,7 @@ class ListaTaxonomiaFamilia extends Component {
                                             }}
                                             className="login-form-button"
                                         >
-                                            Limpar
+                                            {this.props.t('common:limpar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -370,7 +347,7 @@ class ListaTaxonomiaFamilia extends Component {
                                             htmlType="submit"
                                             className="login-form-button ant-btn-pesquisar"
                                         >
-                                            Pesquisar
+                                            {this.props.t('common:pesquisar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -414,7 +391,7 @@ class ListaTaxonomiaFamilia extends Component {
                 const { error } = response.data
                 console.error(error.message)
             }
-            this.notificacao('error', 'Erro', 'Falha ao buscar reinos.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('listaTaxonomiaFamilia:erroBuscarReinos'))
         }
     }
 
@@ -427,13 +404,13 @@ class ListaTaxonomiaFamilia extends Component {
                     onClick={() => {
                         this.setState({
                             visibleModal: true,
-                            titulo: 'Cadastrar',
+                            titulo: this.props.t('common:cadastrar'),
                             id: -1
                         })
                     }}
                     style={{ backgroundColor: '#5CB85C', borderColor: '#5CB85C', width: '100%' }}
                 >
-                    Adicionar
+                    {this.props.t('common:adicionar')}
                 </Button>
             )
         }
@@ -447,6 +424,31 @@ class ListaTaxonomiaFamilia extends Component {
     renderFormulario() {
         const { getFieldDecorator } = this.props.form
         const { fetchingReinos } = this.state
+
+        const columns = [
+            {
+                title: this.props.t('listaTaxonomiaFamilia:colunaFamilia'),
+                type: 'text',
+                key: 'familia',
+                dataIndex: 'familia',
+                sorter: true,
+                width: '46.5%'
+            },
+            {
+                title: this.props.t('listaTaxonomiaFamilia:colunaReino'),
+                type: 'text',
+                key: 'reino',
+                dataIndex: 'reino',
+                sorter: true,
+                width: '46.5%'
+            },
+            {
+                title: this.props.t('listaTaxonomiaFamilia:colunaAcao'),
+                key: 'acao',
+                width: 100
+            }
+        ]
+
         return (
             <div>
                 <Form onSubmit={this.handleSubmitForm}>
@@ -466,12 +468,12 @@ class ListaTaxonomiaFamilia extends Component {
                                 if (this.props.form.getFieldsValue().nomeFamilia && this.props.form.getFieldsValue().nomeFamilia.trim() !== '') {
                                     this.cadastraNovaFamilia()
                                 } else {
-                                    this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da família.')
+                                    this.openNotificationWithIcon('warning', this.props.t('common:falha'), this.props.t('listaTaxonomiaFamilia:informarNomeFamilia'))
                                 }
                             } else if (this.props.form.getFieldsValue().nomeFamilia && this.props.form.getFieldsValue().nomeFamilia.trim() !== '') {
                                 this.atualizaFamilia()
                             } else {
-                                this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome da família.')
+                                this.openNotificationWithIcon('warning', this.props.t('common:falha'), this.props.t('listaTaxonomiaFamilia:informarNomeFamilia'))
                             }
                             this.setState({
                                 visibleModal: false
@@ -482,8 +484,8 @@ class ListaTaxonomiaFamilia extends Component {
                         <div>
                             <Row gutter={8}>
                                 <SelectedFormField
-                                    title="Nome do reino:"
-                                    placeholder="Selecione um reino"
+                                    title={this.props.t('listaTaxonomiaFamilia:nomeReino')}
+                                    placeholder={this.props.t('listaTaxonomiaFamilia:selecioneReino')}
                                     fieldName="nomeReino"
                                     getFieldDecorator={getFieldDecorator}
                                     onSearch={searchText => {
@@ -491,7 +493,7 @@ class ListaTaxonomiaFamilia extends Component {
                                     }}
                                     others={{
                                         loading: fetchingReinos,
-                                        notFoundContent: fetchingReinos ? <Spin size="small" /> : 'Nenhum resultado encontrado',
+                                        notFoundContent: fetchingReinos ? <Spin size="small" /> : this.props.t('common:nenhumResultadoEncontrado'),
                                         allowClear: true
                                     }}
                                     debounceDelay={200}
@@ -506,7 +508,7 @@ class ListaTaxonomiaFamilia extends Component {
                             </Row>
                             <Row gutter={8} style={{ marginTop: 16 }}>
                                 <Col span={24}>
-                                    <span>Informe o nome da família:</span>
+                                    <span>{this.props.t('listaTaxonomiaFamilia:informarNomeFamiliaLabel')}</span>
                                 </Col>
                             </Row>
                             <Row gutter={8}>
@@ -524,7 +526,7 @@ class ListaTaxonomiaFamilia extends Component {
                 </Form>
                 <Row gutter={24} style={{ marginBottom: '20px' }}>
                     <Col xs={24} sm={14} md={18} lg={20} xl={20}>
-                        <h2 style={{ fontWeight: 200 }}>Famílias</h2>
+                        <h2 style={{ fontWeight: 200 }}>{this.props.t('listaTaxonomiaFamilia:familias')}</h2>
                     </Col>
                     <Col xs={24} sm={10} md={6} lg={4} xl={4}>
                         {this.renderAdd()}
@@ -559,4 +561,6 @@ class ListaTaxonomiaFamilia extends Component {
         )
     }
 }
-export default Form.create()(ListaTaxonomiaFamilia)
+const ListaTaxonomiaFamiliaWithForm = Form.create()(ListaTaxonomiaFamilia)
+
+export default withTranslation()(ListaTaxonomiaFamiliaWithForm)

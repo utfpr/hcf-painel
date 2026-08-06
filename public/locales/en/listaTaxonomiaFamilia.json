@@ -1,0 +1,30 @@
+{
+  "familias": "Families",
+
+  "nomeReino": "Kingdom name:",
+  "selecioneReino": "Select a kingdom",
+  "informarNomeFamiliaLabel": "Enter the family name:",
+  "informarNomeFamilia": "Enter the family name.",
+
+  "buscarFamilia": "Search Family",
+  "nomeFamilia": "Family Name:",
+
+  "colunaFamilia": "Family",
+  "colunaReino": "Kingdom",
+  "colunaAcao": "Action",
+
+  "erroCadastrarFamilia": "There was a problem registering the new family, please try again.",
+  "erroAtualizarFamilia": "There was a problem updating the family, please try again.",
+  "erroFamiliaJaCadastrada": "Family already registered.",
+  "erroBuscarFamilias": "Error fetching families.",
+  "erroServidorBuscarFamilias": "Server error while fetching families.",
+  "erroBuscarReinos": "Failed to fetch kingdoms.",
+  "notificacaoBuscarFamilia": "Search Family",
+
+  "confirmacaoExcluirFamilia": "Are you sure you want to delete this family?",
+  "descricaoExcluirFamilia": "By clicking YES, the family will be deleted.",
+  "excluirFamilia": "Delete family",
+  "familiaExcluidaSucesso": "The family was successfully deleted.",
+  "erroExcluirFamilia": "Error deleting family",
+  "erroExcluirFamiliaInesperado": "An unexpected error occurred while trying to delete the family."
+}

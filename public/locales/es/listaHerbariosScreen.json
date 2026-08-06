@@ -1,0 +1,24 @@
+{
+  "titulo": "Herbarios",
+
+  "buscarHerbario": "Buscar herbario",
+  "buscarSigla": "Sigla:",
+  "buscarNome": "Nombre:",
+  "buscarEmail": "Correo electrónico:",
+
+  "colunaSigla": "Sigla",
+  "colunaNome": "Nombre",
+  "colunaEndereco": "Dirección",
+  "colunaEmail": "Correo electrónico",
+  "colunaAcao": "Acción",
+
+  "confirmarExcluirHerbario": "¿Está seguro de que desea eliminar este herbario?",
+  "descricaoExcluirHerbario": "Al hacer clic en SÍ, el herbario será eliminado.",
+  "sucessoExcluirHerbario": "El herbario fue eliminado con éxito.",
+
+  "erroExcluirHerbario": "Error al eliminar herbario",
+  "erroInesperadoExcluirHerbario": "Ocurrió un error inesperado al intentar eliminar el herbario.",
+
+  "erroBuscarHerbarios": "Hubo un problema al buscar los herbarios, intente nuevamente.",
+  "validacaoBusca": "Ingrese al menos un campo para realizar la búsqueda."
+}

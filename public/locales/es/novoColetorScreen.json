@@ -1,0 +1,16 @@
+{
+  "titulo": "Colector",
+
+  "nome": "Nombre:",
+  "validacaoNome": "Ingrese el nombre del colector",
+
+  "salvar": "Guardar",
+
+  "sucessoCadastro": "Colector registrado con éxito.",
+  "erroCadastro": "Hubo un problema al registrar el colector, intente nuevamente.",
+
+  "sucessoAtualizacao": "Colector actualizado con éxito.",
+  "erroAtualizacao": "Hubo un problema al actualizar el colector, intente nuevamente.",
+
+  "erroBuscarColetor": "Hubo un problema al buscar los datos del colector, intente nuevamente."
+}

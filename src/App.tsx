@@ -7,7 +7,8 @@ import './assets/css/Search.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
 
 import {
-  BrowserRouter, Switch, Route
+  BrowserRouter, Switch, Route,
+  Redirect
 } from 'react-router-dom'
 
 import { useAuth } from './contexts/Auth/useAuth'
@@ -56,7 +57,6 @@ import RelatorioColetorPeriodoScreen from './pages/RelatorioColetorPeriodoScreen
 import RelatorioFamiliasGeneroScreen from './pages/RelatorioFamiliasGeneroScreen'
 import RelatorioInventarioEspeciesScreen from './pages/RelatorioInventarioEspeciesScreen'
 import RelatorioLocalColetaScreen from './pages/RelatorioLocalColetaPeriodoScreen'
-import RelatorioTombosPorCidadeScreen from './pages/RelatorioTombosPorCidadeScreen'
 import RelatorioQuantidadeScreen from './pages/RelatorioQtdPeriodoScreen'
 import ServicosRefloraScreen from './pages/ServicosRefloraScreen'
 import ServicosSpeciesLinkScreen from './pages/ServicosSpeciesLinkScreen'
@@ -64,7 +64,13 @@ import NovoTomboScreen from './pages/tombos/NovoTomboScreen'
 import UnauthorizedScreen from './pages/UnauthorizedScreen'
 import PendenciaPagina from './pages/VerPendenciaScreen'
 import RelatorioPorPeriodo from './pages/RelatorioPorPeriodo'
+import RfidConfiguracao from './pages/RfidConfiguracao'
+import RfidConferencia from './pages/RfidConferencia'
+import RfidVinculacao from './pages/RfidVinculacao'
+import RfidInventario from './pages/RfidInventario'
+import DashboardScreen from './pages/DashboardScreen'
 import RelatorioCoordenadaForaPoligonoScreen from './pages/RelatorioCoordenadaForaPoligonoScreen'
+import RelatorioTombosPorCidadeScreen from './pages/RelatorioTombosPorCidadeScreen'
 
 interface PrivateRouteProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -93,6 +99,9 @@ export function App() {
   const renderMainLayout = () => (
     <MainLayout auth={auth}>
       <Switch>
+        <Route exact path="/">
+          <Redirect to="/dashboard" />
+        </Route>
         <Route path="/tombos/detalhes/:tombo_id" component={DetalhesTomboScreen} />
         <PrivateRoute authed={isCuradorOuOperador()} path="/tombos/novo" component={NovoTomboScreen} />
         <PrivateRoute
@@ -273,6 +282,27 @@ export function App() {
           path="/relatorio-quantidade-familia-generos"
           component={RelatorioQuantidadeScreen}
         />
+        <PrivateRoute
+          authed={Boolean(auth.user?.id)}
+          path="/rfid-configuracao"
+          component={RfidConfiguracao}
+        />
+        <PrivateRoute
+          authed={Boolean(auth.user?.id)}
+          path="/rfid-conferencia"
+          component={RfidConferencia}
+        />
+        <PrivateRoute
+          authed={Boolean(auth.user?.id)}
+          path="/rfid-vinculacao"
+          component={RfidVinculacao}
+        />
+        <PrivateRoute
+          authed={Boolean(auth.user?.id)}
+          path="/rfid-inventario"
+          component={RfidInventario}
+        />
+        <Route path="/dashboard" component={DashboardScreen} />
         <PrivateRoute
           authed={Boolean(auth.user?.id)}
           path="/relatorio-coordenadas-fora-poligono"

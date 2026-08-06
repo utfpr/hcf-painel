@@ -1,0 +1,17 @@
+{
+  "reinos": "Reinos",
+  "buscarReino": "Buscar Reino",
+  "nomeReino": "Nombre del Reino:",
+  "colunaReino": "Reino",
+  "colunaAcao": "Acción",
+  "informarNomeReino": "Ingrese el nombre del reino:",
+  "confirmacaoExcluirReino": "¿Está seguro de que desea eliminar este reino?",
+  "descricaoExcluirReino": "Al hacer clic en SÍ, el reino será eliminado.",
+
+  "erroCadastrarReino": "Hubo un problema al registrar el nuevo reino, intente nuevamente.",
+  "erroAtualizarReino": "Hubo un problema al actualizar el reino, intente nuevamente.",
+  "erroNomeReinoObrigatorio": "Ingrese el nombre del reino.",
+
+  "erroReinoJaCadastrado": "El reino ya está registrado.",
+  "erroBuscarReinos": "Fallo al buscar reinos."
+}

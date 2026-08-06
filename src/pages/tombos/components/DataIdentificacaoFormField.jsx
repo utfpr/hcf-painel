@@ -3,17 +3,19 @@ import React from 'react'
 import {
     Col, Row, InputNumber
 } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 import { Form } from '@ant-design/compatible'
 
 const FormItem = Form.Item
 
 const DataIdentificacaoFormField = ({ getFieldDecorator, getFieldError }) => {
+    const { t } = useTranslation('tombo')
     const validaAnoNaoFuturo = (_rule, value, callback) => {
         if (value == null || value === '') return callback()
         const anoAtual = new Date().getFullYear()
         if (Number(value) > anoAtual) {
-            return callback('O ano não pode ser no futuro.')
+            return callback(t('yearFuture'))
         }
         return callback()
     }
@@ -21,7 +23,7 @@ const DataIdentificacaoFormField = ({ getFieldDecorator, getFieldError }) => {
     return (
         <Col xs={24} sm={24} md={12} lg={12} xl={12}>
             <Col span={24}>
-                <span> Data identificação: </span>
+                <span>{t('identificationDate')}</span>
             </Col>
             <Col span={24}>
                 <Row type="flex" gutter={4}>

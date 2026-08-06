@@ -9,6 +9,7 @@ import rateLimiter from '../helpers/rateLimiter'
 import { setTokenUsuario, setUsuario } from '../helpers/usuarios'
 import type { Broker } from '../libraries/events/Broker'
 import type { Events } from '../resources/events'
+import i18n from '../i18n'
 
 export class AuthService {
     private static instance: AuthService
@@ -30,7 +31,7 @@ export class AuthService {
         if (!rateLimitCheck.allowed) {
             const resetTime = rateLimiter.formatResetTime(rateLimitCheck.resetTime)
             const error: ApiError = {
-                mensagem: `Muitas tentativas de login. Tente novamente em ${resetTime}.`,
+                mensagem: i18n.t('authService:muitasTentativasLogin', { tempo: resetTime }),
                 codigo: 429
             }
             throw error

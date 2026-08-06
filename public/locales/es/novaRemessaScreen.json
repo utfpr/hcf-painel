@@ -1,0 +1,46 @@
+{
+  "titulo": "Remesa",
+
+  "colunaTombo": "Voucher",
+  "colunaTipo": "Tipo",
+  "colunaDataVencimento": "Fecha de vencimiento",
+  "colunaAcao": "Acción",
+
+  "modalTitulo": "Agregar voucher a la remesa",
+  "numeroTombo": "Nº voucher:",
+  "tipo": "Tipo:",
+  "dataVencimento": "Fecha de vencimiento:",
+  "selecioneTipo": "Seleccione un tipo",
+  "tipoEmprestimo": "Préstamo",
+  "tipoDoacao": "Donación",
+  "tipoPermuta": "Permuta",
+
+  "doador": "Donante:",
+  "selecioneDoador": "Seleccione un donante",
+  "validacaoDoador": "Seleccione un donante",
+  "receptor": "Receptor:",
+  "selecioneReceptor": "Seleccione un receptor",
+  "validacaoReceptor": "Seleccione un receptor",
+
+  "dataEnvio": "Fecha de envío:",
+  "observacao": "Observación:",
+
+  "adicionarTombo": "Agregar voucher",
+  "salvar": "Guardar",
+
+  "erroBuscarRemessa": "Hubo un problema al buscar los datos de la remesa, intente nuevamente.",
+  "erroBuscarHerbarios": "Error al buscar la lista de herbarios.",
+
+  "validacaoAdicionarTombo": "Es necesario agregar un voucher a la lista de remesa.",
+  "tituloCadastroAlteracao": "Registro/Actualización",
+
+  "sucessoCadastro": "El registro fue realizado con éxito.",
+  "erroCadastro": "Hubo un problema al registrar la nueva remesa, intente nuevamente.",
+
+  "sucessoEdicao": "La remesa fue actualizada con éxito.",
+  "tituloEdicao": "Edición",
+  "erroEdicao": "Hubo un problema al realizar la edición, verifique los datos e intente nuevamente.",
+
+  "confirmarExcluirTombo": "¿Está seguro de que desea eliminar este voucher de la lista?",
+  "descricaoExcluirTombo": "Al hacer clic en SÍ, el voucher será eliminado."
+}

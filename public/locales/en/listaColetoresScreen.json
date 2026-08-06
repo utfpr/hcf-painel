@@ -1,0 +1,16 @@
+{
+  "titulo": "Collectors list",
+
+  "buscarColetor": "Search collector",
+  "buscarNome": "Name:",
+
+  "colunaNome": "Name",
+  "colunaAcao": "Action",
+
+  "confirmarExcluirColetor": "Are you sure you want to delete this collector?",
+  "descricaoExcluirColetor": "By clicking YES, the collector will be deleted.",
+  "sucessoExcluirColetor": "The collector has been successfully deleted.",
+
+  "erroExcluirColetor": "Error deleting collector",
+  "erroInesperadoExcluirColetor": "An unexpected error occurred while trying to delete the collector."
+}

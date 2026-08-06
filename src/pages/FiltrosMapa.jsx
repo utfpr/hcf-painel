@@ -5,6 +5,7 @@ import React, {
 import axios from 'axios'
 import L from 'leaflet'
 import ReactDOM from 'react-dom/client'
+import { useTranslation } from 'react-i18next'
 import {
     MapContainer, Marker, Popup, useMap
 } from 'react-leaflet'
@@ -70,6 +71,7 @@ function ClusterLayer({ markers, clusterGroup }) {
 }
 
 const FiltrosMapa = () => {
+    const { t } = useTranslation()
     const initialCenter = [-24.0438, -52.3811]
     const [center, setCenter] = useState(initialCenter)
     const [markers, setMarkers] = useState([])
@@ -95,19 +97,19 @@ const FiltrosMapa = () => {
                     setMarkers([{ latitude, longitude, hcf }])
                     setErrorMessage(null)
                 } else {
-                    setErrorMessage(`O HCF ${hcf} está em ${cidade.nome}, porém não possui coordenadas registradas.`)
+                    setErrorMessage(t('filtrosMapa:hcfSemCoordenadas', { hcf: hcf, cidade: cidade.nome }))
                 }
                 return
             }
 
             if (altitudeMin && altitudeMax) {
                 if (!altitudeMin || !altitudeMax) {
-                    setErrorMessage('Ambos os campos de altitude (Mínimo e Máximo) devem ser preenchidos.')
+                    setErrorMessage(t('filtrosMapa:camposAltitudeObrigatorios'))
                     return
                 }
 
                 if (parseFloat(altitudeMin) > parseFloat(altitudeMax)) {
-                    setErrorMessage('O valor mínimo da altitude não pode ser maior que o valor máximo.')
+                    setErrorMessage(t('filtrosMapa:altitudeMinimaMaiorQueMaxima'))
                     return
                 }
 
@@ -124,7 +126,7 @@ const FiltrosMapa = () => {
                 } else {
                     setMarkers([])
                     setTotalRegistros(0)
-                    setErrorMessage('Nenhum ponto encontrado para o intervalo de altitude especificado.')
+                    setErrorMessage(t('filtrosMapa:nenhumPontoAltitude'))
                 }
                 return
             }
@@ -156,10 +158,10 @@ const FiltrosMapa = () => {
                     } else {
                         setMarkers([])
                         setTotalRegistros(0)
-                        setErrorMessage('Nenhum ponto encontrado para os filtros de taxonomia especificados.')
+                        setErrorMessage(t('filtrosMapa:nenhumPontoTaxonomia'))
                     }
                 } catch (error) {
-                    setErrorMessage(error.response?.data?.message || 'Revise os dados e tente novamente.')
+                    setErrorMessage(error.response?.data?.message || t('filtrosMapa:reviseDadosTenteNovamente'))
                     setTotalRegistros(0)
                 }
                 return
@@ -179,7 +181,7 @@ const FiltrosMapa = () => {
                 } else {
                     setMarkers([])
                     setTotalRegistros(0)
-                    setErrorMessage('Nenhum ponto encontrado para o nome popular informado.')
+                    setErrorMessage(t('filtrosMapa:nenhumPontoNomePopular'))
                 }
                 return
             }
@@ -198,15 +200,15 @@ const FiltrosMapa = () => {
                 } else {
                     setMarkers([])
                     setTotalRegistros(0)
-                    setErrorMessage('Nenhum ponto encontrado para o nome científico informado.')
+                    setErrorMessage(t('filtrosMapa:nenhumPontoNomeCientifico'))
                 }
                 return
             }
 
-            setErrorMessage('Nenhum filtro válido foi aplicado.')
+            setErrorMessage(t('filtrosMapa:nenhumFiltroValido'))
             setTotalRegistros(0)
         } catch (error) {
-            setErrorMessage('Erro ao buscar dados. Tente novamente.')
+            setErrorMessage(t('filtrosMapa:erroBuscarDados'))
         }
     }
 
@@ -230,11 +232,11 @@ const FiltrosMapa = () => {
 
             {totalRegistros > 0 && (
                 <div style={{ color: '#8c8c8c' }}>
-                    Foram encontrados
+                    {t('filtrosMapa:foramEncontrados')}
                     {' '}
                     <strong>{totalRegistros}</strong>
                     {' '}
-                    registros com geolocalização para os filtros aplicados.
+                    {t('filtrosMapa:registrosComGeolocalizacao')}
                 </div>
             )}
             <div style={{ width: '100%', height: '500px' }}>
@@ -244,7 +246,7 @@ const FiltrosMapa = () => {
                     zoom={13}
                     zoomControl={false}
                 >
-                    <Suspense fallback={<div>Carregando...</div>}>
+                    <Suspense fallback={<div>{t('filtrosMapa:carregando')}</div>}>
                         <MapControls />
                     </Suspense>
                     <RecenterMap lat={center[0]} lng={center[1]} />

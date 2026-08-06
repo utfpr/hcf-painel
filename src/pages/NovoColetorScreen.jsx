@@ -11,6 +11,7 @@ import {
     Spin
 } from 'antd'
 import axios from 'axios'
+import { withTranslation } from 'react-i18next'
 
 import { Form } from '@ant-design/compatible'
 
@@ -56,11 +57,11 @@ class NovoColetorScreen extends Component {
         try {
             await axios.post('/coletores', valores)
 
-            this.notificacao('success', 'Sucesso', 'Coletor cadastrado com sucesso.')
+            this.notificacao('success', this.props.t('common:tituloSucesso'), this.props.t('novoColetorScreen:sucessoCadastro'))
 
             this.props.history.push('/coletores')
         } catch (err) {
-            this.notificacao('error', 'Falha', 'Houve um problema ao cadastrar o coletor, tente novamente.')
+            this.notificacao('error', this.props.t('common:tituloFalha'), this.props.t('novoColetorScreen:erroCadastro'))
         } finally {
             this.setState({ loading: false })
         }
@@ -74,7 +75,7 @@ class NovoColetorScreen extends Component {
 
             this.props.form.setFields({ nome: { value: data.nome } })
         } catch (err) {
-            this.notificacao('error', 'Falha', 'Houve um problema ao buscar os dados do coletor, tente novamente.')
+            this.notificacao('error', this.props.t('common:tituloFalha'), this.props.t('novoColetorScreen:erroBuscarColetor'))
         } finally {
             this.setState({ loading: false })
         }
@@ -86,11 +87,11 @@ class NovoColetorScreen extends Component {
         try {
             await axios.put(`/coletores/${this.props.match.params.coletor_id}`, valores)
 
-            this.notificacao('success', 'Sucesso', 'Coletor atualizado com sucesso.')
+            this.notificacao('success', this.props.t('common:tituloSucesso'), this.props.t('novoColetorScreen:sucessoAtualizacao'))
 
             this.props.history.push('/coletores')
         } catch (err) {
-            this.notificacao('error', 'Falha', 'Houve um problema ao atualizar o coletor, tente novamente.')
+            this.notificacao('error', this.props.t('common:tituloFalha'), this.props.t('novoColetorScreen:erroAtualizacao'))
         } finally {
             this.setState({ loading: false })
         }
@@ -102,7 +103,7 @@ class NovoColetorScreen extends Component {
             <Form onSubmit={this.onSubmit}>
                 <Row>
                     <Col span={12}>
-                        <h2 style={{ fontWeight: 200 }}>Coletor</h2>
+                        <h2 style={{ fontWeight: 200 }}>{this.props.t('novoColetorScreen:tituloColetor')}</h2>
                     </Col>
                 </Row>
                 <Divider dashed />
@@ -110,14 +111,14 @@ class NovoColetorScreen extends Component {
                 <Row gutter={8}>
                     <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                         <Col span={24}>
-                            <span>Nome:</span>
+                            <span>{this.props.t('novoColetorScreen:nome')}</span>
                         </Col>
                         <Col span={24}>
                             <FormItem>
                                 {getFieldDecorator('nome', {
                                     rules: [{
                                         required: true,
-                                        message: 'Insira o nome do coletor'
+                                        message: this.props.t('novoColetorScreen:validacaoNome')
                                     }]
                                 })(
                                     <Input
@@ -140,7 +141,7 @@ class NovoColetorScreen extends Component {
                                 htmlType="submit"
                                 className="login-form-button"
                             >
-                                Salvar
+                                {this.props.t('novoColetorScreen:salvar')}
                             </Button>
                         </FormItem>
                     </Col>
@@ -153,7 +154,7 @@ class NovoColetorScreen extends Component {
     render() {
         if (this.state.loading) {
             return (
-                <Spin tip="Carregando...">
+                <Spin tip={this.props.t('common:carregando')}>
                     {this.renderFormulario()}
                 </Spin>
             )
@@ -164,4 +165,4 @@ class NovoColetorScreen extends Component {
     }
 }
 
-export default Form.create()(NovoColetorScreen)
+export default withTranslation()(Form.create()(NovoColetorScreen))

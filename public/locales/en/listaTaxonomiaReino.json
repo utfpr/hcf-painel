@@ -1,0 +1,18 @@
+{
+  "reinos": "Kingdoms",
+  "buscarReino": "Search Kingdom",
+  "nomeReino": "Kingdom Name:",
+  "colunaReino": "Kingdom",
+  "colunaAcao": "Action",
+  "informarNomeReino": "Enter the kingdom name:",
+  "confirmacaoExcluirReino": "Are you sure you want to delete this kingdom?",
+  "descricaoExcluirReino": "By clicking YES, the kingdom will be deleted.",
+
+  "erroCadastrarReino": "There was a problem registering the new kingdom. Please try again.",
+  "erroAtualizarReino": "There was a problem updating the kingdom. Please try again.",
+  "erroNomeReinoObrigatorio": "Please enter the kingdom name.",
+
+  "erroReinoJaCadastrado": "Kingdom already registered.",
+  "erroBuscarReinos": "Failed to retrieve kingdoms."
+}
+ 

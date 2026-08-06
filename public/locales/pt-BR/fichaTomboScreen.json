@@ -1,0 +1,13 @@
+{
+  "titulo": "Ficha tombo",
+  "colHcf": "HCF",
+  "colDataColeta": "Data coleta",
+  "colNomeCientifico": "Nome científico",
+  "colAcao": "Ação",
+  "labelHcf": "HCF:",
+  "labelDataColeta": "Data de coleta:",
+  "labelNomeCientifico": "Nome científico:",
+  "tituloModal": "Impressão de ficha",
+  "imprimir": "Imprimir",
+  "informeNumeroCopias": "Informe o número de cópias:"
+}

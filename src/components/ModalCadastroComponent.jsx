@@ -2,6 +2,8 @@ import { Component } from 'react'
 
 import { Modal, Button } from 'antd'
 
+import i18n from '@/i18n'
+
 export default class ModalCadastroComponent extends Component {
     constructor(props) {
         super(props)
@@ -16,7 +18,7 @@ export default class ModalCadastroComponent extends Component {
                 onOk={this.props.onOk}
                 onCancel={this.props.onCancel}
                 footer={[
-                    <Button key="back" onClick={this.props.onCancel}>Cancelar</Button>,
+                    <Button key="back" onClick={this.props.onCancel}>{i18n.t('common:cancelar')}</Button>,
                     <Button
                         key="submit"
                         type="primary"

@@ -8,15 +8,11 @@ import ModalCadastroComponent from '@/components/ModalCadastroComponent'
 import SimpleTableComponent from '@/components/SimpleTableComponent'
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
+import { withTranslation } from 'react-i18next'
 
-const columns = [
-    { title: 'Estado', dataIndex: 'nome', key: 'nome' },
-    { title: 'Sigla', dataIndex: 'sigla', key: 'sigla' },
-    { title: 'País', dataIndex: 'paisNome', key: 'paisNome' },
-    { title: 'Ação', key: 'acao' }
-]
 
 const ListaEstadosComponent = ({
+    t,
     form,
     estados,
     paises,
@@ -56,6 +52,13 @@ const ListaEstadosComponent = ({
         acao: renderActionButtons(item)
     }))
 
+    const columns = [
+        { title: t('estadoComponent:colunaEstado'), dataIndex: 'nome', key: 'nome' },
+        { title: t('estadoComponent:colunaSigla'), dataIndex: 'sigla', key: 'sigla' },
+        { title: t('estadoComponent:colunaPais'), dataIndex: 'paisNome', key: 'paisNome' },
+        { title: t('estadoComponent:colunaAcao'), key: 'acao' }
+    ]
+
     const finalColumns = isCuradorOuOperador
         ? columns
         : columns.filter(col => col.key !== 'acao')
@@ -77,8 +80,8 @@ const ListaEstadosComponent = ({
             }
         } catch {
             notification.warning({
-                message: 'Falha',
-                description: 'Preencha os campos obrigatórios.'
+                message: t('common:tituloFalha'),
+                description: t('estadoComponent: preencherCamposObrigatorios')
             })
         }
     }
@@ -87,7 +90,7 @@ const ListaEstadosComponent = ({
         <div>
             <Row gutter={24} style={{ marginBottom: '20px' }}>
                 <Col xs={24} sm={14} md={18} lg={20} xl={20}>
-                    <h2 style={{ fontWeight: 200 }}>Estados</h2>
+                    <h2 style={{ fontWeight: 200 }}>{t('estadoComponent:estados')}</h2>
                 </Col>
                 <Col xs={24} sm={10} md={6} lg={4} xl={4}>
                     {isCuradorOuOperador && (
@@ -101,30 +104,30 @@ const ListaEstadosComponent = ({
                                 width: '100%'
                             }}
                         >
-                            Adicionar
+                            {t('common:adicionar')}
                         </Button>
                     )}
                 </Col>
             </Row>
             <Divider dashed />
-            <Card title="Buscar estado">
+            <Card title={t('estadoComponent:buscarEstado')}>
                 <Form form={form} onFinish={handleSearch}>
                     <Row gutter={8}>
                         <Col xs={24} sm={12} md={12} lg={12} xl={12}>
-                            <Col span={24}><span>Nome do estado:</span></Col>
+                            <Col span={24}><span>{t('estadoComponent:buscarNomeEstado')}:</span></Col>
                             <Col span={24}>
                                 <Form.Item name="nome">
-                                    <Input placeholder="Paraná" type="text" />
+                                    <Input placeholder={t('estadoComponent:placeholderNomeEstado')} type="text" />
                                 </Form.Item>
                             </Col>
                         </Col>
                         <Col xs={24} sm={12} md={12} lg={12} xl={12}>
-                            <Col span={24}><span>País:</span></Col>
+                            <Col span={24}><span>{t('estadoComponent:buscarPais')}:</span></Col>
                             <Col span={24}>
                                 <Form.Item name="paisId">
                                     <Select
                                         showSearch
-                                        placeholder="Selecione um país (opcional)"
+                                        placeholder={t('estadoComponent:placeholderSelecionarPais')}
                                         optionFilterProp="children"
                                         filterOption={(input, option) =>
                                             (option?.children ?? '').toLowerCase().includes(input.toLowerCase())}
@@ -148,7 +151,7 @@ const ListaEstadosComponent = ({
                                             onClick={onLimparBusca}
                                             className="login-form-button"
                                         >
-                                            Limpar
+                                            {t('common:limpar')}
                                         </Button>
                                     </Form.Item>
                                 </Col>
@@ -159,7 +162,7 @@ const ListaEstadosComponent = ({
                                             htmlType="submit"
                                             className="login-form-button ant-btn-pesquisar"
                                         >
-                                            Pesquisar
+                                            {t('common:pesquisar')}
                                         </Button>
                                     </Form.Item>
                                 </Col>
@@ -187,35 +190,35 @@ const ListaEstadosComponent = ({
                 <Form form={form} layout="vertical">
                     <Row gutter={8}>
                         <Col span={24}>
-                            <Form.Item label="Nome" name="nomeEstado" rules={[{ required: true, message: 'Informe o nome do estado' }]}>
-                                <Input placeholder="Paraná" />
+                            <Form.Item label={t('estadoComponent:cadastroNomeEstado')} name="nomeEstado" rules={[{ required: true, message: t('estadoComponent:validacaoInformarEstado') }]}>
+                                <Input placeholder={t('estadoComponent:placeholderNomeEstado')} />
                             </Form.Item>
                         </Col>
                     </Row>
                     <Row gutter={8}>
                         <Col span={24}>
                             <Form.Item
-                                label="Sigla"
+                                label={t('estadoComponent:cadastroSigla')}
                                 name="ufEstado"
                                 rules={[
-                                    { required: true, message: 'Informe a sigla' },
-                                    { pattern: /^[A-Za-z]+$/, message: 'A sigla deve conter apenas letras' }
+                                    { required: true, message: t('estadoComponent:validacaoInformarSigla') },
+                                    { pattern: /^[A-Za-z]+$/, message: t('estadoComponent:validacaoApenasLetras') }
                                 ]}
                             >
-                                <Input maxLength={3} placeholder="PR" />
+                                <Input maxLength={3} placeholder={t('estadoComponent:placeholderSigla')} />
                             </Form.Item>
                         </Col>
                     </Row>
                     <Row gutter={8}>
                         <Col span={24}>
                             <Form.Item
-                                label="País"
+                                label={t('estadoComponent:cadastroPais')}
                                 name="paisId"
-                                rules={[{ required: true, message: 'Informe o país' }]}
+                                rules={[{ required: true, message: t('estadoComponent:validacaoInformarPais') }]}
                             >
                                 <Select
                                     showSearch
-                                    placeholder="Selecione ou pesquise o país"
+                                    placeholder={t('estadoComponent:placeholderSelecionarPais')}
                                     optionFilterProp="children"
                                     filterOption={(input, option) =>
                                         (option?.children ?? '').toLowerCase().includes(input.toLowerCase())}
@@ -237,4 +240,4 @@ const ListaEstadosComponent = ({
     )
 }
 
-export default ListaEstadosComponent
+export default withTranslation()(ListaEstadosComponent)

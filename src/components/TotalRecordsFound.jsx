@@ -1,18 +1,15 @@
+import { useTranslation } from 'react-i18next'
+
 import { formatDecimal } from '@/helpers/mascaras/numeros'
 
 function TotalRecordsFound({
     total
 }) {
+    const { t } = useTranslation()
     const totalSanitized = Number.isNaN(Number(total)) ? 0 : total
-    const labelPrefix = totalSanitized === 1
-        ? 'Foi encontrado'
-        : 'Foram encontrados'
-    const labelSufix = totalSanitized === 1
-        ? 'registro.'
-        : 'registros.'
     return (
         <span>
-            {`${labelPrefix} ${formatDecimal(totalSanitized)} ${labelSufix}`}
+            {t('totalRecordsFound:found', { count: totalSanitized })}
         </span>
     )
 }

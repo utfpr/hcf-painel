@@ -1,0 +1,31 @@
+{
+  "familias": "Famílias",
+
+  "nomeReino": "Nome do reino:",
+  "selecioneReino": "Selecione um reino",
+  "informarNomeFamiliaLabel": "Informe o nome da família:",
+  "informarNomeFamilia": "Informe o nome da família.",
+
+  "buscarFamilia": "Buscar Família",
+  "nomeFamilia": "Nome da Família:",
+
+  "colunaFamilia": "Família",
+  "colunaReino": "Reino",
+  "colunaAcao": "Ação",
+
+  "erroCadastrarFamilia": "Houve um problema ao cadastrar a nova família, tente novamente.",
+  "erroAtualizarFamilia": "Houve um problema ao atualizar a família, tente novamente.",
+  "erroFamiliaJaCadastrada": "Família já cadastrada.",
+  "erroBuscarFamilias": "Erro ao buscar as famílias.",
+  "erroServidorBuscarFamilias": "Erro de servidor ao buscar as famílias.",
+  "erroBuscarReinos": "Falha ao buscar reinos.",
+  "notificacaoBuscarFamilia": "Buscar Família",
+
+  "confirmacaoExcluirFamilia": "Você tem certeza que deseja excluir esta família?",
+  "descricaoExcluirFamilia": "Ao clicar em SIM, a família será excluída.",
+  "excluirFamilia": "Excluir família",
+  "familiaExcluidaSucesso": "A família foi excluída com sucesso.",
+  "erroExcluirFamilia": "Erro ao excluir família",
+  "erroExcluirFamiliaInesperado": "Ocorreu um erro inesperado ao tentar excluir a família."
+} 
+ 

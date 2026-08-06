@@ -4,12 +4,12 @@ import { Form, notification, Modal } from 'antd'
 import axios from 'axios'
 
 import { isCuradorOuOperador } from '@/helpers/usuarios'
-
+import { withTranslation } from 'react-i18next'
 import ListaEstadosComponent from './Estados.component'
 
 const { confirm } = Modal
 
-const ListaEstadosContainer = () => {
+const ListaEstadosContainer = ({ t }) => {
     const [form] = Form.useForm()
     const [estadosOriginais, setEstadosOriginais] = useState([])
     const [estados, setEstados] = useState([])
@@ -32,8 +32,8 @@ const ListaEstadosContainer = () => {
             }
         } catch {
             notification.error({
-                message: 'Erro',
-                description: 'Falha ao buscar países.'
+                message: t('common:erro'),
+                description: t('estadoContainer:erroBuscarPaises')
             })
         }
     }
@@ -56,8 +56,8 @@ const ListaEstadosContainer = () => {
             }
         } catch {
             notification.error({
-                message: 'Erro',
-                description: 'Falha ao buscar estados.'
+                message: t('common:erro'),
+                description: t('estadoContainer:erroBuscarEstados')
             })
         } finally {
             setLoading(false)
@@ -78,11 +78,11 @@ const ListaEstadosContainer = () => {
 
     const handleExcluir = id => {
         confirm({
-            title: 'Você tem certeza que deseja excluir este estado?',
-            content: 'Ao clicar em SIM, o estado será excluído.',
-            okText: 'SIM',
+            title: t('estadoContainer:confirmarExcluirEstado'),
+            content: t('estadoContainer:descricaoExcluirEstado'),
+            okText: t('common:sim'),
             okType: 'danger',
-            cancelText: 'NÃO',
+            cancelText: t('common:nao'),
             onOk: () => requisitaExclusao(id)
         })
     }
@@ -97,13 +97,13 @@ const ListaEstadosContainer = () => {
             setEstadosOriginais(novos)
             atualizaPagina(pagina, pageSize, novos)
             notification.success({
-                message: 'Sucesso',
-                description: 'O estado foi excluído com sucesso.'
+                message: t('common:tituloSucesso'),
+                description: t('estadoContainer:sucessoExcluirEstado')
             })
         } catch (err) {
-            const mensagem = err.response?.data?.error?.mensagem || 'Falha ao excluir o estado.'
+            const mensagem = err.response?.data?.error?.mensagem || t('estadoContainer:erroExcluirEstado')
             notification.error({
-                message: 'Erro',
+                message: t('common:erro'),
                 description: mensagem
             })
         } finally {
@@ -119,7 +119,7 @@ const ListaEstadosContainer = () => {
                 const novos = [...estadosOriginais, resp.data].sort((a, b) => a.nome.localeCompare(b.nome))
                 setEstadosOriginais(novos)
                 atualizaPagina(pagina, pageSize, novos)
-                notification.success({ message: 'Sucesso', description: 'Estado cadastrado com sucesso.' })
+                notification.success({ message: t('common:tituloSucesso'), description: t('estadoContainer:sucessoCadastroEstado') })
             } else {
                 await axios.put(`/estados/${idEstado}`, values)
                 const atualizados = estadosOriginais
@@ -127,19 +127,19 @@ const ListaEstadosContainer = () => {
                     .sort((a, b) => a.nome.localeCompare(b.nome))
                 setEstadosOriginais(atualizados)
                 atualizaPagina(pagina, pageSize, atualizados)
-                notification.success({ message: 'Sucesso', description: 'Estado atualizado com sucesso.' })
+                notification.success({ message: t('common:tituloSucesso'), description: t('estadoContainer:sucessoAtualizarEstado') })
             }
             setVisibleModal(false)
             setIdEstado(-1)
         } catch (err) {
             if (err.response?.data?.error?.code === 308) {
                 notification.error({
-                    message: err.response.data.error.mensagem || 'Nome, sigla ou DDD do estado já está cadastrado.'
+                    message: err.response.data.error.mensagem || t('estadoContainer:estadoJaCadastrado'),
                 })
             } else {
                 notification.warning({
-                    message: 'Falha',
-                    description: 'Houve um problema ao salvar o estado.'
+                    message: t('common:tituloFalha'),
+                    description: t('estadoContainer:erroSalvarEstado')
                 })
             }
         } finally {
@@ -150,7 +150,7 @@ const ListaEstadosContainer = () => {
     const handleAbrirModal = (estado = null) => {
         if (estado) {
             setVisibleModal(true)
-            setTituloModal('Atualizar')
+            setTituloModal(t('common:atualizar'))
             setIdEstado(estado.id)
             form.setFieldsValue({
                 nomeEstado: estado.nome,
@@ -161,7 +161,7 @@ const ListaEstadosContainer = () => {
         } else {
             form.resetFields()
             setVisibleModal(true)
-            setTituloModal('Cadastrar')
+            setTituloModal(t('common:cadastrar'))
             setIdEstado(-1)
         }
     }
@@ -215,4 +215,4 @@ const ListaEstadosContainer = () => {
     )
 }
 
-export default ListaEstadosContainer
+export default withTranslation()(ListaEstadosContainer)

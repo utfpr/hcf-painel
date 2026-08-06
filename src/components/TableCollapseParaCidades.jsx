@@ -1,4 +1,4 @@
-import { Collapse, Skeleton, Table } from 'antd'
+import { Collapse, Skeleton, Table, Tag } from 'antd'
 
 import converteDecimalParaGrausMinutosSegundos from '@/helpers/conversoes/Coordenadas'
 
@@ -126,41 +126,80 @@ const TableCollapseParaCidades = ({ data, loading, showCoordenadas }) => {
         'VII', 'VIII', 'IX', 'X', 'XI', 'XII'
     ]
 
+    const montaDataSource = registros => registros.map(registro => {
+        let dataColeta = ''
+        if (registro.data_coleta_dia !== null && registro.data_coleta_dia !== undefined) {
+            dataColeta = String(registro.data_coleta_dia).padStart(2, '0')
+        }
+        if (registro.data_coleta_mes !== null && registro.data_coleta_mes !== undefined) {
+            if (dataColeta) dataColeta += '/'
+            dataColeta += mesesRomanos[registro.data_coleta_mes - 1]
+        }
+        if (registro.data_coleta_ano !== null && registro.data_coleta_ano !== undefined) {
+            if (dataColeta) dataColeta += '/'
+            dataColeta += registro.data_coleta_ano
+        }
+        return {
+            ...registro,
+            key: registro.hcf,
+            latitude: registro.latitude ? converteDecimalParaGrausMinutosSegundos(registro.latitude, false, true) : null,
+            longitude: registro.longitude ? converteDecimalParaGrausMinutosSegundos(registro.longitude, false, true) : null,
+            datacoleta: dataColeta,
+            familia: registro?.familia?.nome || '-',
+            especie: ((registro?.genero?.nome || '') + ' ' + (registro?.especy?.nome || registro?.especie?.nome || '')).trim() || '-',
+            autor: registro?.especy?.autor?.nome || registro?.especie?.autor?.nome || ''
+        }
+    })
+
+    // agrupa a lista plana de cidades por estado
+    const estadosMap = {}
+    data.forEach(item => {
+        const estadoNome = item.estado || 'Desconhecido'
+        if (!estadosMap[estadoNome]) {
+            estadosMap[estadoNome] = {
+                estado: estadoNome,
+                sigla: item.estadoSigla || getSiglaEstado(estadoNome),
+                cidades: []
+            }
+        }
+        estadosMap[estadoNome].cidades.push(item)
+    })
+
+    // ordena estados em ordem alfabética e, dentro de cada estado, as cidades em ordem alfabética
+    const estados = Object.values(estadosMap)
+        .sort((a, b) => a.estado.localeCompare(b.estado, 'pt-BR'))
+        .map(estado => ({
+            ...estado,
+            cidades: [...estado.cidades].sort((a, b) => (a.municipio || '').localeCompare(b.municipio || '', 'pt-BR'))
+        }))
+
     return (
         <Collapse bordered={false}>
-            {data.map(item => (
-                <Collapse.Panel
-                    header={`${item.municipio}/${getSiglaEstado(item.estado)}`}
-                    key={`${item.municipio}-${item.estado}`}
-                >
-                    <Table
-                        dataSource={item.registros.map(registro => {
-                            let dataColeta = ''
-                            if (registro.data_coleta_dia !== null && registro.data_coleta_dia !== undefined) {
-                                dataColeta = String(registro.data_coleta_dia).padStart(2, '0')
-                            }
-                            if (registro.data_coleta_mes !== null && registro.data_coleta_mes !== undefined) {
-                                if (dataColeta) dataColeta += '/'
-                                dataColeta += mesesRomanos[registro.data_coleta_mes - 1]
-                            }
-                            if (registro.data_coleta_ano !== null && registro.data_coleta_ano !== undefined) {
-                                if (dataColeta) dataColeta += '/'
-                                dataColeta += registro.data_coleta_ano
-                            }
-                            return {
-                                ...registro,
-                                latitude: registro.latitude ? converteDecimalParaGrausMinutosSegundos(registro.latitude, false, true) : null,
-                                longitude: registro.longitude ? converteDecimalParaGrausMinutosSegundos(registro.longitude, false, true) : null,
-                                datacoleta: dataColeta,
-                                familia: registro?.familia?.nome || '-',
-                                especie: ((registro?.genero?.nome || '') + ' ' + (registro?.especy?.nome || registro?.especie?.nome || '')).trim() || '-',
-                                autor: registro?.especy?.autor?.nome || registro?.especie?.autor?.nome || ''
-                            }
-                        })}
-                        columns={showCoordenadas ? columnsWithCoordenadas : columnsWithoutCoordenadas}
-                    />
-                </Collapse.Panel>
-            ))}
+            {estados.map(estado => {
+                const totalTombos = estado.cidades.reduce((acc, c) => acc + (c.registros?.length || 0), 0)
+                return (
+                    <Collapse.Panel
+                        header={`${estado.estado} (${estado.sigla})`}
+                        key={estado.estado}
+                        extra={<Tag>{`${totalTombos} tombo(s)`}</Tag>}
+                    >
+                        <Collapse bordered={false}>
+                            {estado.cidades.map(item => (
+                                <Collapse.Panel
+                                    header={item.municipio}
+                                    key={`${item.municipio}-${item.estado}`}
+                                    extra={<Tag>{`${item.registros?.length || 0} tombo(s)`}</Tag>}
+                                >
+                                    <Table
+                                        dataSource={montaDataSource(item.registros)}
+                                        columns={showCoordenadas ? columnsWithCoordenadas : columnsWithoutCoordenadas}
+                                    />
+                                </Collapse.Panel>
+                            ))}
+                        </Collapse>
+                    </Collapse.Panel>
+                )
+            })}
         </Collapse>
     )
 }

@@ -4,6 +4,7 @@ import {
     Divider, Modal, Card, Row, Col, Input, Button, notification
 } from 'antd'
 import axios from 'axios'
+import { withTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import TotalRecordFound from '@/components/TotalRecordsFound'
@@ -18,14 +19,6 @@ const { confirm } = Modal
 const FormItem = Form.Item
 
 class ListaColetoresScreen extends Component {
-    columns = [
-        {
-            title: 'Nome',
-            type: 'text',
-            key: 'nome'
-        }
-    ]
-
     constructor(props) {
         super(props)
         this.state = {
@@ -34,13 +27,25 @@ class ListaColetoresScreen extends Component {
             loading: true,
             pagina: 1
         }
+    }
+
+    getColumns() {
+        const columns = [
+            {
+                title: this.props.t('listaColetoresScreen:colunaNome'),
+                type: 'text',
+                key: 'nome'
+            }
+        ]
 
         if (isCuradorOuOperador()) {
-            this.columns.push({
-                title: 'Ação',
+            columns.push({
+                title: this.props.t('listaColetoresScreen:colunaAcao'),
                 key: 'acao'
             })
         }
+
+        return columns
     }
 
     componentDidMount() {
@@ -58,7 +63,7 @@ class ListaColetoresScreen extends Component {
                 })
                 if (response.status === 204) {
                     this.requisitaListaColetores(this.state.valores, this.state.pagina)
-                    this.notificacao('success', 'Excluir', 'O coletor foi excluído com sucesso.')
+                    this.notificacao('success', this.props.t('common:excluir'), this.props.t('listaColetoresScreen:sucessoExcluirColetor'))
                 }
             })
             .catch(err => {
@@ -69,13 +74,13 @@ class ListaColetoresScreen extends Component {
                 if (response && response.data) {
                     const { error } = response.data
                     if (error && error.code) {
-                        this.notificacao('error', 'Erro ao excluir coletor', error.code)
+                        this.notificacao('error', this.props.t('listaColetoresScreen:erroExcluirColetor'), error.code)
                     } else {
-                        this.notificacao('error', 'Erro ao excluir coletor', 'Ocorreu um erro inesperado ao tentar excluir o coletor.')
+                        this.notificacao('error', this.props.t('listaColetoresScreen:erroExcluirColetor'), this.props.t('listaColetoresScreen:erroInesperadoExcluirColetor'))
                     }
                     console.error(error)
                 } else {
-                    this.notificacao('error', 'Erro ao excluir coletor', 'Falha na comunicação com o servidor.')
+                    this.notificacao('error', this.props.t('listaColetoresScreen:erroExcluirColetor'), this.props.t('common:erroComunicacaoServidor'))
                 }
             })
     }
@@ -113,11 +118,11 @@ class ListaColetoresScreen extends Component {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this
         confirm({
-            title: 'Você tem certeza que deseja excluir este coletor?',
-            content: 'Ao clicar em SIM, o coletor será excluído.',
-            okText: 'SIM',
+            title: this.props.t('listaColetoresScreen:confirmarExcluirColetor'),
+            content: this.props.t('listaColetoresScreen:descricaoExcluirColetor'),
+            okText: this.props.t('common:sim'),
             okType: 'danger',
-            cancelText: 'NÃO',
+            cancelText: this.props.t('common:nao'),
             onOk() {
                 self.requisitaExclusao(id)
             },
@@ -166,12 +171,12 @@ class ListaColetoresScreen extends Component {
 
     renderPainelBusca(getFieldDecorator) {
         return (
-            <Card title="Buscar coletor">
+            <Card title={this.props.t('listaColetoresScreen:buscarColetor')}>
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Col span={24}>
-                                <span>Nome:</span>
+                                <span>{this.props.t('listaColetoresScreen:buscarNome')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
@@ -206,7 +211,7 @@ class ListaColetoresScreen extends Component {
                                             }}
                                             className="login-form-button"
                                         >
-                                            Limpar
+                                            {this.props.t('common:limpar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -217,7 +222,7 @@ class ListaColetoresScreen extends Component {
                                             htmlType="submit"
                                             className="login-form-button ant-btn-pesquisar"
                                         >
-                                            Pesquisar
+                                            {this.props.t('common:pesquisar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -234,12 +239,12 @@ class ListaColetoresScreen extends Component {
 
         return (
             <div>
-                <HeaderListComponent title="Listagem de coletores" link="/coletores/novo" />
+                <HeaderListComponent title={this.props.t('listaColetoresScreen:titulo')} link="/coletores/novo" />
                 <Divider dashed />
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
                 <SimpleTableComponent
-                    columns={this.columns}
+                    columns={this.getColumns()}
                     data={this.state.herbarios}
                     metadados={this.state.metadados}
                     loading={this.state.loading}
@@ -257,4 +262,4 @@ class ListaColetoresScreen extends Component {
     }
 }
 
-export default Form.create()(ListaColetoresScreen)
+export default withTranslation()(Form.create()(ListaColetoresScreen))

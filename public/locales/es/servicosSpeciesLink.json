@@ -1,0 +1,40 @@
+{
+  "tituloSpeciesLink": "SpeciesLink",
+
+  "tituloBuscarInformacoes": "Buscar información en SpeciesLink",
+
+  "desejaAtualizarAgora": "¿Desea actualizar ahora?",
+  "botaoAtualizar": "Actualizar",
+  "processoExecutando": "¡EJECUTANDO! ¡POR FAVOR ESPERE!",
+
+  "ultimaAtualizacao": "La última actualización se realizó el {{horario}} y duró {{duracao}}.",
+
+  "atualizacaoProgramada": "Actualización programada",
+  "periodicidade": "Periodicidad:",
+
+  "placeholderSelecionarPeriodicidade": "Seleccione la periodicidad deseada",
+  "periodicidadeSemanal": "Cada semana",
+  "periodicidadeMensal": "Cada mes",
+  "periodicidadeDoisMeses": "Cada dos meses",
+
+  "botaoDefinirAtualizacaoProgramada": "Definir actualización programada",
+
+  "placeholderSelecionarLog": "Seleccione el LOG deseado",
+  "verificarLogSaida": "Verificar LOG de salida",
+
+  "erroAgendarAtualizacao": "No fue posible programar el nuevo horario de actualización.",
+  "erroProcessoEmExecucao": "El proceso de actualización se está ejecutando en este momento.",
+
+  "sucessoAtualizacaoInicializada": "El proceso de actualización se iniciará en breve.",
+
+  "mensagemAgendamentoSegunda": "El proceso de actualización ha sido programado para todos los lunes a medianoche.",
+  "mensagemAgendamentoTerca": "El proceso de actualización ha sido programado para todos los martes a medianoche.",
+  "mensagemAgendamentoQuarta": "El proceso de actualización ha sido programado para todos los miércoles a medianoche.",
+  "mensagemAgendamentoQuinta": "El proceso de actualización ha sido programado para todos los jueves a medianoche.",
+  "mensagemAgendamentoSexta": "El proceso de actualización ha sido programado para todos los viernes a medianoche.",
+  "mensagemAgendamentoSabado": "El proceso de actualización ha sido programado para todos los sábados a medianoche.",
+  "mensagemAgendamentoDomingo": "El proceso de actualización ha sido programado para todos los domingos a medianoche.",
+
+  "mensagemAgendamentoMensal": "El proceso de actualización ha sido programado y se realizará cada mes.",
+  "mensagemAgendamentoDoisMeses": "El proceso de actualización ha sido programado y se realizará cada dos meses."
+}

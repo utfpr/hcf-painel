@@ -7,6 +7,7 @@ import {
     Checkbox, Collapse, Select
 } from 'antd'
 import axios from 'axios'
+import { withTranslation } from 'react-i18next'
 
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
@@ -35,7 +36,7 @@ class RelatorioCoordenadaForaPoligonoScreen extends Component {
     }
 
     componentDidMount() {
-        this.requisitaDadosDoRelatorio()
+        // não carregar automaticamente - aguardar o usuário clicar em Pesquisar
         this.requisitaPaises()
     }
 
@@ -61,7 +62,7 @@ class RelatorioCoordenadaForaPoligonoScreen extends Component {
                 }
             }
         } catch {
-            this.notificacao('error', 'Erro', 'Falha ao buscar países.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('relatorioCoordenadaForaPoligonoScreen:erroBuscarPaises'))
         }
     }
 
@@ -80,7 +81,7 @@ class RelatorioCoordenadaForaPoligonoScreen extends Component {
                 }
             }
         } catch {
-            this.notificacao('error', 'Erro', 'Falha ao buscar estados.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('relatorioCoordenadaForaPoligonoScreen:erroBuscarEstados'))
         }
     }
 
@@ -93,7 +94,7 @@ class RelatorioCoordenadaForaPoligonoScreen extends Component {
                 })
             }
         } catch {
-            this.notificacao('error', 'Erro', 'Falha ao buscar cidades.')
+            this.notificacao('error', this.props.t('common:erro'), this.props.t('relatorioCoordenadaForaPoligonoScreen:erroBuscarCidades'))
         }
     }
 
@@ -120,23 +121,23 @@ class RelatorioCoordenadaForaPoligonoScreen extends Component {
                         metadados: data.metadados
                     })
                 } else {
-                    this.notificacao('error', 'Erro', 'Erro ao buscar os dados do relatório.')
+                    this.notificacao('error', this.props.t('common:erro'), this.props.t('relatorioCoordenadaForaPoligonoScreen:erroBuscarRelatorio'))
                 }
             })
             .catch(() => {
                 this.setState({ loading: false })
-                this.notificacao('error', 'Erro', 'Falha ao buscar dados do relatório.')
+                this.notificacao('error', this.props.t('common:erro'), this.props.t('relatorioCoordenadaForaPoligonoScreen:erroFalhaBuscarRelatorio'))
             })
     }
 
     renderMotivo = motivo => {
         switch (motivo) {
             case 'SEM_COORDENADA':
-                return <Tag color="orange">Sem coordenada</Tag>
+                return <Tag color="orange">{this.props.t('relatorioCoordenadaForaPoligonoScreen:motivoSemCoordenada')}</Tag>
             case 'SEM_POLIGONO':
-                return <Tag color="blue">Sem polígono</Tag>
+                return <Tag color="blue">{this.props.t('relatorioCoordenadaForaPoligonoScreen:motivoSemPoligono')}</Tag>
             case 'FORA_DO_POLIGONO':
-                return <Tag color="red">Fora do polígono</Tag>
+                return <Tag color="red">{this.props.t('relatorioCoordenadaForaPoligonoScreen:motivoForaDoPoligono')}</Tag>
             default:
                 return <Tag>{motivo}</Tag>
         }
@@ -166,7 +167,7 @@ class RelatorioCoordenadaForaPoligonoScreen extends Component {
             responseType: 'arraybuffer'
         }).then(response => {
             if (response.status === 200) {
-                this.notificacao('success', 'Exportar PDF', 'PDF gerado com sucesso.')
+                this.notificacao('success', this.props.t('relatorioCoordenadaForaPoligonoScreen:exportarPDF'), this.props.t('relatorioCoordenadaForaPoligonoScreen:sucessoExportarPDF'))
                 const file = new Blob([response.data], { type: 'application/pdf' })
                 const fileUrl = URL.createObjectURL(file)
                 const anchor = document.createElement('a')
@@ -178,9 +179,9 @@ class RelatorioCoordenadaForaPoligonoScreen extends Component {
                 anchor.click()
                 URL.revokeObjectURL(fileUrl)
             } else if (response.status === 400) {
-                this.notificacao('warning', 'Exportar PDF', 'Erro ao exportar o PDF.')
+                this.notificacao('warning', this.props.t('relatorioCoordenadaForaPoligonoScreen:exportarPDF'), this.props.t('relatorioCoordenadaForaPoligonoScreen:erroExportarPDF'))
             } else {
-                this.notificacao('error', 'Error', 'Erro de servidor ao exportar o PDF.')
+                this.notificacao('error', this.props.t('common:erro'), this.props.t('relatorioCoordenadaForaPoligonoScreen:erroServidorExportarPDF'))
             }
         })
             .catch(err => {
@@ -189,7 +190,7 @@ class RelatorioCoordenadaForaPoligonoScreen extends Component {
                     // eslint-disable-next-line no-console
                     console.error('Erro ao exportar PDF:', err)
                 }
-                this.notificacao('error', 'Erro', 'Falha ao exportar o PDF.')
+                this.notificacao('error', this.props.t('common:erro'), this.props.t('relatorioCoordenadaForaPoligonoScreen:falhaExportarPDF'))
             })
             .finally(() => {
                 this.setState({ loadingExport: false })
@@ -207,7 +208,7 @@ class RelatorioCoordenadaForaPoligonoScreen extends Component {
                 {this.state.loadingExport
                     ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ marginRight: 8 }} />
                     : ''}
-                Gerar PDF
+                {this.props.t('relatorioCoordenadaForaPoligonoScreen:gerarPDF')}
             </Button>
         )
     }
@@ -224,17 +225,17 @@ class RelatorioCoordenadaForaPoligonoScreen extends Component {
         const { paises, estados, cidades } = this.state
 
         return (
-            <Card title="Filtros do relatório">
+            <Card title={this.props.t('relatorioCoordenadaForaPoligonoScreen:filtros')}>
                 <Form onSubmit={this.onSubmit}>
                     {/* Linha 1: País / Estado / Cidade */}
                     <Row gutter={8}>
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
-                            <Col span={24}><span>País:</span></Col>
+                            <Col span={24}><span>{this.props.t('relatorioCoordenadaForaPoligonoScreen:pais')}</span></Col>
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('pais')(
                                         <Select
-                                            placeholder="Selecione um país"
+                                            placeholder={this.props.t('relatorioCoordenadaForaPoligonoScreen:selecionePais')}
                                             allowClear
                                             showSearch
                                             optionFilterProp="children"
@@ -259,12 +260,12 @@ class RelatorioCoordenadaForaPoligonoScreen extends Component {
                         </Col>
 
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
-                            <Col span={24}><span>Estado:</span></Col>
+                            <Col span={24}><span>{this.props.t('relatorioCoordenadaForaPoligonoScreen:estado')}</span></Col>
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('estado')(
                                         <Select
-                                            placeholder="Selecione um estado"
+                                            placeholder={this.props.t('relatorioCoordenadaForaPoligonoScreen:selecioneEstado')}
                                             allowClear
                                             showSearch
                                             optionFilterProp="children"
@@ -289,12 +290,12 @@ class RelatorioCoordenadaForaPoligonoScreen extends Component {
                         </Col>
 
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
-                            <Col span={24}><span>Cidade:</span></Col>
+                            <Col span={24}><span>{this.props.t('relatorioCoordenadaForaPoligonoScreen:cidade')}</span></Col>
                             <Col span={24}>
                                 <FormItem>
                                     {getFieldDecorator('cidade')(
                                         <Select
-                                            placeholder="Selecione uma cidade"
+                                            placeholder={this.props.t('relatorioCoordenadaForaPoligonoScreen:selecioneCidade')}
                                             allowClear
                                             showSearch
                                             optionFilterProp="children"
@@ -322,7 +323,7 @@ class RelatorioCoordenadaForaPoligonoScreen extends Component {
                                             this.setState({ incluirSemCoordenadas: e.target.checked })
                                         }}
                                     >
-                                        Incluir tombos sem coordenadas
+                                        {this.props.t('relatorioCoordenadaForaPoligonoScreen:incluirSemCoordenadas')}
                                     </Checkbox>
                                 )}
                             </FormItem>
@@ -349,14 +350,14 @@ class RelatorioCoordenadaForaPoligonoScreen extends Component {
                                                     estadoId: null,
                                                     cidadeId: null,
                                                     estados: [],
-                                                    cidades: []
-                                                }, () => {
-                                                    this.requisitaDadosDoRelatorio()
+                                                    cidades: [],
+                                                    dados: [],
+                                                    metadados: {}
                                                 })
                                             }}
                                             className="login-form-button"
                                         >
-                                            Limpar
+                                            {this.props.t('common:limpar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -367,7 +368,7 @@ class RelatorioCoordenadaForaPoligonoScreen extends Component {
                                             htmlType="submit"
                                             className="login-form-button"
                                         >
-                                            Pesquisar
+                                            {this.props.t('common:pesquisar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -382,45 +383,45 @@ class RelatorioCoordenadaForaPoligonoScreen extends Component {
     renderTabelaTombos(tombos) {
         const columns = [
             {
-                title: 'HCF',
+                title: this.props.t('relatorioCoordenadaForaPoligonoScreen:colunaHCF'),
                 dataIndex: 'hcf',
                 key: 'hcf',
                 sorter: (a, b) => a.hcf - b.hcf
             },
             {
-                title: 'Nome Científico',
+                title: this.props.t('relatorioCoordenadaForaPoligonoScreen:colunaNomeCientifico'),
                 dataIndex: 'nome_cientifico',
                 key: 'nome_cientifico',
                 ellipsis: true
             },
             {
-                title: 'Coletor Principal',
+                title: this.props.t('relatorioCoordenadaForaPoligonoScreen:colunaColetorPrincipal'),
                 dataIndex: 'coletor_nome',
                 key: 'coletor_nome',
                 ellipsis: true,
                 render: val => val || '—'
             },
             {
-                title: 'Latitude',
+                title: this.props.t('relatorioCoordenadaForaPoligonoScreen:colunaLatitude'),
                 dataIndex: 'latitude',
                 key: 'latitude',
                 render: val => (val !== null && val !== undefined ? val.toFixed(6) : '—')
             },
             {
-                title: 'Longitude',
+                title: this.props.t('relatorioCoordenadaForaPoligonoScreen:colunaLongitude'),
                 dataIndex: 'longitude',
                 key: 'longitude',
                 render: val => (val !== null && val !== undefined ? val.toFixed(6) : '—')
             },
             {
-                title: 'Motivo',
+                title: this.props.t('relatorioCoordenadaForaPoligonoScreen:colunaMotivo'),
                 dataIndex: 'motivo',
                 key: 'motivo',
                 render: motivo => this.renderMotivo(motivo),
                 filters: [
-                    { text: 'Fora do polígono', value: 'FORA_DO_POLIGONO' },
-                    { text: 'Sem coordenada', value: 'SEM_COORDENADA' },
-                    { text: 'Sem polígono', value: 'SEM_POLIGONO' }
+                    { text: this.props.t('relatorioCoordenadaForaPoligonoScreen:motivoForaDoPoligono'), value: 'FORA_DO_POLIGONO' },
+                    { text: this.props.t('relatorioCoordenadaForaPoligonoScreen:motivoSemCoordenada'), value: 'SEM_COORDENADA' },
+                    { text: this.props.t('relatorioCoordenadaForaPoligonoScreen:motivoSemPoligono'), value: 'SEM_POLIGONO' }
                 ],
                 onFilter: (value, record) => record.motivo === value
             }
@@ -451,7 +452,7 @@ class RelatorioCoordenadaForaPoligonoScreen extends Component {
             return (
                 <Card>
                     <p style={{ textAlign: 'center', color: '#999' }}>
-                        Nenhum registro encontrado.
+                        {this.props.t('relatorioCoordenadaForaPoligonoScreen:nenhumRegistro')}
                     </p>
                 </Card>
             )
@@ -500,7 +501,7 @@ class RelatorioCoordenadaForaPoligonoScreen extends Component {
                     }}
                 >
                     <Col xs={24} sm={14} md={18} lg={20} xl={20}>
-                        <h2 style={{ fontWeight: 200 }}>Diagnóstico de Erros de Posicionamento</h2>
+                        <h2 style={{ fontWeight: 200 }}>{this.props.t('relatorioCoordenadaForaPoligonoScreen:titulo')}</h2>
                     </Col>
                     <Col xs={24} sm={10} md={6} lg={4} xl={4} style={{ display: 'flex', justifyContent: 'flex-end' }}>
                         <div style={{ display: 'flex', gap: '10px' }}>
@@ -526,4 +527,4 @@ class RelatorioCoordenadaForaPoligonoScreen extends Component {
     }
 }
 
-export default Form.create()(RelatorioCoordenadaForaPoligonoScreen)
+export default withTranslation()(Form.create()(RelatorioCoordenadaForaPoligonoScreen))

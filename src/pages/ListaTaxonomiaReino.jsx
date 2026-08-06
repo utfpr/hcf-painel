@@ -6,6 +6,7 @@ import {
     Select
 } from 'antd'
 import axios from 'axios'
+import { withTranslation } from 'react-i18next'
 
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { recaptchaKey } from '@/config/api'
@@ -21,21 +22,6 @@ const FormItem = Form.Item
 
 const { Option } = Select
 
-const columns = [
-    {
-        title: 'Reino',
-        type: 'text',
-        key: 'reino',
-        dataIndex: 'reino',
-        sorter: true
-    },
-    {
-        title: 'Ação',
-        key: 'acao',
-        width: 50
-    }
-]
-
 class ListaTaxonomiaReino extends Component {
     constructor(props) {
         super(props)
@@ -47,7 +33,7 @@ class ListaTaxonomiaReino extends Component {
             visibleModal: false,
             loadingModal: false,
             loading: false,
-            titulo: 'Cadastrar',
+            titulo: this.props.t('common:cadastrar'),
             id: -1
         }
     }
@@ -89,11 +75,11 @@ class ListaTaxonomiaReino extends Component {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this
         confirm({
-            title: 'Você tem certeza que deseja excluir esta família?',
-            content: 'Ao clicar em SIM, a família será excluída.',
-            okText: 'SIM',
+            title: this.props.t('listaTaxonomiaReino:confirmacaoExcluirReino'),
+            content: this.props.t('listaTaxonomiaReino:descricaoExcluirReino'),
+            okText: this.props.t('common:sim'),
             okType: 'danger',
-            cancelText: 'NÃO',
+            cancelText: this.props.t('common:nao'),
             onOk() {
                 self.requisitaExclusao(id)
             },
@@ -120,7 +106,7 @@ class ListaTaxonomiaReino extends Component {
                         this.setState({
                             visibleModal: true,
                             id: item.id,
-                            titulo: 'Atualizar'
+                            titulo: this.props.t('common:atualizar')
                         })
                     }}
                     >
@@ -174,11 +160,11 @@ class ListaTaxonomiaReino extends Component {
                 })
                 if (response.status === 204) {
                     this.requisitaReinos()
-                    this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                    this.openNotificationWithIcon('success', this.props.t('common:tituloSucesso'), this.props.t('common:cadastroRealizadoSucesso'))
                 } else if (response.status === 400) {
-                    this.openNotificationWithIcon('warning', 'Falha', response.data.error)
+                    this.openNotificationWithIcon('warning', this.props.t('common:tituloFalha'), response.data.error)
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar o novo reino, tente novamente.')
+                    this.openNotificationWithIcon('error', this.props.t('common:tituloFalha'), this.props.t('listaTaxonomiaReino:erroCadastrarReino'))
                 }
                 this.props.form.setFields({
                     nomeFamilia: {
@@ -195,7 +181,7 @@ class ListaTaxonomiaReino extends Component {
                     const { error } = response.data
                     console.error(error.message)
 
-                    this.openNotificationWithIcon('error', 'Falha', 'Família já cadastrada.')
+                    this.openNotificationWithIcon('error', this.props.t('common:tituloFalha'), this.props.t('listaTaxonomiaReino:erroReinoJaCadastrado'))
                 }
             })
             .catch(this.catchRequestError)
@@ -214,11 +200,11 @@ class ListaTaxonomiaReino extends Component {
                 })
                 if (response.status === 204) {
                     this.requisitaReinos()
-                    this.openNotificationWithIcon('success', 'Sucesso', 'A atualização foi realizada com sucesso.')
+                    this.openNotificationWithIcon('success', this.props.t('common:tituloSucesso'), this.props.t('common:atualizacaoRealizadaSucesso'))
                 } else if (response.status === 400) {
-                    this.openNotificationWithIcon('warning', 'Falha', response.data.error.message)
+                    this.openNotificationWithIcon('warning', this.props.t('common:tituloFalha'), response.data.error.message)
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao atualizar o reino, tente novamente.')
+                    this.openNotificationWithIcon('error', this.props.t('common:tituloFalha'), this.props.t('listaTaxonomiaReino:erroAtualizarReino'))
                 }
                 this.props.form.setFields({
                     nomeReino: {
@@ -242,11 +228,13 @@ class ListaTaxonomiaReino extends Component {
     renderPainelBusca() {
         const { getFieldDecorator } = this.props.form
         return (
-            <Card title="Buscar reino">
+            <Card title={this.props.t('listaTaxonomiaReino:buscarReino')}>
                 <Form onSubmit={this.onSubmit}>
                     <Row gutter={8}>
                         <Col span={24}>
-                            <span>Nome do reino:</span>
+                            <span>
+                                {this.props.t('listaTaxonomiaReino:nomeReino')}
+                            </span>
                         </Col>
                     </Row>
                     <Row gutter={8}>
@@ -282,7 +270,7 @@ class ListaTaxonomiaReino extends Component {
                                             }}
                                             className="login-form-button"
                                         >
-                                            Limpar
+                                            {this.props.t('common:limpar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -293,7 +281,7 @@ class ListaTaxonomiaReino extends Component {
                                             htmlType="submit"
                                             className="login-form-button ant-btn-pesquisar"
                                         >
-                                            Pesquisar
+                                            {this.props.t('common:pesquisar')}
                                         </Button>
                                     </FormItem>
                                 </Col>
@@ -325,9 +313,9 @@ class ListaTaxonomiaReino extends Component {
                 const token = await window.grecaptcha.execute(recaptchaKey, { action: 'reinos' })
                 params.recaptchaToken = token
             } catch (error) {
-                console.error('Erro ao executar reCAPTCHA:', error)
+                console.error(this.props.t('listaTaxonomiaReino:erroExecutarRecaptcha'), error)
                 this.setState({ loading: false })
-                this.notificacao('error', 'Erro', 'Falha ao validar reCAPTCHA.')
+                this.notificacao('error', this.props.t('common:erro'), this.props.t('listaTaxonomiaReino:erroValidarRecaptcha'))
                 return
             }
         }
@@ -345,7 +333,7 @@ class ListaTaxonomiaReino extends Component {
             .catch(err => {
                 this.setState({ loading: false })
                 console.error(err.response?.data?.error?.message)
-                this.notificacao('error', 'Erro', 'Falha ao buscar reinos.')
+                this.notificacao('error', this.props.t('common:erro'), this.props.t('listaTaxonomiaReino:erroBuscarReinos'))
             })
     }
 
@@ -358,13 +346,13 @@ class ListaTaxonomiaReino extends Component {
                     onClick={() => {
                         this.setState({
                             visibleModal: true,
-                            titulo: 'Cadastrar',
+                            titulo: this.props.t('common:cadastrar'),
                             id: -1
                         })
                     }}
                     style={{ backgroundColor: '#5CB85C', borderColor: '#5CB85C', width: '100%' }}
                 >
-                    Adicionar
+                    {this.props.t('common:adicionar')}
                 </Button>
             )
         }
@@ -377,6 +365,22 @@ class ListaTaxonomiaReino extends Component {
 
     renderFormulario() {
         const { getFieldDecorator } = this.props.form
+
+        const columns = [
+            {
+                title: this.props.t('listaTaxonomiaReino:colunaReino'),
+                type: 'text',
+                key: 'reino',
+                dataIndex: 'reino',
+                sorter: true
+            },
+            {
+                title: this.props.t('listaTaxonomiaReino:colunaAcao'),
+                key: 'acao',
+                width: 50
+            }
+        ]
+
         return (
             <div>
                 <Form onSubmit={this.handleSubmitForm}>
@@ -396,12 +400,12 @@ class ListaTaxonomiaReino extends Component {
                                 if (this.props.form.getFieldsValue().nomeReino && this.props.form.getFieldsValue().nomeReino.trim() !== '') {
                                     this.cadastraNovoReino()
                                 } else {
-                                    this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome do reino.')
+                                    this.openNotificationWithIcon('warning', this.props.t('common:tituloFalha'), this.props.t('listaTaxonomiaReino:erroReinoJaCadastrado'))
                                 }
                             } else if (this.props.form.getFieldsValue().nomeReino && this.props.form.getFieldsValue().nomeReino.trim() !== '') {
                                 this.atualizaReino()
                             } else {
-                                this.openNotificationWithIcon('warning', 'Falha', 'Informe o nome do reino.')
+                                this.openNotificationWithIcon('warning', this.props.t('common:tituloFalha'), this.props.t('listaTaxonomiaReino:erroReinoJaCadastrado'))
                             }
                             this.setState({
                                 visibleModal: false
@@ -412,7 +416,7 @@ class ListaTaxonomiaReino extends Component {
                         <div>
                             <Row gutter={8} style={{ marginTop: 16 }}>
                                 <Col span={24}>
-                                    <span>Informe o nome do reino:</span>
+                                    <span>{this.props.t('listaTaxonomiaReino:informarNomeReino')}</span>
                                 </Col>
                             </Row>
                             <Row gutter={8}>
@@ -431,7 +435,7 @@ class ListaTaxonomiaReino extends Component {
 
                 <Row gutter={24} style={{ marginBottom: '20px' }}>
                     <Col xs={24} sm={14} md={18} lg={20} xl={20}>
-                        <h2 style={{ fontWeight: 200 }}>Reinos</h2>
+                        <h2 style={{ fontWeight: 200 }}>{this.props.t('listaTaxonomiaReino:reinos')}</h2>
                     </Col>
                     <Col xs={24} sm={10} md={6} lg={4} xl={4}>
                         {this.renderAdd()}
@@ -465,4 +469,6 @@ class ListaTaxonomiaReino extends Component {
         )
     }
 }
-export default Form.create()(ListaTaxonomiaReino)
+const ListaTaxonomiaReinoWithForm = Form.create()(ListaTaxonomiaReino)
+
+export default withTranslation()(ListaTaxonomiaReinoWithForm)

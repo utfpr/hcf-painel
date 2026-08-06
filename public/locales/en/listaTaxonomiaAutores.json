@@ -1,0 +1,28 @@
+{
+  "autores": "Authors",
+
+  "buscarAutor": "Search Author",
+  "buscarNomeAutor": "Author's Name:",
+
+  "cadastroNomeAutor": "Name:",
+  "cadastroObservacao": "Notes:",
+
+  "colunaAutor": "Author",
+  "colunaObservacao": "Notes",
+  "colunaAcao": "Action",
+
+  "confirmarExcluirAutor": "Are you sure you want to delete this author?",
+  "descricaoExcluirAutor": "By clicking YES, the author will be deleted.",
+  "sucessoExcluirAutor": "The author has been successfully deleted.",
+
+  "validacaoInformarAutor": "Please enter the name of the new author.",
+
+  "buscarAutores": "Search Authors",
+
+  "buscarAutoresErro": "Error fetching authors.",
+  "erroServidorBuscarAutores": "Server error while fetching authors.",
+  "erroBuscarAutores": "Failed to fetch authors.",
+
+  "erroCadastroAutor": "There was a problem registering the new author, please try again.",
+  "erroAtualizarAutor": "There was a problem updating the author, please try again."
+}

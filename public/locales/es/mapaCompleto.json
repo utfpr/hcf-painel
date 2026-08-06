@@ -1,0 +1,10 @@
+{
+  "analisandoDados": "Analizando datos...",
+
+  "erroBuscarPontos": "Error al buscar los puntos: ",
+  "erroExecutarRecaptcha": "Error al ejecutar reCAPTCHA: ",
+  "erroBuscarDetalhesPonto": "Error al buscar detalles del punto: ",
+
+  "buscarPontosMapa": "Buscar puntos en el mapa",
+  "erroExecutarRecaptchaMensagem": "Error al ejecutar reCAPTCHA"
+}

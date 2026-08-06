@@ -7,7 +7,7 @@ import axios from 'axios'
 
 import { Form } from '@ant-design/compatible'
 import { CloseOutlined } from '@ant-design/icons'
-
+import { withTranslation } from 'react-i18next'
 import GalleryComponent from '../components/GalleryComponent'
 import HeaderListComponent from '../components/HeaderListComponent'
 import SimpleTableComponent from '../components/SimpleTableComponent'
@@ -16,23 +16,7 @@ import fotosTomboMap from '../helpers/fotos-tombo-map'
 const { TextArea } = Input
 const FormItem = Form.Item
 
-const columns = [
-    {
-        title: 'Campo',
-        type: 'text',
-        key: 'campo'
-    },
-    {
-        title: 'Valor antigo',
-        type: 'text',
-        key: 'antigo'
-    },
-    {
-        title: 'Valor novo',
-        type: 'text',
-        key: 'novo'
-    }
-]
+
 
 class VerPendenciaScreen extends Component {
     constructor(props) {
@@ -79,9 +63,9 @@ class VerPendenciaScreen extends Component {
                 const { response } = err
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
-                        this.notificacao('warning', 'Falha', response.data.error.message)
+                        this.notificacao('warning', this.props.t('common:tituloFalha'), response.data.error.message)
                     } else {
-                        this.notificacao('error', 'Falha', 'Houve um problema ao buscar as pendências, tente novamente.')
+                        this.notificacao('error', this.props.t('common:tituloFalha'), this.props.t('verPendencia:erroBuscarPendenciasGenerico'))
                     }
                     const { error } = response.data
                     console.error(error.message)
@@ -109,17 +93,17 @@ class VerPendenciaScreen extends Component {
                     loading: false
                 })
                 if (response.status == 204 || response.status == 200) {
-                    this.notificacao('success', 'Atualização', 'A pendência foi atualizada com sucesso.')
+                    this.notificacao('success', this.props.t('verPendencia:atualizacaoTitulo'), this.props.t('verPendencia:sucessoAtualizacaoMensagem'))
                     this.props.history.goBack()
                 } else {
-                    this.notificacao('warning', 'Atualização', 'Houve um problema em atualizar a pendência.')
+                    this.notificacao('warning', this.props.t('verPendencia:atualizacaoTitulo'), this.props.t('verPendencia:erroAtualizacaoMensagem'))
                 }
             })
             .catch(err => {
                 this.setState({
                     loading: false
                 })
-                this.notificacao('warning', 'Atualização', 'Houve um problema em atualizar a pendência.')
+                this.notificacao('warning', this.props.t('verPendencia:atualizacaoTitulo'), this.props.t('verPendencia:erroAtualizacaoMensagem'))
                 const { response } = err
                 if (response && response.data) {
                     const value = {
@@ -144,7 +128,7 @@ class VerPendenciaScreen extends Component {
                     <Row gutter={8}>
                         <Col xs={24} sm={12} md={12} lg={12} xl={12}>
                             <Col span={24}>
-                                <span>Fotos antigas:</span>
+                                <span>{this.props.t('verPendencia:fotosAntigas')}</span>
                             </Col>
                             <Col span={24}>
                                 <GalleryComponent fotos={fotosAntigas} />
@@ -152,7 +136,7 @@ class VerPendenciaScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={12} lg={12} xl={12}>
                             <Col span={24}>
-                                <span>Novas fotos:</span>
+                                <span>{this.props.t('verPendencia:fotosNovas')}</span>
                             </Col>
                             <Col span={24}>
                                 <GalleryComponent fotos={fotosNovas} />
@@ -170,7 +154,7 @@ class VerPendenciaScreen extends Component {
                     <Row gutter={8}>
                         <Col xs={24} sm={12} md={12} lg={12} xl={12}>
                             <Col span={24}>
-                                <span>Fotos:</span>
+                                <span>{this.props.t('verPendencia:fotos')}</span>
                             </Col>
                             <Col span={24}>
                                 <GalleryComponent fotos={fotos} />
@@ -189,7 +173,7 @@ class VerPendenciaScreen extends Component {
                     <Row gutter={8} style={{ marginBottom: '10px' }}>
                         <Col span={24}>
                             <Col span={24}>
-                                <span>Observação:</span>
+                                <span>{this.props.t('verPendencia:observacao')}</span>
                             </Col>
                             <Col span={24}>
                                 <FormItem>
@@ -216,7 +200,7 @@ class VerPendenciaScreen extends Component {
                                         aprovar: 'APROVADO'
                                     })}
                                 >
-                                    Aprovar
+                                    {this.props.t('verPendencia:botaoAprovado')}
                                 </Button>
                             </FormItem>
                         </Col>
@@ -234,7 +218,7 @@ class VerPendenciaScreen extends Component {
                                         aprovar: 'REPROVADO'
                                     })}
                                 >
-                                    Reprovar
+                                    {this.props.t('verPendencia:botaoReprovado')}
                                 </Button>
                             </FormItem>
                         </Col>
@@ -244,11 +228,30 @@ class VerPendenciaScreen extends Component {
         }
     }
 
+
     renderFormulario() {
+            const columns = [
+        {
+            title: this.props.t('verPendencia:colunaCampo'),
+            type: 'text',
+            key: 'campo'
+        },
+        {
+            title: this.props.t('verPendencia:colunaValorAntigo'),
+            type: 'text',
+            key: 'antigo'
+        },
+        {
+            title: this.props.t('verPendencia:colunaValorNovo'),
+            type: 'text',
+            key: 'novo'
+        }
+        ]
+
         const { getFieldDecorator } = this.props.form
         return (
             <Form onSubmit={this.handleSubmit}>
-                <HeaderListComponent title="Modificações" add={false} />
+                <HeaderListComponent title={this.props.t('verPendencia:tituloModificacoes')} add={false} />
                 {this.renderFotos()}
                 <Divider dashed />
                 <Row gutter={8} style={{ marginBottom: '20px' }}>
@@ -271,7 +274,7 @@ class VerPendenciaScreen extends Component {
     render() {
         if (this.state.loading) {
             return (
-                <Spin tip="Carregando...">
+                <Spin tip={this.props.t('verPendencia:carregando')}>
                     {this.renderFormulario()}
                 </Spin>
             )
@@ -282,4 +285,7 @@ class VerPendenciaScreen extends Component {
     }
 }
 
-export default Form.create()(VerPendenciaScreen)
+const VerPendenciaScreenWithForm =
+    Form.create()(VerPendenciaScreen)
+
+export default withTranslation()(VerPendenciaScreenWithForm)

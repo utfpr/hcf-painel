@@ -18,6 +18,7 @@ import {
     Image
 } from 'antd'
 import axios from 'axios'
+import { withTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import { formatarDataBRtoEN } from '@/helpers/conversoes/ConversoesData'
@@ -79,6 +80,8 @@ const { TextArea } = Input
 const RadioGroup = Radio.Group
 
 class NovoTomboScreen extends Component {
+    tTombo = (key, options) => this.props.t(`tombo:${key}`, options)
+
     tabelaFotosColunas = [
         {
             title: 'Foto',
@@ -95,13 +98,13 @@ class NovoTomboScreen extends Component {
             render: codigoBarra => <div width="120">{codigoBarra}</div>
         },
         {
-            title: 'Ação',
+            title: this.tTombo('tableAction'),
             dataIndex: 'acao',
             render: (text, record, index) => (
                 <>
                     <Row>
                         <Col span={12}>
-                            <Tooltip placement="top" title="Excluir">
+                            <Tooltip placement="top" title={this.props.t('common:excluir')}>
                                 <a
                                     href="#"
                                     onClick={e => {
@@ -123,7 +126,7 @@ class NovoTomboScreen extends Component {
                     <br />
                     <Row>
                         <Col span={12}>
-                            <Tooltip placement="top" title="editar imagem">
+                            <Tooltip placement="top" title={this.tTombo('editImage')}>
                                 <Upload
                                     multiple
                                     {...this.props}
@@ -137,7 +140,7 @@ class NovoTomboScreen extends Component {
                                 >
                                     <Tooltip
                                         placement="top"
-                                        title="editar imagem"
+                                        title={this.tTombo('editImage')}
                                     >
                                         <EditOutlined
                                             style={{ color: '#FFCC00' }}
@@ -274,7 +277,7 @@ class NovoTomboScreen extends Component {
         if (value == null || value === '') return callback()
         const anoAtual = new Date().getFullYear()
         if (Number(value) > anoAtual) {
-            return callback('O ano não pode ser no futuro.')
+            return callback(this.tTombo('yearFuture'))
         }
         return callback()
     }
@@ -285,14 +288,14 @@ class NovoTomboScreen extends Component {
         const str = String(value).trim()
 
         const m = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/)
-        if (!m) return callback('Formato inválido. Use DD/MM/AAAA.')
+        if (!m) return callback(this.tTombo('invalidDateFormat'))
 
         const d = Number(m[1])
         const mm = Number(m[2])
         const y = Number(m[3])
 
-        if (mm < 1 || mm > 12) return callback('Mês inválido.')
-        if (d < 1 || d > 31) return callback('Dia inválido.')
+        if (mm < 1 || mm > 12) return callback(this.tTombo('invalidMonth'))
+        if (d < 1 || d > 31) return callback(this.tTombo('invalidDay'))
 
         const dt = new Date(y, mm - 1, d)
         if (
@@ -300,11 +303,11 @@ class NovoTomboScreen extends Component {
             || dt.getMonth() + 1 !== mm
             || dt.getDate() !== d
         ) {
-            return callback('Data inválida.')
+            return callback(this.tTombo('invalidDate'))
         }
 
         const anoAtual = new Date().getFullYear()
-        if (y > anoAtual) return callback('O ano não pode ser no futuro.')
+        if (y > anoAtual) return callback(this.tTombo('yearFuture'))
 
         return callback()
     }
@@ -584,8 +587,8 @@ class NovoTomboScreen extends Component {
             ) {
                 this.openNotificationWithIcon(
                     'success',
-                    'Sucesso',
-                    'Códigos de barra atualizados com sucesso'
+                    this.props.t('common:tituloSucesso'),
+                    this.tTombo('barcodeUpdated')
                 )
             }
 
@@ -596,8 +599,8 @@ class NovoTomboScreen extends Component {
             console.error('Erro ao atualizar códigos de barras:', error)
             this.openNotificationWithIcon(
                 'error',
-                'Erro',
-                'Erro ao atualizar os códigos de barras. Tente novamente.'
+                this.props.t('common:erro'),
+                this.tTombo('barcodeUpdateError')
             )
         }
     }
@@ -653,7 +656,7 @@ class NovoTomboScreen extends Component {
     criarCodigoBarras = async (id_tombo, barcodeList = [], getFiles) => {
         const hcf = Number(id_tombo)
         if (!Number.isFinite(hcf)) {
-            message.error('Tombo (HCF) inválido.')
+            message.error(this.tTombo('invalidTombo'))
             return
         }
 
@@ -661,7 +664,7 @@ class NovoTomboScreen extends Component {
         if (!numeros.length) {
             this.openNotificationWithIcon(
                 'warning',
-                'Atenção',
+                this.tTombo('detailCoordinateWarningTitle'),
                 'Nenhum código válido para enviar.'
             )
             return
@@ -712,14 +715,14 @@ class NovoTomboScreen extends Component {
         if (okCount) {
             this.openNotificationWithIcon(
                 'success',
-                'Sucesso',
+                this.props.t('common:tituloSucesso'),
                 `Códigos criados: ${okCount}${uploadedCount ? ` • Uploads: ${uploadedCount}` : ''}${failCount ? ` • Falharam: ${failCount}` : ''
                 }`
             )
         } else {
             this.openNotificationWithIcon(
                 'error',
-                'Erro',
+                this.props.t('common:erro'),
                 'Nenhum código foi criado.'
             )
         }
@@ -799,8 +802,8 @@ class NovoTomboScreen extends Component {
         this.defaultRequest(
             null,
             criaCodigoBarrasSemFotosService,
-            'O codigo foi criado com sucesso.',
-            'Houve um problema ao criar o codigo, tente novamente.',
+            this.tTombo('barcodeCreated'),
+            this.tTombo('barcodeCreateError'),
             null,
             emVivo,
             numeroHcf
@@ -812,8 +815,8 @@ class NovoTomboScreen extends Component {
         this.defaultRequest(
             null,
             atualizarFotoTomboService,
-            'A foto foi alterada com sucesso.',
-            'Houve um problema ao alterar a foto, tente novamente.',
+            this.tTombo('photoUpdated'),
+            this.tTombo('photoUpdateError'),
             null,
             foto,
             tomboCodBar
@@ -825,8 +828,8 @@ class NovoTomboScreen extends Component {
         this.defaultRequest(
             null,
             excluirFotoTomboService,
-            'O codigo de barras foi deletado com sucesso.',
-            'Houve um problema ao deletar o codigo de barras, tente novamente.',
+            this.tTombo('barcodeDeleted'),
+            this.tTombo('barcodeDeleteError'),
             null,
             foto,
             indice,
@@ -848,7 +851,7 @@ class NovoTomboScreen extends Component {
                 if (successMessage !== '') {
                     this.openNotificationWithIcon(
                         'success',
-                        'Sucesso',
+                        this.props.t('common:tituloSucesso'),
                         successMessage
                     )
                 }
@@ -857,9 +860,9 @@ class NovoTomboScreen extends Component {
             console.error(error)
             let message = ''
             if (error) {
-                message = `Falha ao carregar os dados do tombo: ${error.message}`
+                message = this.tTombo('tomboLoadError', { message: error.message })
             }
-            this.openNotificationWithIcon('warning', 'Falha', message)
+            this.openNotificationWithIcon('warning', this.props.t('common:tituloFalha'), message)
         } finally {
             this.setState({
                 loading: false
@@ -872,7 +875,7 @@ class NovoTomboScreen extends Component {
             null,
             requisitaDadosEdicaoService,
             '',
-            'Houve um problema ao editar os dados do tombo, tente novamente.',
+            this.tTombo('tomboEditError'),
             this.onEditarTomboComSucesso,
             id
         )
@@ -1069,7 +1072,7 @@ class NovoTomboScreen extends Component {
             this.defaultRequest(
                 null,
                 handleSubmitIdentificadorService,
-                'O cadastro foi realizado com sucesso.',
+                this.props.t('common:cadastroRealizadoSucesso'),
                 'Houve um problema ao cadastrar o tombo, tente novamente.',
                 this.onHandleSubmitIdentificadorComSucesso,
                 tomboId,
@@ -1094,7 +1097,7 @@ class NovoTomboScreen extends Component {
 
     requisitaNumeroHcf = () => {
         axios
-            .get('/tombos/filtrar_ultimo_numero')
+            .get('/tombos/proximo_numero')
             .then(response => {
                 if (response.status === 200) {
                     if (this.props.match.params.tombo_id) {
@@ -1119,10 +1122,10 @@ class NovoTomboScreen extends Component {
                             this.props.match.params.tombo_id
                         )
                     } else {
-                        this.setState({ numeroHcf: Number(response.data.hcf) + 1 })
+                        this.setState({ numeroHcf: response.data.hcf})
                         this.props.form.setFields({
                             numeroTombo: {
-                                value: Number(response.data.hcf) + 1
+                                value: Number(response.data.hcf)
                             }
                         })
                         const date = new Date()
@@ -1137,7 +1140,7 @@ class NovoTomboScreen extends Component {
                 } else {
                     this.openNotification(
                         'error',
-                        'Falha',
+                        this.props.t('common:tituloFalha'),
                         'Houve um problema ao buscar o numero de coletor sugerido, tente novamente.'
                     )
                 }
@@ -1171,7 +1174,7 @@ class NovoTomboScreen extends Component {
                 } else {
                     this.openNotificationWithIcon(
                         'error',
-                        'Falha',
+                        this.props.t('common:tituloFalha'),
                         'Houve um problema ao buscar os tipos do tombo, tente novamente.'
                     )
                 }
@@ -1185,13 +1188,13 @@ class NovoTomboScreen extends Component {
                     if (response.status === 400 || response.status === 422) {
                         this.openNotificationWithIcon(
                             'warning',
-                            'Falha',
+                            this.props.t('common:tituloFalha'),
                             response.data.error.message
                         )
                     } else {
                         this.openNotificationWithIcon(
                             'error',
-                            'Falha',
+                            this.props.t('common:tituloFalha'),
                             'Houve um problema a listar os tipos, tente novamente.'
                         )
                     }
@@ -1220,8 +1223,8 @@ class NovoTomboScreen extends Component {
                     this.requisitaTipos()
                     this.openNotificationWithIcon(
                         'success',
-                        'Sucesso',
-                        'O cadastro foi realizado com sucesso.'
+                        this.props.t('common:tituloSucesso'),
+                        this.props.t('common:cadastroRealizadoSucesso')
                     )
                 }
                 this.props.form.setFields({
@@ -1239,13 +1242,13 @@ class NovoTomboScreen extends Component {
                     if (response.status === 400 || response.status === 422) {
                         this.openNotificationWithIcon(
                             'warning',
-                            'Falha',
+                            this.props.t('common:tituloFalha'),
                             response.data.error.message
                         )
                     } else {
                         this.openNotificationWithIcon(
                             'error',
-                            'Falha',
+                            this.props.t('common:tituloFalha'),
                             'Houve um problema ao cadastrar o novo tipo, tente novamente.'
                         )
                     }
@@ -1274,8 +1277,8 @@ class NovoTomboScreen extends Component {
                     this.requisitaReinos('')
                     this.openNotificationWithIcon(
                         'success',
-                        'Sucesso',
-                        'O cadastro foi realizado com sucesso.'
+                        this.props.t('common:tituloSucesso'),
+                        this.props.t('common:cadastroRealizadoSucesso')
                     )
                 }
                 this.props.form.setFields({ campo: { value: "" } }); // eslint-disable-line
@@ -1289,13 +1292,13 @@ class NovoTomboScreen extends Component {
                     if (response.status === 400 || response.status === 422) {
                         this.openNotificationWithIcon(
                             'warning',
-                            'Falha',
+                            this.props.t('common:tituloFalha'),
                             response.data.error.message
                         )
                     } else {
                         this.openNotificationWithIcon(
                             'error',
-                            'Falha',
+                            this.props.t('common:tituloFalha'),
                             'Houve um problema ao cadastrar o novo reino, tente novamente.'
                         )
                     }
@@ -1325,8 +1328,8 @@ class NovoTomboScreen extends Component {
                     this.requisitaFamilias('', this.state.reinoInicial)
                     this.openNotificationWithIcon(
                         'success',
-                        'Sucesso',
-                        'O cadastro foi realizado com sucesso.'
+                        this.props.t('common:tituloSucesso'),
+                        this.props.t('common:cadastroRealizadoSucesso')
                     )
                 }
                 this.props.form.setFields({
@@ -1344,13 +1347,13 @@ class NovoTomboScreen extends Component {
                     if (response.status === 400 || response.status === 422) {
                         this.openNotificationWithIcon(
                             'warning',
-                            'Falha',
+                            this.props.t('common:tituloFalha'),
                             response.data.error.message
                         )
                     } else {
                         this.openNotificationWithIcon(
                             'error',
-                            'Falha',
+                            this.props.t('common:tituloFalha'),
                             'Houve um problema ao cadastrar a nova família, tente novamente.'
                         )
                     }
@@ -1422,8 +1425,8 @@ class NovoTomboScreen extends Component {
         if (!this.props.form.getFieldsValue().familia) {
             this.openNotificationWithIcon(
                 'warning',
-                'Falha',
-                'Selecione uma família para cadastrar uma subfamília.'
+                this.props.t('common:tituloFalha'),
+                this.tTombo('familyRequiredForSpecies')
             )
         } else {
             axios
@@ -1444,8 +1447,8 @@ class NovoTomboScreen extends Component {
                         })
                         this.openNotificationWithIcon(
                             'success',
-                            'Sucesso',
-                            'O cadastro foi realizado com sucesso.'
+                            this.props.t('common:tituloSucesso'),
+                            this.props.t('common:cadastroRealizadoSucesso')
                         )
                     }
                     this.props.form.setFields({
@@ -1463,13 +1466,13 @@ class NovoTomboScreen extends Component {
                         ) {
                             this.openNotificationWithIcon(
                                 'warning',
-                                'Falha',
+                                this.props.t('common:tituloFalha'),
                                 response.data.error.message
                             )
                         } else {
                             this.openNotificationWithIcon(
                                 'error',
-                                'Falha',
+                                this.props.t('common:tituloFalha'),
                                 'Houve um problema ao cadastrar a nova subfamília, tente novamente.'
                             )
                         }
@@ -1511,8 +1514,8 @@ class NovoTomboScreen extends Component {
         if (!this.props.form.getFieldsValue().familia) {
             this.openNotificationWithIcon(
                 'warning',
-                'Falha',
-                'Selecione uma família para cadastrar uma subfamília.'
+                this.props.t('common:tituloFalha'),
+                this.tTombo('familyRequiredForSubfamily')
             )
         } else {
             this.setState({
@@ -1539,8 +1542,8 @@ class NovoTomboScreen extends Component {
                         })
                         this.openNotificationWithIcon(
                             'success',
-                            'Sucesso',
-                            'O cadastro foi realizado com sucesso.'
+                            this.props.t('common:tituloSucesso'),
+                            this.props.t('common:cadastroRealizadoSucesso')
                         )
                     }
                     this.props.form.setFields({
@@ -1561,13 +1564,13 @@ class NovoTomboScreen extends Component {
                         ) {
                             this.openNotificationWithIcon(
                                 'warning',
-                                'Falha',
+                                this.props.t('common:tituloFalha'),
                                 response.data.error.message
                             )
                         } else {
                             this.openNotificationWithIcon(
                                 'error',
-                                'Falha',
+                                this.props.t('common:tituloFalha'),
                                 'Houve um problema ao cadastrar o novo gênero, tente novamente.'
                             )
                         }
@@ -1609,15 +1612,15 @@ class NovoTomboScreen extends Component {
         if (!this.props.form.getFieldsValue().genero) {
             this.openNotificationWithIcon(
                 'warning',
-                'Falha',
-                'Selecione um gênero para cadastrar uma subfamília.'
+                this.props.t('common:tituloFalha'),
+                this.tTombo('genusRequiredForSpecies')
             )
         }
         if (!this.props.form.getFieldsValue().familia) {
             this.openNotificationWithIcon(
                 'warning',
-                'Falha',
-                'Selecione uma família para cadastrar uma subfamília.'
+                this.props.t('common:tituloFalha'),
+                this.tTombo('familyRequiredForSubfamily')
             )
         } else {
             this.setState({
@@ -1646,8 +1649,8 @@ class NovoTomboScreen extends Component {
                         })
                         this.openNotificationWithIcon(
                             'success',
-                            'Sucesso',
-                            'O cadastro foi realizado com sucesso.'
+                            this.props.t('common:tituloSucesso'),
+                            this.props.t('common:cadastroRealizadoSucesso')
                         )
                     }
                     this.props.form.setFields({
@@ -1668,13 +1671,13 @@ class NovoTomboScreen extends Component {
                         ) {
                             this.openNotificationWithIcon(
                                 'warning',
-                                'Falha',
+                                this.props.t('common:tituloFalha'),
                                 response.data.error.message
                             )
                         } else {
                             this.openNotificationWithIcon(
                                 'error',
-                                'Falha',
+                                this.props.t('common:tituloFalha'),
                                 'Houve um problema ao cadastrar a nova espécie, tente novamente.'
                             )
                         }
@@ -1716,22 +1719,22 @@ class NovoTomboScreen extends Component {
         if (!this.props.form.getFieldsValue().especie) {
             this.openNotificationWithIcon(
                 'warning',
-                'Falha',
-                'Selecione uma espécie para cadastrar uma subespécie.'
+                this.props.t('common:tituloFalha'),
+                this.tTombo('speciesRequiredForSubspecies')
             )
         }
         if (!this.props.form.getFieldsValue().genero) {
             this.openNotificationWithIcon(
                 'warning',
-                'Falha',
-                'Selecione um gênero para cadastrar uma subespécie.'
+                this.props.t('common:tituloFalha'),
+                this.tTombo('genusRequiredForSubspecies')
             )
         }
         if (!this.props.form.getFieldsValue().familia) {
             this.openNotificationWithIcon(
                 'warning',
-                'Falha',
-                'Selecione uma família para cadastrar uma subespécie.'
+                this.props.t('common:tituloFalha'),
+                this.tTombo('familyRequiredForSubspecies')
             )
         } else {
             this.setState({
@@ -1761,8 +1764,8 @@ class NovoTomboScreen extends Component {
                         })
                         this.openNotificationWithIcon(
                             'success',
-                            'Sucesso',
-                            'O cadastro foi realizado com sucesso.'
+                            this.props.t('common:tituloSucesso'),
+                            this.props.t('common:cadastroRealizadoSucesso')
                         )
                     }
                     this.props.form.setFields({
@@ -1783,13 +1786,13 @@ class NovoTomboScreen extends Component {
                         ) {
                             this.openNotificationWithIcon(
                                 'warning',
-                                'Falha',
+                                this.props.t('common:tituloFalha'),
                                 response.data.error.message
                             )
                         } else {
                             this.openNotificationWithIcon(
                                 'error',
-                                'Falha',
+                                this.props.t('common:tituloFalha'),
                                 'Houve um problema ao cadastrar a nova subespécie, tente novamente.'
                             )
                         }
@@ -1831,22 +1834,22 @@ class NovoTomboScreen extends Component {
         if (!this.props.form.getFieldsValue().especie) {
             this.openNotificationWithIcon(
                 'warning',
-                'Falha',
-                'Selecione uma espécie para cadastrar uma variedade.'
+                this.props.t('common:tituloFalha'),
+                this.tTombo('speciesRequiredForVariety')
             )
         }
         if (!this.props.form.getFieldsValue().genero) {
             this.openNotificationWithIcon(
                 'warning',
-                'Falha',
-                'Selecione um gênero para cadastrar uma variedade.'
+                this.props.t('common:tituloFalha'),
+                this.tTombo('genusRequiredForVariety')
             )
         }
         if (!this.props.form.getFieldsValue().familia) {
             this.openNotificationWithIcon(
                 'warning',
-                'Falha',
-                'Selecione uma família para cadastrar uma variedade.'
+                this.props.t('common:tituloFalha'),
+                this.tTombo('familyRequiredForVariety')
             )
         } else {
             this.setState({
@@ -1876,8 +1879,8 @@ class NovoTomboScreen extends Component {
                         })
                         this.openNotificationWithIcon(
                             'success',
-                            'Sucesso',
-                            'O cadastro foi realizado com sucesso.'
+                            this.props.t('common:tituloSucesso'),
+                            this.props.t('common:cadastroRealizadoSucesso')
                         )
                     }
                     this.props.form.setFields({
@@ -1898,13 +1901,13 @@ class NovoTomboScreen extends Component {
                         ) {
                             this.openNotificationWithIcon(
                                 'warning',
-                                'Falha',
+                                this.props.t('common:tituloFalha'),
                                 response.data.error.message
                             )
                         } else {
                             this.openNotificationWithIcon(
                                 'error',
-                                'Falha',
+                                this.props.t('common:tituloFalha'),
                                 'Houve um problema ao cadastrar a nova variedade, tente novamente.'
                             )
                         }
@@ -1958,19 +1961,19 @@ class NovoTomboScreen extends Component {
                     })
                     this.openNotificationWithIcon(
                         'success',
-                        'Sucesso',
-                        'O cadastro foi realizado com sucesso.'
+                        this.props.t('common:tituloSucesso'),
+                        this.props.t('common:cadastroRealizadoSucesso')
                     )
                 } else if (response.status === 400) {
                     this.openNotificationWithIcon(
                         'warning',
-                        'Falha',
+                        this.props.t('common:tituloFalha'),
                         response.data.error.message
                     )
                 } else {
                     this.openNotificationWithIcon(
                         'error',
-                        'Falha',
+                        this.props.t('common:tituloFalha'),
                         'Houve um problema ao cadastrar o novo autor, tente novamente.'
                     )
                 }
@@ -2034,8 +2037,8 @@ class NovoTomboScreen extends Component {
                     })
                     this.openNotificationWithIcon(
                         'success',
-                        'Sucesso',
-                        'O cadastro foi realizado com sucesso.'
+                        this.props.t('common:tituloSucesso'),
+                        this.props.t('common:cadastroRealizadoSucesso')
                     )
                 }
                 this.props.form.setFields({
@@ -2053,13 +2056,13 @@ class NovoTomboScreen extends Component {
                     if (response.status === 400 || response.status === 422) {
                         this.openNotificationWithIcon(
                             'warning',
-                            'Falha',
+                            this.props.t('common:tituloFalha'),
                             response.data.error.message
                         )
                     } else {
                         this.openNotificationWithIcon(
                             'error',
-                            'Falha',
+                            this.props.t('common:tituloFalha'),
                             'Houve um problema ao cadastrar o novo solo, tente novamente.'
                         )
                     }
@@ -2093,19 +2096,19 @@ class NovoTomboScreen extends Component {
                     })
                     this.openNotificationWithIcon(
                         'success',
-                        'Sucesso',
-                        'O cadastro foi realizado com sucesso.'
+                        this.props.t('common:tituloSucesso'),
+                        this.props.t('common:cadastroRealizadoSucesso')
                     )
                 } else if (response.status === 400) {
                     this.openNotificationWithIcon(
                         'warning',
-                        'Falha',
+                        this.props.t('common:tituloFalha'),
                         response.data.error.message
                     )
                 } else {
                     this.openNotificationWithIcon(
                         'error',
-                        'Falha',
+                        this.props.t('common:tituloFalha'),
                         'Houve um problema ao cadastrar o novo relevo, tente novamente.'
                     )
                 }
@@ -2124,13 +2127,13 @@ class NovoTomboScreen extends Component {
                     if (response.status === 400 || response.status === 422) {
                         this.openNotificationWithIcon(
                             'warning',
-                            'Falha',
+                            this.props.t('common:tituloFalha'),
                             response.data.error.message
                         )
                     } else {
                         this.openNotificationWithIcon(
                             'error',
-                            'Falha',
+                            this.props.t('common:tituloFalha'),
                             'Houve um problema ao cadastrar o novo relevo, tente novamente.'
                         )
                     }
@@ -2164,8 +2167,8 @@ class NovoTomboScreen extends Component {
                     })
                     this.openNotificationWithIcon(
                         'success',
-                        'Sucesso',
-                        'O cadastro foi realizado com sucesso.'
+                        this.props.t('common:tituloSucesso'),
+                        this.props.t('common:cadastroRealizadoSucesso')
                     )
                 }
                 this.props.form.setFields({
@@ -2183,13 +2186,13 @@ class NovoTomboScreen extends Component {
                     if (response.status === 400 || response.status === 422) {
                         this.openNotificationWithIcon(
                             'warning',
-                            'Falha',
+                            this.props.t('common:tituloFalha'),
                             response.data.error.message
                         )
                     } else {
                         this.openNotificationWithIcon(
                             'error',
-                            'Falha',
+                            this.props.t('common:tituloFalha'),
                             'Houve um problema ao cadastrar a nova vegetação, tente novamente.'
                         )
                     }
@@ -2218,8 +2221,8 @@ class NovoTomboScreen extends Component {
                     this.requisitaIdentificadores('')
                     this.openNotificationWithIcon(
                         'success',
-                        'Sucesso',
-                        'O cadastro foi realizado com sucesso.'
+                        this.props.t('common:tituloSucesso'),
+                        this.props.t('common:cadastroRealizadoSucesso')
                     )
                 }
                 this.props.form.setFields({
@@ -2237,13 +2240,13 @@ class NovoTomboScreen extends Component {
                     if (response.status === 400 || response.status === 422) {
                         this.openNotificationWithIcon(
                             'warning',
-                            'Falha',
+                            this.props.t('common:tituloFalha'),
                             response.data.error.message
                         )
                     } else {
                         this.openNotificationWithIcon(
                             'error',
-                            'Falha',
+                            this.props.t('common:tituloFalha'),
                             'Houve um problema ao cadastrar o novo identificador, tente novamente.'
                         )
                     }
@@ -2270,11 +2273,11 @@ class NovoTomboScreen extends Component {
                             fase: 'validating'
                         }
                     })
-                    this.openNotificationWithIcon('success', 'Sucesso', 'O cadastro foi realizado com sucesso.')
+                    this.openNotificationWithIcon('success', this.props.t('common:tituloSucesso'), this.props.t('common:cadastroRealizadoSucesso'))
                 } else if (response.status === 400) {
-                    this.openNotificationWithIcon('warning', 'Falha', response.data.error?.message)
+                    this.openNotificationWithIcon('warning', this.props.t('common:tituloFalha'), response.data.error?.message)
                 } else {
-                    this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar a nova fase sucessional, tente novamente.')
+                    this.openNotificationWithIcon('error', this.props.t('common:tituloFalha'), 'Houve um problema ao cadastrar a nova fase sucessional, tente novamente.')
                 }
                 this.props.form.setFields({ campo: { value: '' } })
             })
@@ -2283,9 +2286,9 @@ class NovoTomboScreen extends Component {
                 const { response } = err
                 if (response && response.data) {
                     if (response.status === 400 || response.status === 422) {
-                        this.openNotificationWithIcon('warning', 'Falha', response.data.error?.message)
+                        this.openNotificationWithIcon('warning', this.props.t('common:tituloFalha'), response.data.error?.message)
                     } else {
-                        this.openNotificationWithIcon('error', 'Falha', 'Houve um problema ao cadastrar a nova fase sucessional, tente novamente.')
+                        this.openNotificationWithIcon('error', this.props.t('common:tituloFalha'), 'Houve um problema ao cadastrar a nova fase sucessional, tente novamente.')
                     }
                     const { error } = response.data
                     throw new Error(error?.message)
@@ -2320,8 +2323,8 @@ class NovoTomboScreen extends Component {
                     })
                     this.openNotificationWithIcon(
                         'success',
-                        'Sucesso',
-                        'O cadastro foi realizado com sucesso.'
+                        this.props.t('common:tituloSucesso'),
+                        this.props.t('common:cadastroRealizadoSucesso')
                     )
                 }
                 this.props.form.setFields({
@@ -2337,13 +2340,13 @@ class NovoTomboScreen extends Component {
                     if (response.status === 400 || response.status === 422) {
                         this.openNotificationWithIcon(
                             'warning',
-                            'Falha',
+                            this.props.t('common:tituloFalha'),
                             response.data.error.message
                         )
                     } else {
                         this.openNotificationWithIcon(
                             'error',
-                            'Falha',
+                            this.props.t('common:tituloFalha'),
                             'Houve um problema ao cadastrar o novo coletor, tente novamente.'
                         )
                     }
@@ -2368,7 +2371,7 @@ class NovoTomboScreen extends Component {
             this.openNotificationWithIcon(
                 'warning',
                 'Atenção',
-                'Selecione uma cidade para cadastrar um local de coleta.'
+                this.tTombo('cityRequiredForCollectionSite')
             )
             this.setState({ loading: false })
             return
@@ -2390,8 +2393,8 @@ class NovoTomboScreen extends Component {
                     this.requisitaLocaisColeta('')
                     this.openNotificationWithIcon(
                         'success',
-                        'Sucesso',
-                        'O cadastro foi realizado com sucesso.'
+                        this.props.t('common:tituloSucesso'),
+                        this.props.t('common:cadastroRealizadoSucesso')
                     )
                 }
                 form.setFields({
@@ -2403,14 +2406,14 @@ class NovoTomboScreen extends Component {
                 if (response && response.data) {
                     this.openNotificationWithIcon(
                         'error',
-                        'Falha',
+                        this.props.t('common:tituloFalha'),
                         response.data.error?.message
                         || 'Houve um problema ao cadastrar o novo local de coleta.'
                     )
                 } else {
                     this.openNotificationWithIcon(
                         'error',
-                        'Falha',
+                        this.props.t('common:tituloFalha'),
                         'Houve um problema ao cadastrar o novo local de coleta, tente novamente.'
                     )
                 }
@@ -2453,8 +2456,8 @@ class NovoTomboScreen extends Component {
                 })
                 this.openNotificationWithIcon(
                     'success',
-                    'Sucesso',
-                    'O cadastro foi realizado com sucesso.'
+                    this.props.t('common:tituloSucesso'),
+                    this.props.t('common:cadastroRealizadoSucesso')
                 )
                 this.props.history.push('/tombos')
             })
@@ -2467,14 +2470,14 @@ class NovoTomboScreen extends Component {
                 if (response.status === 400) {
                     this.openNotificationWithIcon(
                         'warning',
-                        'Falha',
+                        this.props.t('common:tituloFalha'),
                         response.data.error.message
                     )
                 } else {
                     this.openNotificationWithIcon(
                         'error',
-                        'Falha',
-                        'Houve um problema ao cadastrar o novo tombo tente novamente.'
+                        this.props.t('common:tituloFalha'),
+                        this.tTombo('tomboCreateError')
                     )
                 }
                 if (response && response.data) {
@@ -2496,11 +2499,11 @@ class NovoTomboScreen extends Component {
 
     mostraMensagemDeleteCod(foto, indice) {
         confirm({
-            title: 'Você tem certeza que deseja excluir esta foto?',
-            content: 'Ao clicar em SIM, a foto será excluída.',
-            okText: 'SIM',
+            title: this.tTombo('deletePhotoConfirmTitle'),
+            content: this.tTombo('deletePhotoConfirmContent'),
+            okText: this.props.t('common:sim'),
             okType: 'danger',
-            cancelText: 'NÃO',
+            cancelText: this.props.t('common:nao'),
             onOk: () => {
                 this.excluirFotoTombo(foto, indice)
             },
@@ -2667,12 +2670,12 @@ class NovoTomboScreen extends Component {
 
     mostraMensagemVerificaPendencia = () => {
         confirm({
-            title: 'Pendência',
+            title: this.tTombo('pendingTitle'),
             content:
-                'Este tombo possui pendências não resolvidas, deseja continuar alterando?',
-            okText: 'SIM',
+                this.tTombo('pendingContent'),
+            okText: this.props.t('common:sim'),
             okType: 'danger',
-            cancelText: 'NÃO',
+            cancelText: this.props.t('common:nao'),
             onOk: () => {},
             onCancel: () => {
                 ''
@@ -2689,8 +2692,8 @@ class NovoTomboScreen extends Component {
             if (err != null) {
                 this.openNotificationWithIcon(
                     'warning',
-                    'Falha',
-                    'Preencha todos os dados requiridos.'
+                    this.props.t('common:tituloFalha'),
+                    this.tTombo('fillRequiredFields')
                 )
             } else {
                 this.handleRequisicao(values)
@@ -3070,11 +3073,11 @@ class NovoTomboScreen extends Component {
 
     mostraMensagemDelete = id => {
         confirm({
-            title: 'Você tem certeza que deseja excluir esta foto?',
-            content: 'Ao clicar em SIM, a foto será excluída.',
-            okText: 'SIM',
+            title: this.tTombo('deletePhotoConfirmTitle'),
+            content: this.tTombo('deletePhotoConfirmContent'),
+            okText: this.props.t('common:sim'),
             okType: 'danger',
-            cancelText: 'NÃO',
+            cancelText: this.props.t('common:nao'),
             onOk: () => {},
             onCancel: () => {}
         })
@@ -3230,8 +3233,8 @@ class NovoTomboScreen extends Component {
         if (!cidade) {
             this.openNotificationWithIcon(
                 'warning',
-                'Atenção',
-                'Por favor, selecione uma cidade primeiro.'
+                this.tTombo('detailCoordinateWarningTitle'),
+                this.tTombo('selectCityFirst')
             )
             return
         }
@@ -3402,9 +3405,14 @@ class NovoTomboScreen extends Component {
             console.log('Resposta verificação:', response?.data)
 
             if (response?.data && response.data.dentro === false) {
+                const cidadeEncontrada = response.data.cidade_encontrada
+                const cidadeMensagem = cidadeEncontrada
+                    ? `A coordenada informada não pertence à cidade selecionada. Ela pertence a ${cidadeEncontrada.nome}${cidadeEncontrada.estado_sigla ? `/${cidadeEncontrada.estado_sigla}` : ''}.`
+                    : 'A coordenada informada não pertence à cidade selecionada e não foi encontrada outra cidade correspondente.'
+
                 this.setState({
                     cidadeStatus: 'warning',
-                    cidadeHelp: 'A coordenada não pertence à cidade'
+                    cidadeHelp: cidadeMensagem
                 })
             } else if (response?.data && response.data.dentro === true) {
                 this.setState({
@@ -3439,8 +3447,8 @@ class NovoTomboScreen extends Component {
             ) {
                 this.openNotificationWithIcon(
                     'warning',
-                    'Falha',
-                    'O nome e o número do coletor são obrigatórios.'
+                    this.props.t('common:tituloFalha'),
+                    this.tTombo('fillCollectorNameNumber')
                 )
                 return false
             }
@@ -3450,8 +3458,8 @@ class NovoTomboScreen extends Component {
             if (!this.props.form.getFieldsValue().descricaoLocalColeta) {
                 this.openNotificationWithIcon(
                     'warning',
-                    'Falha',
-                    'A descrição do local de coleta é obrigatória.'
+                    this.props.t('common:tituloFalha'),
+                    this.tTombo('fillCollectionSiteDescription')
                 )
                 return false
             }
@@ -3460,8 +3468,8 @@ class NovoTomboScreen extends Component {
         if (!this.props.form.getFieldsValue().campo) {
             this.openNotificationWithIcon(
                 'warning',
-                'Falha',
-                'Informe o nome para o cadastro.'
+                this.props.t('common:tituloFalha'),
+                this.tTombo('informNameToRegister')
             )
             return false
         }
@@ -3503,7 +3511,7 @@ class NovoTomboScreen extends Component {
                             }
                             labelInValue
                             value={valoresColetores}
-                            placeholder="Selecione os coletores"
+                            placeholder={this.tTombo('searchCollectors')}
                             filterOption={false}
                             onSearch={searchText => {
                                 this.requisitaColetores(searchText || '')
@@ -3518,7 +3526,7 @@ class NovoTomboScreen extends Component {
                     <Col span={12}>
                         <Row gutter={8}>
                             <Col span={24}>
-                                <span>Coletores complementares:</span>
+                                <span>{this.tTombo('collectorsComplementary')}</span>
                             </Col>
                         </Row>
                         <Row gutter={8}>
@@ -3570,17 +3578,17 @@ class NovoTomboScreen extends Component {
                     <Row gutter={8}>
                         <InputFormField
                             name="nomeColetor"
-                            title="Nome:"
+                            title={this.tTombo('name')}
                             getFieldDecorator={getFieldDecorator}
                         />
                         <InputFormField
                             name="emailColetor"
-                            title="E-mail:"
+                            title={this.tTombo('email')}
                             getFieldDecorator={getFieldDecorator}
                         />
                         <InputFormField
                             name="numeroColetor"
-                            title="Nº Coletor:"
+                            title={this.tTombo('collectorNumberShort')}
                             getFieldDecorator={getFieldDecorator}
                         />
                     </Row>
@@ -3593,7 +3601,7 @@ class NovoTomboScreen extends Component {
                     <Row gutter={8}>
                         <InputFormField
                             name="descricaoLocalColeta"
-                            title="Descrição:"
+                            title={this.tTombo('siteDescription')}
                             getFieldDecorator={getFieldDecorator}
                         />
                     </Row>
@@ -3607,9 +3615,7 @@ class NovoTomboScreen extends Component {
                     <Row gutter={8}>
                         <Col span={24}>
                             <span>
-                                Informe o nome
-                                {this.state.formulario.desc}
-                                :
+                                {this.tTombo('informNameForRegister', { suffix: this.state.formulario.desc })}
                             </span>
                         </Col>
                     </Row>
@@ -3624,14 +3630,14 @@ class NovoTomboScreen extends Component {
                     </Row>
                     <Row gutter={8}>
                         <Col span={24}>
-                            <span>Informe o nome do autor:</span>
+                            <span>{this.tTombo('informAuthorName')}</span>
                         </Col>
                     </Row>
                     <Row gutter={8}>
                         <Col span={24}>
                             <SelectedFormField
                                 title=""
-                                placeholder="Selecione um autor"
+                                placeholder={this.tTombo('searchAuthors')}
                                 fieldName="autor"
                                 getFieldDecorator={getFieldDecorator}
                                 onSearch={searchText => {
@@ -3644,7 +3650,7 @@ class NovoTomboScreen extends Component {
                                                 <Spin size="small" />
                                             )
                                         : (
-                                                'Nenhum resultado encontrado'
+                                                this.props.t('common:nenhumResultadoEncontrado')
                                             )
                                 }}
                                 debounceDelay={100}
@@ -3667,9 +3673,7 @@ class NovoTomboScreen extends Component {
                 <Row gutter={8}>
                     <Col span={24}>
                         <span>
-                            Informe o nome
-                            {this.state.formulario.desc}
-                            :
+                            {this.tTombo('informNameForRegister', { suffix: this.state.formulario.desc })}
                         </span>
                     </Col>
                 </Row>
@@ -3692,7 +3696,7 @@ class NovoTomboScreen extends Component {
             <div>
                 <Form onSubmit={this.handleSubmitForm}>
                     <ModalCadastroComponent
-                        title="Edição"
+                        title={this.tTombo('editTitle')}
                         visibleModal={this.state.visibleModal}
                         loadingModal={this.state.loadingModal}
                         onCancel={() => {
@@ -3747,7 +3751,7 @@ class NovoTomboScreen extends Component {
                 <Form onSubmit={this.handleSubmitIdentificador}>
                     <Row>
                         <Col span={12}>
-                            <h2 style={{ fontWeight: 200 }}>Tombo</h2>
+                            <h2 style={{ fontWeight: 200 }}>{this.tTombo('tomboTitle')}</h2>
                         </Col>
                     </Row>
                     <Divider dashed />
@@ -3755,7 +3759,7 @@ class NovoTomboScreen extends Component {
                     <Divider dashed />
                     <Row type="flex" justify="end">
                         <Col xs={24} sm={8} md={3} lg={3} xl={3}>
-                            <ButtonComponent titleButton="Salvar" />
+                            <ButtonComponent titleButton={this.tTombo('save')} />
                         </Col>
                     </Row>
                 </Form>
@@ -3790,7 +3794,7 @@ class NovoTomboScreen extends Component {
                         rules={[
                             {
                                 required: true,
-                                message: 'Escolha um país'
+                                message: this.tTombo('chooseCountry')
                             }
                         ]}
                         onChange={value => {
@@ -3823,7 +3827,7 @@ class NovoTomboScreen extends Component {
                         rules={[
                             {
                                 required: true,
-                                message: 'Escolha um estado'
+                                message: this.tTombo('chooseState')
                             }
                         ]}
                         disabled={!this.props.form.getFieldValue('pais')}
@@ -3931,7 +3935,7 @@ class NovoTomboScreen extends Component {
                     />
                     <Col xs={24} sm={24} md={16} lg={8} xl={8}>
                         <Col span={24}>
-                            <span>Descrição:</span>
+                            <span>{this.tTombo('siteDescription')}</span>
                         </Col>
                         <Col span={24}>
                             {getFieldDecorator('relevoDescricao')(
@@ -3980,24 +3984,24 @@ class NovoTomboScreen extends Component {
             <div>
                 {this.props.match.params.tombo_id && (
                     <Row gutter={8} style={{ fontSize: 16, marginLeft: 5 }}>
-                        Editar dados Tombo
+                        {this.tTombo('editTombo')}
                     </Row>
                 )}
                 <Row justify="end" gutter={8}>
                     <Button type="secondary">
-                        <Link to="/tombos">Sair/Cancelar</Link>
+                        <Link to="/tombos">{this.tTombo('cancelExit')}</Link>
                     </Button>
                 </Row>
                 <Row gutter={8}>
                     <InputFormField
                         name="numeroTombo"
-                        title="Numero de Tombo:"
+                        title={this.tTombo('numberTombo')}
                         disabled
                         getFieldDecorator={getFieldDecorator}
                     />
                     <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                         <Col span={24}>
-                            <span>Data do Tombo:</span>
+                            <span>{this.tTombo('tomboDate')}</span>
                         </Col>
                         <Col span={24}>
                             <FormItem>
@@ -4007,7 +4011,7 @@ class NovoTomboScreen extends Component {
                                     ]
                                 })(
                                     <Input
-                                        placeholder="DD/MM/AAAA"
+                                        placeholder={this.tTombo('typeDate')}
                                         type="text"
                                         status={
                                             getFieldError
@@ -4559,7 +4563,7 @@ class NovoTomboScreen extends Component {
             <div>
                 <Form onSubmit={this.handleSubmitForm}>
                     <ModalCadastroComponent
-                        title="Cadastro"
+                        title={this.tTombo('registerTitle')}
                         visibleModal={this.state.visibleModal}
                         loadingModal={this.state.loadingModal}
                         onCancel={() => {
@@ -4640,7 +4644,7 @@ class NovoTomboScreen extends Component {
                 <Form onSubmit={this.handleSubmit}>
                     <Row>
                         <Col span={12}>
-                            <h2 style={{ fontWeight: 200 }}>Tombo</h2>
+                            <h2 style={{ fontWeight: 200 }}>{this.tTombo('tomboTitle')}</h2>
                         </Col>
                     </Row>
                     {this.renderFamiliaTombo(getFieldDecorator, getFieldError)}
@@ -4662,7 +4666,7 @@ class NovoTomboScreen extends Component {
                     <Divider dashed />
                     <Row gutter={8}>
                         <Col span={24}>
-                            <span> Observações do tombo: </span>
+                            <span>{this.tTombo('tomboObservations')}</span>
                         </Col>
                     </Row>
                     <Row gutter={8}>
@@ -4802,7 +4806,7 @@ class NovoTomboScreen extends Component {
                             lg={3}
                             xl={3}
                         >
-                            <ButtonComponent titleButton="Salvar" />
+                            <ButtonComponent titleButton={this.tTombo('save')} />
                         </Col>
                     </Row>
                 </Form>
@@ -4818,7 +4822,7 @@ class NovoTomboScreen extends Component {
                 <Row gutter={8}>
                     <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                         <Col span={24}>
-                            <span>Número da coleta:</span>
+                            <span>{this.tTombo('collectionNumber')}</span>
                         </Col>
                         <Col span={24}>
                             <FormItem>
@@ -4843,7 +4847,7 @@ class NovoTomboScreen extends Component {
                     </Col>
                     <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                         <Col span={24}>
-                            <span>Data de coleta:</span>
+                            <span>{this.tTombo('collectionDate')}</span>
                         </Col>
                         <Col span={24}>
                             <Row type="flex" gutter={4}>
@@ -4924,13 +4928,13 @@ class NovoTomboScreen extends Component {
                 <Row gutter={8}>
                     <Col xs={24} sm={24} md={8} lg={12} xl={12}>
                         <Col span={24}>
-                            <span>Nome popular:</span>
+                            <span>{this.tTombo('popularName')}</span>
                         </Col>
                         <Col span={24}>
                             <FormItem>
                                 {getFieldDecorator('nomePopular')(
                                     <Input
-                                        placeholder="Maracujá Doce"
+                                        placeholder={this.tTombo('popularNameExample')}
                                         type="text"
                                     />
                                 )}
@@ -4954,7 +4958,7 @@ class NovoTomboScreen extends Component {
                 <Row gutter={8}>
                     <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                         <Col span={24}>
-                            <span>Tipo:</span>
+                            <span>{this.tTombo('type')}</span>
                         </Col>
                         <Col xs={22} sm={22} md={12} lg={12} xl={12}>
                             <FormItem>
@@ -4965,7 +4969,7 @@ class NovoTomboScreen extends Component {
                                 })(
                                     <Select
                                         showSearch
-                                        placeholder="Selecione o tipo"
+                                        placeholder={this.tTombo('selectType')}
                                         optionFilterProp="children"
                                         allowClear
                                     >
@@ -5017,10 +5021,10 @@ class NovoTomboScreen extends Component {
 
     render() {
         if (this.state.loading) {
-            return <Spin tip="Carregando...">{this.renderPorTipo()}</Spin>
+            return <Spin tip={this.props.t('common:carregando')}>{this.renderPorTipo()}</Spin>
         }
         return this.renderPorTipo()
     }
 }
 
-export default Form.create()(NovoTomboScreen)
+export default withTranslation()(Form.create()(NovoTomboScreen))

@@ -9,6 +9,7 @@ import {
     Button
 } from 'antd'
 import axios from 'axios'
+import { withTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import { isCuradorOuOperadorOuIdentificador } from '@/helpers/usuarios'
@@ -20,13 +21,16 @@ import decimalParaGrausMinutosSegundos from '../helpers/conversoes/Coordenadas'
 import fotosTomboMap from '../helpers/fotos-tombo-map'
 import { verificarCoordenada } from './tombos/TomboService'
 
-export default class DetalhesTomboScreen extends Component {
+class DetalhesTomboScreen extends Component {
+    tTombo = (key, options) => this.props.t(`tombo:${key}`, options)
+
     constructor(props) {
         super(props)
         this.state = {
             loading: false,
             nomesColetores: ''
         }
+
         this.reinosRef = { current: { promise: null, data: null, error: null } }
     }
 
@@ -59,8 +63,8 @@ export default class DetalhesTomboScreen extends Component {
                     this.setState({ loading: false })
                     this.openNotificationWithIcon(
                         'error',
-                        'Falha',
-                        'Houve um problema ao buscar os dados do tombo, tente novamente.'
+                        this.props.t('common:tituloFalha'),
+                        this.tTombo('detailLoadTomboError')
                     )
                 }
 
@@ -94,7 +98,7 @@ export default class DetalhesTomboScreen extends Component {
         const promise = axios
             .get('/reinos')
             .then(({ status, data }) => {
-                if (status !== 200) throw new Error('Falha ao buscar reinos')
+                if (status !== 200) throw new Error(this.tTombo('detailLoadKingdomsError'))
 
                 const reinos = data?.resultado ?? []
                 this.reinosRef.current.data = reinos
@@ -106,7 +110,7 @@ export default class DetalhesTomboScreen extends Component {
                 this.reinosRef.current.data = null
                 this.reinosRef.current.error = err
 
-                this.openNotificationWithIcon('error', 'Erro', 'Falha ao buscar reinos.')
+                this.openNotificationWithIcon('error', this.props.t('common:erro'), this.tTombo('detailLoadKingdomsError'))
                 throw err
             })
 
@@ -117,7 +121,12 @@ export default class DetalhesTomboScreen extends Component {
     verificaCoordenada = (cidadeId, latitude, longitude) => {
         verificarCoordenada(res => {
             if (res.data && res.data.dentro === false) {
-                this.openNotificationWithIcon('warning', 'Atenção', 'A coordenada informada não pertence à cidade do tombo.')
+                const cidadeEncontrada = res.data.cidade_encontrada
+                const message = cidadeEncontrada
+                    ? this.tTombo('coordinateOfTomboOtherCity', { city: cidadeEncontrada.nome, state: cidadeEncontrada.estado_sigla ? `/${cidadeEncontrada.estado_sigla}` : '' })
+                    : this.tTombo('coordinateOfTomboUnknownCity')
+
+                this.openNotificationWithIcon('warning', this.tTombo('detailCoordinateWarningTitle'), message)
             }
         }, cidadeId, latitude, longitude)
     }
@@ -136,7 +145,7 @@ export default class DetalhesTomboScreen extends Component {
                         ? (
                                 <Link to={`/tombos/${this.props.match.params.tombo_id}`}>
                                     <Button type="primary">
-                                        Editar Tombo
+                                        {this.tTombo('detailEditTombo')}
                                     </Button>
                                 </Link>
                             )
@@ -145,7 +154,7 @@ export default class DetalhesTomboScreen extends Component {
 
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Número de tombo:</h4>
+                                <h4>{this.tTombo('numberTombo')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -157,7 +166,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Nome popular:</h4>
+                                <h4>{this.tTombo('popularName')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -169,7 +178,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Herbário:</h4>
+                                <h4>{this.tTombo('herbarium')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -183,7 +192,7 @@ export default class DetalhesTomboScreen extends Component {
                     <Row gutter={8} style={{ marginBottom: '20px' }}>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Número da coleta:</h4>
+                                <h4>{this.tTombo('collectionNumber')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -195,7 +204,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Data de coleta:</h4>
+                                <h4>{this.tTombo('collectionDate')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -207,7 +216,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Data de tombo:</h4>
+                                <h4>{this.tTombo('tomboDate')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -221,7 +230,7 @@ export default class DetalhesTomboScreen extends Component {
                     <Row gutter={8} style={{ marginBottom: '20px' }}>
                         <Col xs={24} sm={16} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Nome científico:</h4>
+                                <h4>{this.tTombo('detailScientificName')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -233,7 +242,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={8} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Tipo:</h4>
+                                <h4>{this.tTombo('type')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -245,7 +254,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={8} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Tipo da exsicata:</h4>
+                                <h4>{this.tTombo('exsicataType')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -287,7 +296,7 @@ export default class DetalhesTomboScreen extends Component {
                     <Row gutter={8} style={{ marginBottom: '20px' }}>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4> Reino:</h4>
+                                <h4>{this.tTombo('kingdom')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -299,7 +308,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4> Família:</h4>
+                                <h4>{this.tTombo('family')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -311,7 +320,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Subfamília:</h4>
+                                <h4>{this.tTombo('subfamily')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -323,7 +332,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Gênero:</h4>
+                                <h4>{this.tTombo('genus')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -337,7 +346,7 @@ export default class DetalhesTomboScreen extends Component {
                     <Row gutter={8} style={{ marginBottom: '20px' }}>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Espécie:</h4>
+                                <h4>{this.tTombo('species')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -349,7 +358,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Subespécie:</h4>
+                                <h4>{this.tTombo('subspecies')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -361,7 +370,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Variedade:</h4>
+                                <h4>{this.tTombo('variety')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -375,7 +384,7 @@ export default class DetalhesTomboScreen extends Component {
                     <Row gutter={8} style={{ marginBottom: '20px' }}>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Autor espécie:</h4>
+                                <h4>{this.tTombo('detailAuthorSpecies')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -387,7 +396,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Autor subespécie:</h4>
+                                <h4>{this.tTombo('detailAuthorSubspecies')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -399,7 +408,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Autor variedade:</h4>
+                                <h4>{this.tTombo('detailAuthorVariety')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -423,7 +432,7 @@ export default class DetalhesTomboScreen extends Component {
                     <Row gutter={8} style={{ marginBottom: '20px' }}>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Latitude: (datum wgs84)</h4>
+                                <h4>{this.tTombo('detailLatitudeDatum')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -435,7 +444,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Longitude: (datum wgs84)</h4>
+                                <h4>{this.tTombo('detailLongitudeDatum')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -447,7 +456,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Altitude:</h4>
+                                <h4>{this.tTombo('altitude')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -462,7 +471,7 @@ export default class DetalhesTomboScreen extends Component {
                     <Row gutter={8} style={{ marginBottom: '20px' }}>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Cidade:</h4>
+                                <h4>{this.tTombo('city')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -474,7 +483,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Estado:</h4>
+                                <h4>{this.tTombo('state')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -486,7 +495,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>País:</h4>
+                                <h4>{this.tTombo('country')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -510,7 +519,7 @@ export default class DetalhesTomboScreen extends Component {
                     <Row gutter={8} style={{ marginBottom: '20px' }}>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Solo:</h4>
+                                <h4>{this.tTombo('soil')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -522,7 +531,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Relevo:</h4>
+                                <h4>{this.tTombo('relief')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -534,7 +543,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Vegetação:</h4>
+                                <h4>{this.tTombo('vegetation')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -548,7 +557,7 @@ export default class DetalhesTomboScreen extends Component {
                     <Row gutter={8} style={{ marginBottom: '20px' }}>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Fase sucessional:</h4>
+                                <h4>{this.tTombo('successionalStage')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -560,7 +569,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Local de Coleta:</h4>
+                                <h4>{this.tTombo('detailCollectionSite')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -572,7 +581,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Descrição:</h4>
+                                <h4>{this.tTombo('detailDescription')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -596,7 +605,7 @@ export default class DetalhesTomboScreen extends Component {
                     <Row gutter={8} style={{ marginBottom: '20px' }}>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Coletores:</h4>
+                                <h4>{this.tTombo('collectors')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -620,7 +629,7 @@ export default class DetalhesTomboScreen extends Component {
                     <Row gutter={8} style={{ marginBottom: '20px' }}>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Observações:</h4>
+                                <h4>{this.tTombo('detailObservations')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -655,7 +664,7 @@ export default class DetalhesTomboScreen extends Component {
                     <Row gutter={8} style={{ marginBottom: '20px' }}>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Identificador:</h4>
+                                <h4>{this.tTombo('identifier')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -667,7 +676,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col span={24}>
-                                <h4>Data de identificação:</h4>
+                                <h4>{this.tTombo('identificationDate')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -691,7 +700,7 @@ export default class DetalhesTomboScreen extends Component {
                     <Row gutter={24} style={{ marginBottom: '20px' }}>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col style={{ padding: 0 }}>
-                                <h4>Coleções Anexas:</h4>
+                                <h4>{this.tTombo('annexCollections')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -703,7 +712,7 @@ export default class DetalhesTomboScreen extends Component {
                         </Col>
                         <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                             <Col style={{ padding: 0 }}>
-                                <h4>Observações da coleção anexa:</h4>
+                                <h4>{this.tTombo('detailAnnexCollectionObservations')}</h4>
                             </Col>
                             <Col span={24}>
                                 <span>
@@ -768,7 +777,7 @@ export default class DetalhesTomboScreen extends Component {
     render() {
         if (this.state.loading) {
             return (
-                <Spin tip="Carregando...">
+                <Spin tip={this.props.t('common:carregando')}>
                     {this.renderConteudo()}
                 </Spin>
             )
@@ -778,3 +787,5 @@ export default class DetalhesTomboScreen extends Component {
         )
     }
 }
+
+export default withTranslation()(DetalhesTomboScreen)
