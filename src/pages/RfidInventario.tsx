@@ -46,9 +46,9 @@ const RfidInventario: React.FC<RouteComponentProps> = ({ history }) => {
       const response = await axios.get(`/rfids/validar-tid/${tidCodificado}`)
 
       if (response.status === 200 && response.data.valido) {
-        const { tombo_hcf, nome_cientifico, coletor_principal, status_rfid } = response.data.dados
+        const { tombo_hcf, nome_cientifico, coletor_principal, status_rfid, epc, epc_hex } = response.data.dados
         setTagsLidas(prev => prev.map(tag =>
-          tag.tid === tid ? { ...tag, statusValidacao: 'VALIDO', tomboHcf: tombo_hcf, nomeCientifico: nome_cientifico, coletorPrincipal: coletor_principal, statusRfid: status_rfid } : tag
+          tag.tid === tid ? { ...tag, statusValidacao: 'VALIDO', epc: epc || tag.epc, epcHex: epc_hex || tag.epcHex, tomboHcf: tombo_hcf, nomeCientifico: nome_cientifico, coletorPrincipal: coletor_principal, statusRfid: status_rfid } : tag
         ))
       }
     } catch (error: any) {
@@ -105,7 +105,7 @@ const RfidInventario: React.FC<RouteComponentProps> = ({ history }) => {
                 })
                 tagsNovasParaValidar.forEach(tagApi => {
                   novasTags.unshift({
-                    epc: tagApi.EPC_NOT_HEX, epcHex: tagApi.EPC, tid: tagApi.TID,
+                    epc: tagApi.EPC_NOT_HEX || tagApi.EPC, epcHex: tagApi.EPC, tid: tagApi.TID,
                     primeiraLeitura: moment().format('DD/MM/YYYY HH:mm:ss'), quantidade: 1, statusValidacao: 'VALIDANDO'
                   })
                 })
