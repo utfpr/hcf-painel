@@ -105,7 +105,7 @@ const RfidInventario: React.FC<RouteComponentProps> = ({ history }) => {
                 })
                 tagsNovasParaValidar.forEach(tagApi => {
                   novasTags.unshift({
-                    epc: tagApi.EPC_NOT_HEX || tagApi.EPC, epcHex: tagApi.EPC, tid: tagApi.TID,
+                    epc: tagApi.EPC || tagApi.EPC_NOT_HEX || '-', epcHex: tagApi.EPC || '', tid: tagApi.TID,
                     primeiraLeitura: moment().format('DD/MM/YYYY HH:mm:ss'), quantidade: 1, statusValidacao: 'VALIDANDO'
                   })
                 })
