@@ -7,6 +7,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom'
 import debounce from 'lodash.debounce'
 import RfidConnectionPanel from '../components/RfidConnectionPanel'
 import { useRfidStore } from '../stores/useRfidStore'
+import { fotosBaseUrl } from '../config/api'
 
 const { Option } = Select
 
@@ -14,7 +15,7 @@ export interface TomboPendente {
   id: number
   tombo_hcf: string
   codigo_barra: string
-  caminho_foto: string
+  caminho_foto: string | null
   nome_cientifico?: string
   coletor_principal?: string
 }
@@ -22,6 +23,20 @@ export interface TomboPendente {
 export interface EscritaRfidResponse {
   success?: boolean
   tid?: string
+}
+
+const URL_NAO_ENCONTRADA = 'https://hcf.cm.utfpr.edu.br/not-found.jpg'
+
+const montarUrlFoto = (tombo: TomboPendente): string => {
+  const codigoBarra = tombo.codigo_barra?.trim()
+  const identificadorFoto = tombo.caminho_foto?.trim() || (codigoBarra ? codigoBarra + '.JPG' : '')
+
+  if (!identificadorFoto) return URL_NAO_ENCONTRADA
+
+  const baseUrl = fotosBaseUrl?.replace(/\/$/, '')
+  if (!baseUrl) return URL_NAO_ENCONTRADA
+
+  return baseUrl + '/' + identificadorFoto + '/resize?height=1800'
 }
 
 const RfidVinculacao: React.FC<RouteComponentProps> = ({ history }) => {
@@ -98,16 +113,9 @@ const RfidVinculacao: React.FC<RouteComponentProps> = ({ history }) => {
     fetchTombos(1, '')
   }
 
-  const imagemAleatoriaFallback = useMemo(() => {
-    const urls = [
-      'https://api.hcf.cm.utfpr.edu.br/images/HCF000005517.JPG/resize?height=1800',
-      'https://hcf.cm.utfpr.edu.br/not-found.jpg'
-    ];
-
-    return urls[Math.floor(Math.random() * urls.length)];
-  }, [tomboSelecionado]);
 
   const tidValido = (tid?: string | null): tid is string => Boolean(tid && tid.trim() && tid.trim().toUpperCase() !== 'N/A')
+
 
   const iniciarVinculacao = async () => {
     if (!tomboSelecionado) return
@@ -224,7 +232,7 @@ const RfidVinculacao: React.FC<RouteComponentProps> = ({ history }) => {
                     <Descriptions.Item label={t('link.scientificName')}>{tomboSelecionado.nome_cientifico || '-'}</Descriptions.Item>
                     <Descriptions.Item label={t('link.mainCollector')}>{tomboSelecionado.coletor_principal || '-'}</Descriptions.Item>
                     <Descriptions.Item label={t('link.photo')}>
-                      <Image width={200} src={tomboSelecionado.caminho_foto || imagemAleatoriaFallback} alt={t('link.photoAlt')} fallback="https://placehold.co/200x150" />
+                      <Image width={200} src={montarUrlFoto(tomboSelecionado)} alt={t('link.photoAlt')} fallback={URL_NAO_ENCONTRADA} />
                     </Descriptions.Item>
                   </Descriptions>
                   <Divider dashed style={{ margin: '16px 0' }} />
