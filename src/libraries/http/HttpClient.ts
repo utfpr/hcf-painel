@@ -1,6 +1,7 @@
-import axios, { AxiosInstance } from 'axios'
+import axios, { AxiosError, AxiosInstance } from 'axios'
 
 import { Broker } from '../events/Broker'
+import type { Credentials } from './Credentials'
 
 export interface HttpHeaders extends Record<string, string | undefined> {
   'Content-Type': string
@@ -17,24 +18,45 @@ export type HttpClientResponse<T> = {
 export class HttpClient {
   private readonly broker: Broker
 
+  private readonly credentials?: Credentials
+
   private readonly axios: AxiosInstance
 
-  constructor(params: { baseUrl: string; broker: Broker }) {
+  constructor(params: {
+    baseUrl: string
+    broker: Broker
+    credentials?: Credentials
+  }) {
     this.broker = params.broker
+    this.credentials = params.credentials
     this.axios = axios.create({
       baseURL: params.baseUrl
     })
 
-    this.axios.interceptors.response.use(response => {
-      if (response.status === 401) {
-        this.broker.emit('http.unauthorized')
+    this.axios.interceptors.request.use(config => {
+      const token = this.credentials?.getAccessToken()
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`
       }
-      return response
+      return config
     })
+
+    this.axios.interceptors.response.use(
+      response => response,
+      (error: AxiosError) => {
+        if (error.response?.status === 401) {
+          this.broker.emit('http.unauthorized')
+        }
+        return Promise.reject(error)
+      }
+    )
   }
 
-  async get<T>(url: string): Promise<HttpClientResponse<T>> {
-    const response = await this.axios.get<T>(url)
+  async get<T>(
+    url: string,
+    params?: Record<string, string | number | boolean | undefined>
+  ): Promise<HttpClientResponse<T>> {
+    const response = await this.axios.get<T>(url, { params })
     return {
       data: response.data,
       status: response.status,
@@ -60,8 +82,13 @@ export class HttpClient {
     }
   }
 
-  delete<T>(url: string): Promise<HttpClientResponse<T>> {
-    return this.axios.delete(url)
+  async delete<T>(url: string): Promise<HttpClientResponse<T>> {
+    const response = await this.axios.delete<T>(url)
+    return {
+      data: response.data,
+      status: response.status,
+      headers: response.headers as HttpHeaders
+    }
   }
 }
 

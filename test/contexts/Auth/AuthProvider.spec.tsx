@@ -1,11 +1,15 @@
+import type { ReactNode } from 'react'
+
 import { type Mock, vi } from 'vitest'
 
 import { TipoUsuario, Usuario } from '@/@types/components'
 import { AuthProvider } from '@/contexts/Auth/AuthProvider'
 import { useAuth } from '@/contexts/Auth/useAuth'
+import { ContainerProvider } from '@/contexts/Container/ContainerProvider'
 import { useCookie } from '@/hooks/useCookie'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
-import { render, screen } from '@testing-library/react'
+import { broker } from '@/libraries/events/Broker'
+import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 vi.mock('@/hooks/useCookie', () => ({
@@ -28,6 +32,14 @@ const mockUser: Usuario = {
   email: 'test@example.com',
   nome: 'Test User',
   tipo_usuario_id: TipoUsuario.Operador
+}
+
+function renderWithProviders(ui: ReactNode) {
+  return render(
+    <ContainerProvider baseUrl="https://api.example.com">
+      {ui}
+    </ContainerProvider>
+  )
 }
 
 function AuthConsumer() {
@@ -77,7 +89,7 @@ describe('AuthProvider', () => {
       ])
 
     // act
-    render(
+    renderWithProviders(
       <AuthProvider>
         <span>Child content</span>
       </AuthProvider>
@@ -109,7 +121,7 @@ describe('AuthProvider', () => {
       ])
 
     // act
-    render(
+    renderWithProviders(
       <AuthProvider>
         <AuthConsumer />
       </AuthProvider>
@@ -151,7 +163,7 @@ describe('AuthProvider', () => {
     const user = userEvent.setup()
 
     // act
-    render(
+    renderWithProviders(
       <AuthProvider>
         <AuthConsumer />
       </AuthProvider>
@@ -192,7 +204,7 @@ describe('AuthProvider', () => {
     const user = userEvent.setup()
 
     // act
-    render(
+    renderWithProviders(
       <AuthProvider>
         <AuthConsumer />
       </AuthProvider>
@@ -202,6 +214,49 @@ describe('AuthProvider', () => {
     await user.click(screen.getByTestId('log-out-button'))
 
     // assert
+    expect(mockRemoveAccessToken).toHaveBeenCalled()
+    expect(mockRemoveLoggedUser).toHaveBeenCalled()
+    expect(mockRemoveOldAccessToken).toHaveBeenCalled()
+    expect(screen.getByTestId('token')).toHaveTextContent('none')
+  })
+
+  it('logs out when http.unauthorized is emitted', async () => {
+    const mockSetAccessToken = vi.fn()
+    const mockRemoveAccessToken = vi.fn()
+    const mockSetLoggedUser = vi.fn()
+    const mockRemoveLoggedUser = vi.fn()
+    const mockSetOldAccessToken = vi.fn()
+    const mockRemoveOldAccessToken = vi.fn();
+    (useCookie as Mock).mockReturnValue([
+      undefined,
+      mockSetAccessToken,
+      mockRemoveAccessToken
+    ]);
+    (useLocalStorage as Mock)
+      .mockReturnValueOnce([
+        undefined,
+        mockSetLoggedUser,
+        mockRemoveLoggedUser
+      ])
+      .mockReturnValueOnce([
+        undefined,
+        mockSetOldAccessToken,
+        mockRemoveOldAccessToken
+      ])
+    const user = userEvent.setup()
+
+    renderWithProviders(
+      <AuthProvider>
+        <AuthConsumer />
+      </AuthProvider>
+    )
+    await user.click(screen.getByTestId('log-in-button'))
+    expect(screen.getByTestId('token')).toHaveTextContent('new-token')
+
+    act(() => {
+      broker.emit('http.unauthorized')
+    })
+
     expect(mockRemoveAccessToken).toHaveBeenCalled()
     expect(mockRemoveLoggedUser).toHaveBeenCalled()
     expect(mockRemoveOldAccessToken).toHaveBeenCalled()

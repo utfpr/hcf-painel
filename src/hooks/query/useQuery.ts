@@ -10,6 +10,7 @@ export interface UseQueryReturn<F extends (...args: any) => any> {
   error?: Error | undefined
   loading: boolean
   validating: boolean
+  refresh: () => Promise<Awaited<ReturnType<F>> | undefined>
 }
 
 export function useQuery<F extends(...args: any) => any>(
@@ -19,13 +20,14 @@ export function useQuery<F extends(...args: any) => any>(
 ): UseQueryReturn<F> {
   const {
     data, error, isLoading,
-    isValidating
+    isValidating, mutate
   } = useSWR<Awaited<ReturnType<F>>, Error>(deps, fetcher, options)
 
   return {
     data,
     error,
     loading: isLoading,
-    validating: isValidating
+    validating: isValidating,
+    refresh: () => mutate()
   }
 }

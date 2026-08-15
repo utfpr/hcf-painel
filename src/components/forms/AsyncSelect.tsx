@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import {
+  useEffect, useMemo, useState
+} from 'react'
 
 import { Spin } from 'antd6'
 import debounce from 'lodash.debounce'
@@ -34,9 +36,16 @@ export function AsyncSelect<O extends Option>({
 }: AsyncSelectProps<O>) {
   const [search, setSearch] = useState<string>()
 
-  const debouncedSearch = debounce((value: string) => {
-    setSearch(value)
-  }, debounceDelay)
+  const debouncedSearch = useMemo(
+    () => debounce((value: string) => {
+      setSearch(value)
+    }, debounceDelay),
+    [debounceDelay]
+  )
+
+  useEffect(() => () => {
+    debouncedSearch.cancel()
+  }, [debouncedSearch])
 
   const handleOpenChange = (visible: boolean) => {
     if (visible && search === undefined) {

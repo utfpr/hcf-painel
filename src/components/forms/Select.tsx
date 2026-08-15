@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import type { CSSProperties, ReactNode } from 'react'
+
 import { Select as AntdSelect, type SelectProps as AntdSelectProps } from 'antd6'
 
 export interface Option {
@@ -13,13 +15,19 @@ export interface DefaultOption extends Option {
 
 export interface SelectProps<O extends Option = DefaultOption> {
   options: O[]
+  value?: AntdSelectProps['value']
+  defaultValue?: AntdSelectProps['defaultValue']
+  onChange?: AntdSelectProps['onChange']
+  placeholder?: string
   allowClear?: boolean
+  disabled?: boolean
+  id?: string
+  className?: string
+  style?: CSSProperties
   filterOption?: boolean | ((inputValue: string, option?: O) => boolean)
   onSearch?: (value: string) => void
   onOpenChange?: (visible: boolean) => void
-  notFoundContent?: React.ReactNode
-  className?: string
-  style?: React.CSSProperties
+  notFoundContent?: ReactNode
 }
 
 export function Select<O extends Option>({
@@ -29,13 +37,17 @@ export function Select<O extends Option>({
   notFoundContent,
   ...props
 }: SelectProps<O>) {
+  const searchable = onSearch !== undefined || filterOption !== undefined
+
   return (
     <AntdSelect
       options={options}
-      showSearch={{
-        filterOption: filterOption ?? false,
-        onSearch: onSearch
-      }}
+      showSearch={searchable
+        ? {
+          filterOption: filterOption ?? (onSearch === undefined),
+          onSearch
+        }
+        : false}
       notFoundContent={notFoundContent ?? <span>Nenhum resultado encontrado</span>}
       {...props}
     />

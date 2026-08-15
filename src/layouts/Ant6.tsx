@@ -1,12 +1,11 @@
-import 'antd6/dist/reset.css'
-
-import { ConfigProvider } from 'antd6'
 import { Outlet } from 'react-router'
+
+import { Antd6Provider } from './Antd6Provider'
 
 export function Ant6Layout() {
   return (
-    <ConfigProvider>
+    <Antd6Provider>
       <Outlet />
-    </ConfigProvider>
+    </Antd6Provider>
   )
 }

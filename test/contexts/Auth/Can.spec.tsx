@@ -1,7 +1,10 @@
+import type { ReactNode } from 'react'
+
 import { type Mock, vi } from 'vitest'
 
 import { AuthProvider } from '@/contexts/Auth/AuthProvider'
 import { Can } from '@/contexts/Auth/Can'
+import { ContainerProvider } from '@/contexts/Container/ContainerProvider'
 import { useCookie } from '@/hooks/useCookie'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
 import { render, screen } from '@testing-library/react'
@@ -20,6 +23,14 @@ vi.mock('@/hooks/useLocalStorage', () => ({
     vi.fn()
   ])
 }))
+
+function renderWithProviders(ui: ReactNode) {
+  return render(
+    <ContainerProvider baseUrl="https://api.example.com">
+      {ui}
+    </ContainerProvider>
+  )
+}
 
 describe('Can', () => {
   it('renders children when user can perform action', () => {
@@ -42,7 +53,7 @@ describe('Can', () => {
       ])
 
     // act
-    render(
+    renderWithProviders(
       <AuthProvider>
         <Can action="read" resource="Tombo">
           <span data-testId="visible-content">Visible content</span>
@@ -74,7 +85,7 @@ describe('Can', () => {
       ])
 
     // act
-    render(
+    renderWithProviders(
       <AuthProvider>
         <Can action="create" resource="Tombo">
           <span data-testId="hidden-content">Hidden content</span>
@@ -106,7 +117,7 @@ describe('Can', () => {
       ])
 
     // act
-    render(
+    renderWithProviders(
       <AuthProvider>
         <Can not action="create" resource="Tombo">
           <span data-testId="shown-when-cannot-create">Shown when cannot create</span>
@@ -138,7 +149,7 @@ describe('Can', () => {
       ])
 
     // act
-    render(
+    renderWithProviders(
       <AuthProvider>
         <Can not action="read" resource="Tombo">
           <span data-testId="hidden-when-can-read">Hidden when can read</span>
