@@ -10,7 +10,7 @@ import axios from 'axios'
 import debounce from 'lodash.debounce'
 import moment from 'moment'
 import { withTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
@@ -859,6 +859,12 @@ class ListaTombosScreen extends Component {
         return (
             <div>
                 <HeaderListComponent title={t('listaTombosScreen:titulo')} link="/tombos/novo" />
+                <Button onClick={() => {
+                    window.location.href = '/users'
+                }}
+                >
+                    Users
+                </Button>
                 <Divider dashed />
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />

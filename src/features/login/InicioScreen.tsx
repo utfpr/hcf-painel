@@ -5,7 +5,6 @@ import {
 } from 'antd'
 import { useTranslation } from 'react-i18next'
 
-import { InicioScreenProps } from '../../@types/components'
 import Header from './components/Header'
 import MobileMenu from './components/MobileMenu'
 import LoginLayout from './LoginLayout'
@@ -15,7 +14,7 @@ const { Content } = Layout
 
 const InicioScreen: React.FC<InicioScreenProps> = props => {
   const { t } = useTranslation('common')
-  const viewModel = useInicioScreenViewModel(props)
+  const viewModel = useInicioScreenViewModel()
 
   const renderLoginView = () => (
     <LoginLayout

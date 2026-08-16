@@ -2,15 +2,15 @@ import './setup'
 import './i18n'
 import { useEffect } from 'react'
 
-import { ConfigProvider } from 'antd'
 import ReactDOM from 'react-dom/client'
+import { RouterProvider } from 'react-router'
 
-import { App } from './App'
 import { AnalyticsProvider } from './components/Analytics/AnalyticsContext'
 import { analyticsAppId } from './config/analytics'
 import { recaptchaKey } from './config/api'
 import { AuthProvider } from './contexts/Auth/AuthProvider'
 import { ContainerProvider } from './contexts/Container/ContainerProvider'
+import { router } from './router'
 
 declare global {
   interface Window {
@@ -32,13 +32,11 @@ function Root() {
 
   return (
     <ContainerProvider baseUrl={import.meta.env.VITE_API_URL}>
-      <ConfigProvider>
-        <AnalyticsProvider appId={analyticsAppId}>
-          <AuthProvider>
-            <App />
-          </AuthProvider>
-        </AnalyticsProvider>
-      </ConfigProvider>
+      <AnalyticsProvider appId={analyticsAppId}>
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
+      </AnalyticsProvider>
     </ContainerProvider>
   )
 }
