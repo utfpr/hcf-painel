@@ -291,7 +291,7 @@ class RelatorioLocalColetaScreen extends Component {
         }
         const params = {}
 
-        if (this.state.local !== undefined || this.state.local !== null) {
+        if (this.state.local !== undefined && this.state.local !== null) {
             const { local } = this.state
 
             if (local) {
@@ -299,14 +299,14 @@ class RelatorioLocalColetaScreen extends Component {
             }
         }
 
-        if (this.state.dataInicio !== undefined || this.state.dataInicio !== null) {
+        if (this.state.dataInicio !== undefined && this.state.dataInicio !== null) {
             const { dataInicio } = this.state
             if (dataInicio) {
                 params.dataInicio = dataInicio
             }
         }
 
-        if (this.state.dataFim !== undefined || this.state.dataFim !== null) {
+        if (this.state.dataFim !== undefined && this.state.dataFim !== null) {
             const { dataFim } = this.state
             if (dataFim) {
                 params.dataFim = dataFim
@@ -342,12 +342,20 @@ class RelatorioLocalColetaScreen extends Component {
             .catch(err => {
                 const { response } = err
                 if (response && response.data) {
-                    const { error } = response.data
-                    // eslint-disable-next-line no-console
-                    console.error(error.message)
+                    try {
+                        // responseType é 'arraybuffer', portanto é necessário decodificar manualmente
+                        const decoder = new TextDecoder('utf-8')
+                        const jsonText = decoder.decode(response.data)
+                        const parsed = JSON.parse(jsonText)
+                        // eslint-disable-next-line no-console
+                        console.error(parsed?.error?.message || jsonText)
+                    } catch {
+                        // eslint-disable-next-line no-console
+                        console.error('Erro ao exportar PDF')
+                    }
                 }
+                this.notificacao('error', this.props.t('common:erro'), this.props.t('relatorioLocalColetaPeriodoScreen:erroServidorExportarPDF'))
             })
-            .catch(this.catchRequestError)
             .finally(() => {
                 if (sintetico) {
                     this.setState({
