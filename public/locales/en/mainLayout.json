@@ -37,5 +37,17 @@
   "diagnosticoErrosPosicionamento": "Positioning Error Diagnosis",
   "exportacao": "Export",
   "servicos": "Services",
-  "idioma": "Language"
+  "idioma": "Language",
+  "grupoColecao": "Collection",
+  "grupoPessoasAcesso": "People & Access",
+  "grupoGeografia": "Geography",
+  "grupoDadosOperacoes": "Data & Operations",
+  "ambienteDesenvolvimento": "Development",
+  "ambienteStaging": "Staging",
+  "aparencia": "Appearance",
+  "aparenciaSistema": "System",
+  "aparenciaClara": "Light",
+  "aparenciaEscura": "Dark",
+  "alternarMenu": "Toggle navigation",
+  "menuConta": "Account menu"
 }

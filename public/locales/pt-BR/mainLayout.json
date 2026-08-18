@@ -39,5 +39,17 @@
   "servicos": "Serviços",
   "erroBuscarDarwinCore": "Houve um problema ao buscar o arquivo Darwin Core, tente novamente.",
   "erroRequisitarDarwinCore": "Houve um problema ao requisitar o arquivo Darwin Core, tente novamente.",
-  "idioma": "Idioma"
+  "idioma": "Idioma",
+  "grupoColecao": "Coleção",
+  "grupoPessoasAcesso": "Pessoas e acesso",
+  "grupoGeografia": "Geografia",
+  "grupoDadosOperacoes": "Dados e operações",
+  "ambienteDesenvolvimento": "Desenvolvimento",
+  "ambienteStaging": "Homologação",
+  "aparencia": "Aparência",
+  "aparenciaSistema": "Sistema",
+  "aparenciaClara": "Clara",
+  "aparenciaEscura": "Escura",
+  "alternarMenu": "Abrir ou fechar a navegação",
+  "menuConta": "Menu da conta"
 }
