@@ -1,11 +1,13 @@
 import React from 'react'
+
 import { Card, Statistic, Spin, Button, Space, Typography } from 'antd'
-import { ArrowUpOutlined, ArrowDownOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons'
 import { withTranslation } from 'react-i18next'
 import {
     ResponsiveContainer, AreaChart, Area, XAxis, YAxis,
     CartesianGrid, Tooltip as RechartsTooltip, Legend
 } from 'recharts'
+
+import { ArrowUpOutlined, ArrowDownOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons'
 
 const { Title } = Typography
 
@@ -58,18 +60,19 @@ const ComparativeAreaChart = ({
                         position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
                         backgroundColor: 'rgba(255,255,255,0.7)', zIndex: 10,
                         display: 'flex', justifyContent: 'center', alignItems: 'center'
-                    }}>
+                    }}
+                    >
                         <Spin size="large" />
                     </div>
                 )}
-                
+
                 {!loading && data && data.length > 0 && (
                     <ResponsiveContainer width="100%" height="100%">
                         <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                             <defs>
                                 <linearGradient id="colorAtual" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#1890ff" stopOpacity={0.8} />
-                                    <stop offset="95%" stopColor="#1890ff" stopOpacity={0} />
+                                    <stop offset="5%" stopColor="#007A33" stopOpacity={0.8} />
+                                    <stop offset="95%" stopColor="#007A33" stopOpacity={0} />
                                 </linearGradient>
                                 <linearGradient id="colorAnterior" x1="0" y1="0" x2="0" y2="1">
                                     <stop offset="5%" stopColor="#d9d9d9" stopOpacity={0.5} />
@@ -81,18 +84,24 @@ const ComparativeAreaChart = ({
                             <YAxis axisLine={false} tickLine={false} tick={{ fill: '#8c8c8c' }} />
                             <RechartsTooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
                             <Legend verticalAlign="top" height={36} />
-                            
+
                             <Area
                                 name={labelPassado}
                                 type="monotone"
                                 dataKey={dataKeyPassado}
-                                stroke="#bfbfbf" fillOpacity={1} fill="url(#colorAnterior)"
+                                stroke="#bfbfbf"
+                                fillOpacity={1}
+                                fill="url(#colorAnterior)"
                             />
                             <Area
                                 name={labelAtual}
                                 type="monotone"
                                 dataKey={dataKeyAtual}
-                                stroke="#1890ff" strokeWidth={2} fillOpacity={1} fill="url(#colorAtual)" activeDot={{ r: 6 }}
+                                stroke="#007A33"
+                                strokeWidth={2}
+                                fillOpacity={1}
+                                fill="url(#colorAtual)"
+                                activeDot={{ r: 6 }}
                             />
                         </AreaChart>
                     </ResponsiveContainer>

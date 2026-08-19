@@ -28,16 +28,6 @@ const LoginLayout: React.FC<LoginLayoutProps> = props => {
     marginTop: '15px'
   }
 
-  const inputPrefixStyle = {
-    color: 'rgba(0, 0, 0, 0.25)'
-  }
-
-  const eyeButtonStyle = {
-    border: 'none',
-    boxShadow: 'none',
-    color: 'rgba(0, 0, 0, 0.25)'
-  }
-
   return (
 
     <Row justify="center" align="middle">
@@ -69,7 +59,7 @@ const LoginLayout: React.FC<LoginLayoutProps> = props => {
             >
               <Form.Item style={formItemStyle}>
                 <Input
-                  prefix={<MailOutlined style={inputPrefixStyle} />}
+                  prefix={<MailOutlined />}
                   placeholder={t('loginLayout:email')}
                   size="large"
                   value={formViewModel.email}
@@ -81,13 +71,12 @@ const LoginLayout: React.FC<LoginLayoutProps> = props => {
                   size="large"
                   type={formViewModel.senhaVisivel ? 'text' : 'password'}
                   placeholder={t('loginLayout:senha')}
-                  prefix={<LockOutlined style={inputPrefixStyle} />}
+                  prefix={<LockOutlined />}
                   suffix={(
                     <Button
                       type="text"
                       icon={formViewModel.senhaVisivel ? <EyeInvisibleOutlined /> : <EyeOutlined />}
                       onClick={formViewModel.toggleSenhaVisivel}
-                      style={eyeButtonStyle}
                     />
                   )}
                   value={formViewModel.senha}
