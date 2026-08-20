@@ -35,6 +35,35 @@ export interface UsuarioRow {
   nome: string
   email: string
   tipo: string
+  tipoId: number
   telefone: string
   dataCriacao: string
 }
+
+export interface CreateUsuarioPayload {
+  nome: string
+  email: string
+  senha: string
+  tipo_usuario_id: number
+  herbario_id: number
+  telefone?: string
+  ra?: string
+}
+
+export const USER_COLUMN_KEYS = [
+  'nome',
+  'tipo',
+  'email',
+  'telefone',
+  'dataCriacao'
+] as const
+
+export type UserColumnKey = typeof USER_COLUMN_KEYS[number]
+
+export const DEFAULT_USER_COLUMNS: UserColumnKey[] = [...USER_COLUMN_KEYS]
+export const PAGE_SIZE_OPTIONS = [
+  20,
+  50,
+  100
+] as const
+export const DEFAULT_PAGE_SIZE = 20

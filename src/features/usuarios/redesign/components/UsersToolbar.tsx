@@ -98,20 +98,20 @@ export function UsersToolbar({
     <Flex gap={8} wrap="wrap">
       {isNarrow
         ? (
-            <Popover
-              trigger="click"
-              placement="bottomLeft"
-              content={(
-                <Flex vertical gap={8} style={{ minWidth: 200 }}>
-                  {roleSelect}
-                </Flex>
-              )}
-            >
-              <Button icon={<FilterOutlined />}>
-                {t('filters.trigger')}
-              </Button>
-            </Popover>
-          )
+          <Popover
+            trigger="click"
+            placement="bottomLeft"
+            content={(
+              <Flex vertical gap={8} style={{ minWidth: 200 }}>
+                {roleSelect}
+              </Flex>
+            )}
+          >
+            <Button icon={<FilterOutlined />}>
+              {t('filters.trigger')}
+            </Button>
+          </Popover>
+        )
         : roleSelect}
       {columnsControl}
     </Flex>

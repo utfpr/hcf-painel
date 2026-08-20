@@ -1,27 +1,16 @@
-import { useCallback, useMemo } from 'react'
-
-import { useSearchParams } from 'react-router'
+import { useCallback, useState } from 'react'
 
 import { useContainer } from '@/contexts/Container/useContainer'
 import { formatarDataBDtoDataHora } from '@/helpers/conversoes/ConversoesData'
 import { telefoneToFrontEnd } from '@/helpers/conversoes/ConversoesTelefone'
 import { useQuery } from '@/hooks/query/useQuery'
-import { useLocalStorage } from '@/hooks/useLocalStorage'
 
-import { toSearchFilters } from '../search'
 import type {
-  CreateUsuarioPayload,
   UsuarioListFilters,
   UsuarioListItem,
   UsuarioRow,
   UsuariosListResponse
 } from '../types'
-import {
-  DEFAULT_PAGE_SIZE,
-  PAGE_SIZE_OPTIONS
-} from '../types'
-
-const PAGE_SIZE_STORAGE_KEY = 'hcf.users.pageSize'
 
 function asString(value: unknown): string {
   return typeof value === 'string' ? value : ''
@@ -33,22 +22,9 @@ function toRow(item: UsuarioListItem): UsuarioRow {
     nome: item.nome,
     email: item.email,
     tipo: item.tipos_usuario.tipo.toLowerCase(),
-    tipoId: item.tipos_usuario.id,
     telefone: asString(telefoneToFrontEnd(item.telefone) as unknown),
     dataCriacao: asString(formatarDataBDtoDataHora(item.tipos_usuario.created_at) as unknown)
   }
-}
-
-function parsePageSize(value: string | null, fallback: number): number {
-  const parsed = Number(value)
-  if ((PAGE_SIZE_OPTIONS as readonly number[]).includes(parsed)) return parsed
-  return fallback
-}
-
-function parsePage(value: string | null): number {
-  const parsed = Number(value)
-  if (!Number.isInteger(parsed) || parsed < 1) return 1
-  return parsed
 }
 
 function listParams(
@@ -71,26 +47,9 @@ function listParams(
 
 export function useUsuariosList() {
   const { httpClient } = useContainer()
-  const [searchParams, setSearchParams] = useSearchParams()
-  const [storedPageSize, setStoredPageSize] = useLocalStorage<number>(
-    PAGE_SIZE_STORAGE_KEY,
-    DEFAULT_PAGE_SIZE
-  )
-
-  const query = searchParams.get('q') ?? ''
-  const tipo = searchParams.get('role') ?? ''
-  const pagina = parsePage(searchParams.get('page'))
-  const pageSize = parsePageSize(
-    searchParams.get('pageSize'),
-    parsePageSize(storedPageSize != null ? String(storedPageSize) : null, DEFAULT_PAGE_SIZE)
-  )
-
-  const filters = useMemo<UsuarioListFilters>(() => ({
-    ...toSearchFilters(query),
-    ...(tipo ? { tipo } : {})
-  }), [query, tipo])
-
-  const hasActiveFilters = Boolean(query.trim() || tipo)
+  const [filters, setFilters] = useState<UsuarioListFilters>({})
+  const [pagina, setPagina] = useState(1)
+  const [pageSize, setPageSize] = useState(20)
 
   const {
     data, loading, error, refresh
@@ -111,65 +70,24 @@ export function useUsuariosList() {
     { keepPreviousData: true }
   )
 
-  const replaceParams = useCallback((updates: Record<string, string | null>) => {
-    const next = new URLSearchParams(searchParams)
-    for (const [key, value] of Object.entries(updates)) {
-      if (value == null || value === '') next.delete(key)
-      else next.set(key, value)
-    }
-    setSearchParams(next, { replace: true })
-  }, [searchParams, setSearchParams])
+  const search = useCallback((nextFilters: UsuarioListFilters) => {
+    setPagina(1)
+    setFilters(nextFilters)
+  }, [])
 
-  const setQuery = useCallback((nextQuery: string) => {
-    replaceParams({
-      q: nextQuery.trim(),
-      page: null
-    })
-  }, [replaceParams])
-
-  const setRole = useCallback((nextRole: string) => {
-    replaceParams({
-      role: nextRole,
-      page: null
-    })
-  }, [replaceParams])
-
-  const clearFilters = useCallback(() => {
-    replaceParams({
-      q: null,
-      role: null,
-      page: null
-    })
-  }, [replaceParams])
+  const clear = useCallback(() => {
+    setPagina(1)
+    setFilters({})
+  }, [])
 
   const changePage = useCallback((nextPagina: number, nextPageSize?: number) => {
-    const updates: Record<string, string | null> = {
-      page: nextPagina > 1 ? String(nextPagina) : null
-    }
-    if (nextPageSize && nextPageSize !== pageSize) {
-      updates.pageSize = String(nextPageSize)
-      updates.page = null
-      setStoredPageSize(nextPageSize)
-    }
-    replaceParams(updates)
-  }, [
-    pageSize,
-    replaceParams,
-    setStoredPageSize
-  ])
+    setPagina(nextPagina)
+    if (nextPageSize) setPageSize(nextPageSize)
+  }, [])
 
   const remove = useCallback(async (id: number) => {
     const response = await httpClient.delete(`/usuarios/${id}`)
     if (response.status === 204) {
-      await refresh()
-      return true
-    }
-    return false
-  }, [httpClient, refresh])
-
-  const create = useCallback(async (payload: CreateUsuarioPayload) => {
-    const response = await httpClient.post<CreateUsuarioPayload>('/usuarios', payload)
-    if (response.status === 201) {
       await refresh()
       return true
     }
@@ -181,17 +99,9 @@ export function useUsuariosList() {
     metadados: data?.metadados ?? {},
     loading,
     error,
-    query,
-    role: tipo,
-    pagina,
-    pageSize,
-    hasActiveFilters,
-    setQuery,
-    setRole,
-    clearFilters,
+    search,
+    clear,
     changePage,
-    remove,
-    create,
-    refresh
+    remove
   }
 }

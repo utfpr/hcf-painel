@@ -95,55 +95,55 @@ export function UsersTable({
   const desktopColumns: TableProps<UsuarioRow>['columns'] = [
     visible.has('nome')
       ? {
-          title: t('users:columns.name'),
-          dataIndex: 'nome',
-          key: 'nome',
-          sorter: (a: UsuarioRow, b: UsuarioRow) => a.nome.localeCompare(b.nome),
-          render: (nome: string) => <Typography.Text>{nome}</Typography.Text>
-        }
+        title: t('users:columns.name'),
+        dataIndex: 'nome',
+        key: 'nome',
+        sorter: (a: UsuarioRow, b: UsuarioRow) => a.nome.localeCompare(b.nome),
+        render: (nome: string) => <Typography.Text>{nome}</Typography.Text>
+      }
       : null,
     visible.has('tipo')
       ? {
-          title: t('users:columns.type'),
-          dataIndex: 'tipo',
-          key: 'tipo',
-          width: 140,
-          sorter: (a: UsuarioRow, b: UsuarioRow) => a.tipo.localeCompare(b.tipo),
-          render: (tipo: string) => roleLabel(tipo)
-        }
+        title: t('users:columns.type'),
+        dataIndex: 'tipo',
+        key: 'tipo',
+        width: 140,
+        sorter: (a: UsuarioRow, b: UsuarioRow) => a.tipo.localeCompare(b.tipo),
+        render: (tipo: string) => roleLabel(tipo)
+      }
       : null,
     visible.has('email')
       ? {
-          title: t('users:columns.email'),
-          dataIndex: 'email',
-          key: 'email',
-          sorter: (a: UsuarioRow, b: UsuarioRow) => a.email.localeCompare(b.email),
-          render: (email: string) => (
-            <Typography.Link
-              href={`mailto:${email}`}
-              onClick={event => event.stopPropagation()}
-            >
-              {email}
-            </Typography.Link>
-          )
-        }
+        title: t('users:columns.email'),
+        dataIndex: 'email',
+        key: 'email',
+        sorter: (a: UsuarioRow, b: UsuarioRow) => a.email.localeCompare(b.email),
+        render: (email: string) => (
+          <Typography.Link
+            href={`mailto:${email}`}
+            onClick={event => event.stopPropagation()}
+          >
+            {email}
+          </Typography.Link>
+        )
+      }
       : null,
     visible.has('telefone')
       ? {
-          title: t('users:columns.phone'),
-          dataIndex: 'telefone',
-          key: 'telefone',
-          width: 180
-        }
+        title: t('users:columns.phone'),
+        dataIndex: 'telefone',
+        key: 'telefone',
+        width: 180
+      }
       : null,
     visible.has('dataCriacao')
       ? {
-          title: t('users:columns.creationDate'),
-          dataIndex: 'dataCriacao',
-          key: 'dataCriacao',
-          width: 180,
-          sorter: (a: UsuarioRow, b: UsuarioRow) => a.dataCriacao.localeCompare(b.dataCriacao)
-        }
+        title: t('users:columns.creationDate'),
+        dataIndex: 'dataCriacao',
+        key: 'dataCriacao',
+        width: 180,
+        sorter: (a: UsuarioRow, b: UsuarioRow) => a.dataCriacao.localeCompare(b.dataCriacao)
+      }
       : null,
     ...actionColumn
   ].filter(Boolean) as TableProps<UsuarioRow>['columns']

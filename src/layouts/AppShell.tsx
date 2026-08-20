@@ -1,7 +1,10 @@
 import { useState, type ReactNode } from 'react'
 
 import {
-  Drawer, Grid, Layout, theme
+  Drawer,
+  Grid,
+  Layout,
+  theme
 } from 'antd6'
 
 import { herbariumLayout } from '@/theme/herbariumTheme'
@@ -9,14 +12,17 @@ import { herbariumLayout } from '@/theme/herbariumTheme'
 import { AppHeader } from './components/AppHeader'
 import { AppSidebar } from './components/AppSidebar'
 
-const { Header, Sider, Content } = Layout
+const {
+  Header,
+  Sider,
+  Content
+} = Layout
 
-interface MainLayoutProps {
+interface AppShellProps {
   children?: ReactNode
-  auth?: unknown
 }
 
-export default function MainLayout({ children }: MainLayoutProps) {
+export function AppShell({ children }: AppShellProps) {
   const { token } = theme.useToken()
   const screens = Grid.useBreakpoint()
   const isMobile = screens.md === false

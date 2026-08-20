@@ -1,6 +1,8 @@
 import { useState } from 'react'
 
-import { App, Form, Input, Select } from 'antd6'
+import {
+  App, Form, Input, Select
+} from 'antd6'
 import { AxiosError } from 'axios'
 import { useTranslation } from 'react-i18next'
 

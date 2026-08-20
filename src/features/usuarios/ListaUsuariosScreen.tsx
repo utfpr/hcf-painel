@@ -1,168 +1,155 @@
-import { useState } from 'react'
-
 import {
-  App, Button, Empty, Flex, Grid, Result
+  App, Divider, Space, Table, type TableProps
 } from 'antd6'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router'
+import { Link } from 'react-router'
 
-import { PageHeader } from '@/components/list/PageHeader'
+import { HeaderList } from '@/components/HeaderList'
 import { useAuth } from '@/contexts/Auth/useAuth'
-import { PlusOutlined } from '@ant-design/icons'
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 
-import { AddUserDrawer } from './components/AddUserDrawer'
-import { UsersTable } from './components/UsersTable'
-import { UsersToolbar } from './components/UsersToolbar'
-import { useColumnVisibility } from './hooks/useColumnVisibility'
+import { UsuarioSearchForm } from './components/UsuarioSearchForm'
 import { useUsuariosList } from './hooks/useUsuariosList'
 import type { UsuarioRow } from './types'
+
+function getErrorMessage(err: unknown): string | undefined {
+  return err instanceof Error ? err.message : undefined
+}
 
 export default function ListaUsuariosScreen() {
   const { t } = useTranslation()
   const auth = useAuth()
-  const navigate = useNavigate()
   const { modal, notification } = App.useApp()
-  const screens = Grid.useBreakpoint()
-  const isMobile = screens.md === false
   const list = useUsuariosList()
-  const columns = useColumnVisibility()
-  const [drawerOpen, setDrawerOpen] = useState(false)
 
-  const confirmDelete = (row: UsuarioRow) => {
+  const confirmDelete = (id: number) => {
     modal.confirm({
-      title: t('users:delete.title'),
-      content: t('users:delete.description', { name: row.nome }),
-      okText: t('users:actions.delete'),
+      title: t('listaUsuariosScreen:confirmarExcluirUsuario'),
+      content: t('listaUsuariosScreen:descricaoExcluirUsuario'),
+      okText: t('common:sim'),
       okType: 'danger',
-      cancelText: t('common:cancelar'),
+      cancelText: t('common:nao'),
       onOk: async () => {
         try {
-          const deleted = await list.remove(row.key)
+          const deleted = await list.remove(id)
           if (deleted) {
             notification.success({
-              message: t('common:tituloSucesso'),
-              description: t('users:delete.success')
+              message: t('common:excluir'),
+              description: t('listaUsuariosScreen:sucessoExcluirUsuario')
             })
           }
-        } catch (error) {
-          console.error(error)
+        } catch (err) {
           notification.error({
-            message: t('users:delete.errorTitle'),
-            description: t('users:delete.error')
+            message: t('listaUsuariosScreen:erroExcluirUsuario'),
+            description: getErrorMessage(err)
+                ?? t('listaUsuariosScreen:erroInesperadoExcluirUsuario')
           })
         }
       }
     })
   }
 
-  const canCreate = auth.can('create', 'Usuario')
-  const total = list.metadados.total ?? 0
-  const showError = Boolean(list.error) && list.usuarios.length === 0 && !list.loading
-  const showEmpty = !list.loading && !list.error && total === 0
-
-  const addButton = canCreate
-    ? (
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => setDrawerOpen(true)}
-        >
-          {isMobile ? t('users:actions.addShort') : t('users:actions.add')}
-        </Button>
+  const columns: TableProps<UsuarioRow>['columns'] = [
+    {
+      title: t('listaUsuariosScreen:colunaNome'),
+      dataIndex: 'nome',
+      key: 'nome',
+      width: 300
+    },
+    {
+      title: t('listaUsuariosScreen:colunaTipo'),
+      dataIndex: 'tipo',
+      key: 'tipo',
+      width: 300
+    },
+    {
+      title: t('listaUsuariosScreen:colunaEmail'),
+      dataIndex: 'email',
+      key: 'email',
+      width: 300
+    },
+    {
+      title: t('listaUsuariosScreen:colunaTelefone'),
+      dataIndex: 'telefone',
+      key: 'telefone',
+      width: 300
+    },
+    {
+      title: t('listaUsuariosScreen:colunaDataCriacao'),
+      dataIndex: 'dataCriacao',
+      key: 'dataCriacao',
+      width: 300
+    },
+    {
+      title: t('listaUsuariosScreen:colunaAcao'),
+      key: 'acao',
+      width: 100,
+      render: (_, row) => (
+        <Space>
+          <Link to={`/usuarios/${row.key}`}>
+            <EditOutlined style={{ color: '#FFCC00' }} />
+          </Link>
+          <a
+            href="#excluir"
+            onClick={event => {
+              event.preventDefault()
+              confirmDelete(row.key)
+            }}
+          >
+            <DeleteOutlined style={{ color: '#e30613' }} />
+          </a>
+        </Space>
       )
-    : null
+    }
+  ]
 
   return (
     <div>
-      <PageHeader
-        title={t('users:title')}
-        description={t('users:description')}
-        extra={addButton}
+      <HeaderList
+        title={t('listaUsuariosScreen:titulo')}
+        addTo="/usuarios/novo"
+        canAdd={auth.can('create', 'Usuario')}
       />
-
-      <UsersToolbar
-        query={list.query}
-        role={list.role}
-        onSearch={list.setQuery}
-        onRoleChange={list.setRole}
-        visibleKeys={columns.visibleKeys}
-        onColumnsChange={columns.setVisibleKeys}
-        onColumnsReset={columns.reset}
+      <Divider dashed />
+      <UsuarioSearchForm
+        total={list.metadados.total}
+        onSearch={list.search}
+        onClear={list.clear}
       />
-
-      {showError && (
-        <Result
-          status="error"
-          title={t('users:error.title')}
-          subTitle={t('users:error.description')}
-          extra={(
-            <Button type="primary" onClick={() => void list.refresh()}>
-              {t('users:error.retry')}
-            </Button>
-          )}
-        />
-      )}
-
-      {showEmpty && (
-        <Empty
-          image={Empty.PRESENTED_IMAGE_SIMPLE}
-          description={(
-            <Flex vertical gap={4} align="center">
-              <strong>
-                {list.hasActiveFilters ? t('users:empty.filteredTitle') : t('users:empty.title')}
-              </strong>
-              <span>
-                {list.hasActiveFilters
-                  ? t('users:empty.filteredDescription')
-                  : t('users:empty.description')}
-              </span>
-            </Flex>
-          )}
-        >
-          {list.hasActiveFilters && (
-            <Button onClick={list.clearFilters}>
-              {t('users:empty.clearFilters')}
-            </Button>
-          )}
-          {!list.hasActiveFilters && canCreate && (
-            <Button type="primary" icon={<PlusOutlined />} onClick={() => setDrawerOpen(true)}>
-              {t('users:actions.add')}
-            </Button>
-          )}
-        </Empty>
-      )}
-
-      {!showError && !showEmpty && (
-        <UsersTable
-          rows={list.usuarios}
-          loading={list.loading}
-          total={total}
-          page={list.pagina}
-          pageSize={list.pageSize}
-          isMobile={isMobile}
-          visibleKeys={columns.visibleKeys}
-          onPageChange={list.changePage}
-          onEdit={id => {
-            void navigate(`/usuarios/${id}`)
-          }}
-          onDelete={confirmDelete}
-        />
-      )}
-
-      <AddUserDrawer
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        onCreate={async payload => {
-          const created = await list.create(payload)
-          if (created) {
-            notification.success({
-              message: t('common:tituloSucesso'),
-              description: t('users:create.success')
-            })
+      <Divider dashed />
+      <Table<UsuarioRow>
+        columns={columns}
+        dataSource={list.usuarios}
+        loading={list.loading}
+        scroll={{ x: 800 }}
+        pagination={{
+          total: list.metadados.total ?? 0,
+          current: list.metadados.pagina ?? 1,
+          pageSize: list.metadados.limite ?? 20,
+          showSizeChanger: true,
+          locale: {
+            items_per_page: `/ ${t('simpleTableComponent:pagina')}`,
+            jump_to: t('simpleTableComponent:irPara'),
+            jump_to_confirm: t('simpleTableComponent:irParaConfirmar'),
+            page: t('simpleTableComponent:pagina'),
+            prev_page: t('simpleTableComponent:paginaAnterior'),
+            next_page: t('simpleTableComponent:proximaPagina'),
+            prev_5: t('simpleTableComponent:voltar5Paginas'),
+            next_5: t('simpleTableComponent:avancar5Paginas'),
+            prev_3: t('simpleTableComponent:voltar3Paginas'),
+            next_3: t('simpleTableComponent:avancar3Paginas')
           }
-          return created
+        }}
+        locale={{
+          triggerDesc: t('simpleTableComponent:ordenacaoDecrescente'),
+          triggerAsc: t('simpleTableComponent:ordenacaoCrescente'),
+          cancelSort: t('simpleTableComponent:cancelarOrdenacao')
+        }}
+        onChange={pagination => {
+          list.changePage(pagination.current ?? 1, pagination.pageSize)
         }}
       />
+      <Divider dashed />
     </div>
   )
 }

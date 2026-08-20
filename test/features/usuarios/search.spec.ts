@@ -1,4 +1,4 @@
-import { inferSearchField, toSearchFilters } from '@/features/usuarios/search'
+import { inferSearchField, toSearchFilters } from '@/features/usuarios/redesign/search'
 
 describe('toSearchFilters', () => {
   it('maps e-mail queries to the email filter', () => {
