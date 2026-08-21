@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosInstance } from 'axios'
 
 import { Broker } from '../events/Broker'
-import type { Credentials } from './Credentials'
+import type { AccessTokenSource } from './AccessTokenSource'
 
 export interface HttpHeaders extends Record<string, string | undefined> {
   'Content-Type': string
@@ -18,23 +18,23 @@ export type HttpClientResponse<T> = {
 export class HttpClient {
   private readonly broker: Broker
 
-  private readonly credentials?: Credentials
+  private readonly accessTokenSource?: AccessTokenSource
 
   private readonly axios: AxiosInstance
 
   constructor(params: {
     baseUrl: string
     broker: Broker
-    credentials?: Credentials
+    accessTokenSource?: AccessTokenSource
   }) {
     this.broker = params.broker
-    this.credentials = params.credentials
+    this.accessTokenSource = params.accessTokenSource
     this.axios = axios.create({
       baseURL: params.baseUrl
     })
 
     this.axios.interceptors.request.use(config => {
-      const token = this.credentials?.getAccessToken()
+      const token = this.accessTokenSource?.getAccessToken()
       if (token) {
         config.headers.Authorization = `Bearer ${token}`
       }

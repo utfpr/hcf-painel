@@ -59,11 +59,11 @@ describe('HttpClient', () => {
     return typeof value === 'string' ? value : undefined
   }
 
-  it('sends Authorization Bearer when credentials return a token', async () => {
+  it('sends Authorization Bearer when accessTokenSource returns a token', async () => {
     const client = new HttpClient({
       baseUrl: 'https://api.example.com',
       broker: new Broker(),
-      credentials: { getAccessToken: () => 'session-token' }
+      accessTokenSource: { getAccessToken: () => 'session-token' }
     })
 
     await client.get('/usuarios')
@@ -71,11 +71,11 @@ describe('HttpClient', () => {
     expect(authorizationHeader()).toBe('Bearer session-token')
   })
 
-  it('omits Authorization when credentials return undefined', async () => {
+  it('omits Authorization when accessTokenSource returns undefined', async () => {
     const client = new HttpClient({
       baseUrl: 'https://api.example.com',
       broker: new Broker(),
-      credentials: { getAccessToken: () => undefined }
+      accessTokenSource: { getAccessToken: () => undefined }
     })
 
     await client.get('/usuarios')
@@ -83,7 +83,7 @@ describe('HttpClient', () => {
     expect(authorizationHeader()).toBeUndefined()
   })
 
-  it('omits Authorization when credentials are not provided', async () => {
+  it('omits Authorization when accessTokenSource is not provided', async () => {
     const client = new HttpClient({
       baseUrl: 'https://api.example.com',
       broker: new Broker()

@@ -1,7 +1,7 @@
 import { getCookie } from '@/helpers/cookie'
-import type { Credentials } from '@/libraries/http/Credentials'
+import type { AccessTokenSource } from '@/libraries/http/AccessTokenSource'
 
-export class CookieCredentials implements Credentials {
+export class CookieAccessTokenSource implements AccessTokenSource {
   constructor(private readonly cookieName = 'Access_Token') {}
 
   getAccessToken(): string | undefined {

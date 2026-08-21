@@ -24,7 +24,6 @@ import SimpleTableComponent from '../components/SimpleTableComponent'
 import { baseUrl, recaptchaKey } from '../config/api'
 import { isCuradorOuOperador, isIdentificador } from '../helpers/usuarios'
 import FichaTomboActions from './tombos/components/FichaTomboActions'
-import { requisitaDadosEdicaoService, verificarCoordenada } from './tombos/TomboService'
 
 const { confirm } = Modal
 const FormItem = Form.Item
@@ -859,12 +858,6 @@ class ListaTombosScreen extends Component {
         return (
             <div>
                 <HeaderListComponent title={t('listaTombosScreen:titulo')} link="/tombos/novo" />
-                <Button onClick={() => {
-                    window.location.href = '/users'
-                }}
-                >
-                    Users
-                </Button>
                 <Divider dashed />
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />
