@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Row, Col, Divider, Card, Button, notification, Table, Tag, Statistic, Space, Popconfirm, Tooltip } from 'antd'
 import { PlayCircleOutlined, PauseCircleOutlined, DeleteOutlined, SettingOutlined, DisconnectOutlined, ClearOutlined, BarcodeOutlined, IdcardOutlined, SyncOutlined, CheckCircleOutlined, WarningOutlined, StopOutlined } from '@ant-design/icons'
 import axios from 'axios'
-import { withRouter, RouteComponentProps } from 'react-router-dom'
+import { RouterProps, withRouter } from '../libraries/router/withRouter'
 import moment from 'moment'
 import RfidConnectionPanel from '../components/RfidConnectionPanel'
 import { useRfidStore } from '../stores/useRfidStore'
@@ -21,7 +21,7 @@ interface TagLida {
   statusRfid?: string
 }
 
-const RfidInventario: React.FC<RouteComponentProps> = ({ history }) => {
+const RfidInventario: React.FC<RouterProps> = ({ history }) => {
   const { apiUrl, identificador, hardwareOnline, validandoHardware, statusConexao, verificarHardware } = useRfidStore()
   const { t } = useTranslation('rfid')
 

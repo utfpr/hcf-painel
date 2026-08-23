@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Result } from 'antd'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 export default function UnauthorizedScreen() {
     const { t } = useTranslation()

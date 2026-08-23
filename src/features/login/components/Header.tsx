@@ -5,7 +5,7 @@ import React from 'react'
 import {
   Row, Col, Menu, Button
 } from 'antd'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 import { MenuOutlined } from '@ant-design/icons'
 

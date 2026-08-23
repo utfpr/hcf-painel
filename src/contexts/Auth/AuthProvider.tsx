@@ -1,8 +1,9 @@
 import {
-  useCallback, useMemo, useState
+  useCallback, useEffect, useMemo, useState
 } from 'react'
 
 import { Usuario } from '@/@types/components'
+import { useContainer } from '@/contexts/Container/useContainer'
 import { useCookie } from '@/hooks/useCookie'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
 import { Manager } from '@/libraries/auth/Manager'
@@ -13,6 +14,7 @@ import {
 import { AuthContext } from './AuthContext'
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const { broker } = useContainer()
   const [
     accessToken,
     setAccessToken,
@@ -72,6 +74,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     removeLoggedUser()
     removeOldAccessToken()
   }, [])
+
+  useEffect(() => {
+    const onUnauthorized = () => {
+      logOut()
+    }
+    broker.subscribe('http.unauthorized', onUnauthorized)
+    return () => {
+      broker.unsubscribe('http.unauthorized', onUnauthorized)
+    }
+  }, [broker, logOut])
 
   const contextValue = useMemo(() => {
     return {

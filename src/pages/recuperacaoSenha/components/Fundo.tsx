@@ -2,7 +2,8 @@ import {
   Row, Col, Menu, Layout
 } from 'antd'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+
+import { Link } from 'react-router'
 
 import logoImage from '../../../assets/img/leaves.png'
 

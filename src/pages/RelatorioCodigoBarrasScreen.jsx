@@ -9,7 +9,7 @@ import {
 import ptbr from 'antd/es/date-picker/locale/pt_BR'
 import axios from 'axios'
 import moment from 'moment'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 import GradeDeCartoes from '@/components/GradeCartoes'
 import TotalRecordFound from '@/components/TotalRecordsFound'

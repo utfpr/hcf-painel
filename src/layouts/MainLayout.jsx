@@ -6,7 +6,7 @@ import {
 } from 'antd'
 import axios from 'axios'
 import { withTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 import {
     BarsOutlined, DatabaseOutlined, DesktopOutlined, FileTextOutlined, EnvironmentOutlined,
@@ -466,13 +466,13 @@ class MainLayout extends Component {
                         {this.props.auth.loggedIn
                             ? (
                                     <Menu.Item key="sairMenuItem">
-                                        <Link
-                                            to="/inicio"
-                                            onClick={this.props.logOut}
-                                        >
-                                            <LogoutOutlined />
-                                            <span>{this.props.t('common:sair')}</span>
-                                        </Link>
+                                            <Link
+                                                to="/inicio"
+                                                onClick={this.props.auth.logOut}
+                                            >
+                                                <LogoutOutlined />
+                                                <span>{this.props.t('common:sair')}</span>
+                                            </Link>
                                     </Menu.Item>
                                 )
                             : null}
@@ -504,7 +504,7 @@ class MainLayout extends Component {
 
                                             <Link
                                                 to="/inicio"
-                                                onClick={this.props.logOut}
+                                                onClick={this.props.auth.logOut}
                                             >
                                                 <Button size="small">{this.props.t('common:sair')}</Button>
                                             </Link>
@@ -517,7 +517,7 @@ class MainLayout extends Component {
                                             <Divider type="vertical" />
 
                                             <Link to="/inicio">
-                                                <Button>{this.props.t('common:sair')}</Button>
+                                                <Button size="small">{this.props.t('common:entrar')}</Button>
                                             </Link>
                                         </div>
                                     )}
