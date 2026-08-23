@@ -12,7 +12,7 @@ import { useInicioScreenViewModel } from './view-models/useInicioScreenViewModel
 
 const { Content } = Layout
 
-const InicioScreen: React.FC<InicioScreenProps> = props => {
+const InicioScreen: React.FC = props => {
   const { t } = useTranslation('common')
   const viewModel = useInicioScreenViewModel()
 
