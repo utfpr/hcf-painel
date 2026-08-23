@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router'
+import { Navigate, Route, Routes } from 'react-router'
 
 import { useAuth } from './contexts/Auth/useAuth'
 import ListaUsuariosPage from './features/usuarios/ListaUsuariosPage'
@@ -76,6 +76,7 @@ export function AppRoutes() {
 
   return (
     <Routes>
+      <Route index element={<Navigate to="/dashboard" replace />} />
       <Route path="tombos/detalhes/:tombo_id" element={<DetalhesTombo />} />
       <Route path="tombos/novo" element={guard(isCuradorOuOperador(), NovoTombo)} />
       <Route path="tombos/:tombo_id" element={guard(isCuradorOuOperadorOuIdentificador(), NovoTombo)} />
@@ -132,6 +133,7 @@ export function AppRoutes() {
       <Route path="perfil" element={<PerfilScreen />} />
 
       <Route path="relatorio-coleta-data" element={guard(Boolean(auth.user?.id), RelatorioColetaPeriodoScreen)} />
+      <Route path="relatorio-por-periodo" element={guard(Boolean(auth.user?.id), RelatorioPorPeriodo)} />
       <Route
         path="relatorio-inventario-especies"
         element={guard(Boolean(auth.user?.id), RelatorioInventarioEspeciesScreen)}
@@ -144,8 +146,21 @@ export function AppRoutes() {
       />
       <Route path="relatorio-locais-coleta" element={guard(Boolean(auth.user?.id), RelatorioLocalColetaScreen)} />
       <Route
+        path="relatorio-tombos-por-cidade"
+        element={guard(Boolean(auth.user?.id), RelatorioTombosPorCidadeScreen)}
+      />
+      <Route
         path="relatorio-quantidade-familia-generos"
         element={guard(Boolean(auth.user?.id), RelatorioQuantidadeScreen)}
+      />
+      <Route path="rfid-configuracao" element={guard(Boolean(auth.user?.id), RfidConfiguracao)} />
+      <Route path="rfid-conferencia" element={guard(Boolean(auth.user?.id), RfidConferencia)} />
+      <Route path="rfid-vinculacao" element={guard(Boolean(auth.user?.id), RfidVinculacao)} />
+      <Route path="rfid-inventario" element={guard(Boolean(auth.user?.id), RfidInventario)} />
+      <Route path="dashboard" element={<DashboardScreen />} />
+      <Route
+        path="relatorio-coordenadas-fora-poligono"
+        element={guard(Boolean(auth.user?.id), RelatorioCoordenadaForaPoligonoScreen)}
       />
     </Routes>
   )
