@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router'
 
 import { useAuth } from './contexts/Auth/useAuth'
-import ListaUsuariosScreen from './features/usuarios/ListaUsuariosScreen'
+import ListaUsuariosPage from './features/usuarios/ListaUsuariosPage'
 import {
   isCuradorOuOperador,
   isCuradorOuOperadorOuIdentificador
@@ -92,7 +92,7 @@ export function AppRoutes() {
 
       <Route path="usuarios/novo" element={guard(auth.can('create', 'Usuario'), NovoUsuario)} />
       <Route path="usuarios/:usuario_id" element={guard(auth.can('update', 'Usuario'), NovoUsuario)} />
-      <Route path="usuarios" element={guard(auth.can('read', 'Usuario'), ListaUsuariosScreen)} />
+      <Route path="usuarios" element={guard(auth.can('read', 'Usuario'), ListaUsuariosPage)} />
 
       <Route path="identificadores/novo" element={guard(auth.can('create', 'Identificador'), NovoIdentificador)} />
       <Route

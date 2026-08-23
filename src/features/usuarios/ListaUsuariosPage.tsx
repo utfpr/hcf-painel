@@ -1,26 +1,25 @@
 import {
-  App, Divider, Space, Table, type TableProps
+  App, Button, Divider, Space, Table, type TableProps
 } from 'antd6'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
-import { HeaderList } from '@/components/HeaderList'
-import { useAuth } from '@/contexts/Auth/useAuth'
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import { PageHeader } from '@/components/PageHeader'
+import { Can } from '@/contexts/Auth/Can'
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
 import { UsuarioSearchForm } from './components/UsuarioSearchForm'
-import { useUsuariosList } from './hooks/useUsuariosList'
+import { useListaUsuariosPage } from './useListaUsuariosPage'
 import type { UsuarioRow } from './types'
 
 function getErrorMessage(err: unknown): string | undefined {
   return err instanceof Error ? err.message : undefined
 }
 
-export default function ListaUsuariosScreen() {
+export default function ListaUsuariosPage() {
   const { t } = useTranslation()
-  const auth = useAuth()
   const { modal, notification } = App.useApp()
-  const list = useUsuariosList()
+  const list = useListaUsuariosPage()
 
   const confirmDelete = (id: number) => {
     modal.confirm({
@@ -105,11 +104,19 @@ export default function ListaUsuariosScreen() {
 
   return (
     <div>
-      <HeaderList
-        title={t('listaUsuariosScreen:titulo')}
-        addTo="/usuarios/novo"
-        canAdd={auth.can('create', 'Usuario')}
-      />
+      <PageHeader title={t('listaUsuariosScreen:titulo')}>
+        <Can action="create" resource="Usuario">
+          <Link to="/usuarios/novo">
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              style={{ width: '100%' }}
+            >
+              {t('common:adicionar')}
+            </Button>
+          </Link>
+        </Can>
+      </PageHeader>
       <Divider dashed />
       <UsuarioSearchForm
         total={list.metadados.total}

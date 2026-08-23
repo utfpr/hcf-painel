@@ -10,7 +10,7 @@ import type {
   UsuarioListItem,
   UsuarioRow,
   UsuariosListResponse
-} from '../types'
+} from './types'
 
 function asString(value: unknown): string {
   return typeof value === 'string' ? value : ''
@@ -45,7 +45,7 @@ function listParams(
   return params
 }
 
-export function useUsuariosList() {
+export function useListaUsuariosPage() {
   const { httpClient } = useContainer()
   const [filters, setFilters] = useState<UsuarioListFilters>({})
   const [pagina, setPagina] = useState(1)
