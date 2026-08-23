@@ -3,7 +3,7 @@
 import React from 'react'
 
 import { Drawer, Menu } from 'antd'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 import { colors } from '../../../helpers/colors'
 import styles from './MobileMenu.module.sass'

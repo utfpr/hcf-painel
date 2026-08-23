@@ -4,7 +4,7 @@ import {
     Card, Col, Row, Input, Button, Divider, notification, Modal, Spin, Select
 } from 'antd'
 import axios from 'axios'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 import TotalRecordsFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'

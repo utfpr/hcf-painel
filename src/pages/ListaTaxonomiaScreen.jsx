@@ -5,7 +5,7 @@ import {
     Input, Button, notification
 } from 'antd'
 import axios from 'axios'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 import { Form } from '@ant-design/compatible'
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'

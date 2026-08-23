@@ -35,12 +35,6 @@ export interface NotificationConfig {
   description: string
 }
 
-export interface InicioScreenProps {
-  history: {
-    push: (path: string) => void
-  }
-}
-
 export interface InicioScreenState {
   loading: boolean
   mobileMenuVisible: boolean

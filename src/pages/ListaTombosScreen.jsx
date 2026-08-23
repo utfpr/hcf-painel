@@ -10,7 +10,7 @@ import axios from 'axios'
 import debounce from 'lodash.debounce'
 import moment from 'moment'
 import { withTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
@@ -24,7 +24,6 @@ import SimpleTableComponent from '../components/SimpleTableComponent'
 import { baseUrl, recaptchaKey } from '../config/api'
 import { isCuradorOuOperador, isIdentificador } from '../helpers/usuarios'
 import FichaTomboActions from './tombos/components/FichaTomboActions'
-import { requisitaDadosEdicaoService, verificarCoordenada } from './tombos/TomboService'
 
 const { confirm } = Modal
 const FormItem = Form.Item

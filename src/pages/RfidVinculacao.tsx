@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Row, Col, Divider, Card, Select, Button, notification, Spin, Descriptions, Alert, Tooltip, Image, Tag } from 'antd'
 import { LinkOutlined, ScanOutlined, SettingOutlined, DisconnectOutlined } from '@ant-design/icons'
 import axios from 'axios'
-import { withRouter, RouteComponentProps } from 'react-router-dom'
+import { RouterProps, withRouter } from '../libraries/router/withRouter'
 import debounce from 'lodash.debounce'
 import RfidConnectionPanel from '../components/RfidConnectionPanel'
 import { useRfidStore } from '../stores/useRfidStore'
@@ -39,7 +39,7 @@ const montarUrlFoto = (tombo: TomboPendente): string => {
   return baseUrl + '/' + identificadorFoto + '/resize?height=1800'
 }
 
-const RfidVinculacao: React.FC<RouteComponentProps> = ({ history }) => {
+const RfidVinculacao: React.FC<RouterProps> = ({ history }) => {
   const { apiUrl, identificador, hardwareOnline, validandoHardware, statusConexao, verificarHardware } = useRfidStore()
   const { t } = useTranslation('rfid')
 
