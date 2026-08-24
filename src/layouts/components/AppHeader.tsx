@@ -184,7 +184,7 @@ export function AppHeader({
             )
           : (
               <Button type="text" onClick={() => void navigate('/inicio')}>
-                {t('common:sair')}
+                {t('common:entrar')}
               </Button>
             )}
       </Flex>

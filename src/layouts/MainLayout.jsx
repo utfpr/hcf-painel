@@ -517,8 +517,7 @@ class MainLayout extends Component {
                                             <Divider type="vertical" />
 
                                             <Link to="/inicio">
-
-                                                <Button>{this.props.t('common:sair')}</Button>
+                                                <Button size="small">{this.props.t('common:entrar')}</Button>
                                             </Link>
                                         </div>
                                     )}

@@ -858,12 +858,6 @@ class ListaTombosScreen extends Component {
         return (
             <div>
                 <HeaderListComponent title={t('listaTombosScreen:titulo')} link="/tombos/novo" />
-                <Button onClick={() => {
-                    window.location.href = '/users'
-                }}
-                >
-                    Users
-                </Button>
                 <Divider dashed />
                 {this.renderPainelBusca(getFieldDecorator)}
                 <Divider dashed />

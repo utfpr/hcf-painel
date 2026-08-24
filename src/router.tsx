@@ -1,9 +1,9 @@
 import { createBrowserRouter } from 'react-router'
 
 import { AppRoutes } from './App'
+import { isRedesignEnabled } from './config/redesign'
 import InicioScreen from './features/login/InicioScreen'
 import { Ant4Layout } from './layouts/Ant4'
-import { Ant6Layout } from './layouts/Ant6'
 import { AppShellRoute } from './layouts/AppShellRoute'
 import { MainLayoutRoute } from './layouts/MainLayoutRoute'
 import { layout, route } from './libraries/router'

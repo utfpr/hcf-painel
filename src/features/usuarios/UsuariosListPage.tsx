@@ -1,8 +1,8 @@
 import { isRedesignEnabled } from '@/config/redesign'
 
-import ListaUsuariosLegacyScreen from './ListaUsuariosScreen'
+import ListaUsuariosLegacyPage from './ListaUsuariosPage'
 import ListaUsuariosRedesignScreen from './redesign/ListaUsuariosScreen'
 
 export default isRedesignEnabled()
   ? ListaUsuariosRedesignScreen
-  : ListaUsuariosLegacyScreen
+  : ListaUsuariosLegacyPage

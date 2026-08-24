@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
 import { PageHeader } from '@/components/list/PageHeader'
-import { useAuth } from '@/contexts/Auth/useAuth'
+import { Can } from '@/contexts/Auth/Can'
 import { PlusOutlined } from '@ant-design/icons'
 
 import { AddUserDrawer } from './components/AddUserDrawer'
@@ -19,7 +19,6 @@ import type { UsuarioRow } from './types'
 
 export default function ListaUsuariosScreen() {
   const { t } = useTranslation()
-  const auth = useAuth()
   const navigate = useNavigate()
   const { modal, notification } = App.useApp()
   const screens = Grid.useBreakpoint()
@@ -55,13 +54,12 @@ export default function ListaUsuariosScreen() {
     })
   }
 
-  const canCreate = auth.can('create', 'Usuario')
   const total = list.metadados.total ?? 0
   const showError = Boolean(list.error) && list.usuarios.length === 0 && !list.loading
   const showEmpty = !list.loading && !list.error && total === 0
 
-  const addButton = canCreate
-    ? (
+  const addButton = (
+    <Can action="create" resource="Usuario">
       <Button
         type="primary"
         icon={<PlusOutlined />}
@@ -69,8 +67,8 @@ export default function ListaUsuariosScreen() {
       >
         {isMobile ? t('users:actions.addShort') : t('users:actions.add')}
       </Button>
-    )
-    : null
+    </Can>
+  )
 
   return (
     <div>
@@ -124,10 +122,12 @@ export default function ListaUsuariosScreen() {
               {t('users:empty.clearFilters')}
             </Button>
           )}
-          {!list.hasActiveFilters && canCreate && (
-            <Button type="primary" icon={<PlusOutlined />} onClick={() => setDrawerOpen(true)}>
-              {t('users:actions.add')}
-            </Button>
+          {!list.hasActiveFilters && (
+            <Can action="create" resource="Usuario">
+              <Button type="primary" icon={<PlusOutlined />} onClick={() => setDrawerOpen(true)}>
+                {t('users:actions.add')}
+              </Button>
+            </Can>
           )}
         </Empty>
       )}
