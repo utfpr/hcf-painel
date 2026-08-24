@@ -1,6 +1,12 @@
 import type { ReactNode } from 'react'
 
-import { type Mock, vi } from 'vitest'
+import {
+  describe,
+  expect,
+  test,
+  vi,
+  type Mock
+} from 'vitest'
 
 import { TipoUsuario, Usuario } from '@/@types/components'
 import { AuthProvider } from '@/contexts/Auth/AuthProvider'
@@ -9,7 +15,9 @@ import { ContainerProvider } from '@/contexts/Container/ContainerProvider'
 import { useCookie } from '@/hooks/useCookie'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
 import { broker } from '@/libraries/events/Broker'
-import { act, render, screen } from '@testing-library/react'
+import {
+  act, render, screen
+} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 vi.mock('@/hooks/useCookie', () => ({
@@ -67,7 +75,7 @@ function AuthConsumer() {
 }
 
 describe('AuthProvider', () => {
-  it('renders children', () => {
+  test('renders children', () => {
     // arrange
     const mockSetAccessToken = vi.fn()
     const mockRemoveAccessToken = vi.fn();
@@ -99,7 +107,7 @@ describe('AuthProvider', () => {
     expect(screen.getByText('Child content')).toBeInTheDocument()
   })
 
-  it('provides context with default permissions when logged out', () => {
+  test('provides context with default permissions when logged out', () => {
     // arrange
     const mockSetAccessToken = vi.fn()
     const mockRemoveAccessToken = vi.fn();
@@ -136,7 +144,7 @@ describe('AuthProvider', () => {
     expect(screen.getByTestId('can-all')).toHaveTextContent('yes')
   })
 
-  it('logIn updates context', async () => {
+  test('logIn updates context', async () => {
     // arrange
     const mockSetAccessToken = vi.fn()
     const mockRemoveAccessToken = vi.fn()
@@ -177,7 +185,7 @@ describe('AuthProvider', () => {
     expect(mockSetOldAccessToken).toHaveBeenCalledWith('new-token')
   })
 
-  it('logOut clears context and calls remove functions', async () => {
+  test('logOut clears context and calls remove functions', async () => {
     // arrange
     const mockSetAccessToken = vi.fn()
     const mockRemoveAccessToken = vi.fn()
@@ -220,7 +228,7 @@ describe('AuthProvider', () => {
     expect(screen.getByTestId('token')).toHaveTextContent('none')
   })
 
-  it('logs out when http.unauthorized is emitted', async () => {
+  test('logs out when http.unauthorized is emitted', async () => {
     const mockSetAccessToken = vi.fn()
     const mockRemoveAccessToken = vi.fn()
     const mockSetLoggedUser = vi.fn()
@@ -265,7 +273,7 @@ describe('AuthProvider', () => {
 })
 
 describe('useAuth', () => {
-  it('throws when used outside AuthProvider', () => {
+  test('throws when used outside AuthProvider', () => {
     // arrange & act & assert
     expect(() => {
       render(

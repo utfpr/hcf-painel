@@ -1,6 +1,12 @@
 import React from 'react'
 
-import { type Mock, vi } from 'vitest'
+import {
+  describe,
+  expect,
+  test,
+  vi,
+  type Mock
+} from 'vitest'
 
 import { ContainerProvider } from '@/contexts/Container/ContainerProvider'
 import {
@@ -28,7 +34,7 @@ function wrapper({ children }: { children: React.ReactNode }) {
 }
 
 describe('useCookie', () => {
-  it('returns initial value from getCookie', () => {
+  test('returns initial value from getCookie', () => {
     // arrange
     mockGetCookie.mockReturnValue('initial-token')
 
@@ -40,7 +46,7 @@ describe('useCookie', () => {
     expect(mockGetCookie).toHaveBeenCalledWith('access_token')
   })
 
-  it('returns undefined when cookie does not exist', () => {
+  test('returns undefined when cookie does not exist', () => {
     // arrange
     mockGetCookie.mockReturnValue(undefined)
 
@@ -51,7 +57,7 @@ describe('useCookie', () => {
     expect(result.current[0]).toBeUndefined()
   })
 
-  it('setValue calls setCookie and updates state', () => {
+  test('setValue calls setCookie and updates state', () => {
     // arrange
     mockGetCookie.mockReturnValue('new-token')
     const { result } = renderHook(() => useCookie('access_token'), { wrapper })
@@ -67,7 +73,7 @@ describe('useCookie', () => {
     expect(result.current[0]).toBe('new-token')
   })
 
-  it('setValue accepts options', () => {
+  test('setValue accepts options', () => {
     // arrange
     mockGetCookie.mockReturnValue(undefined)
     const { result } = renderHook(() => useCookie('access_token'), { wrapper })
@@ -85,7 +91,7 @@ describe('useCookie', () => {
     })
   })
 
-  it('removeValue calls removeCookie and clears state', () => {
+  test('removeValue calls removeCookie and clears state', () => {
     // arrange
     mockGetCookie.mockReturnValue('existing-token')
     const { result } = renderHook(() => useCookie('access_token'), { wrapper })
@@ -103,7 +109,7 @@ describe('useCookie', () => {
     expect(result.current[0]).toBeUndefined()
   })
 
-  it('returns tuple with [value, setValue, removeValue]', () => {
+  test('returns tuple with [value, setValue, removeValue]', () => {
     // arrange
     mockGetCookie.mockReturnValue(undefined)
 

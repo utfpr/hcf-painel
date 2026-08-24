@@ -1,11 +1,18 @@
-import { vi, describe } from 'vitest'
+import {
+  describe,
+  expect,
+  test,
+  vi
+} from 'vitest'
 
 import { useMutation } from '@/hooks/query/useMutation'
 import { useQuery } from '@/hooks/query/useQuery'
-import { act, renderHook, waitFor } from '@testing-library/react'
+import {
+  act, renderHook, waitFor
+} from '@testing-library/react'
 
 describe('useMutation', () => {
-  it('does not call mutator on mount', () => {
+  test('does not call mutator on mount', () => {
     const mutator = vi.fn().mockResolvedValue('ok')
 
     const { result } = renderHook(() => useMutation(mutator, ['no-mount-key']))
@@ -16,7 +23,7 @@ describe('useMutation', () => {
     expect(result.current.error).toBeUndefined()
   })
 
-  it('sets loading while trigger is pending', async () => {
+  test('sets loading while trigger is pending', async () => {
     let resolve!: (value: string) => void
     const mutator = vi.fn(
       () => new Promise<string>(res => {
@@ -44,7 +51,7 @@ describe('useMutation', () => {
     expect(result.current.data).toBe('done')
   })
 
-  it('returns data when mutator resolves', async () => {
+  test('returns data when mutator resolves', async () => {
     const mockData = { id: 1 }
     const mutator = vi.fn().mockResolvedValue(mockData)
 
@@ -61,7 +68,7 @@ describe('useMutation', () => {
     expect(mutator).not.toHaveBeenCalledWith(['success-key'])
   })
 
-  it('forwards multiple trigger arguments to mutator', async () => {
+  test('forwards multiple trigger arguments to mutator', async () => {
     const mutator = vi.fn().mockResolvedValue('ok')
 
     const { result } = renderHook(() => useMutation(mutator, ['multi-arg-key']))
@@ -73,7 +80,7 @@ describe('useMutation', () => {
     expect(mutator).toHaveBeenCalledWith(1, 'two')
   })
 
-  it('rejects and sets error when mutator fails', async () => {
+  test('rejects and sets error when mutator fails', async () => {
     const mockError = new Error('Mutation failed')
     const mutator = vi.fn().mockRejectedValue(mockError)
 
@@ -86,7 +93,7 @@ describe('useMutation', () => {
     expect(result.current.error).toEqual(mockError)
   })
 
-  it('resolves undefined when throwOnError is false', async () => {
+  test('resolves undefined when throwOnError is false', async () => {
     const mockError = new Error('Mutation failed')
     const mutator = vi.fn().mockRejectedValue(mockError)
 
@@ -103,7 +110,7 @@ describe('useMutation', () => {
     expect(result.current.error).toEqual(mockError)
   })
 
-  it('does not call mutator when deps is null', async () => {
+  test('does not call mutator when deps is null', async () => {
     const mutator = vi.fn()
 
     const { result } = renderHook(() => useMutation(mutator, null))
@@ -116,7 +123,7 @@ describe('useMutation', () => {
     expect(result.current.loading).toBe(false)
   })
 
-  it('clears data and error on reset', async () => {
+  test('clears data and error on reset', async () => {
     const mutator = vi.fn().mockResolvedValue('ok')
 
     const { result } = renderHook(() => useMutation(mutator, ['reset-key']))
@@ -135,13 +142,17 @@ describe('useMutation', () => {
     expect(result.current.error).toBeUndefined()
   })
 
-  it('revalidates matching useQuery keys after success', async () => {
+  test('revalidates matching useQuery keys after success', async () => {
     const listFetcher = vi.fn().mockResolvedValue({ items: 1 })
     const otherFetcher = vi.fn().mockResolvedValue({ items: 2 })
     const mutator = vi.fn().mockResolvedValue({ status: 201 })
 
     const { result } = renderHook(() => ({
-      list: useQuery(listFetcher, ['revalidate-users', { q: '' }, 1]),
+      list: useQuery(listFetcher, [
+        'revalidate-users',
+        { q: '' },
+        1
+      ]),
       other: useQuery(otherFetcher, ['revalidate-other', 1]),
       mutation: useMutation(
         mutator,
@@ -169,7 +180,7 @@ describe('useMutation', () => {
     expect(otherFetcher.mock.calls.length).toBe(otherCalls)
   })
 
-  it('does not revalidate when trigger fails', async () => {
+  test('does not revalidate when trigger fails', async () => {
     const listFetcher = vi.fn().mockResolvedValue({ items: 1 })
     const mutator = vi.fn().mockRejectedValue(new Error('fail'))
 
