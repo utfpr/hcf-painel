@@ -5,6 +5,7 @@ import { useSearchParams } from 'react-router'
 import { useContainer } from '@/contexts/Container/useContainer'
 import { formatarDataBDtoDataHora } from '@/helpers/conversoes/ConversoesData'
 import { telefoneToFrontEnd } from '@/helpers/conversoes/ConversoesTelefone'
+import { useMutation } from '@/hooks/query/useMutation'
 import { useQuery } from '@/hooks/query/useQuery'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
 
@@ -22,6 +23,7 @@ import {
 } from '../types'
 
 const PAGE_SIZE_STORAGE_KEY = 'hcf.users.pageSize'
+const USUARIOS_REVALIDATE = [['/usuarios']] as const
 
 function asString(value: unknown): string {
   return typeof value === 'string' ? value : ''
@@ -69,7 +71,7 @@ function listParams(
   return params
 }
 
-export function useUsuariosList() {
+export function useListaUsuariosPage() {
   const { httpClient } = useContainer()
   const [searchParams, setSearchParams] = useSearchParams()
   const [storedPageSize, setStoredPageSize] = useLocalStorage<number>(
@@ -163,23 +165,30 @@ export function useUsuariosList() {
     setStoredPageSize
   ])
 
+  const { trigger: removeUsuario } = useMutation(
+    (id: number) => httpClient.delete(`/usuarios/${id}`),
+    ['/usuarios', 'delete'],
+    { revalidate: USUARIOS_REVALIDATE }
+  )
+
+  const { trigger: createUsuario } = useMutation(
+    (payload: CreateUsuarioPayload) => httpClient.post<CreateUsuarioPayload>(
+      '/usuarios',
+      payload
+    ),
+    ['/usuarios', 'create'],
+    { revalidate: USUARIOS_REVALIDATE }
+  )
+
   const remove = useCallback(async (id: number) => {
-    const response = await httpClient.delete(`/usuarios/${id}`)
-    if (response.status === 204) {
-      await refresh()
-      return true
-    }
-    return false
-  }, [httpClient, refresh])
+    const response = await removeUsuario(id)
+    return response?.status === 204
+  }, [removeUsuario])
 
   const create = useCallback(async (payload: CreateUsuarioPayload) => {
-    const response = await httpClient.post<CreateUsuarioPayload>('/usuarios', payload)
-    if (response.status === 201) {
-      await refresh()
-      return true
-    }
-    return false
-  }, [httpClient, refresh])
+    const response = await createUsuario(payload)
+    return response?.status === 201
+  }, [createUsuario])
 
   return {
     usuarios: data?.usuarios.map(toRow) ?? [],

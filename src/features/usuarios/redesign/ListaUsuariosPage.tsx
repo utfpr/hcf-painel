@@ -14,7 +14,7 @@ import { AddUserDrawer } from './components/AddUserDrawer'
 import { UsersTable } from './components/UsersTable'
 import { UsersToolbar } from './components/UsersToolbar'
 import { useColumnVisibility } from './hooks/useColumnVisibility'
-import { useUsuariosList } from './hooks/useUsuariosList'
+import { useListaUsuariosPage } from './hooks/useListaUsuariosPage'
 import type { UsuarioRow } from './types'
 
 export default function ListaUsuariosPage() {
@@ -23,7 +23,7 @@ export default function ListaUsuariosPage() {
   const { modal, notification } = App.useApp()
   const screens = Grid.useBreakpoint()
   const isMobile = screens.md === false
-  const list = useUsuariosList()
+  const list = useListaUsuariosPage()
   const columns = useColumnVisibility()
   const [drawerOpen, setDrawerOpen] = useState(false)
 
