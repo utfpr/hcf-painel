@@ -1,5 +1,5 @@
 import {
-  useCallback, useEffect, useMemo, useState, type ReactNode
+  useEffect, useMemo, useState, type ReactNode
 } from 'react'
 
 import { useLocalStorage } from '@/hooks/useLocalStorage'
@@ -38,18 +38,14 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
   const mode: AppearanceMode = isAppearanceMode(stored) ? stored : 'system'
   const isDark = resolveDark(mode, systemDark)
 
-  const setAppearance = useCallback((next: AppearanceMode) => {
-    setStored(next)
-  }, [setStored])
-
   const value = useMemo(() => ({
     mode,
     isDark,
-    setAppearance
+    setAppearance: setStored
   }), [
     mode,
     isDark,
-    setAppearance
+    setStored
   ])
 
   return (

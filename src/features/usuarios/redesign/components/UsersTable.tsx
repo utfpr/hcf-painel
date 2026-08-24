@@ -37,27 +37,27 @@ export function UsersTable({
   onEdit,
   onDelete
 }: UsersTableProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('listaUsuariosPage')
   const { token } = theme.useToken()
   const visible = new Set(visibleKeys)
 
   const roleLabel = (tipo: string) => {
     const normalized = tipo.toLowerCase()
     if (normalized.includes('curador') || normalized.includes('curator')) {
-      return t('users:roles.curator')
+      return t('roles.curator')
     }
     if (normalized.includes('operador') || normalized.includes('operator')) {
-      return t('users:roles.operator')
+      return t('roles.operator')
     }
     if (normalized.includes('identificador') || normalized.includes('identifier')) {
-      return t('users:roles.identifier')
+      return t('roles.identifier')
     }
     return tipo
   }
 
   const actionColumn: TableProps<UsuarioRow>['columns'] = [
     {
-      title: t('users:columns.actions'),
+      title: t('columns.actions'),
       key: 'acao',
       width: 56,
       align: 'center',
@@ -68,13 +68,13 @@ export function UsersTable({
             items: [
               {
                 key: 'edit',
-                label: t('users:actions.edit'),
+                label: t('actions.edit'),
                 onClick: () => onEdit(row.key)
               },
               {
                 key: 'delete',
                 danger: true,
-                label: t('users:actions.delete'),
+                label: t('actions.delete'),
                 onClick: () => onDelete(row)
               }
             ]
@@ -83,7 +83,7 @@ export function UsersTable({
           <Button
             type="text"
             size="small"
-            aria-label={t('users:actions.menu')}
+            aria-label={t('actions.menu')}
             icon={<EllipsisOutlined />}
             onClick={event => event.stopPropagation()}
           />
@@ -95,7 +95,7 @@ export function UsersTable({
   const desktopColumns: TableProps<UsuarioRow>['columns'] = [
     visible.has('nome')
       ? {
-        title: t('users:columns.name'),
+        title: t('columns.name'),
         dataIndex: 'nome',
         key: 'nome',
         sorter: (a: UsuarioRow, b: UsuarioRow) => a.nome.localeCompare(b.nome),
@@ -104,7 +104,7 @@ export function UsersTable({
       : null,
     visible.has('tipo')
       ? {
-        title: t('users:columns.type'),
+        title: t('columns.type'),
         dataIndex: 'tipo',
         key: 'tipo',
         width: 140,
@@ -114,7 +114,7 @@ export function UsersTable({
       : null,
     visible.has('email')
       ? {
-        title: t('users:columns.email'),
+        title: t('columns.email'),
         dataIndex: 'email',
         key: 'email',
         sorter: (a: UsuarioRow, b: UsuarioRow) => a.email.localeCompare(b.email),
@@ -130,7 +130,7 @@ export function UsersTable({
       : null,
     visible.has('telefone')
       ? {
-        title: t('users:columns.phone'),
+        title: t('columns.phone'),
         dataIndex: 'telefone',
         key: 'telefone',
         width: 180
@@ -138,7 +138,7 @@ export function UsersTable({
       : null,
     visible.has('dataCriacao')
       ? {
-        title: t('users:columns.creationDate'),
+        title: t('columns.creationDate'),
         dataIndex: 'dataCriacao',
         key: 'dataCriacao',
         width: 180,
@@ -150,7 +150,7 @@ export function UsersTable({
 
   const mobileColumns: TableProps<UsuarioRow>['columns'] = [
     {
-      title: t('users:columns.name'),
+      title: t('columns.name'),
       key: 'usuario',
       render: (_, row) => (
         <Flex vertical>
@@ -162,7 +162,7 @@ export function UsersTable({
       )
     },
     {
-      title: t('users:columns.type'),
+      title: t('columns.type'),
       dataIndex: 'tipo',
       key: 'tipo',
       width: 120,
@@ -196,7 +196,7 @@ export function UsersTable({
             '50',
             '100'
           ],
-          showTotal: (value, range) => t('users:pagination.total', {
+          showTotal: (value, range) => t('pagination.total', {
             from: range[0],
             to: range[1],
             total: value

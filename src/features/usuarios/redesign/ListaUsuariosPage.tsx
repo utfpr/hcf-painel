@@ -6,7 +6,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
-import { PageHeader } from '@/components/list/PageHeader'
+import { Page } from '@/components/Page/Page'
 import { Can } from '@/contexts/Auth/Can'
 import { PlusOutlined } from '@ant-design/icons'
 
@@ -17,8 +17,8 @@ import { useColumnVisibility } from './hooks/useColumnVisibility'
 import { useUsuariosList } from './hooks/useUsuariosList'
 import type { UsuarioRow } from './types'
 
-export default function ListaUsuariosScreen() {
-  const { t } = useTranslation()
+export default function ListaUsuariosPage() {
+  const { t } = useTranslation('listaUsuariosPage')
   const navigate = useNavigate()
   const { modal, notification } = App.useApp()
   const screens = Grid.useBreakpoint()
@@ -29,9 +29,9 @@ export default function ListaUsuariosScreen() {
 
   const confirmDelete = (row: UsuarioRow) => {
     modal.confirm({
-      title: t('users:delete.title'),
-      content: t('users:delete.description', { name: row.nome }),
-      okText: t('users:actions.delete'),
+      title: t('delete.title'),
+      content: t('delete.description', { name: row.nome }),
+      okText: t('actions.delete'),
       okType: 'danger',
       cancelText: t('common:cancelar'),
       onOk: async () => {
@@ -40,14 +40,14 @@ export default function ListaUsuariosScreen() {
           if (deleted) {
             notification.success({
               message: t('common:tituloSucesso'),
-              description: t('users:delete.success')
+              description: t('delete.success')
             })
           }
         } catch (error) {
           console.error(error)
           notification.error({
-            message: t('users:delete.errorTitle'),
-            description: t('users:delete.error')
+            message: t('delete.errorTitle'),
+            description: t('delete.error')
           })
         }
       }
@@ -58,26 +58,22 @@ export default function ListaUsuariosScreen() {
   const showError = Boolean(list.error) && list.usuarios.length === 0 && !list.loading
   const showEmpty = !list.loading && !list.error && total === 0
 
-  const addButton = (
-    <Can action="create" resource="Usuario">
-      <Button
-        type="primary"
-        icon={<PlusOutlined />}
-        onClick={() => setDrawerOpen(true)}
-      >
-        {isMobile ? t('users:actions.addShort') : t('users:actions.add')}
-      </Button>
-    </Can>
-  )
-
   return (
-    <div>
-      <PageHeader
-        title={t('users:title')}
-        description={t('users:description')}
-        extra={addButton}
-      />
-
+    <Page
+      title={t('title')}
+      description={t('description')}
+      extra={(
+        <Can action="create" resource="Usuario">
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => setDrawerOpen(true)}
+          >
+            {isMobile ? t('actions.addShort') : t('actions.add')}
+          </Button>
+        </Can>
+      )}
+    >
       <UsersToolbar
         query={list.query}
         role={list.role}
@@ -91,11 +87,11 @@ export default function ListaUsuariosScreen() {
       {showError && (
         <Result
           status="error"
-          title={t('users:error.title')}
-          subTitle={t('users:error.description')}
+          title={t('error.title')}
+          subTitle={t('error.description')}
           extra={(
             <Button type="primary" onClick={() => void list.refresh()}>
-              {t('users:error.retry')}
+              {t('error.retry')}
             </Button>
           )}
         />
@@ -107,25 +103,25 @@ export default function ListaUsuariosScreen() {
           description={(
             <Flex vertical gap={4} align="center">
               <strong>
-                {list.hasActiveFilters ? t('users:empty.filteredTitle') : t('users:empty.title')}
+                {list.hasActiveFilters ? t('empty.filteredTitle') : t('empty.title')}
               </strong>
               <span>
                 {list.hasActiveFilters
-                  ? t('users:empty.filteredDescription')
-                  : t('users:empty.description')}
+                  ? t('empty.filteredDescription')
+                  : t('empty.description')}
               </span>
             </Flex>
           )}
         >
           {list.hasActiveFilters && (
             <Button onClick={list.clearFilters}>
-              {t('users:empty.clearFilters')}
+              {t('empty.clearFilters')}
             </Button>
           )}
           {!list.hasActiveFilters && (
             <Can action="create" resource="Usuario">
               <Button type="primary" icon={<PlusOutlined />} onClick={() => setDrawerOpen(true)}>
-                {t('users:actions.add')}
+                {t('actions.add')}
               </Button>
             </Can>
           )}
@@ -157,12 +153,12 @@ export default function ListaUsuariosScreen() {
           if (created) {
             notification.success({
               message: t('common:tituloSucesso'),
-              description: t('users:create.success')
+              description: t('create.success')
             })
           }
           return created
         }}
       />
-    </div>
+    </Page>
   )
 }

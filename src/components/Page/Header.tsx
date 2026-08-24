@@ -2,17 +2,17 @@ import type { ReactNode } from 'react'
 
 import { Flex, Typography } from 'antd6'
 
-export interface PageHeaderProps {
+export interface HeaderProps {
   title: string
   description?: string
   extra?: ReactNode
 }
 
-export function PageHeader({
+export function Header({
   title,
   description,
   extra
-}: PageHeaderProps) {
+}: HeaderProps) {
   return (
     <Flex
       justify="space-between"

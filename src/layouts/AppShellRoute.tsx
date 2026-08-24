@@ -4,7 +4,7 @@ import { App, ConfigProvider } from 'antd6'
 import { Outlet } from 'react-router'
 
 import { AppearanceProvider } from '@/theme/AppearanceProvider'
-import { buildHerbariumTheme } from '@/theme/herbariumTheme'
+import { buildHerbariumTheme } from '@/theme/theme'
 import { useAppearance } from '@/theme/useAppearance'
 
 import { AppShell } from './AppShell'

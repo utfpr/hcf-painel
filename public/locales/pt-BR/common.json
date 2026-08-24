@@ -18,7 +18,7 @@
   "atualizacaoRealizadaSucesso": "A atualização foi realizada com sucesso.",
 
   "notificacaoExcluir": "Excluir",
-  
+
   "tituloFalha": "Falha",
   "erro": "Erro",
   "error": "Error",
@@ -29,6 +29,9 @@
   "nenhumResultadoEncontrado": "Nenhum resultado encontrado",
 
   "sim": "SIM",
-  "nao": "NÃO"
+  "nao": "NÃO",
+
+  "page": {
+    "title": "{{title}} - Herbário UTFPR Campo Mourão"
+  }
 }
- 

@@ -27,7 +27,7 @@ export function UsersToolbar({
   onColumnsChange,
   onColumnsReset
 }: UsersToolbarProps) {
-  const { t } = useTranslation('users')
+  const { t } = useTranslation('listaUsuariosPage')
   const screens = Grid.useBreakpoint()
   const isMobile = screens.md === false
   const isNarrow = screens.sm === false

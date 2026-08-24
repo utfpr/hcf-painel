@@ -7,7 +7,7 @@ import {
   theme
 } from 'antd6'
 
-import { herbariumLayout } from '@/theme/herbariumTheme'
+import { herbariumLayout } from '@/theme/theme'
 
 import { AppHeader } from './components/AppHeader'
 import { AppSidebar } from './components/AppSidebar'

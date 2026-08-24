@@ -28,7 +28,7 @@ interface AddUserDrawerProps {
 export function AddUserDrawer({
   open, onClose, onCreate
 }: AddUserDrawerProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('listaUsuariosPage')
   const { notification } = App.useApp()
   const [form] = Form.useForm<AddUserFormValues>()
   const [submitting, setSubmitting] = useState(false)
@@ -70,8 +70,8 @@ export function AddUserDrawer({
       }
       console.error(error)
       notification.error({
-        message: t('users:create.errorTitle'),
-        description: t('users:create.error')
+        message: t('create.errorTitle'),
+        description: t('create.error')
       })
     } finally {
       setSubmitting(false)
@@ -80,13 +80,13 @@ export function AddUserDrawer({
 
   return (
     <EntityDrawer
-      title={t('users:create.title')}
+      title={t('create.title')}
       open={open}
       onClose={close}
       onSubmit={() => {
         void submit()
       }}
-      submitLabel={t('users:create.submit')}
+      submitLabel={t('create.submit')}
       cancelLabel={t('common:cancelar')}
       submitting={submitting}
     >
@@ -125,14 +125,14 @@ export function AddUserDrawer({
         </Form.Item>
         <Form.Item
           name="tipo"
-          label={t('users:filters.role')}
+          label={t('filters.role')}
           rules={[{ required: true, message: t('novoUsuarioScreen:validacaoTipo') }]}
         >
           <Select
             options={[
-              { value: '1', label: t('users:roles.curator') },
-              { value: '2', label: t('users:roles.operator') },
-              { value: '3', label: t('users:roles.identifier') }
+              { value: '1', label: t('roles.curator') },
+              { value: '2', label: t('roles.operator') },
+              { value: '3', label: t('roles.identifier') }
             ]}
           />
         </Form.Item>
