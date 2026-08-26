@@ -437,7 +437,7 @@ class MainLayout extends Component {
                                     </SubMenu>
                                 )
                             : null}
-                        {this.props.auth.loggedIn
+                        {this.props.auth.can('read', 'Rfid')
                             ? (
                                     <SubMenu
                                         key="rfid"
@@ -466,13 +466,13 @@ class MainLayout extends Component {
                         {this.props.auth.loggedIn
                             ? (
                                     <Menu.Item key="sairMenuItem">
-                                            <Link
-                                                to="/inicio"
-                                                onClick={this.props.auth.logOut}
-                                            >
-                                                <LogoutOutlined />
-                                                <span>{this.props.t('common:sair')}</span>
-                                            </Link>
+                                        <Link
+                                            to="/inicio"
+                                            onClick={this.props.auth.logOut}
+                                        >
+                                            <LogoutOutlined />
+                                            <span>{this.props.t('common:sair')}</span>
+                                        </Link>
                                     </Menu.Item>
                                 )
                             : null}
