@@ -1,4 +1,8 @@
-import { Navigate, Route, Routes } from 'react-router'
+import {
+  Navigate,
+  Route,
+  Routes
+} from 'react-router'
 
 import { useAuth } from './contexts/Auth/useAuth'
 import ListaUsuariosPage from './features/usuarios/ListaUsuariosPage'
@@ -153,10 +157,10 @@ export function AppRoutes() {
         path="relatorio-quantidade-familia-generos"
         element={guard(Boolean(auth.user?.id), RelatorioQuantidadeScreen)}
       />
-      <Route path="rfid-configuracao" element={guard(Boolean(auth.user?.id), RfidConfiguracao)} />
-      <Route path="rfid-conferencia" element={guard(Boolean(auth.user?.id), RfidConferencia)} />
-      <Route path="rfid-vinculacao" element={guard(Boolean(auth.user?.id), RfidVinculacao)} />
-      <Route path="rfid-inventario" element={guard(Boolean(auth.user?.id), RfidInventario)} />
+      <Route path="rfid-configuracao" element={guard(auth.can('read', 'Rfid'), RfidConfiguracao)} />
+      <Route path="rfid-conferencia" element={guard(auth.can('read', 'Rfid'), RfidConferencia)} />
+      <Route path="rfid-vinculacao" element={guard(auth.can('read', 'Rfid'), RfidVinculacao)} />
+      <Route path="rfid-inventario" element={guard(auth.can('read', 'Rfid'), RfidInventario)} />
       <Route path="dashboard" element={<DashboardScreen />} />
       <Route
         path="relatorio-coordenadas-fora-poligono"
