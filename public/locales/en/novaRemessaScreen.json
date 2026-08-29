@@ -1,13 +1,13 @@
 {
   "titulo": "Shipment",
 
-  "colunaTombo": "Voucher",
+  "colunaTombo": "Accession",
   "colunaTipo": "Type",
   "colunaDataVencimento": "Due date",
   "colunaAcao": "Action",
 
-  "modalTitulo": "Add voucher to shipment",
-  "numeroTombo": "Voucher no.:",
+  "modalTitulo": "Add accession to shipment",
+  "numeroTombo": "Accession No.:",
   "tipo": "Type:",
   "dataVencimento": "Due date:",
   "selecioneTipo": "Select a type",
@@ -25,13 +25,13 @@
   "dataEnvio": "Shipping date:",
   "observacao": "Notes:",
 
-  "adicionarTombo": "Add voucher",
+  "adicionarTombo": "Add accession",
   "salvar": "Save",
 
   "erroBuscarRemessa": "There was a problem fetching the shipment data, please try again.",
   "erroBuscarHerbarios": "Error fetching the herbaria list.",
 
-  "validacaoAdicionarTombo": "You must add at least one voucher to the shipment list.",
+  "validacaoAdicionarTombo": "You must add at least one accession to the shipment list.",
   "tituloCadastroAlteracao": "Register/Update",
 
   "sucessoCadastro": "Registration completed successfully.",
@@ -41,6 +41,6 @@
   "tituloEdicao": "Edit",
   "erroEdicao": "There was a problem editing, please check the data and try again.",
 
-  "confirmarExcluirTombo": "Are you sure you want to remove this voucher from the list?",
-  "descricaoExcluirTombo": "By clicking YES, the voucher will be removed."
+  "confirmarExcluirTombo": "Are you sure you want to remove this accession from the list?",
+  "descricaoExcluirTombo": "By clicking YES, the accession will be removed."
 }

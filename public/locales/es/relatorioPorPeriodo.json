@@ -1,18 +1,18 @@
 {
-  "relatorioTombosPeriodo": "Reporte de registros por período",
+  "relatorioTombosPeriodo": "Reporte de ejemplares por período",
 
   "alerta": "Alerta",
   "erro": "Error",
 
   "selecionePeriodoValido": "Seleccione un período válido",
-  "dataInicioAnteriorDataFim": "La fecha de inicio debe ser anterior a la fecha de fin",
+  "dataInicioAnteriorDataFim": "La fecha de inicio debe ser anterior a la fecha final",
 
   "falhaBuscarDadosRelatorio": "Fallo al buscar los datos del reporte",
 
-  "dia": "día",
-  "semana": "semana",
-  "mes": "mes",
-  "ano": "año",
+  "dia": "Día",
+  "semana": "Semana",
+  "mes": "Mes",
+  "ano": "Año",
 
   "filtrosRelatorio": "Filtros del reporte",
   "periodo": "Período",
@@ -34,12 +34,12 @@
   "buscar": "Buscar",
 
   "carregandoDadosEstatisticos": "Cargando datos estadísticos...",
-  "nenhumDadoDisponivel": "Ningún dato disponible para el período seleccionado.",
+  "nenhumDadoDisponivel": "No hay datos disponibles para el período seleccionado.",
   "ajusteGranularidadeDatas": "Intente ajustar la granularidad o el rango de fechas.",
-  "analiseTombosDistribuicaoTemporal": "Análisis de registros - Distribución temporal",
+  "analiseTombosDistribuicaoTemporal": "Análisis de ejemplares - Distribución temporal",
   
   "barChartSemana": "Semana", 
-  "tombos": "registros",
+  "tombos": "ejemplares",
   "amount": "Cantidad",
-  "quantidadeTombos": "Cantidad de registros"
+  "quantidadeTombos": "Cantidad de ejemplares"
 }
