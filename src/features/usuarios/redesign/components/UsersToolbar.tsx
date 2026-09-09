@@ -5,7 +5,6 @@ import {
 } from 'antd6'
 import { useTranslation } from 'react-i18next'
 
-import { ColumnSettings } from '@/components/list/ColumnSettings'
 import { FilterOutlined } from '@ant-design/icons'
 
 interface UsersToolbarProps {
@@ -13,19 +12,13 @@ interface UsersToolbarProps {
   role: string
   onSearch: (query: string) => void
   onRoleChange: (role: string) => void
-  visibleKeys: string[]
-  onColumnsChange: (keys: string[]) => void
-  onColumnsReset: () => void
 }
 
 export function UsersToolbar({
   query,
   role,
   onSearch,
-  onRoleChange,
-  visibleKeys,
-  onColumnsChange,
-  onColumnsReset
+  onRoleChange
 }: UsersToolbarProps) {
   const { t } = useTranslation('listaUsuariosPage')
   const screens = Grid.useBreakpoint()
@@ -55,28 +48,6 @@ export function UsersToolbar({
     />
   )
 
-  const columnsControl = (
-    <ColumnSettings
-      columns={[
-        {
-          key: 'nome',
-          label: t('columns.name'),
-          mandatory: true
-        },
-        { key: 'tipo', label: t('columns.type') },
-        { key: 'email', label: t('columns.email') },
-        { key: 'telefone', label: t('columns.phone') },
-        { key: 'dataCriacao', label: t('columns.creationDate') }
-      ]}
-      visibleKeys={visibleKeys}
-      onChange={onColumnsChange}
-      onReset={onColumnsReset}
-      title={t('columns.title')}
-      resetLabel={t('columns.reset')}
-      triggerLabel={t('columns.trigger')}
-    />
-  )
-
   const search = (
     <Input.Search
       value={draft}
@@ -94,34 +65,29 @@ export function UsersToolbar({
     />
   )
 
-  const controls = (
-    <Flex gap={8} wrap="wrap">
-      {isNarrow
-        ? (
-          <Popover
-            trigger="click"
-            placement="bottomLeft"
-            content={(
-              <Flex vertical gap={8} style={{ minWidth: 200 }}>
-                {roleSelect}
-              </Flex>
-            )}
-          >
-            <Button icon={<FilterOutlined />}>
-              {t('filters.trigger')}
-            </Button>
-          </Popover>
-        )
-        : roleSelect}
-      {columnsControl}
-    </Flex>
-  )
+  const filters = isNarrow
+    ? (
+      <Popover
+        trigger="click"
+        placement="bottomLeft"
+        content={(
+          <Flex vertical gap={8} style={{ minWidth: 200 }}>
+            {roleSelect}
+          </Flex>
+        )}
+      >
+        <Button icon={<FilterOutlined />}>
+          {t('filters.trigger')}
+        </Button>
+      </Popover>
+    )
+    : roleSelect
 
   if (isMobile) {
     return (
-      <Flex vertical gap={12} style={{ marginBottom: 16 }}>
+      <Flex vertical gap={12}>
         {search}
-        {controls}
+        {filters}
       </Flex>
     )
   }
@@ -131,11 +97,9 @@ export function UsersToolbar({
       gap={8}
       wrap="wrap"
       align="center"
-      justify="space-between"
-      style={{ marginBottom: 16 }}
     >
       {search}
-      {controls}
+      {filters}
     </Flex>
   )
 }

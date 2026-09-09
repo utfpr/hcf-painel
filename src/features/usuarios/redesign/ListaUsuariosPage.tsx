@@ -6,15 +6,16 @@ import {
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
+import { DataList } from '@/components/list/DataList'
 import { Page } from '@/components/Page/Page'
 import { Can } from '@/contexts/Auth/Can'
 import { PlusOutlined } from '@ant-design/icons'
 
 import { AddUserDrawer } from './components/AddUserDrawer'
-import { UsersTable } from './components/UsersTable'
 import { UsersToolbar } from './components/UsersToolbar'
-import { useColumnVisibility } from './hooks/useColumnVisibility'
+import { buildUsuarioColumns } from './components/usuarioColumns'
 import { useListaUsuariosPage } from './hooks/useListaUsuariosPage'
+import type { UsuarioQuery } from './hooks/useListaUsuariosPage'
 import type { UsuarioRow } from './types'
 
 export default function ListaUsuariosPage() {
@@ -23,8 +24,7 @@ export default function ListaUsuariosPage() {
   const { modal, notification } = App.useApp()
   const screens = Grid.useBreakpoint()
   const isMobile = screens.md === false
-  const list = useListaUsuariosPage()
-  const columns = useColumnVisibility()
+  const pageState = useListaUsuariosPage()
   const [drawerOpen, setDrawerOpen] = useState(false)
 
   const confirmDelete = (row: UsuarioRow) => {
@@ -36,7 +36,7 @@ export default function ListaUsuariosPage() {
       cancelText: t('common:cancelar'),
       onOk: async () => {
         try {
-          const deleted = await list.remove(row.key)
+          const deleted = await pageState.remove(row.key)
           if (deleted) {
             notification.success({
               message: t('common:tituloSucesso'),
@@ -54,10 +54,6 @@ export default function ListaUsuariosPage() {
     })
   }
 
-  const total = list.metadados.total ?? 0
-  const showError = Boolean(list.error) && list.usuarios.length === 0 && !list.loading
-  const showEmpty = !list.loading && !list.error && total === 0
-
   return (
     <Page
       title={t('title')}
@@ -74,82 +70,87 @@ export default function ListaUsuariosPage() {
         </Can>
       )}
     >
-      <UsersToolbar
-        query={list.query}
-        role={list.role}
-        onSearch={list.setQuery}
-        onRoleChange={list.setRole}
-        visibleKeys={columns.visibleKeys}
-        onColumnsChange={columns.setVisibleKeys}
-        onColumnsReset={columns.reset}
-      />
-
-      {showError && (
-        <Result
-          status="error"
-          title={t('error.title')}
-          subTitle={t('error.description')}
-          extra={(
-            <Button type="primary" onClick={() => void list.refresh()}>
-              {t('error.retry')}
-            </Button>
-          )}
-        />
-      )}
-
-      {showEmpty && (
-        <Empty
-          image={Empty.PRESENTED_IMAGE_SIMPLE}
-          description={(
-            <Flex vertical gap={4} align="center">
-              <strong>
-                {list.hasActiveFilters ? t('empty.filteredTitle') : t('empty.title')}
-              </strong>
-              <span>
-                {list.hasActiveFilters
-                  ? t('empty.filteredDescription')
-                  : t('empty.description')}
-              </span>
-            </Flex>
-          )}
-        >
-          {list.hasActiveFilters && (
-            <Button onClick={list.clearFilters}>
-              {t('empty.clearFilters')}
-            </Button>
-          )}
-          {!list.hasActiveFilters && (
-            <Can action="create" resource="Usuario">
-              <Button type="primary" icon={<PlusOutlined />} onClick={() => setDrawerOpen(true)}>
-                {t('actions.add')}
+      <DataList<UsuarioQuery, UsuarioRow>
+        storageKey="hcf.users.columns"
+        defaults={{
+          q: '',
+          role: '',
+          sort: '',
+          order: ''
+        }}
+        fetch={({
+          query, page, pageSize
+        }) => pageState.fetchUsuarios(query, page, pageSize)}
+        rowKey="key"
+        onRowClick={row => {
+          void navigate(`/usuarios/${row.key}`)
+        }}
+        error={({ refresh }) => (
+          <Result
+            status="error"
+            title={t('error.title')}
+            subTitle={t('error.description')}
+            extra={(
+              <Button type="primary" onClick={refresh}>
+                {t('error.retry')}
               </Button>
-            </Can>
-          )}
-        </Empty>
-      )}
-
-      {!showError && !showEmpty && (
-        <UsersTable
-          rows={list.usuarios}
-          loading={list.loading}
-          total={total}
-          page={list.pagina}
-          pageSize={list.pageSize}
-          isMobile={isMobile}
-          visibleKeys={columns.visibleKeys}
-          onPageChange={list.changePage}
-          onEdit={id => {
-            void navigate(`/usuarios/${id}`)
-          }}
-          onDelete={confirmDelete}
-        />
-      )}
+            )}
+          />
+        )}
+        emptyText={({ hasActiveFilters, clearQuery }) => (
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            description={(
+              <Flex vertical gap={4} align="center">
+                <strong>
+                  {hasActiveFilters ? t('empty.filteredTitle') : t('empty.title')}
+                </strong>
+                <span>
+                  {hasActiveFilters
+                    ? t('empty.filteredDescription')
+                    : t('empty.description')}
+                </span>
+              </Flex>
+            )}
+          >
+            {hasActiveFilters && (
+              <Button onClick={() => clearQuery(['q', 'role'])}>
+                {t('empty.clearFilters')}
+              </Button>
+            )}
+            {!hasActiveFilters && (
+              <Can action="create" resource="Usuario">
+                <Button
+                  type="primary"
+                  icon={<PlusOutlined />}
+                  onClick={() => setDrawerOpen(true)}
+                >
+                  {t('actions.add')}
+                </Button>
+              </Can>
+            )}
+          </Empty>
+        )}
+        columns={({ isMobile: mobile }) => buildUsuarioColumns({
+          t,
+          isMobile: mobile,
+          onDelete: confirmDelete
+        })}
+        filters={({ query, setQuery }) => (
+          <UsersToolbar
+            query={query.q}
+            role={query.role}
+            onSearch={q => setQuery({ q })}
+            onRoleChange={role => setQuery({ role })}
+          />
+        )}
+      />
 
       <AddUserDrawer
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         onCreate={async payload => {
-          const created = await list.create(payload)
+          const created = await pageState.create(payload)
           if (created) {
             notification.success({
               message: t('common:tituloSucesso'),
