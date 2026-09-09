@@ -8,7 +8,7 @@
   "colunaObservacao": "Observación",
   "colunaAcao": "Acción",
 
-  "subColunaTombo": "Voucher",
+  "subColunaTombo": "Ejemplar",
   "subColunaTipo": "Tipo",
   "subColunaDataVencimento": "Fecha de vencimiento",
   "subColunaAcao": "Acción",
@@ -17,7 +17,7 @@
 
   "buscarRemessas": "Buscar remesas",
   "numeroRemessa": "Número de remesa:",
-  "numeroTombo": "Número del voucher:",
+  "numeroTombo": "Número de catálogo:",
   "herbario": "Herbario:",
   "selecioneHerbario": "Seleccione",
 
@@ -26,9 +26,9 @@
   "sucessoExcluirRemessa": "La remesa fue eliminada con éxito.",
   "tituloExcluirRemessa": "Eliminar remesa",
 
-  "confirmarDevolverTombo": "¿Está seguro de que desea devolver este voucher?",
-  "descricaoDevolverTombo": "Al hacer clic en SÍ, el voucher será devuelto.",
-  "sucessoDevolverTombo": "El voucher fue devuelto con éxito.",
-  "tituloDevolverTombo": "Devolver voucher",
-  "erroDevolverTombo": "Error al devolver el voucher"
+  "confirmarDevolverTombo": "¿Está seguro de que desea devolver este ejemplar?",
+  "descricaoDevolverTombo": "Al hacer clic en SÍ, el ejemplar será devuelto.",
+  "sucessoDevolverTombo": "El ejemplar fue devuelto con éxito.",
+  "tituloDevolverTombo": "Devolver ejemplar",
+  "erroDevolverTombo": "Error al devolver el ejemplar"
 }

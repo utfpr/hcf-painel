@@ -8,7 +8,7 @@
   "selecioneEstado": "Select a state",
   "cidade": "City:",
   "selecioneCidade": "Select a city",
-  "incluirSemCoordenadas": "Include vouchers without coordinates",
+  "incluirSemCoordenadas": "Include accession without coordinates",
 
   "gerarPDF": "Generate PDF",
 
@@ -24,7 +24,7 @@
   "motivoForaDoPoligono": "Outside polygon",
 
   "nenhumRegistro": "No records found.",
-  "tombos": "voucher(s)",
+  "tombos": "accession(s)",
 
   "erroBuscarPaises": "Failed to fetch countries.",
   "erroBuscarEstados": "Failed to fetch states.",

@@ -8,7 +8,7 @@
   "colunaObservacao": "Notes",
   "colunaAcao": "Action",
 
-  "subColunaTombo": "Voucher",
+  "subColunaTombo": "Accession",
   "subColunaTipo": "Type",
   "subColunaDataVencimento": "Due date",
   "subColunaAcao": "Action",
@@ -17,7 +17,7 @@
 
   "buscarRemessas": "Search shipments",
   "numeroRemessa": "Shipment number:",
-  "numeroTombo": "Voucher number:",
+  "numeroTombo": "Accession number:",
   "herbario": "Herbarium:",
   "selecioneHerbario": "Select",
 
@@ -26,9 +26,9 @@
   "sucessoExcluirRemessa": "The shipment has been successfully deleted.",
   "tituloExcluirRemessa": "Delete shipment",
 
-  "confirmarDevolverTombo": "Are you sure you want to return this voucher?",
-  "descricaoDevolverTombo": "By clicking YES, the voucher will be returned.",
-  "sucessoDevolverTombo": "The voucher has been successfully returned.",
-  "tituloDevolverTombo": "Return voucher",
-  "erroDevolverTombo": "Error returning voucher"
+  "confirmarDevolverTombo": "Are you sure you want to return this accession?",
+  "descricaoDevolverTombo": "By clicking YES, the accession will be returned.",
+  "sucessoDevolverTombo": "The accession has been successfully returned.",
+  "tituloDevolverTombo": "Return accession",
+  "erroDevolverTombo": "Error returning accession"
 }

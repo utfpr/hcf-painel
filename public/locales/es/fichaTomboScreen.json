@@ -1,13 +1,13 @@
 {
-  "titulo": "Record Sheet",
+  "titulo": "Ficha de ejemplar",
   "colHcf": "HCF",
-  "colDataColeta": "Collection date",
-  "colNomeCientifico": "Scientific name",
-  "colAcao": "Action",
+  "colDataColeta": "Fecha de colecta",
+  "colNomeCientifico": "Nombre científico",
+  "colAcao": "Acción",
   "labelHcf": "HCF:",
-  "labelDataColeta": "Collection date:",
-  "labelNomeCientifico": "Scientific name:",
-  "tituloModal": "Sheet printing",
-  "imprimir": "Print",
-  "informeNumeroCopias": "Enter the number of copies:"
+  "labelDataColeta": "Fecha de colecta:",
+  "labelNomeCientifico": "Nombre científico:",
+  "tituloModal": "Impresión de ficha",
+  "imprimir": "Imprimir",
+  "informeNumeroCopias": "Ingrese la cantidad de copias:"
 }

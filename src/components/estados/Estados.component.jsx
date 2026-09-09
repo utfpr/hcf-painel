@@ -3,13 +3,12 @@ import React from 'react'
 import {
     Divider, Card, Row, Col, Input, Button, notification, Form, Select
 } from 'antd'
+import { withTranslation } from 'react-i18next'
 
 import ModalCadastroComponent from '@/components/ModalCadastroComponent'
 import SimpleTableComponent from '@/components/SimpleTableComponent'
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
-import { withTranslation } from 'react-i18next'
-
 
 const ListaEstadosComponent = ({
     t,
@@ -114,7 +113,7 @@ const ListaEstadosComponent = ({
                 <Form form={form} onFinish={handleSearch}>
                     <Row gutter={8}>
                         <Col xs={24} sm={12} md={12} lg={12} xl={12}>
-                            <Col span={24}><span>{t('estadoComponent:buscarNomeEstado')}:</span></Col>
+                            <Col span={24}><span>{t('estadoComponent:buscarNomeEstado')}</span></Col>
                             <Col span={24}>
                                 <Form.Item name="nome">
                                     <Input placeholder={t('estadoComponent:placeholderNomeEstado')} type="text" />
@@ -122,7 +121,7 @@ const ListaEstadosComponent = ({
                             </Col>
                         </Col>
                         <Col xs={24} sm={12} md={12} lg={12} xl={12}>
-                            <Col span={24}><span>{t('estadoComponent:buscarPais')}:</span></Col>
+                            <Col span={24}><span>{t('estadoComponent:buscarPais')}</span></Col>
                             <Col span={24}>
                                 <Form.Item name="paisId">
                                     <Select

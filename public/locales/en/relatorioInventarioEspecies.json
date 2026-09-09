@@ -18,7 +18,7 @@
   "erroDeServidorAoExportarOPdf": "Server error while exporting PDF.",
 
   "especie": "Species",
-  "tombosRelacionados": "Related records",
+  "tombosRelacionados": "Related accessions",
 
   "error": "Error"
 }

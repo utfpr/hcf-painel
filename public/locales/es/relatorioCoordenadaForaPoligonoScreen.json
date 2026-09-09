@@ -8,7 +8,7 @@
   "selecioneEstado": "Seleccione un estado",
   "cidade": "Ciudad:",
   "selecioneCidade": "Seleccione una ciudad",
-  "incluirSemCoordenadas": "Incluir vouchers sin coordenadas",
+  "incluirSemCoordenadas": "Incluir ejemplares sin coordenadas",
 
   "gerarPDF": "Generar PDF",
 
@@ -24,7 +24,7 @@
   "motivoForaDoPoligono": "Fuera del polígono",
 
   "nenhumRegistro": "Ningún registro encontrado.",
-  "tombos": "voucher(s)",
+  "tombos": "Ejemplar(s)",
 
   "erroBuscarPaises": "Error al buscar países.",
   "erroBuscarEstados": "Error al buscar estados.",
