@@ -20,7 +20,8 @@ const RESOURCES = [
   'Herbario',
   'Coletor',
   'Reflora',
-  'SpeciesLink'
+  'SpeciesLink',
+  'Rfid'
 ] as const
 
 const ACTIONS = [
@@ -83,6 +84,10 @@ const ruleSpecificMapping: Record<TipoUsuario, (user: Usuario) => Rule<Resource,
     {
       resource: 'SpeciesLink',
       action: ['read', 'update']
+    },
+    {
+      resource: 'Rfid',
+      action: ['read']
     }
   ],
   [TipoUsuario.Operador]: () => [],

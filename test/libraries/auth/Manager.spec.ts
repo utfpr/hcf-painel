@@ -1,7 +1,13 @@
+import {
+  describe,
+  expect,
+  test
+} from 'vitest'
+
 import { Manager, type Rule } from '@/libraries/auth/Manager'
 
 describe('Manager', () => {
-  it('returns a manager with the given rules', () => {
+  test('returns a manager with the given rules', () => {
     // arrange
     const rules: Rule<string, string>[] = [{ resource: 'Tombo', action: 'read' }]
 
@@ -14,7 +20,7 @@ describe('Manager', () => {
     expect(manager.rules[0]).toEqual({ resource: 'Tombo', action: 'read' })
   })
 
-  it('returns can=true when action and resource match a rule', () => {
+  test('returns can=true when action and resource match a rule', () => {
     // arrange
     const rules: Rule<string, string>[] = [{ resource: 'Tombo', action: 'read' }]
     const manager = new Manager({ rules })
@@ -26,7 +32,7 @@ describe('Manager', () => {
     expect(result).toBe(true)
   })
 
-  it('returns can=false when action is not allowed', () => {
+  test('returns can=false when action is not allowed', () => {
     // arrange
     const rules: Rule<string, string>[] = [{ resource: 'Tombo', action: 'read' }]
     const manager = new Manager({ rules })
@@ -42,7 +48,7 @@ describe('Manager', () => {
     expect(canDelete).toBe(false)
   })
 
-  it('returns can=false when resource does not match', () => {
+  test('returns can=false when resource does not match', () => {
     // arrange
     const rules: Rule<string, string>[] = [{ resource: 'Tombo', action: 'read' }]
     const manager = new Manager({ rules })
@@ -54,7 +60,7 @@ describe('Manager', () => {
     expect(result).toBe(false)
   })
 
-  it('supports multiple rules for different resources', () => {
+  test('supports multiple rules for different resources', () => {
     // arrange
     const rules: Rule<string, string>[] = [
       { resource: 'Tombo', action: 'read' },
@@ -75,7 +81,7 @@ describe('Manager', () => {
     expect(canUpdateFamilia).toBe(false)
   })
 
-  it('handles empty rules', () => {
+  test('handles empty rules', () => {
     // arrange
     const manager = new Manager({ rules: [] })
 
@@ -87,7 +93,7 @@ describe('Manager', () => {
     expect(canRead).toBe(false)
   })
 
-  it('supports rules with multiple actions as array', () => {
+  test('supports rules with multiple actions as array', () => {
     // arrange
     const rules: Rule<string, string>[] = [
       {
@@ -114,7 +120,7 @@ describe('Manager', () => {
     expect(canDelete).toBe(false)
   })
 
-  it.skip('manage returns true when user has any action on resource', () => {
+  test.skip('manage returns true when user has any action on resource', () => {
     // arrange
     const rules: Rule<string, string>[] = [
       {
@@ -142,7 +148,7 @@ describe('Manager', () => {
     expect(canManageTombo).toBe(false)
   })
 
-  it.skip('manage returns false when user lacks all actions', () => {
+  test.skip('manage returns false when user lacks all actions', () => {
     // arrange
     const rules: Rule<string, string>[] = [{ resource: 'Usuario', action: ['read', 'update'] }]
     const manager = new Manager({ rules })
@@ -159,7 +165,7 @@ describe('Manager', () => {
   })
 
   describe('canAny', () => {
-    it('returns true when any action is allowed', () => {
+    test('returns true when any action is allowed', () => {
       // arrange
       const rules: Rule<string, string>[] = [{ resource: 'Tombo', action: 'read' }]
       const manager = new Manager({ rules })
@@ -173,7 +179,7 @@ describe('Manager', () => {
       expect(result2).toBe(true)
     })
 
-    it('returns false when no action is allowed', () => {
+    test('returns false when no action is allowed', () => {
       // arrange
       const rules: Rule<string, string>[] = [{ resource: 'Tombo', action: 'read' }]
       const manager = new Manager({ rules })
@@ -185,7 +191,7 @@ describe('Manager', () => {
       expect(result).toBe(false)
     })
 
-    it('returns false for empty actions array', () => {
+    test('returns false for empty actions array', () => {
       // arrange
       const manager = new Manager({ rules: [{ resource: 'Tombo', action: 'read' }] })
 
@@ -198,7 +204,7 @@ describe('Manager', () => {
   })
 
   describe('canAll', () => {
-    it('returns true when all actions are allowed', () => {
+    test('returns true when all actions are allowed', () => {
       // arrange
       const rules: Rule<string, string>[] = [{ resource: 'Familia', action: ['read', 'create'] }]
       const manager = new Manager({ rules })
@@ -210,7 +216,7 @@ describe('Manager', () => {
       expect(result).toBe(true)
     })
 
-    it('returns false when any action is not allowed', () => {
+    test('returns false when any action is not allowed', () => {
       // arrange
       const rules: Rule<string, string>[] = [{ resource: 'Tombo', action: 'read' }]
       const manager = new Manager({ rules })
@@ -222,7 +228,7 @@ describe('Manager', () => {
       expect(result).toBe(false)
     })
 
-    it('returns false for empty actions array', () => {
+    test('returns false for empty actions array', () => {
       // arrange
       const manager = new Manager({
         rules: [{ resource: 'Tombo', action: 'read' }]
@@ -235,7 +241,7 @@ describe('Manager', () => {
       expect(result).toBe(false)
     })
 
-    it('returns true for all actions when resource has full CRUD', () => {
+    test('returns true for all actions when resource has full CRUD', () => {
       // arrange
       const manager = new Manager({
         rules: [

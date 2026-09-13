@@ -25,7 +25,7 @@
   "mapaCompleto": "Full Map",
   "filtrosAvancados": "Advanced Filters",
   "relatorios": "Reports",
-  "relatorioPorPeriodo": "Period Report",
+  "relatorioPorPeriodo": "Report by Period",
   "inventarioEspecies": "Species Inventory",
   "coletaIntervaloData": "Collections by Date Range",
   "coletaColetorIntervaloData": "Collections by Collector and Date Range",
@@ -37,5 +37,17 @@
   "diagnosticoErrosPosicionamento": "Positioning Error Diagnosis",
   "exportacao": "Export",
   "servicos": "Services",
-  "idioma": "Language"
+  "idioma": "Language",
+  "grupoColecao": "Collection",
+  "grupoPessoasAcesso": "People & Access",
+  "grupoGeografia": "Geography",
+  "grupoDadosOperacoes": "Data & Operations",
+  "ambienteDesenvolvimento": "Development",
+  "ambienteStaging": "Staging",
+  "aparencia": "Appearance",
+  "aparenciaSistema": "System",
+  "aparenciaClara": "Light",
+  "aparenciaEscura": "Dark",
+  "alternarMenu": "Toggle navigation",
+  "menuConta": "Account menu"
 }

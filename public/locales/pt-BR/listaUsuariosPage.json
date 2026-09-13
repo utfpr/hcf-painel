@@ -1,0 +1,74 @@
+{
+  "title": "Usuários",
+  "description": "Gerencie usuários e o acesso ao herbário.",
+
+  "search": {
+    "placeholder": "Buscar por nome, e-mail ou telefone"
+  },
+
+  "filters": {
+    "role": "Função",
+    "allRoles": "Todas as funções",
+    "trigger": "Filtros"
+  },
+
+  "columns": {
+    "title": "Colunas",
+    "trigger": "Colunas",
+    "reset": "Restaurar padrão",
+    "name": "Nome",
+    "type": "Tipo",
+    "email": "E-mail",
+    "phone": "Telefone",
+    "creationDate": "Data de criação",
+    "actions": "Ações"
+  },
+
+  "roles": {
+    "curator": "Curador",
+    "operator": "Operador",
+    "identifier": "Identificador"
+  },
+
+  "actions": {
+    "add": "Adicionar usuário",
+    "addShort": "Adicionar",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "menu": "Ações da linha"
+  },
+
+  "create": {
+    "title": "Adicionar usuário",
+    "submit": "Criar usuário",
+    "success": "O usuário foi criado com sucesso.",
+    "errorTitle": "Não foi possível criar o usuário",
+    "error": "Ocorreu um problema ao criar o usuário. Tente novamente."
+  },
+
+  "delete": {
+    "title": "Excluir usuário?",
+    "description": "Tem certeza de que deseja excluir permanentemente “{{name}}”? Esta ação não pode ser desfeita.",
+    "success": "O usuário foi excluído com sucesso.",
+    "errorTitle": "Não foi possível excluir o usuário",
+    "error": "Ocorreu um problema ao excluir o usuário. Tente novamente."
+  },
+
+  "empty": {
+    "title": "Ainda não há usuários",
+    "description": "Adicione o primeiro usuário ao herbário.",
+    "filteredTitle": "Nenhum usuário encontrado",
+    "filteredDescription": "Tente alterar a busca ou os filtros.",
+    "clearFilters": "Limpar filtros"
+  },
+
+  "error": {
+    "title": "Não foi possível carregar os usuários.",
+    "description": "Ocorreu um problema ao buscar a lista de usuários.",
+    "retry": "Tentar novamente"
+  },
+
+  "pagination": {
+    "total": "{{from}}–{{to}} de {{total}} usuários"
+  }
+}

@@ -4,7 +4,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
-import { PageHeader } from '@/components/PageHeader'
+import { PageHeader } from '@/components/legacy/PageHeader'
 import { Can } from '@/contexts/Auth/Can'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 

@@ -14,5 +14,8 @@
 
   "ordenacaoDecrescente": "Clique para ordenar decrescente",
   "ordenacaoCrescente": "Clique para ordenar crescente",
-  "cancelarOrdenacao": "Cancelar ordenação"
+  "cancelarOrdenacao": "Cancelar ordenação",
+  "intervaloTotal": "{{from}}–{{to}} de {{total}}",
+  "colunas": "Colunas",
+  "restaurarColunas": "Restaurar padrão"
 }

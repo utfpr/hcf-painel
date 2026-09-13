@@ -22,5 +22,9 @@
   "erroComunicacaoServidor": "Fallo en la comunicación con el servidor.",
   "nenhumResultadoEncontrado": "No se encontraron resultados",
   "sim": "SÍ",
-  "nao": "NO"
+  "nao": "NO",
+
+  "page": {
+    "title": "{{title}} - Herbário UTFPR Campo Mourão"
+  }
 }

@@ -1,6 +1,12 @@
 import type { ReactNode } from 'react'
 
-import { type Mock, vi } from 'vitest'
+import {
+  describe,
+  expect,
+  test,
+  vi,
+  type Mock
+} from 'vitest'
 
 import { AuthProvider } from '@/contexts/Auth/AuthProvider'
 import { Can } from '@/contexts/Auth/Can'
@@ -33,7 +39,7 @@ function renderWithProviders(ui: ReactNode) {
 }
 
 describe('Can', () => {
-  it('renders children when user can perform action', () => {
+  test('renders children when user can perform action', () => {
     // arrange
     (useCookie as Mock).mockReturnValue([
       undefined,
@@ -65,7 +71,7 @@ describe('Can', () => {
     expect(screen.getByTestId('visible-content')).toBeInTheDocument()
   })
 
-  it('renders null when user cannot perform action', () => {
+  test('renders null when user cannot perform action', () => {
     // arrange
     (useCookie as Mock).mockReturnValue([
       undefined,
@@ -97,7 +103,7 @@ describe('Can', () => {
     expect(screen.queryByTestId('hidden-content')).not.toBeInTheDocument()
   })
 
-  it('with not prop renders children when user cannot perform action', () => {
+  test('with not prop renders children when user cannot perform action', () => {
     // arrange
     (useCookie as Mock).mockReturnValue([
       undefined,
@@ -129,7 +135,7 @@ describe('Can', () => {
     expect(screen.getByTestId('shown-when-cannot-create')).toBeInTheDocument()
   })
 
-  it('with not prop renders null when user can perform action', () => {
+  test('with not prop renders null when user can perform action', () => {
     // arrange
     (useCookie as Mock).mockReturnValue([
       undefined,

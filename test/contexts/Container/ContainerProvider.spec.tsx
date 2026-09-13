@@ -1,5 +1,11 @@
 import type { ReactNode } from 'react'
 
+import {
+  describe,
+  expect,
+  test
+} from 'vitest'
+
 import { ContainerProvider } from '@/contexts/Container/ContainerProvider'
 import { useContainer } from '@/contexts/Container/useContainer'
 import { renderHook } from '@testing-library/react'
@@ -13,7 +19,7 @@ function wrapper({ children }: { children: ReactNode }) {
 }
 
 describe('ContainerProvider', () => {
-  it('keeps the same HttpClient instance across re-renders', () => {
+  test('keeps the same HttpClient instance across re-renders', () => {
     const { result, rerender } = renderHook(() => useContainer(), { wrapper })
 
     const first = result.current.httpClient

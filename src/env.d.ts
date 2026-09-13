@@ -8,4 +8,5 @@ interface ImportMetaEnv {
   VITE_SESSION_REPLAY_APP_ID?: string
   VITE_ANALYTICS_APP_ID: string
   VITE_APP_ENV?: string
+  VITE_REDESIGN_ENABLED?: string
 }

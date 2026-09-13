@@ -1,3 +1,6 @@
+export { useSearchParamsStore } from './searchParams'
+export type { SearchParamsStore } from './searchParams'
+
 export interface IndexRoute {
   index: true
   Component: React.ComponentType

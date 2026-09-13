@@ -68,6 +68,7 @@ void i18n
       'listaRemessasScreen',
       'novaRemessaScreen',
       'listaUsuariosScreen',
+      'listaUsuariosPage',
       'novoUsuarioScreen',
       'relatorioCoordenadaForaPoligonoScreen',
       'relatorioLocalColetaPeriodoScreen',

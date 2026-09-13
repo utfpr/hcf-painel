@@ -1,4 +1,11 @@
-import { type Mock, vi } from 'vitest'
+import {
+  beforeEach,
+  describe,
+  expect,
+  test,
+  vi,
+  type Mock
+} from 'vitest'
 
 import { getCookie } from '@/helpers/cookie'
 import { CookieAccessTokenSource } from '@/libraries/session/CookieAccessTokenSource'
@@ -14,7 +21,7 @@ describe('CookieAccessTokenSource', () => {
     mockGetCookie.mockReset()
   })
 
-  it('returns the Access_Token cookie value', () => {
+  test('returns the Access_Token cookie value', () => {
     mockGetCookie.mockReturnValue('session-token')
 
     const source = new CookieAccessTokenSource()
@@ -23,7 +30,7 @@ describe('CookieAccessTokenSource', () => {
     expect(mockGetCookie).toHaveBeenCalledWith('Access_Token')
   })
 
-  it('returns undefined when the cookie is missing', () => {
+  test('returns undefined when the cookie is missing', () => {
     mockGetCookie.mockReturnValue(undefined)
 
     const source = new CookieAccessTokenSource()
@@ -31,7 +38,7 @@ describe('CookieAccessTokenSource', () => {
     expect(source.getAccessToken()).toBeUndefined()
   })
 
-  it('reads a custom cookie name', () => {
+  test('reads a custom cookie name', () => {
     mockGetCookie.mockReturnValue('other-token')
 
     const source = new CookieAccessTokenSource('Other_Token')
