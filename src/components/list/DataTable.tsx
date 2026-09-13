@@ -119,7 +119,9 @@ export function DataTable<T extends object>({
           total: view?.total ?? 0,
           current: view?.page ?? 1,
           pageSize,
-          showSizeChanger: true,
+          showSizeChanger: {
+            showSearch: false
+          },
           pageSizeOptions: (view?.pageSizeOptions ?? DEFAULT_PAGE_SIZE_OPTIONS)
             .map(String),
           showTotal: locale.showTotal,

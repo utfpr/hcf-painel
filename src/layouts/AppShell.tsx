@@ -8,6 +8,7 @@ import {
 } from 'antd6'
 
 import { herbariumLayout } from '@/theme/theme'
+import { useAppearance } from '@/theme/useAppearance'
 
 import { AppHeader } from './components/AppHeader'
 import { AppSidebar } from './components/AppSidebar'
@@ -24,6 +25,7 @@ interface AppShellProps {
 
 export function AppShell({ children }: AppShellProps) {
   const { token } = theme.useToken()
+  const { isDark } = useAppearance()
   const screens = Grid.useBreakpoint()
   const isMobile = screens.md === false
   const [collapsed, setCollapsed] = useState(false)
@@ -39,7 +41,7 @@ export function AppShell({ children }: AppShellProps) {
     <Layout style={{ minHeight: '100vh' }}>
       {!isMobile && (
         <Sider
-          theme="light"
+          theme={isDark ? 'dark' : 'light'}
           trigger={null}
           collapsible
           collapsed={collapsed}
