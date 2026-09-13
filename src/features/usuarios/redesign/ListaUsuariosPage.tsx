@@ -15,7 +15,7 @@ import { AddUserDrawer } from './components/AddUserDrawer'
 import { UsersToolbar } from './components/UsersToolbar'
 import { buildUsuarioColumns } from './components/usuarioColumns'
 import { useListaUsuariosPage } from './hooks/useListaUsuariosPage'
-import type { UsuarioQuery } from './hooks/useListaUsuariosPage'
+import type { UsuarioFilter } from './hooks/useListaUsuariosPage'
 import type { UsuarioRow } from './types'
 
 export default function ListaUsuariosPage() {
@@ -70,22 +70,20 @@ export default function ListaUsuariosPage() {
         </Can>
       )}
     >
-      <DataList<UsuarioQuery, UsuarioRow>
+      <DataList<UsuarioFilter, UsuarioRow>
         storageKey="hcf.users.columns"
         defaults={{
           q: '',
-          role: '',
-          sort: '',
-          order: ''
+          role: ''
         }}
-        fetch={({
-          query, page, pageSize
-        }) => pageState.fetchUsuarios(query, page, pageSize)}
+        fetcher={({
+          filter, page, pageSize
+        }) => pageState.fetchUsuarios(filter, page, pageSize)}
         rowKey="key"
         onRowClick={row => {
           void navigate(`/usuarios/${row.key}`)
         }}
-        error={({ refresh }) => (
+        errorContent={({ refresh }) => (
           <Result
             status="error"
             title={t('error.title')}
@@ -97,7 +95,7 @@ export default function ListaUsuariosPage() {
             )}
           />
         )}
-        emptyText={({ hasActiveFilters, clearQuery }) => (
+        emptyContent={({ hasActiveFilters, clearFilter }) => (
           <Empty
             image={Empty.PRESENTED_IMAGE_SIMPLE}
             description={(
@@ -114,7 +112,7 @@ export default function ListaUsuariosPage() {
             )}
           >
             {hasActiveFilters && (
-              <Button onClick={() => clearQuery(['q', 'role'])}>
+              <Button onClick={() => clearFilter(['q', 'role'])}>
                 {t('empty.clearFilters')}
               </Button>
             )}
@@ -136,12 +134,12 @@ export default function ListaUsuariosPage() {
           isMobile: mobile,
           onDelete: confirmDelete
         })}
-        filters={({ query, setQuery }) => (
+        filterContent={({ filter, setFilter }) => (
           <UsersToolbar
-            query={query.q}
-            role={query.role}
-            onSearch={q => setQuery({ q })}
-            onRoleChange={role => setQuery({ role })}
+            query={filter.q}
+            role={filter.role}
+            onSearch={q => setFilter({ q })}
+            onRoleChange={role => setFilter({ role })}
           />
         )}
       />

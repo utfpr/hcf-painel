@@ -15,11 +15,9 @@ import type {
 
 const USUARIOS_REVALIDATE = [['/usuarios']] as const
 
-export type UsuarioQuery = {
+export type UsuarioFilter = {
   q: string
   role: string
-  sort: string
-  order: string
 }
 
 function asString(value: unknown): string {
@@ -39,7 +37,7 @@ export function toUsuarioRow(item: UsuarioListItem): UsuarioRow {
 }
 
 export function usuarioListParams(
-  query: UsuarioQuery,
+  filter: UsuarioFilter,
   pagina: number,
   pageSize: number
 ): Record<string, string | number> {
@@ -48,11 +46,11 @@ export function usuarioListParams(
     limite: pageSize
   }
 
-  const filters = toSearchFilters(query.q)
+  const filters = toSearchFilters(filter.q)
   if (filters.nome) params.nome = filters.nome
   if (filters.email) params.email = filters.email
   if (filters.telefone) params.telefone = filters.telefone
-  if (query.role) params.tipo = query.role
+  if (filter.role) params.tipo = filter.role
 
   // GET /usuarios still hardcodes ORDER BY id DESC; do not send sort until the API accepts it.
   return params
@@ -87,13 +85,13 @@ export function useListaUsuariosPage() {
   }, [createUsuario])
 
   const fetchUsuarios = useCallback(async (
-    query: UsuarioQuery,
+    filter: UsuarioFilter,
     page: number,
     pageSize: number
   ) => {
     const response = await httpClient.get<UsuariosListResponse>(
       '/usuarios',
-      usuarioListParams(query, page, pageSize)
+      usuarioListParams(filter, page, pageSize)
     )
     return {
       rows: response.data.usuarios.map(toUsuarioRow),

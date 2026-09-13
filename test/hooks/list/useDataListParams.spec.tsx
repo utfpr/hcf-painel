@@ -22,49 +22,38 @@ function wrapper({ children }: { children: React.ReactNode }) {
   )
 }
 
+const listOptions = {
+  storageKey: 'hcf.users.columns.test',
+  defaults: {
+    q: '',
+    role: ''
+  },
+  allowedSortKeys: ['nome'] as const,
+  columnKeys: ['nome', 'email'],
+  mandatoryColumnKeys: ['nome'] as const
+}
+
 describe('useDataListParams', () => {
-  test('setQuery clears page in the same patch', () => {
+  test('setFilter clears page in the same patch', () => {
     const { result } = renderHook(
-      () => useDataListParams({
-        storageKey: 'hcf.users.columns.test',
-        defaults: {
-          q: '',
-          role: '',
-          sort: '',
-          order: ''
-        },
-        allowedSortKeys: ['nome'],
-        columnKeys: ['nome', 'email'],
-        mandatoryColumnKeys: ['nome']
-      }),
+      () => useDataListParams(listOptions),
       { wrapper }
     )
 
-    expect(result.current.query.q).toBe('ana')
+    expect(result.current.filter.q).toBe('ana')
     expect(result.current.page).toBe(3)
 
     act(() => {
-      result.current.setQuery({ q: 'bia' })
+      result.current.setFilter({ q: 'bia' })
     })
 
-    expect(result.current.query.q).toBe('bia')
+    expect(result.current.filter.q).toBe('bia')
     expect(result.current.page).toBe(1)
   })
 
   test('applyTableChange resets page when sort changes', () => {
     const { result } = renderHook(
-      () => useDataListParams({
-        storageKey: 'hcf.users.columns.test',
-        defaults: {
-          q: '',
-          role: '',
-          sort: '',
-          order: ''
-        },
-        allowedSortKeys: ['nome'],
-        columnKeys: ['nome'],
-        mandatoryColumnKeys: ['nome']
-      }),
+      () => useDataListParams(listOptions),
       { wrapper }
     )
 
@@ -96,18 +85,7 @@ describe('useDataListParams', () => {
     )
 
     const { result } = renderHook(
-      () => useDataListParams({
-        storageKey: 'hcf.users.columns.test',
-        defaults: {
-          q: '',
-          role: '',
-          sort: '',
-          order: ''
-        },
-        allowedSortKeys: ['nome'],
-        columnKeys: ['nome'],
-        mandatoryColumnKeys: ['nome']
-      }),
+      () => useDataListParams(listOptions),
       { wrapper: sortWrapper }
     )
 
@@ -116,5 +94,22 @@ describe('useDataListParams', () => {
       order: 'desc'
     })
     expect(result.current.hasActiveFilters).toBe(false)
+  })
+
+  test('unknown sort keys are ignored', () => {
+    const unknownSortWrapper = ({ children }: { children: React.ReactNode }) => (
+      <ContainerProvider baseUrl="https://api.example.com">
+        <SearchParamsWrapper initialEntry="/usuarios?sort=injected&order=asc">
+          {children}
+        </SearchParamsWrapper>
+      </ContainerProvider>
+    )
+
+    const { result } = renderHook(
+      () => useDataListParams(listOptions),
+      { wrapper: unknownSortWrapper }
+    )
+
+    expect(result.current.sort).toBeNull()
   })
 })

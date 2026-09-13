@@ -4,23 +4,24 @@ import type { DataTableChange, DataTableSort } from '@/components/list/DataTable
 import { useSearchParamsStore } from '@/libraries/router'
 
 import { useColumnVisibility } from './useColumnVisibility'
+import { filterPatchToUrlUpdates, useUrlFilter } from './useUrlFilter'
 import { paginationToUrlUpdates, useUrlPagination } from './useUrlPagination'
-import { queryPatchToUrlUpdates, useUrlQuery } from './useUrlQuery'
 
-function sortFromQuery(
-  query: Record<string, string>,
-  sortFieldKey: string,
-  sortOrderKey: string
+const SORT_KEY = 'sort'
+const ORDER_KEY = 'order'
+
+function sortFromParams(
+  params: URLSearchParams,
+  allowedSortKeys: readonly string[]
 ): DataTableSort | null {
-  const key = query[sortFieldKey]
-  const order = query[sortOrderKey]
-  if (key && (order === 'asc' || order === 'desc')) {
-    return {
-      key,
-      order
-    }
+  const key = params.get(SORT_KEY)
+  const order = params.get(ORDER_KEY)
+  if (!key || !allowedSortKeys.includes(key)) return null
+  if (order !== 'asc' && order !== 'desc') return null
+  return {
+    key,
+    order
   }
-  return null
 }
 
 function sortsEqual(left: DataTableSort | null, right: DataTableSort | null): boolean {
@@ -29,21 +30,20 @@ function sortsEqual(left: DataTableSort | null, right: DataTableSort | null): bo
   return left.key === right.key && left.order === right.order
 }
 
-export function useDataListParams<Q extends Record<string, string>>(options: {
-  defaults: Q
+export function useDataListParams<F extends Record<string, string>>(options: {
+  defaults: F
   storageKey: string
   allowedSortKeys?: readonly string[]
   pageSizeOptions?: readonly number[]
   defaultPageSize?: number
   columnKeys: readonly string[]
   mandatoryColumnKeys?: readonly string[]
-  names?: Partial<{ [K in keyof Q]: string }>
   pageKey?: string
   pageSizeKey?: string
 }): {
-  query: Q
-  setQuery: (patch: Partial<Q>) => void
-  clearQuery: (keys?: (keyof Q)[]) => void
+  filter: F
+  setFilter: (patch: Partial<F>) => void
+  clearFilter: (keys?: (keyof F)[]) => void
   page: number
   pageSize: number
   setPagination: (page: number, pageSize: number) => void
@@ -57,14 +57,11 @@ export function useDataListParams<Q extends Record<string, string>>(options: {
   const pageKey = options.pageKey ?? 'page'
   const pageSizeKey = options.pageSizeKey ?? 'pageSize'
   const defaultPageSize = options.defaultPageSize ?? 20
-  const sortFieldKey = ('sort' in options.defaults ? 'sort' : undefined) as keyof Q | undefined
-  const sortOrderKey = ('order' in options.defaults ? 'order' : undefined) as keyof Q | undefined
+  const allowedSortKeys = options.allowedSortKeys ?? []
 
   const store = useSearchParamsStore()
-  const queryState = useUrlQuery({
-    defaults: options.defaults,
-    names: options.names,
-    allowedSortKeys: options.allowedSortKeys
+  const filterState = useUrlFilter({
+    defaults: options.defaults
   })
   const pagination = useUrlPagination({
     pageKey,
@@ -79,53 +76,45 @@ export function useDataListParams<Q extends Record<string, string>>(options: {
   })
 
   const sort = useMemo(
-    () => sortFieldKey && sortOrderKey
-      ? sortFromQuery(queryState.values, String(sortFieldKey), String(sortOrderKey))
-      : null,
+    () => sortFromParams(store.params, allowedSortKeys),
     [
-      queryState.values,
-      sortFieldKey,
-      sortOrderKey
+      allowedSortKeys,
+      store.params
     ]
   )
 
   const hasActiveFilters = useMemo(() => {
-    return (Object.keys(options.defaults) as (keyof Q)[]).some(key => {
-      if (key === sortFieldKey || key === sortOrderKey) return false
-      return queryState.values[key] !== options.defaults[key]
+    return (Object.keys(options.defaults) as (keyof F)[]).some(key => {
+      return filterState.values[key] !== options.defaults[key]
     })
   }, [
-    options.defaults,
-    queryState.values,
-    sortFieldKey,
-    sortOrderKey
+    filterState.values,
+    options.defaults
   ])
 
-  const setQuery = useCallback((patch: Partial<Q>) => {
+  const setFilter = useCallback((patch: Partial<F>) => {
     store.patch({
-      ...queryPatchToUrlUpdates(patch, options.defaults, options.names),
+      ...filterPatchToUrlUpdates(patch, options.defaults),
       [pageKey]: null
     })
   }, [
     options.defaults,
-    options.names,
     pageKey,
     store
   ])
 
-  const clearQuery = useCallback((keys?: (keyof Q)[]) => {
-    const keysToClear = keys ?? (Object.keys(options.defaults) as (keyof Q)[])
-    const patch = {} as Partial<Q>
+  const clearFilter = useCallback((keys?: (keyof F)[]) => {
+    const keysToClear = keys ?? (Object.keys(options.defaults) as (keyof F)[])
+    const patch = {} as Partial<F>
     for (const key of keysToClear) {
       patch[key] = options.defaults[key]
     }
     store.patch({
-      ...queryPatchToUrlUpdates(patch, options.defaults, options.names),
+      ...filterPatchToUrlUpdates(patch, options.defaults),
       [pageKey]: null
     })
   }, [
     options.defaults,
-    options.names,
     pageKey,
     store
   ])
@@ -135,15 +124,13 @@ export function useDataListParams<Q extends Record<string, string>>(options: {
     const pageSizeChanged = next.pageSize !== pagination.pageSize
     const updates: Record<string, string | null> = {}
 
-    if (sortChanged && sortFieldKey && sortOrderKey) {
-      const sortName = options.names?.[sortFieldKey] ?? String(sortFieldKey)
-      const orderName = options.names?.[sortOrderKey] ?? String(sortOrderKey)
-      if (next.sort) {
-        updates[sortName] = next.sort.key
-        updates[orderName] = next.sort.order
+    if (sortChanged) {
+      if (next.sort && allowedSortKeys.includes(next.sort.key)) {
+        updates[SORT_KEY] = next.sort.key
+        updates[ORDER_KEY] = next.sort.order
       } else {
-        updates[sortName] = null
-        updates[orderName] = null
+        updates[SORT_KEY] = null
+        updates[ORDER_KEY] = null
       }
     }
 
@@ -167,21 +154,19 @@ export function useDataListParams<Q extends Record<string, string>>(options: {
 
     store.patch(updates)
   }, [
+    allowedSortKeys,
     defaultPageSize,
-    options.names,
     pageKey,
     pageSizeKey,
     pagination.pageSize,
     sort,
-    sortFieldKey,
-    sortOrderKey,
     store
   ])
 
   return {
-    query: queryState.values,
-    setQuery,
-    clearQuery,
+    filter: filterState.values,
+    setFilter,
+    clearFilter,
     page: pagination.page,
     pageSize: pagination.pageSize,
     setPagination: pagination.setPagination,

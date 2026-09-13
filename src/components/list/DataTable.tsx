@@ -123,7 +123,11 @@ export function DataTable<T extends object>({
           pageSizeOptions: (view?.pageSizeOptions ?? DEFAULT_PAGE_SIZE_OPTIONS)
             .map(String),
           showTotal: locale.showTotal,
-          locale: locale.pagination
+          locale: locale.pagination,
+          style: {
+            margin: 0,
+            padding: '12px 16px'
+          }
         }}
       locale={{
         triggerDesc: locale.triggerDesc,

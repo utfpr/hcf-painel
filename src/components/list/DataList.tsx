@@ -19,8 +19,8 @@ import {
   columnCatalogConfig, resolveColumns, visibleColumns
 } from './listColumns'
 
-export interface DataListFetchArgs<Q extends Record<string, string>> {
-  query: Q
+export interface DataListFetchArgs<F extends Record<string, string>> {
+  filter: F
   page: number
   pageSize: number
   sort: DataTableSort | null
@@ -31,16 +31,16 @@ export interface DataListFetchResult<R> {
   total: number
 }
 
-export interface DataListFiltersContext<Q extends Record<string, string>> {
-  query: Q
-  setQuery: (patch: Partial<Q>) => void
-  clearQuery: (keys?: (keyof Q)[]) => void
+export interface DataListFiltersContext<F extends Record<string, string>> {
+  filter: F
+  setFilter: (patch: Partial<F>) => void
+  clearFilter: (keys?: (keyof F)[]) => void
   hasActiveFilters: boolean
 }
 
-export interface DataListEmptyContext<Q extends Record<string, string>> {
-  query: Q
-  clearQuery: (keys?: (keyof Q)[]) => void
+export interface DataListEmptyContext<F extends Record<string, string>> {
+  filter: F
+  clearFilter: (keys?: (keyof F)[]) => void
   hasActiveFilters: boolean
 }
 
@@ -49,35 +49,33 @@ export interface DataListErrorContext {
   refresh: () => void
 }
 
-export interface DataListProps<Q extends Record<string, string>, R extends object> {
+export interface DataListProps<F extends Record<string, string>, R extends object> {
   storageKey: string
-  defaults: Q
-  fetch: (args: DataListFetchArgs<Q>) => Promise<DataListFetchResult<R>>
+  defaults: F
+  fetcher: (args: DataListFetchArgs<F>) => Promise<DataListFetchResult<R>>
   rowKey: keyof R | ((row: R) => string | number)
   columns: DataTableColumn<R>[] | ((ctx: { isMobile: boolean }) => DataTableColumn<R>[])
-  filters?: ReactNode | ((ctx: DataListFiltersContext<Q>) => ReactNode)
-  emptyText?: ReactNode | ((ctx: DataListEmptyContext<Q>) => ReactNode)
-  error?: (ctx: DataListErrorContext) => ReactNode
+  filterContent?: ReactNode | ((ctx: DataListFiltersContext<F>) => ReactNode)
+  emptyContent?: ReactNode | ((ctx: DataListEmptyContext<F>) => ReactNode)
+  errorContent?: (ctx: DataListErrorContext) => ReactNode
   onRowClick?: (row: R) => void
   pageSizeOptions?: readonly number[]
   defaultPageSize?: number
-  names?: Partial<{ [K in keyof Q]: string }>
 }
 
-export function DataList<Q extends Record<string, string>, R extends object>({
+export function DataList<F extends Record<string, string>, R extends object>({
   storageKey,
   defaults,
-  fetch,
+  fetcher,
   rowKey,
   columns,
-  filters,
-  emptyText,
-  error: renderError,
+  filterContent,
+  emptyContent,
+  errorContent,
   onRowClick,
   pageSizeOptions,
-  defaultPageSize,
-  names
-}: DataListProps<Q, R>) {
+  defaultPageSize
+}: DataListProps<F, R>) {
   const { token } = theme.useToken()
   const { t } = useTranslation('simpleTableComponent')
   const { pathname } = useLocation()
@@ -89,10 +87,9 @@ export function DataList<Q extends Record<string, string>, R extends object>({
     settingsColumns, columnKeys, mandatoryColumnKeys, allowedSortKeys
   } = columnCatalogConfig(catalog)
 
-  const list = useDataListParams<Q>({
+  const list = useDataListParams<F>({
     storageKey,
     defaults,
-    names,
     allowedSortKeys,
     pageSizeOptions,
     defaultPageSize,
@@ -103,15 +100,15 @@ export function DataList<Q extends Record<string, string>, R extends object>({
   const {
     data, loading, error, refresh
   } = useQuery(
-    () => fetch({
-      query: list.query,
+    () => fetcher({
+      filter: list.filter,
       page: list.page,
       pageSize: list.pageSize,
       sort: list.sort
     }),
     [
       pathname,
-      list.query,
+      list.filter,
       list.page,
       list.pageSize,
       list.sort
@@ -141,8 +138,8 @@ export function DataList<Q extends Record<string, string>, R extends object>({
     total
   ])
 
-  if (showError && renderError && error) {
-    return renderError({
+  if (showError && errorContent && error) {
+    return errorContent({
       error,
       refresh: () => {
         void refresh()
@@ -150,15 +147,15 @@ export function DataList<Q extends Record<string, string>, R extends object>({
     })
   }
 
-  const filterCtx: DataListFiltersContext<Q> = {
-    query: list.query,
-    setQuery: list.setQuery,
-    clearQuery: list.clearQuery,
+  const filterCtx: DataListFiltersContext<F> = {
+    filter: list.filter,
+    setFilter: list.setFilter,
+    clearFilter: list.clearFilter,
     hasActiveFilters: list.hasActiveFilters
   }
-  const emptyCtx: DataListEmptyContext<Q> = {
-    query: list.query,
-    clearQuery: list.clearQuery,
+  const emptyCtx: DataListEmptyContext<F> = {
+    filter: list.filter,
+    clearFilter: list.clearFilter,
     hasActiveFilters: list.hasActiveFilters
   }
 
@@ -180,7 +177,7 @@ export function DataList<Q extends Record<string, string>, R extends object>({
           minWidth: 0
         }}
         >
-          {typeof filters === 'function' ? filters(filterCtx) : filters}
+          {typeof filterContent === 'function' ? filterContent(filterCtx) : filterContent}
         </div>
         <ColumnSettings
           columns={settingsColumns.map(column => ({
@@ -219,7 +216,7 @@ export function DataList<Q extends Record<string, string>, R extends object>({
           }}
           onChange={list.applyTableChange}
           onRowClick={onRowClick}
-          emptyText={typeof emptyText === 'function' ? emptyText(emptyCtx) : emptyText}
+          emptyText={typeof emptyContent === 'function' ? emptyContent(emptyCtx) : emptyContent}
         />
       </div>
     </Flex>
