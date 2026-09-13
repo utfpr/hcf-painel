@@ -5,7 +5,7 @@ import {
 } from 'react-router'
 
 import { useAuth } from './contexts/Auth/useAuth'
-import ListaUsuariosPage from './features/usuarios/ListaUsuariosPage'
+import ListaUsuariosPage from './features/usuarios/UsuariosListPage'
 import {
   isCuradorOuOperador,
   isCuradorOuOperadorOuIdentificador

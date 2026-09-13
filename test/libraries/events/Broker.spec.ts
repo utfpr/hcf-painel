@@ -1,4 +1,9 @@
-import { vi } from 'vitest'
+import {
+  describe,
+  expect,
+  test,
+  vi
+} from 'vitest'
 
 import { Broker } from '@/libraries/events/Broker'
 
@@ -9,7 +14,7 @@ type TestEvents = {
 
 describe('Broker', () => {
   describe('subscribe', () => {
-    it('registers a listener for an event', () => {
+    test('registers a listener for an event', () => {
       // arrange
       const broker = new Broker<TestEvents>()
       const callback = vi.fn()
@@ -23,7 +28,7 @@ describe('Broker', () => {
       expect(callback).toHaveBeenCalledWith('hello')
     })
 
-    it('returns this for chaining', () => {
+    test('returns this for chaining', () => {
       // arrange
       const broker = new Broker<TestEvents>()
       const callback = vi.fn()
@@ -35,7 +40,7 @@ describe('Broker', () => {
       expect(result).toBe(broker)
     })
 
-    it('supports multiple listeners for the same event', () => {
+    test('supports multiple listeners for the same event', () => {
       // arrange
       const broker = new Broker<TestEvents>()
       const callback1 = vi.fn()
@@ -51,7 +56,7 @@ describe('Broker', () => {
       expect(callback2).toHaveBeenCalledWith('hello')
     })
 
-    it('passes correct arguments to listeners', () => {
+    test('passes correct arguments to listeners', () => {
       // arrange
       const broker = new Broker<TestEvents>()
       const callback = vi.fn()
@@ -66,7 +71,7 @@ describe('Broker', () => {
   })
 
   describe('unsubscribe', () => {
-    it('removes a listener', () => {
+    test('removes a listener', () => {
       // arrange
       const broker = new Broker<TestEvents>()
       const callback = vi.fn()
@@ -80,7 +85,7 @@ describe('Broker', () => {
       expect(callback).not.toHaveBeenCalled()
     })
 
-    it('returns this for chaining', () => {
+    test('returns this for chaining', () => {
       // arrange
       const broker = new Broker<TestEvents>()
       const callback = vi.fn()
@@ -93,7 +98,7 @@ describe('Broker', () => {
       expect(result).toBe(broker)
     })
 
-    it('does not affect other listeners when unsubscribing one', () => {
+    test('does not affect other listeners when unsubscribing one', () => {
       // arrange
       const broker = new Broker<TestEvents>()
       const callback1 = vi.fn()
@@ -110,7 +115,7 @@ describe('Broker', () => {
       expect(callback2).toHaveBeenCalledWith('hello')
     })
 
-    it('handles unsubscribe of non-existent listener gracefully', () => {
+    test('handles unsubscribe of non-existent listener gracefully', () => {
       // arrange
       const broker = new Broker<TestEvents>()
       const callback = vi.fn()
@@ -121,7 +126,7 @@ describe('Broker', () => {
   })
 
   describe('emit', () => {
-    it('does nothing when no listeners are registered', () => {
+    test('does nothing when no listeners are registered', () => {
       // arrange
       const broker = new Broker<TestEvents>()
 
@@ -129,7 +134,7 @@ describe('Broker', () => {
       expect(() => broker.emit('test.event', 'hello')).not.toThrow()
     })
 
-    it('returns this for chaining', () => {
+    test('returns this for chaining', () => {
       // arrange
       const broker = new Broker<TestEvents>()
       const callback = vi.fn()

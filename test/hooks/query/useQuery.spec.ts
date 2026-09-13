@@ -1,10 +1,15 @@
-import { vi } from 'vitest'
+import {
+  describe,
+  expect,
+  test,
+  vi
+} from 'vitest'
 
 import { useQuery } from '@/hooks/query/useQuery'
 import { renderHook, waitFor } from '@testing-library/react'
 
 describe('useQuery', () => {
-  it('returns loading true initially', () => {
+  test('returns loading true initially', () => {
     const fetcher = vi.fn().mockResolvedValue({ data: 'result' })
 
     // act
@@ -17,7 +22,7 @@ describe('useQuery', () => {
     expect(result.current.error).toBeUndefined()
   })
 
-  it('returns data when fetcher resolves', async () => {
+  test('returns data when fetcher resolves', async () => {
     // arrange
     const mockData = { id: 1, name: 'test' }
     const fetcher = vi.fn().mockResolvedValue(mockData)
@@ -35,7 +40,7 @@ describe('useQuery', () => {
     expect(fetcher).toHaveBeenCalledWith(['data-test-key'])
   })
 
-  it('returns error when fetcher rejects', async () => {
+  test('returns error when fetcher rejects', async () => {
     // arrange
     const mockError = new Error('Fetch failed')
     const fetcher = vi.fn().mockRejectedValue(mockError)
@@ -52,7 +57,7 @@ describe('useQuery', () => {
     expect(result.current.data).toBeUndefined()
   })
 
-  it('passes deps to fetcher', async () => {
+  test('passes deps to fetcher', async () => {
     const fetcher = vi.fn().mockResolvedValue('ok')
 
     // act
@@ -64,7 +69,7 @@ describe('useQuery', () => {
     })
   })
 
-  it('supports null deps to disable fetch', () => {
+  test('supports null deps to disable fetch', () => {
     const fetcher = vi.fn()
 
     // act

@@ -1,5 +1,12 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios'
-import { vi } from 'vitest'
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  test,
+  vi
+} from 'vitest'
 
 import { Broker } from '@/libraries/events/Broker'
 import { HttpClient } from '@/libraries/http/HttpClient'
@@ -23,7 +30,7 @@ describe('HttpClient', () => {
     nextStatus = 200
     nextData = { ok: true }
 
-    axios.defaults.adapter = async config => {
+    axios.defaults.adapter = config => {
       lastConfig = config
       if (nextStatus >= 400) {
         const error = new AxiosError('Request failed')
@@ -38,13 +45,13 @@ describe('HttpClient', () => {
         throw error
       }
 
-      return {
+      return Promise.resolve({
         data: nextData,
         status: nextStatus,
         statusText: 'OK',
         headers: {},
         config
-      } as AdapterResult
+      } as AdapterResult)
     }
   })
 
@@ -59,7 +66,7 @@ describe('HttpClient', () => {
     return typeof value === 'string' ? value : undefined
   }
 
-  it('sends Authorization Bearer when accessTokenSource returns a token', async () => {
+  test('sends Authorization Bearer when accessTokenSource returns a token', async () => {
     const client = new HttpClient({
       baseUrl: 'https://api.example.com',
       broker: new Broker(),
@@ -71,7 +78,7 @@ describe('HttpClient', () => {
     expect(authorizationHeader()).toBe('Bearer session-token')
   })
 
-  it('omits Authorization when accessTokenSource returns undefined', async () => {
+  test('omits Authorization when accessTokenSource returns undefined', async () => {
     const client = new HttpClient({
       baseUrl: 'https://api.example.com',
       broker: new Broker(),
@@ -83,7 +90,7 @@ describe('HttpClient', () => {
     expect(authorizationHeader()).toBeUndefined()
   })
 
-  it('omits Authorization when accessTokenSource is not provided', async () => {
+  test('omits Authorization when accessTokenSource is not provided', async () => {
     const client = new HttpClient({
       baseUrl: 'https://api.example.com',
       broker: new Broker()
@@ -94,7 +101,7 @@ describe('HttpClient', () => {
     expect(authorizationHeader()).toBeUndefined()
   })
 
-  it('emits http.unauthorized and rejects on 401', async () => {
+  test('emits http.unauthorized and rejects on 401', async () => {
     const broker = new Broker()
     const onUnauthorized = vi.fn()
     broker.subscribe('http.unauthorized', onUnauthorized)
@@ -109,7 +116,7 @@ describe('HttpClient', () => {
     expect(onUnauthorized).toHaveBeenCalledTimes(1)
   })
 
-  it('returns HttpClientResponse from delete', async () => {
+  test('returns HttpClientResponse from delete', async () => {
     nextData = undefined
     nextStatus = 204
     const client = new HttpClient({

@@ -1,0 +1,34 @@
+import {
+  describe,
+  expect,
+  test
+} from 'vitest'
+
+import { inferSearchField, toSearchFilters } from '@/features/usuarios/redesign/search'
+
+describe('toSearchFilters', () => {
+  test('maps e-mail queries to the email filter', () => {
+    expect(toSearchFilters('greta@utfpr.edu.br')).toEqual({
+      email: 'greta@utfpr.edu.br'
+    })
+    expect(inferSearchField('greta@utfpr.edu.br')).toBe('email')
+  })
+
+  test('maps phone-like queries to the phone filter', () => {
+    expect(toSearchFilters('+55 44 99968-2514')).toEqual({
+      telefone: '+55 44 99968-2514'
+    })
+    expect(inferSearchField('44999682514')).toBe('telefone')
+  })
+
+  test('maps other queries to the name filter', () => {
+    expect(toSearchFilters('Greta Aline')).toEqual({
+      nome: 'Greta Aline'
+    })
+  })
+
+  test('returns no filters for blank search', () => {
+    expect(toSearchFilters('   ')).toEqual({})
+    expect(inferSearchField('')).toBeUndefined()
+  })
+})

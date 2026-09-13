@@ -7,7 +7,7 @@
 
   "pagina": "page",
   "paginas": "pages",
-  
+
   "adicionar": "Add",
   "excluir": "Delete",
   "cadastrar": "Register",
@@ -21,7 +21,7 @@
   "atualizacaoRealizadaSucesso": "The update was completed successfully.",
 
   "notificacaoExcluir": "Delete",
-  
+
   "tituloFalha": "Failure",
   "erro": "Error",
   "error": "Error",
@@ -32,5 +32,9 @@
   "nenhumResultadoEncontrado": "No results found",
 
   "sim": "YES",
-  "nao": "NO"
+  "nao": "NO",
+
+  "page": {
+    "title": "{{title}} - Herbário UTFPR Campo Mourão"
+  }
 }

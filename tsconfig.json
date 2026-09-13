@@ -21,7 +21,6 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "types": [
-      "vitest/globals",
       "@testing-library/jest-dom/vitest"
     ],
     "baseUrl": ".",
@@ -36,10 +35,11 @@
   },
   "include": [
     "src/**/*",
+    "test/**/*",
     ".config/**/*",
     "vite.config.ts",
     "eslint.config.mts",
-    "vitest.config.mts",
+    "vitest.config.mts"
   ],
   "exclude": [
     "build/",

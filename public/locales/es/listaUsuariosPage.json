@@ -1,0 +1,74 @@
+{
+  "title": "Usuarios",
+  "description": "Administre usuarios y el acceso al herbario.",
+
+  "search": {
+    "placeholder": "Buscar por nombre, correo o teléfono"
+  },
+
+  "filters": {
+    "role": "Rol",
+    "allRoles": "Todos los roles",
+    "trigger": "Filtros"
+  },
+
+  "columns": {
+    "title": "Columnas",
+    "trigger": "Columnas",
+    "reset": "Restablecer predeterminado",
+    "name": "Nombre",
+    "type": "Tipo",
+    "email": "Correo electrónico",
+    "phone": "Teléfono",
+    "creationDate": "Fecha de creación",
+    "actions": "Acciones"
+  },
+
+  "roles": {
+    "curator": "Curador",
+    "operator": "Operador",
+    "identifier": "Identificador"
+  },
+
+  "actions": {
+    "add": "Añadir usuario",
+    "addShort": "Añadir",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "menu": "Acciones de la fila"
+  },
+
+  "create": {
+    "title": "Añadir usuario",
+    "submit": "Crear usuario",
+    "success": "El usuario se creó correctamente.",
+    "errorTitle": "No se pudo crear el usuario",
+    "error": "Ocurrió un problema al crear el usuario. Inténtelo de nuevo."
+  },
+
+  "delete": {
+    "title": "¿Eliminar usuario?",
+    "description": "¿Seguro que desea eliminar permanentemente a “{{name}}”? Esta acción no se puede deshacer.",
+    "success": "El usuario se eliminó correctamente.",
+    "errorTitle": "No se pudo eliminar el usuario",
+    "error": "Ocurrió un problema al eliminar el usuario. Inténtelo de nuevo."
+  },
+
+  "empty": {
+    "title": "Todavía no hay usuarios",
+    "description": "Añada el primer usuario al herbario.",
+    "filteredTitle": "No se encontraron usuarios",
+    "filteredDescription": "Pruebe a cambiar la búsqueda o los filtros.",
+    "clearFilters": "Limpiar filtros"
+  },
+
+  "error": {
+    "title": "No se pudieron cargar los usuarios.",
+    "description": "Ocurrió un problema al obtener la lista de usuarios.",
+    "retry": "Intentar de nuevo"
+  },
+
+  "pagination": {
+    "total": "{{from}}–{{to}} de {{total}} usuarios"
+  }
+}

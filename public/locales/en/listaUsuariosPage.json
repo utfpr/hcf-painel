@@ -1,0 +1,74 @@
+{
+  "title": "Users",
+  "description": "Manage users and access to the herbarium.",
+
+  "search": {
+    "placeholder": "Search by name, email or phone"
+  },
+
+  "filters": {
+    "role": "Role",
+    "allRoles": "All roles",
+    "trigger": "Filters"
+  },
+
+  "columns": {
+    "title": "Columns",
+    "trigger": "Columns",
+    "reset": "Reset to default",
+    "name": "Name",
+    "type": "Type",
+    "email": "E-mail",
+    "phone": "Phone",
+    "creationDate": "Creation date",
+    "actions": "Actions"
+  },
+
+  "roles": {
+    "curator": "Curator",
+    "operator": "Operator",
+    "identifier": "Identifier"
+  },
+
+  "actions": {
+    "add": "Add user",
+    "addShort": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "menu": "Row actions"
+  },
+
+  "create": {
+    "title": "Add user",
+    "submit": "Create user",
+    "success": "The user has been created successfully.",
+    "errorTitle": "Could not create user",
+    "error": "Something went wrong while creating the user. Please try again."
+  },
+
+  "delete": {
+    "title": "Delete user?",
+    "description": "Are you sure you want to permanently delete “{{name}}”? This action cannot be undone.",
+    "success": "The user has been deleted successfully.",
+    "errorTitle": "Could not delete user",
+    "error": "Something went wrong while deleting the user. Please try again."
+  },
+
+  "empty": {
+    "title": "No users yet",
+    "description": "Add the first user to the herbarium.",
+    "filteredTitle": "No users found",
+    "filteredDescription": "Try changing your search or filters.",
+    "clearFilters": "Clear filters"
+  },
+
+  "error": {
+    "title": "Unable to load users.",
+    "description": "Something went wrong while retrieving the user list.",
+    "retry": "Try again"
+  },
+
+  "pagination": {
+    "total": "{{from}}–{{to}} of {{total}} users"
+  }
+}

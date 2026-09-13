@@ -38,5 +38,18 @@
   "exportacao": "Exportación",
   "servicos": "Servicios",
   "erroBuscarDarwinCore": "Hubo un problema al buscar el archivo Darwin Core, inténtalo de nuevo.",
-  "erroRequisitarDarwinCore": "Hubo un problema al solicitar el archivo Darwin Core, inténtalo de nuevo."
+  "erroRequisitarDarwinCore": "Hubo un problema al solicitar el archivo Darwin Core, inténtalo de nuevo.",
+  "idioma": "Idioma",
+  "grupoColecao": "Colección",
+  "grupoPessoasAcesso": "Personas y acceso",
+  "grupoGeografia": "Geografía",
+  "grupoDadosOperacoes": "Datos y operaciones",
+  "ambienteDesenvolvimento": "Desarrollo",
+  "ambienteStaging": "Preproducción",
+  "aparencia": "Apariencia",
+  "aparenciaSistema": "Sistema",
+  "aparenciaClara": "Clara",
+  "aparenciaEscura": "Oscura",
+  "alternarMenu": "Abrir o cerrar la navegación",
+  "menuConta": "Menú de la cuenta"
 }
