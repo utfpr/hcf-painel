@@ -1,0 +1,44 @@
+{
+  "titulo": "Nova expedição",
+
+  "campos": {
+    "dataInicio": "Data e hora de início",
+    "dataFim": "Data e hora de fim",
+    "destino": "Destino",
+    "descricao": "Descrição",
+    "participantes": "Participantes",
+    "rota": "Rota"
+  },
+
+  "placeholders": {
+    "dataInicio": "Selecione a data e a hora de início",
+    "dataFim": "Selecione a data e a hora de fim (opcional)",
+    "destino": "Busque pelo nome da cidade",
+    "descricao": "Descreva o objetivo da expedição",
+    "participantes": "Busque participantes pelo nome",
+    "rota": "Busque cidades e adicione na ordem do percurso (opcional)"
+  },
+
+  "validacao": {
+    "dataInicioObrigatoria": "Informe a data e a hora de início.",
+    "dataFimAnterior": "A data de fim não pode ser anterior à data de início.",
+    "destinoObrigatorio": "Selecione o destino da expedição.",
+    "descricaoObrigatoria": "Informe a descrição da expedição.",
+    "participantesObrigatorio": "Selecione ao menos um participante."
+  },
+
+  "rota": {
+    "subir": "Mover para cima",
+    "descer": "Mover para baixo",
+    "remover": "Remover da rota"
+  },
+
+  "acoes": {
+    "salvar": "Salvar"
+  },
+
+  "feedback": {
+    "sucesso": "A expedição foi cadastrada com sucesso.",
+    "erro": "Não foi possível cadastrar a expedição. Verifique os dados e tente novamente."
+  }
+}

@@ -63,6 +63,7 @@ import ServicosSpeciesLinkScreen from './pages/ServicosSpeciesLinkScreen'
 import NovoTomboScreen from './pages/tombos/NovoTomboScreen'
 import UnauthorizedScreen from './pages/UnauthorizedScreen'
 import PendenciaPagina from './pages/VerPendenciaScreen'
+import NovaExpedicaoPage from './features/expedicoes/NovaExpedicaoPage'
 
 const DetalhesTombo = withRouter(DetalhesTomboScreen)
 const NovoTombo = withRouter(NovoTomboScreen)
@@ -98,6 +99,8 @@ export function AppRoutes() {
       <Route path="remessas/novo" element={guard(isCuradorOuOperador(), NovaRemessa)} />
       <Route path="remessas/:remessa_id" element={guard(isCuradorOuOperador(), NovaRemessa)} />
       <Route path="remessas" element={guard(isCuradorOuOperador(), ListaRemessasScreen)} />
+
+      <Route path="expedicoes/novo" element={guard(auth.can('create', 'Expedicao'), NovaExpedicaoPage)} />
 
       <Route path="usuarios/novo" element={guard(auth.can('create', 'Usuario'), NovoUsuario)} />
       <Route path="usuarios/:usuario_id" element={guard(auth.can('update', 'Usuario'), NovoUsuario)} />
