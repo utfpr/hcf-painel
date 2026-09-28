@@ -6,7 +6,8 @@
     "dataFim": "Data e hora de fim",
     "destino": "Destino",
     "descricao": "Descrição",
-    "participantes": "Participantes"
+    "participantes": "Participantes",
+    "rota": "Rota"
   },
 
   "placeholders": {
@@ -14,7 +15,8 @@
     "dataFim": "Selecione a data e a hora de fim (opcional)",
     "destino": "Busque pelo nome da cidade",
     "descricao": "Descreva o objetivo da expedição",
-    "participantes": "Busque participantes pelo nome"
+    "participantes": "Busque participantes pelo nome",
+    "rota": "Busque cidades e adicione na ordem do percurso (opcional)"
   },
 
   "validacao": {
@@ -25,14 +27,18 @@
     "participantesObrigatorio": "Selecione ao menos um participante."
   },
 
+  "rota": {
+    "subir": "Mover para cima",
+    "descer": "Mover para baixo",
+    "remover": "Remover da rota"
+  },
+
   "acoes": {
     "salvar": "Salvar"
   },
 
   "feedback": {
     "sucesso": "A expedição foi cadastrada com sucesso.",
-    "erro": "Não foi possível cadastrar a expedição. Verifique os dados e tente novamente.",
-    "contratoPendenteTitulo": "Cadastro indisponível",
-    "contratoPendente": "A API de criação de expedições ainda está em construção. O formulário está pronto e será conectado assim que o contrato for alinhado com o time de back-end."
+    "erro": "Não foi possível cadastrar a expedição. Verifique os dados e tente novamente."
   }
 }

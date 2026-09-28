@@ -4,7 +4,6 @@ import { useContainer } from '@/contexts/Container/useContainer'
 import { useMutation } from '@/hooks/query/useMutation'
 
 import {
-  CONTRATO_ALINHADO,
   EXPEDICOES_ENDPOINT,
   toCreateExpedicaoPayload,
   type CreateExpedicaoPayload,
@@ -17,26 +16,14 @@ import type {
 } from '../types'
 
 const BUSCA_LIMITE = 20
-
-/**
- * Lançado quando o submit é acionado antes do contrato da API estar alinhado.
- * A tela trata este caso mostrando um aviso, sem perder os dados preenchidos.
- */
-export class ContratoNaoAlinhadoError extends Error {
-  constructor() {
-    super('Contrato da API de expedições ainda não alinhado com o back-end.')
-    this.name = 'ContratoNaoAlinhadoError'
-  }
-}
+const STATUS_CREATED = 201
 
 export function useNovaExpedicaoPage() {
   const { httpClient } = useContainer()
 
   const { trigger: postExpedicao } = useMutation(
-    (payload: CreateExpedicaoPayload) => httpClient.post<CreateExpedicaoPayload>(
-      EXPEDICOES_ENDPOINT,
-      payload
-    ),
+
+    (payload: CreateExpedicaoPayload) => httpClient.post(EXPEDICOES_ENDPOINT, payload),
     [EXPEDICOES_ENDPOINT, 'create'],
     { revalidate: [[EXPEDICOES_ENDPOINT]] }
   )
@@ -55,7 +42,6 @@ export function useNovaExpedicaoPage() {
     }))
   }, [httpClient])
 
-  /** Busca usuários por nome. Endpoint já existente: GET /usuarios. */
   const buscarParticipantes = useCallback(async (nome: string): Promise<SelectOption[]> => {
     const params: Record<string, string | number> = {
       pagina: 1,
@@ -70,18 +56,10 @@ export function useNovaExpedicaoPage() {
     }))
   }, [httpClient])
 
-  /**
-   * Cria a expedição.
-   * Enquanto o contrato não estiver alinhado, lança `ContratoNaoAlinhadoError`
-   * em vez de disparar um POST contra um endpoint hipotético.
-   */
-  const criarExpedicao = useCallback(async (values: NovaExpedicaoFormValues) => {
-    if (!CONTRATO_ALINHADO) {
-      throw new ContratoNaoAlinhadoError()
-    }
 
+  const criarExpedicao = useCallback(async (values: NovaExpedicaoFormValues) => {
     const response = await postExpedicao(toCreateExpedicaoPayload(values))
-    return response?.status === 201
+    return response?.status === STATUS_CREATED
   }, [postExpedicao])
 
   return {

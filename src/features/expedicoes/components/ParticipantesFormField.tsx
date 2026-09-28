@@ -1,4 +1,6 @@
-import { Form, Select, Spin } from 'antd6'
+import {
+  Col, Form, Select, Spin
+} from 'antd'
 import { useTranslation } from 'react-i18next'
 
 import { useBuscaRemota } from '../hooks/useBuscaRemota'
@@ -8,7 +10,6 @@ interface ParticipantesFormFieldProps {
   buscar: (termo: string) => Promise<SelectOption[]>
 }
 
-/** Participantes: busca por nome no cadastro de usuários, seleção múltipla. */
 export function ParticipantesFormField({ buscar }: ParticipantesFormFieldProps) {
   const { t } = useTranslation(['novaExpedicaoPage', 'common'])
   const {
@@ -16,28 +17,37 @@ export function ParticipantesFormField({ buscar }: ParticipantesFormFieldProps) 
   } = useBuscaRemota(buscar)
 
   return (
-    <Form.Item
-      name="participantes"
-      label={t('novaExpedicaoPage:campos.participantes')}
-      rules={[{
-        required: true,
-        message: t('novaExpedicaoPage:validacao.participantesObrigatorio')
-      }]}
-    >
-      <Select<number[]>
-        mode="multiple"
-        showSearch
-        allowClear
-        placeholder={t('novaExpedicaoPage:placeholders.participantes')}
-        options={options}
-        loading={loading}
-        onSearch={onSearch}
-        onChange={fixarSelecionadas}
-        filterOption={false}
-        notFoundContent={loading
-          ? <Spin size="small" />
-          : t('common:nenhumResultadoEncontrado')}
-      />
-    </Form.Item>
+    <>
+      <Col span={24}>
+        <span>{t('novaExpedicaoPage:campos.participantes')}</span>
+      </Col>
+      <Col span={24}>
+        <Form.Item
+          name="participantes"
+          rules={[
+            {
+              required: true,
+              message: t('novaExpedicaoPage:validacao.participantesObrigatorio')
+            }
+          ]}
+        >
+          <Select<number[]>
+            style={{ width: '100%' }}
+            mode="multiple"
+            showSearch
+            allowClear
+            placeholder={t('novaExpedicaoPage:placeholders.participantes')}
+            options={options}
+            loading={loading}
+            onSearch={onSearch}
+            onChange={fixarSelecionadas}
+            filterOption={false}
+            notFoundContent={loading
+              ? <Spin size="small" />
+              : t('common:nenhumResultadoEncontrado')}
+          />
+        </Form.Item>
+      </Col>
+    </>
   )
 }

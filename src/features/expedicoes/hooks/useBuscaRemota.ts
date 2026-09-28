@@ -8,13 +8,6 @@ import type { SelectOption } from '../types'
 
 const DEBOUNCE_DELAY = 300
 
-/**
- * Busca remota com debounce para <Select showSearch>.
- *
- * Guarda as opções já selecionadas (`fixas`) para que os rótulos não sumam
- * quando uma nova busca substitui a lista — problema clássico dos selects
- * remotos com seleção múltipla.
- */
 export function useBuscaRemota(
   buscar: (termo: string) => Promise<SelectOption[]>
 ) {
@@ -31,9 +24,8 @@ export function useBuscaRemota(
       // Descarta respostas fora de ordem
       if (id !== requestId.current) return
       setOptions(resultado)
-    } catch (error) {
+    } catch {
       if (id !== requestId.current) return
-      console.error(error)
       setOptions([])
     } finally {
       if (id === requestId.current) setLoading(false)
@@ -45,13 +37,13 @@ export function useBuscaRemota(
     [executar]
   )
 
-  // Carga inicial + cancelamento do debounce ao desmontar
   useEffect(() => {
     void executar('')
-    return () => { buscarComDebounce.cancel() }
+    return () => {
+      buscarComDebounce.cancel()
+    }
   }, [executar, buscarComDebounce])
 
-  /** Registra as opções escolhidas para preservar seus rótulos. */
   const fixarSelecionadas = useCallback((valores: number[]) => {
     setFixas(anteriores => {
       const catalogo = [...anteriores, ...options]
