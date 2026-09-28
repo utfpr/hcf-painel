@@ -1,0 +1,28 @@
+{
+  "titulo": "Editar expedição",
+  "campos": {
+    "dataInicio": "Data de início",
+    "dataFim": "Data de fim",
+    "destino": "Destino",
+    "descricao": "Descrição",
+    "participantes": "Participantes"
+  },
+  "placeholders": {
+    "destino": "Busque pelo nome da cidade",
+    "participantes": "Busque participantes pelo nome"
+  },
+  "validacao": {
+    "dataInicioObrigatoria": "Informe a data de início.",
+    "dataFimObrigatoria": "Informe a data de fim.",
+    "dataFimAnterior": "A data de fim não pode ser anterior à data de início.",
+    "destinoObrigatorio": "Selecione o destino da expedição.",
+    "descricaoObrigatoria": "Informe a descrição da expedição.",
+    "participantesObrigatorio": "Selecione ao menos um participante."
+  },
+  "acoes": { "salvar": "Salvar" },
+  "feedback": {
+    "sucesso": "A expedição foi atualizada com sucesso.",
+    "erro": "Não foi possível atualizar a expedição. Verifique os dados e tente novamente.",
+    "erroCarregar": "Não foi possível carregar a expedição."
+  }
+}
