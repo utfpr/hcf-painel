@@ -2,8 +2,8 @@
   "titulo": "Nova expedição",
 
   "campos": {
-    "dataInicio": "Data e hora de início",
-    "dataFim": "Data e hora de fim",
+    "dataInicio": "Data de início",
+    "dataFim": "Data de fim",
     "destino": "Destino",
     "descricao": "Descrição",
     "participantes": "Participantes",
@@ -11,8 +11,8 @@
   },
 
   "placeholders": {
-    "dataInicio": "Selecione a data e a hora de início",
-    "dataFim": "Selecione a data e a hora de fim (opcional)",
+    "dataInicio": "Selecione a data de início",
+    "dataFim": "Selecione a data de fim",
     "destino": "Busque pelo nome da cidade",
     "descricao": "Descreva o objetivo da expedição",
     "participantes": "Busque participantes pelo nome",
@@ -20,7 +20,8 @@
   },
 
   "validacao": {
-    "dataInicioObrigatoria": "Informe a data e a hora de início.",
+    "dataInicioObrigatoria": "Informe a data de início.",
+    "dataFimObrigatoria": "Informe a data de fim.",
     "dataFimAnterior": "A data de fim não pode ser anterior à data de início.",
     "destinoObrigatorio": "Selecione o destino da expedição.",
     "descricaoObrigatoria": "Informe a descrição da expedição.",

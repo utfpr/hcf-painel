@@ -12,9 +12,7 @@ interface DestinoFormFieldProps {
 
 export function DestinoFormField({ buscar }: DestinoFormFieldProps) {
   const { t } = useTranslation(['novaExpedicaoPage', 'common'])
-  const {
-    options, loading, onSearch, fixarSelecionadas
-  } = useBuscaRemota(buscar)
+  const { options, loading, onSearch } = useBuscaRemota(buscar)
 
   return (
     <>
@@ -32,6 +30,7 @@ export function DestinoFormField({ buscar }: DestinoFormFieldProps) {
           ]}
         >
           <Select<number>
+            labelInValue
             style={{ width: '100%' }}
             showSearch
             allowClear
@@ -39,7 +38,6 @@ export function DestinoFormField({ buscar }: DestinoFormFieldProps) {
             options={options}
             loading={loading}
             onSearch={onSearch}
-            onChange={valor => fixarSelecionadas(valor ? [valor] : [])}
             filterOption={false}
             notFoundContent={loading
               ? <Spin size="small" />

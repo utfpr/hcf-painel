@@ -20,7 +20,7 @@ export function expeditionParams(category, filters, page = 1, pageSize = PAGE_SI
         pagina: page,
         limite: pageSize,
         // A API espera "coluna:direção" e responde 400 a qualquer outro formato.
-        order: `data_inicio:${category === 'upcoming' ? 'asc' : 'desc'}`
+        order: 'data_inicio:desc'
     }
 
     if (filters.cidade_id) params.cidade_id = filters.cidade_id
@@ -28,11 +28,9 @@ export function expeditionParams(category, filters, page = 1, pageSize = PAGE_SI
     if (filters.data_inicio_de) params.data_inicio_de = filters.data_inicio_de.format(API_DATE_FORMAT)
     if (filters.data_fim_ate) params.data_fim_ate = filters.data_fim_ate.format(API_DATE_FORMAT)
 
-    // A API ainda não oferece um filtro de situação. Os dois recortes usam os limites de data disponíveis.
-    if (category === 'upcoming') {
-        const firstDay = today.format(API_DATE_FORMAT)
-        if (!params.data_inicio_de || params.data_inicio_de < firstDay) params.data_inicio_de = firstDay
-    } else {
+    // Realizadas: data_fim <= ontem. A API não filtra data_fim >= hoje.
+    // Próximas não mandam início >= hoje, senão a expedição em curso some.
+    if (category !== 'upcoming') {
         const lastDay = today.clone().subtract(1, 'day').format(API_DATE_FORMAT)
         if (!params.data_fim_ate || params.data_fim_ate > lastDay) params.data_fim_ate = lastDay
     }
@@ -240,10 +238,11 @@ export default function ListaExpedicoesScreen() {
     const filtered = Boolean(filters.cidade_id || filters.usuario_id || filters.data_inicio_de || filters.data_fim_ate)
     const section = (category, title) => {
         const data = lists[category]
+        const items = data.items.map(item => expeditionFromApi(item))
         return (
             <ExpeditionSection
                 title={title}
-                data={{ ...data, items: data.items.map(item => expeditionFromApi(item)) }}
+                data={{ ...data, items }}
                 onPageChange={changePage(category)}
                 onRetry={() => load(category, filters, data.page, data.pageSize)}
                 filtered={filtered}
@@ -253,7 +252,7 @@ export default function ListaExpedicoesScreen() {
 
     return (
         <div>
-            <HeaderListComponent title="Expedições" add={false} />
+            <HeaderListComponent title="Expedições" link="/expedicoes/novo" />
             <Divider dashed />
             <Card title="Buscar expedições" style={{ marginBottom: 24 }}>
                 <Form form={form} layout="vertical" onFinish={search}>

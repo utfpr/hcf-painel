@@ -12,9 +12,7 @@ interface ParticipantesFormFieldProps {
 
 export function ParticipantesFormField({ buscar }: ParticipantesFormFieldProps) {
   const { t } = useTranslation(['novaExpedicaoPage', 'common'])
-  const {
-    options, loading, onSearch, fixarSelecionadas
-  } = useBuscaRemota(buscar)
+  const { options, loading, onSearch } = useBuscaRemota(buscar)
 
   return (
     <>
@@ -32,6 +30,7 @@ export function ParticipantesFormField({ buscar }: ParticipantesFormFieldProps) 
           ]}
         >
           <Select<number[]>
+            labelInValue
             style={{ width: '100%' }}
             mode="multiple"
             showSearch
@@ -40,7 +39,6 @@ export function ParticipantesFormField({ buscar }: ParticipantesFormFieldProps) 
             options={options}
             loading={loading}
             onSearch={onSearch}
-            onChange={fixarSelecionadas}
             filterOption={false}
             notFoundContent={loading
               ? <Spin size="small" />

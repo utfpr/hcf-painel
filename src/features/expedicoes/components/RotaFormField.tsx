@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 import {
   Button, Col, Form, List, Select, Spin
 } from 'antd'
@@ -12,30 +10,28 @@ import {
 } from '@ant-design/icons'
 
 import { useBuscaRemota } from '../hooks/useBuscaRemota'
-import type { SelectOption } from '../types'
+import type { OpcaoSelecionada, SelectOption } from '../types'
 
-const ROTA_VAZIA: number[] = []
+const ROTA_VAZIA: OpcaoSelecionada[] = []
 
 interface RotaSelectorProps {
-  value?: number[]
-  onChange?: (value: number[]) => void
+  value?: OpcaoSelecionada[]
+  onChange?: (value: OpcaoSelecionada[]) => void
   buscar: (termo: string) => Promise<SelectOption[]>
 }
-
 
 function RotaSelector({
   value = ROTA_VAZIA, onChange, buscar
 }: RotaSelectorProps) {
   const { t } = useTranslation(['novaExpedicaoPage', 'common'])
-  const {
-    options, loading, onSearch
-  } = useBuscaRemota(buscar)
-  const [labels, setLabels] = useState<Record<number, string>>({})
+  const { options, loading, onSearch } = useBuscaRemota(buscar)
 
-  const adicionar = (id: number) => {
-    const opcao = options.find(item => item.value === id)
-    if (opcao) setLabels(anteriores => ({ ...anteriores, [id]: opcao.label }))
-    onChange?.([...value, id])
+  const adicionar = (id: number | string) => {
+    const opcao = options.find(item => String(item.value) === String(id))
+    onChange?.([
+      ...value,
+      { value: id, label: opcao?.label ?? String(id) }
+    ])
   }
 
   const mover = (index: number, deslocamento: -1 | 1) => {
@@ -73,10 +69,10 @@ function RotaSelector({
           size="small"
           bordered
           style={{ marginTop: 8 }}
-          dataSource={value.map((id, index) => ({ id, index }))}
-          renderItem={({ id, index }) => (
+          dataSource={value.map((parada, index) => ({ parada, index }))}
+          renderItem={({ parada, index }) => (
             <List.Item
-              key={`${id}-${index}`}
+              key={`${parada.value}-${index}`}
               actions={[
                 <Button
                   key="subir"
@@ -104,7 +100,7 @@ function RotaSelector({
                 />
               ]}
             >
-              <span>{`${index + 1}. ${labels[id] ?? `#${id}`}`}</span>
+              <span>{`${index + 1}. ${parada.label}`}</span>
             </List.Item>
           )}
         />

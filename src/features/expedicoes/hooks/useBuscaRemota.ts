@@ -13,7 +13,6 @@ export function useBuscaRemota(
 ) {
   const [options, setOptions] = useState<SelectOption[]>([])
   const [loading, setLoading] = useState(false)
-  const [fixas, setFixas] = useState<SelectOption[]>([])
   const requestId = useRef(0)
 
   const executar = useCallback(async (termo: string) => {
@@ -21,7 +20,6 @@ export function useBuscaRemota(
     setLoading(true)
     try {
       const resultado = await buscar(termo)
-      // Descarta respostas fora de ordem
       if (id !== requestId.current) return
       setOptions(resultado)
     } catch {
@@ -44,25 +42,9 @@ export function useBuscaRemota(
     }
   }, [executar, buscarComDebounce])
 
-  const fixarSelecionadas = useCallback((valores: number[]) => {
-    setFixas(anteriores => {
-      const catalogo = [...anteriores, ...options]
-      return valores
-        .map(valor => catalogo.find(opcao => opcao.value === valor))
-        .filter((opcao): opcao is SelectOption => Boolean(opcao))
-    })
-  }, [options])
-
-  const optionsVisiveis = useMemo(() => {
-    const mapa = new Map<number, SelectOption>()
-    for (const opcao of [...fixas, ...options]) mapa.set(opcao.value, opcao)
-    return [...mapa.values()]
-  }, [fixas, options])
-
   return {
-    options: optionsVisiveis,
+    options,
     loading,
-    onSearch: buscarComDebounce,
-    fixarSelecionadas
+    onSearch: buscarComDebounce
   }
 }

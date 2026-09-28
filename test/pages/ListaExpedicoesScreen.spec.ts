@@ -16,10 +16,10 @@ describe('listagem de expedições', () => {
     expect(expeditionParams('upcoming', filters, 2, 50, moment('2026-09-21'))).toEqual({
       pagina: 2,
       limite: 50,
-      order: 'data_inicio:asc',
+      order: 'data_inicio:desc',
       cidade_id: 42,
       usuario_id: 7,
-      data_inicio_de: '2026-09-21',
+      data_inicio_de: '2026-09-10',
       data_fim_ate: '2026-10-10'
     })
     expect(expeditionParams('past', filters, 1, 20, moment('2026-09-21'))).toEqual({
@@ -30,6 +30,14 @@ describe('listagem de expedições', () => {
       usuario_id: 7,
       data_inicio_de: '2026-09-10',
       data_fim_ate: '2026-09-20'
+    })
+  })
+
+  it('não recorta próximas por data de início, para a expedição em curso continuar na lista', () => {
+    expect(expeditionParams('upcoming', {}, 1, 20, moment('2026-09-28'))).toEqual({
+      pagina: 1,
+      limite: 20,
+      order: 'data_inicio:desc'
     })
   })
 

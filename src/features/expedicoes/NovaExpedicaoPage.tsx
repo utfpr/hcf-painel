@@ -26,7 +26,7 @@ import { RotaFormField } from './components/RotaFormField'
 import { useNovaExpedicaoPage } from './hooks/useNovaExpedicaoPage'
 
 const LISTAGEM_PATH = '/expedicoes'
-const FORMATO_DATA_HORA = 'DD/MM/YYYY HH:mm'
+const FORMATO_DATA = 'DD/MM/YYYY'
 
 
 export default function NovaExpedicaoPage() {
@@ -51,7 +51,7 @@ export default function NovaExpedicaoPage() {
     if (!valor) return Promise.resolve()
 
     const dataInicio = form.getFieldValue('dataInicio') as Moment | undefined
-    if (dataInicio && valor.isBefore(dataInicio)) {
+    if (dataInicio && valor.format('YYYY-MM-DD') < dataInicio.format('YYYY-MM-DD')) {
       return Promise.reject(new Error(t('novaExpedicaoPage:validacao.dataFimAnterior')))
     }
     return Promise.resolve()
@@ -118,8 +118,7 @@ export default function NovaExpedicaoPage() {
                 ]}
               >
                 <DatePicker
-                  showTime={{ format: 'HH:mm' }}
-                  format={FORMATO_DATA_HORA}
+                  format={FORMATO_DATA}
                   style={{ width: '100%' }}
                   placeholder={t('novaExpedicaoPage:placeholders.dataInicio')}
                 />
@@ -135,11 +134,16 @@ export default function NovaExpedicaoPage() {
               <Form.Item
                 name="dataFim"
                 dependencies={['dataInicio']}
-                rules={[{ validator: validarDataFim }]}
+                rules={[
+                  {
+                    required: true,
+                    message: t('novaExpedicaoPage:validacao.dataFimObrigatoria')
+                  },
+                  { validator: validarDataFim }
+                ]}
               >
                 <DatePicker
-                  showTime={{ format: 'HH:mm' }}
-                  format={FORMATO_DATA_HORA}
+                  format={FORMATO_DATA}
                   style={{ width: '100%' }}
                   placeholder={t('novaExpedicaoPage:placeholders.dataFim')}
                 />
