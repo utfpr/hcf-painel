@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { Alert, Button, Card, Col, DatePicker, Divider, Empty, Form, InputNumber, Pagination, Row, Select, Spin, Tooltip } from 'antd'
+import { Alert, Button, Card, Col, DatePicker, Divider, Empty, Form, Pagination, Row, Select, Spin, Tooltip } from 'antd'
 import axios from 'axios'
 import moment from 'moment'
 import { Link } from 'react-router'
@@ -19,8 +19,8 @@ export function expeditionParams(category, filters, page = 1, pageSize = PAGE_SI
     const params = {
         pagina: page,
         limite: pageSize,
-        order_column: 'data_inicio',
-        order_direction: category === 'upcoming' ? 'asc' : 'desc'
+        // A API espera "coluna:direção" e responde 400 a qualquer outro formato.
+        order: `data_inicio:${category === 'upcoming' ? 'asc' : 'desc'}`
     }
 
     if (filters.cidade_id) params.cidade_id = filters.cidade_id
@@ -40,14 +40,16 @@ export function expeditionParams(category, filters, page = 1, pageSize = PAGE_SI
     return params
 }
 
-export function expeditionFromApi(item, citiesById) {
-    const city = citiesById.get(item.cidade_id)
+export function expeditionFromApi(item) {
+    // A listagem já devolve cidade_nome e estado_sigla, então não é preciso resolver o destino pelo id.
     return {
         id: item.id,
         description: item.descricao,
         startDate: item.data_inicio,
         endDate: item.data_fim,
-        destination: city?.nome || `Cidade #${item.cidade_id}`,
+        destination: item.cidade_nome
+            ? [item.cidade_nome, item.estado_sigla].filter(Boolean).join('/')
+            : `Cidade #${item.cidade_id}`,
         participantCount: Array.isArray(item.participantes) ? item.participantes.length : 0
     }
 }
@@ -142,6 +144,9 @@ export default function ListaExpedicoesScreen() {
     const [cities, setCities] = useState([])
     const [citiesLoading, setCitiesLoading] = useState(true)
     const [citiesError, setCitiesError] = useState(false)
+    const [users, setUsers] = useState([])
+    const [usersLoading, setUsersLoading] = useState(true)
+    const [usersError, setUsersError] = useState(false)
     const [lists, setLists] = useState({ upcoming: emptyList(), past: emptyList() })
     const requests = useRef({ upcoming: 0, past: 0 })
 
@@ -163,7 +168,23 @@ export default function ListaExpedicoesScreen() {
         }
     }, [])
 
-    const citiesById = new Map(cities.map(city => [city.id, city]))
+    useEffect(() => {
+        let active = true
+        axios.get('/usuarios', { params: { limite: 1000 } })
+            .then(response => {
+                if (!Array.isArray(response.data?.usuarios)) throw new Error('Resposta inválida de usuários')
+                if (active) setUsers(response.data.usuarios)
+            })
+            .catch(() => {
+                if (active) setUsersError(true)
+            })
+            .finally(() => {
+                if (active) setUsersLoading(false)
+            })
+        return () => {
+            active = false
+        }
+    }, [])
 
     const load = useCallback(async (category, currentFilters, page, pageSize) => {
         const request = ++requests.current[category]
@@ -222,7 +243,7 @@ export default function ListaExpedicoesScreen() {
         return (
             <ExpeditionSection
                 title={title}
-                data={{ ...data, items: data.items.map(item => expeditionFromApi(item, citiesById)) }}
+                data={{ ...data, items: data.items.map(item => expeditionFromApi(item)) }}
                 onPageChange={changePage(category)}
                 onRetry={() => load(category, filters, data.page, data.pageSize)}
                 filtered={filtered}
@@ -251,7 +272,11 @@ export default function ListaExpedicoesScreen() {
                             </Form.Item>
                         </Col>
                         <Col xs={24} md={12} xl={6}>
-                            <Form.Item label="ID do participante" name="usuario_id"><InputNumber min={1} precision={0} style={{ width: '100%' }} /></Form.Item>
+                            <Form.Item label="Participante" name="usuario_id">
+                                <Select showSearch allowClear optionFilterProp="children" placeholder="Selecione um participante" loading={usersLoading}>
+                                    {users.map(user => <Select.Option key={user.id} value={Number(user.id)}>{user.nome}</Select.Option>)}
+                                </Select>
+                            </Form.Item>
                         </Col>
                     </Row>
                     <Row justify="end" gutter={8}>
@@ -260,7 +285,8 @@ export default function ListaExpedicoesScreen() {
                     </Row>
                 </Form>
             </Card>
-            {citiesError && <Alert type="warning" showIcon style={{ marginBottom: 24 }} message="Não foi possível carregar os nomes das cidades. Os destinos serão exibidos pelo ID." />}
+            {citiesError && <Alert type="warning" showIcon style={{ marginBottom: 24 }} message="Não foi possível carregar as cidades. O filtro por cidade de destino ficará indisponível." />}
+            {usersError && <Alert type="warning" showIcon style={{ marginBottom: 24 }} message="Não foi possível carregar os participantes. O filtro por participante ficará indisponível." />}
             {section('upcoming', 'Próximas expedições')}
             <Divider dashed />
             {section('past', 'Expedições realizadas')}
