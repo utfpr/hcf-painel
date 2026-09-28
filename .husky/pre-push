@@ -1,4 +1,2 @@
-# Git keeps pre-push stdin open with the ref list.
-# Vitest forks inherit that pipe and never put files in the queue.
 exec < /dev/null
 npm run test --silent
