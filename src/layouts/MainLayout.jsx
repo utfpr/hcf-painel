@@ -147,6 +147,16 @@ class MainLayout extends Component {
                         openKeys={this.state.openKeys}
                         onOpenChange={this.onOpenChange}
                     >
+                        {this.props.auth.loggedIn
+                            ? (
+                                    <Menu.Item key="expedicoesMenuItem">
+                                        <Link to="/expedicoes">
+                                            <EnvironmentOutlined />
+                                            <span>Expedições</span>
+                                        </Link>
+                                    </Menu.Item>
+                                )
+                            : null}
                         {this.props.auth.can('read', 'Tombo')
                             ? (
                                     <Menu.Item key="tomboMenuItem">

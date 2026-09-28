@@ -12,6 +12,7 @@ import {
 } from './helpers/usuarios'
 import { withRouter } from './libraries/router/withRouter'
 import DashboardScreen from './pages/DashboardScreen'
+import DetalhesExpedicaoPending from './pages/DetalhesExpedicaoPending'
 import DetalhesTomboScreen from './pages/DetalhesTomboScreen'
 import ExportaçãoScreen from './pages/ExportaçãoScreen'
 import FichaTomboScreen from './pages/FichaTomboScreen'
@@ -19,6 +20,7 @@ import FiltrosMapaScreen from './pages/FiltrosMapa'
 import ListaCidadesScreen from './pages/ListaCidadesScreen'
 import ListaColetoresScreen from './pages/ListaColetoresScreen'
 import ListaEstadosScreen from './pages/ListaEstadosScreen'
+import ListaExpedicoesScreen from './pages/ListaExpedicoesScreen'
 import ListaHerbariosScreen from './pages/ListaHerbariosScreen'
 import ListaIdentificadoresScreen from './pages/ListaIdentificadoresScreen'
 import ListaLocalColetaScreen from './pages/ListaLocalColetaScreen'
@@ -86,6 +88,8 @@ export function AppRoutes() {
       <Route path="tombos/novo" element={guard(isCuradorOuOperador(), NovoTombo)} />
       <Route path="tombos/:tombo_id" element={guard(isCuradorOuOperadorOuIdentificador(), NovoTombo)} />
       <Route path="tombos" element={<ListaTombosScreen />} />
+      <Route path="expedicoes" element={guard(Boolean(auth.user?.id), ListaExpedicoesScreen)} />
+      <Route path="expedicoes/detalhes/:id" element={guard(Boolean(auth.user?.id), DetalhesExpedicaoPending)} />
 
       <Route path="taxonomias" element={<ListaTaxonomiaScreen />} />
 
