@@ -101,7 +101,7 @@ export default function EditarExpedicaoPage() {
     }
   }
 
-  if (erroCarregamento) {
+  if (erroCarregamento && !expedicao) {
     return (
       <Alert
         type="error"
