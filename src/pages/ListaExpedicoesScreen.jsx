@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { Alert, Button, Card, Col, DatePicker, Divider, Empty, Form, Pagination, Row, Select, Spin, Tooltip } from 'antd'
+import { Alert, Avatar, Button, Card, Col, DatePicker, Divider, Dropdown, Empty, Form, Pagination, Row, Select, Spin, Tag, Tooltip, Typography } from 'antd'
 import axios from 'axios'
 import moment from 'moment'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 
-import { EditOutlined, InboxOutlined, ReloadOutlined } from '@ant-design/icons'
+import { EditOutlined, EllipsisOutlined, InboxOutlined, ReloadOutlined } from '@ant-design/icons'
 
 import HeaderListComponent from '../components/HeaderListComponent'
 
@@ -51,45 +51,112 @@ export function expeditionFromApi(item) {
         destination: item.cidade_nome
             ? [item.cidade_nome, item.estado_sigla].filter(Boolean).join('/')
             : `Cidade #${item.cidade_id}`,
-        participantCount: Array.isArray(item.participantes) ? item.participantes.length : 0
+        participants: Array.isArray(item.participantes)
+            ? item.participantes.map(participant => ({ id: participant.id, name: participant.nome }))
+            : []
     }
 }
 
+// O moment do projeto não carrega o locale pt-br, então os meses ficam aqui.
+const MONTHS = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez']
+
+const parseDate = date => moment(date, API_DATE_FORMAT).startOf('day')
+const formatDay = (date, withYear) => `${date.date()} ${MONTHS[date.month()]}${withYear ? ` ${date.year()}` : ''}`
+const plural = (count, singular, pluralForm) => `${count} ${count === 1 ? singular : pluralForm}`
+
+// Ex.: "14–18 out 2026 · 5 dias", "29 out – 1 nov 2026 · 4 dias", "28 dez 2026 – 2 jan 2027 · 6 dias".
+export function expeditionPeriod(startDate, endDate) {
+    const start = parseDate(startDate)
+    if (!endDate) return formatDay(start, true)
+    const end = parseDate(endDate)
+    const days = end.diff(start, 'days') + 1
+    let range
+    if (days === 1) range = formatDay(start, true)
+    else if (start.year() !== end.year()) range = `${formatDay(start, true)} – ${formatDay(end, true)}`
+    else if (start.month() !== end.month()) range = `${formatDay(start, false)} – ${formatDay(end, true)}`
+    else range = `${start.date()}–${formatDay(end, true)}`
+    return `${range} · ${plural(days, 'dia', 'dias')}`
+}
+
+export function expeditionStatus(startDate, endDate, today = moment()) {
+    const day = today.clone().startOf('day')
+    const start = parseDate(startDate)
+    const end = endDate ? parseDate(endDate) : start
+    if (day.isBefore(start)) {
+        const days = start.diff(day, 'days')
+        return { label: days === 1 ? 'Amanhã' : `Em ${days} dias`, color: 'blue' }
+    }
+    if (!day.isAfter(end)) return { label: 'Em andamento', color: 'green' }
+    const days = day.diff(end, 'days')
+    return { label: days === 1 ? 'Realizada ontem' : `Realizada há ${days} dias`, color: 'default' }
+}
+
+const initials = name => {
+    const words = (name || '?').trim().split(/\s+/)
+    return (words.length > 1 ? words[0][0] + words[words.length - 1][0] : words[0].slice(0, 2)).toUpperCase()
+}
+
+const actionsMenu = {
+    items: [
+        { key: 'edit', icon: <EditOutlined />, label: 'Editar', disabled: true },
+        {
+            key: 'archive',
+            icon: <InboxOutlined />,
+            label: <Tooltip title="A API disponibiliza exclusão, mas ainda não oferece arquivamento.">Arquivar</Tooltip>,
+            disabled: true
+        }
+    ]
+}
+
 function ExpeditionCard({ item }) {
+    const navigate = useNavigate()
+    const detailsUrl = `/expedicoes/detalhes/${encodeURIComponent(item.id)}`
+    const status = expeditionStatus(item.startDate, item.endDate)
+
     return (
         <Card
-            style={{ height: '100%' }}
-            title={<Link to={`/expedicoes/detalhes/${encodeURIComponent(item.id)}`}>{`Expedição #${item.id}`}</Link>}
-            actions={[
-                <Button key="edit" type="text" icon={<EditOutlined />} disabled>Editar</Button>,
-                <Tooltip key="archive" title="A API disponibiliza exclusão, mas ainda não oferece arquivamento.">
-                    <Button type="text" icon={<InboxOutlined />} disabled>Arquivar</Button>
-                </Tooltip>
-            ]}
+            hoverable
+            onClick={() => navigate(detailsUrl)}
+            // A borda padrão do Card (#f0f0f0) quase some no fundo da tela; #d9d9d9 é a cor de borda base do antd.
+            style={{ height: '100%', border: '1px solid #d9d9d9' }}
+            bodyStyle={{ height: '100%', display: 'flex', flexDirection: 'column' }}
         >
-            <p>
-                <strong>Início:</strong>
-                {' '}
-                {moment.parseZone(item.startDate).format(DATE_FORMAT)}
-            </p>
-            {item.endDate && (
-                <p>
-                    <strong>Fim:</strong>
-                    {' '}
-                    {moment.parseZone(item.endDate).format(DATE_FORMAT)}
-                </p>
-            )}
-            <p>
-                <strong>Destino:</strong>
-                {' '}
-                {item.destination}
-            </p>
-            <p>
-                <strong>Participantes:</strong>
-                {' '}
-                {item.participantCount}
-            </p>
-            <p style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{item.description || 'Sem descrição.'}</p>
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 }}>
+                <Typography.Title level={4} style={{ margin: 0 }}>
+                    {/* O link mantém a navegação por teclado e o "abrir em nova aba"; o clique no card cobre o resto. */}
+                    <Link to={detailsUrl} onClick={event => event.stopPropagation()} style={{ color: 'inherit' }}>{item.destination}</Link>
+                </Typography.Title>
+                <Tag color={status.color} style={{ marginRight: 0, flexShrink: 0 }}>{status.label}</Tag>
+            </div>
+            <Typography.Text type="secondary">{expeditionPeriod(item.startDate, item.endDate)}</Typography.Text>
+
+            <Typography.Paragraph
+                ellipsis={{ rows: 2, tooltip: item.description }}
+                type={item.description ? undefined : 'secondary'}
+                style={{ margin: '16px 0', flexGrow: 1 }}
+            >
+                {item.description || 'Sem descrição.'}
+            </Typography.Paragraph>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                {item.participants.length > 0 && (
+                    <Avatar.Group maxCount={4} size="small">
+                        {item.participants.map(participant => (
+                            <Tooltip key={participant.id} title={participant.name}>
+                                <Avatar size="small" style={{ backgroundColor: '#1890ff' }}>{initials(participant.name)}</Avatar>
+                            </Tooltip>
+                        ))}
+                    </Avatar.Group>
+                )}
+                <Typography.Text type="secondary">{plural(item.participants.length, 'participante', 'participantes')}</Typography.Text>
+                <Typography.Text type="secondary" style={{ marginLeft: 'auto' }}>{`#${item.id}`}</Typography.Text>
+                {/* O span impede que o clique no menu abra os detalhes da expedição. */}
+                <span onClick={event => event.stopPropagation()}>
+                    <Dropdown menu={actionsMenu} trigger={['click']} placement="bottomRight">
+                        <Button type="text" size="small" icon={<EllipsisOutlined />} aria-label={`Ações da expedição #${item.id}`} />
+                    </Dropdown>
+                </span>
+            </div>
         </Card>
     )
 }

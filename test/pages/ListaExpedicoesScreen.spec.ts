@@ -3,7 +3,9 @@ import {
   describe, expect, it
 } from 'vitest'
 
-import { expeditionFromApi, expeditionParams } from '../../src/pages/ListaExpedicoesScreen'
+import {
+  expeditionFromApi, expeditionParams, expeditionPeriod, expeditionStatus
+} from '../../src/pages/ListaExpedicoesScreen'
 
 describe('listagem de expedições', () => {
   it('usa os filtros da API e ordena próximas pelo início e realizadas pelo fim', () => {
@@ -66,7 +68,11 @@ describe('listagem de expedições', () => {
       startDate: '2026-10-01',
       endDate: '2026-10-03',
       destination: 'Belém/PA',
-      participantCount: 3
+      participants: [
+        { id: '3', name: 'Ana' },
+        { id: '5', name: 'Bruno' },
+        { id: '8', name: 'Carla' }
+      ]
     })
   })
 
@@ -83,5 +89,22 @@ describe('listagem de expedições', () => {
       rotas: []
     }
     expect(expeditionFromApi(item).destination).toBe('Cidade #42')
+  })
+
+  it('mostra o período em uma linha, com a duração em dias', () => {
+    expect(expeditionPeriod('2026-10-14', '2026-10-18')).toBe('14–18 out 2026 · 5 dias')
+    expect(expeditionPeriod('2026-10-29', '2026-11-01')).toBe('29 out – 1 nov 2026 · 4 dias')
+    expect(expeditionPeriod('2026-12-28', '2027-01-02')).toBe('28 dez 2026 – 2 jan 2027 · 6 dias')
+    expect(expeditionPeriod('2026-08-25', '2026-08-25')).toBe('25 ago 2026 · 1 dia')
+  })
+
+  it('descreve o status da expedição em relação a hoje', () => {
+    const today = moment('2026-10-04')
+    expect(expeditionStatus('2026-10-14', '2026-10-18', today)).toEqual({ label: 'Em 10 dias', color: 'blue' })
+    expect(expeditionStatus('2026-10-05', '2026-10-06', today)).toEqual({ label: 'Amanhã', color: 'blue' })
+    expect(expeditionStatus('2026-10-04', '2026-10-04', today)).toEqual({ label: 'Em andamento', color: 'green' })
+    expect(expeditionStatus('2026-10-01', '2026-10-06', today)).toEqual({ label: 'Em andamento', color: 'green' })
+    expect(expeditionStatus('2026-10-01', '2026-10-03', today)).toEqual({ label: 'Realizada ontem', color: 'default' })
+    expect(expeditionStatus('2026-09-19', '2026-09-21', today)).toEqual({ label: 'Realizada há 13 dias', color: 'default' })
   })
 })
