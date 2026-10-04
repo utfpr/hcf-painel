@@ -18,6 +18,7 @@ import {
 } from 'antd'
 import {
   DeleteOutlined,
+  EditOutlined,
   PlusOutlined,
   CheckCircleOutlined,
   ClockCircleOutlined,
@@ -395,6 +396,14 @@ export default function DetalhesExpedicaoScreen() {
         </Col>
         <Col>
           <Row gutter={8}>
+            <Col>
+              <Button
+                icon={<EditOutlined />}
+                onClick={() => navigate(`/expedicoes/editar/${expedicaoAtual.id}`)}
+              >
+                Editar
+              </Button>
+            </Col>
             <Col>
               <Button danger icon={<DeleteOutlined />} onClick={handleConfirmarExclusao}>
                 Excluir

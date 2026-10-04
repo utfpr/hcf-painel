@@ -98,7 +98,7 @@ const initials = name => {
 
 const actionsMenu = {
     items: [
-        { key: 'edit', icon: <EditOutlined />, label: 'Editar', disabled: true },
+        { key: 'edit', icon: <EditOutlined />, label: 'Editar' },
         {
             key: 'archive',
             icon: <InboxOutlined />,
@@ -112,6 +112,12 @@ function ExpeditionCard({ item }) {
     const navigate = useNavigate()
     const detailsUrl = `/expedicoes/detalhes/${encodeURIComponent(item.id)}`
     const status = expeditionStatus(item.startDate, item.endDate)
+    const menu = {
+    ...actionsMenu,
+    onClick: ({ key }) => {
+        if (key === 'edit') navigate(`/expedicoes/editar/${encodeURIComponent(item.id)}`)
+    }
+}
 
     return (
         <Card
@@ -152,7 +158,7 @@ function ExpeditionCard({ item }) {
                 <Typography.Text type="secondary" style={{ marginLeft: 'auto' }}>{`#${item.id}`}</Typography.Text>
                 {/* O span impede que o clique no menu abra os detalhes da expedição. */}
                 <span onClick={event => event.stopPropagation()}>
-                    <Dropdown menu={actionsMenu} trigger={['click']} placement="bottomRight">
+                    <Dropdown menu={menu} trigger={['click']} placement="bottomRight">
                         <Button type="text" size="small" icon={<EllipsisOutlined />} aria-label={`Ações da expedição #${item.id}`} />
                     </Dropdown>
                 </span>
