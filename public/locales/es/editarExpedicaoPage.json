@@ -8,7 +8,10 @@
     "participantes": "Participantes"
   },
   "placeholders": {
+    "dataInicio": "Selecione a data de início",
+    "dataFim": "Selecione a data de fim",
     "destino": "Busque pelo nome da cidade",
+    "descricao": "Descreva o objetivo da expedição",
     "participantes": "Busque participantes pelo nome"
   },
   "validacao": {

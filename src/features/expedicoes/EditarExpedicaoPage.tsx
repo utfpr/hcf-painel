@@ -145,6 +145,7 @@ export default function EditarExpedicaoPage() {
                 <DatePicker
                   format={FORMATO_DATA}
                   style={{ width: '100%' }}
+                  placeholder={t('editarExpedicaoPage:placeholders.dataInicio')}
                   onChange={() => {
                     if (form.getFieldValue('dataFim')) {
                       void form.validateFields(['dataFim'])
@@ -167,7 +168,11 @@ export default function EditarExpedicaoPage() {
                   { validator: validarDataFim }
                 ]}
               >
-                <DatePicker format={FORMATO_DATA} style={{ width: '100%' }} />
+                <DatePicker
+                  format={FORMATO_DATA}
+                  style={{ width: '100%' }}
+                  placeholder={t('editarExpedicaoPage:placeholders.dataFim')}
+                />
               </Form.Item>
             </Col>
 
@@ -198,7 +203,12 @@ export default function EditarExpedicaoPage() {
                   message: t('editarExpedicaoPage:validacao.descricaoObrigatoria')
                 }]}
               >
-                <Input.TextArea rows={4} maxLength={500} showCount />
+                <Input.TextArea
+                 rows={4}
+                maxLength={500}
+                showCount
+                placeholder={t('editarExpedicaoPage:placeholders.descricao')}
+              />
               </Form.Item>
             </Col>
           </Row>
