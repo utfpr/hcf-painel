@@ -12,7 +12,7 @@ import {
 } from './helpers/usuarios'
 import { withRouter } from './libraries/router/withRouter'
 import DashboardScreen from './pages/DashboardScreen'
-import DetalhesExpedicaoPending from './pages/DetalhesExpedicaoPending'
+import DetalhesExpedicaoScreen from './pages/DetalhesExpedicaoScreen'
 import DetalhesTomboScreen from './pages/DetalhesTomboScreen'
 import ExportaçãoScreen from './pages/ExportaçãoScreen'
 import FichaTomboScreen from './pages/FichaTomboScreen'
@@ -89,7 +89,7 @@ export function AppRoutes() {
       <Route path="tombos/:tombo_id" element={guard(isCuradorOuOperadorOuIdentificador(), NovoTombo)} />
       <Route path="tombos" element={<ListaTombosScreen />} />
       <Route path="expedicoes" element={guard(Boolean(auth.user?.id), ListaExpedicoesScreen)} />
-      <Route path="expedicoes/detalhes/:id" element={guard(Boolean(auth.user?.id), DetalhesExpedicaoPending)} />
+      <Route path="expedicoes/detalhes/:id" element={guard(Boolean(auth.user?.id), DetalhesExpedicaoScreen)} />
 
       <Route path="taxonomias" element={<ListaTaxonomiaScreen />} />
 
