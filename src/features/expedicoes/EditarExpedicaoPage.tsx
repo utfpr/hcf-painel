@@ -34,6 +34,9 @@ export default function EditarExpedicaoPage() {
   const navigate = useNavigate()
   const { expedicao_id: expedicaoIdParam } = useParams()
   const expedicaoId = Number(expedicaoIdParam)
+  const detalhesPath = Number.isInteger(expedicaoId) && expedicaoId > 0
+  ? `/expedicoes/detalhes/${expedicaoId}`
+  : LISTAGEM_PATH
   const [form] = Form.useForm<EditarExpedicaoFormValues>()
   const [salvando, setSalvando] = useState(false)
 
@@ -55,7 +58,7 @@ export default function EditarExpedicaoPage() {
     if (expedicao) form.setFieldsValue(toFormValues(expedicao))
   }, [expedicao, form])
 
-  const voltar = () => { navigate(LISTAGEM_PATH) }
+  const voltar = () => { navigate(detalhesPath) }
 
   const validarDataFim = (_rule: unknown, valor: Dayjs | undefined) => {
     const dataInicio = form.getFieldValue('dataInicio') as Dayjs | undefined
@@ -108,7 +111,7 @@ export default function EditarExpedicaoPage() {
         showIcon
         message={t('common:tituloFalha')}
         description={t('editarExpedicaoPage:feedback.erroCarregar')}
-        action={<Button onClick={voltar}>{t('common:cancelar')}</Button>}
+        action={<Button onClick={() => navigate(LISTAGEM_PATH)}>{t('common:cancelar')}</Button>}
       />
     )
   }
