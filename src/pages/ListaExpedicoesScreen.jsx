@@ -20,7 +20,8 @@ export function expeditionParams(category, filters, page = 1, pageSize = PAGE_SI
         pagina: page,
         limite: pageSize,
         // A API espera "coluna:direção" e responde 400 a qualquer outro formato.
-        order: 'data_inicio:desc'
+        // Próximas: a que inicia primeiro vem antes. Realizadas: a que terminou por último vem antes.
+        order: category === 'upcoming' ? 'data_inicio:asc' : 'data_fim:desc'
     }
 
     if (filters.cidade_id) params.cidade_id = filters.cidade_id
@@ -28,9 +29,11 @@ export function expeditionParams(category, filters, page = 1, pageSize = PAGE_SI
     if (filters.data_inicio_de) params.data_inicio_de = filters.data_inicio_de.format(API_DATE_FORMAT)
     if (filters.data_fim_ate) params.data_fim_ate = filters.data_fim_ate.format(API_DATE_FORMAT)
 
-    // Realizadas: data_fim <= ontem. A API não filtra data_fim >= hoje.
-    // Próximas não mandam início >= hoje, senão a expedição em curso some.
-    if (category !== 'upcoming') {
+    // Próximas: ainda não realizadas (data_fim >= hoje), o que mantém a expedição em curso na lista.
+    // Realizadas: data_fim <= ontem.
+    if (category === 'upcoming') {
+        params.data_fim_de = today.format(API_DATE_FORMAT)
+    } else {
         const lastDay = today.clone().subtract(1, 'day').format(API_DATE_FORMAT)
         if (!params.data_fim_ate || params.data_fim_ate > lastDay) params.data_fim_ate = lastDay
     }
