@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react'
-import { useParams, useNavigate } from 'react-router'
+import { Link, useParams, useNavigate } from 'react-router'
 import {
   Row,
   Col,
@@ -7,9 +7,6 @@ import {
   Tag,
   Button,
   Space,
-  Modal,
-  notification,
-  Select,
   Alert,
   List,
   Spin,
@@ -17,19 +14,23 @@ import {
   Typography
 } from 'antd'
 import {
+<<<<<<< HEAD
   DeleteOutlined,
   EditOutlined,
   PlusOutlined,
+=======
+>>>>>>> 64206256c543dc377fa01af78f974d54f781cf94
   CheckCircleOutlined,
   ClockCircleOutlined,
   CompassOutlined,
   ReloadOutlined,
   PaperClipOutlined
 } from '@ant-design/icons'
+
+import { useAuth } from '@/contexts/Auth/useAuth'
 import axios from 'axios'
 import moment from 'moment'
 
-const { Option } = Select
 const { Title, Text, Paragraph } = Typography
 
 export type StatusExpedicao = 'realizada' | 'futura' | 'em_andamento'
@@ -111,8 +112,9 @@ const getStatusTag = (status: StatusExpedicao) => {
 export default function DetalhesExpedicaoScreen() {
   const { id: paramId } = useParams<{ id?: string }>()
   const navigate = useNavigate()
+  const { can } = useAuth()
+  const podeEditar = can('update', 'Expedicao')
 
-  const [expedicoesLista, setExpedicoesLista] = useState<Array<{ id: number; titulo: string; status?: StatusExpedicao }>>([])
   const [expedicaoAtual, setExpedicaoAtual] = useState<ExpedicaoDetalhesModel | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [erroApi, setErroApi] = useState<string | null>(null)
@@ -222,83 +224,16 @@ export default function DetalhesExpedicaoScreen() {
     }
   }, [])
 
-  const carregarExpedicoes = useCallback(async () => {
-    setLoading(true)
-    const targetId = paramId ? Number(paramId) : null
-
-    try {
-      const res = await axios.get('/v2/expedicoes', { params: { limite: 50 } })
-      const data = res.data
-
-      if (data && data.itens && data.itens.length > 0) {
-        const lista = data.itens.map((item: any) => ({
-          id: item.id,
-          titulo: item.descricao || `Expedição #${item.id} — ${item.cidade_nome || 'PR'}`,
-          status: new Date() < new Date(item.data_inicio) ? ('futura' as StatusExpedicao) : ('realizada' as StatusExpedicao)
-        }))
-
-        setExpedicoesLista(lista)
-        setErroApi(null)
-
-        const idParaCarregar = targetId && lista.some((i: any) => i.id === targetId) ? targetId : (targetId || lista[0].id)
-        await carregarDetalhes(idParaCarregar)
-      } else if (targetId) {
-        await carregarDetalhes(targetId)
-      } else {
-        setExpedicoesLista([])
-        setExpedicaoAtual(null)
-      }
-    } catch (err: any) {
-      if (targetId) {
-        try {
-          await carregarDetalhes(targetId)
-          return
-        } catch {}
-      }
-      const msg = err?.response?.data?.message || err?.message || 'Falha de conexão com a API'
-      setErroApi(msg)
-      setExpedicoesLista([])
-      setExpedicaoAtual(null)
-    } finally {
-      setLoading(false)
-    }
-  }, [paramId, carregarDetalhes])
-
   useEffect(() => {
-    carregarExpedicoes()
-  }, [carregarExpedicoes])
-
-  const handleSelecionarExpedicao = async (id: number) => {
-    navigate(`/expedicoes/detalhes/${id}`)
-    await carregarDetalhes(id)
-  }
-
-  const handleConfirmarExclusao = () => {
-    if (!expedicaoAtual) return
-
-    Modal.confirm({
-      title: 'Excluir expedição',
-      content: `Tem certeza que deseja excluir "${expedicaoAtual.titulo}"? Esta ação não pode ser desfeita.`,
-      okText: 'Sim',
-      okType: 'danger',
-      cancelText: 'Não',
-      onOk: async () => {
-        try {
-          await axios.delete(`/v2/expedicoes/${expedicaoAtual.id}`)
-          notification.success({
-            message: 'Expedição excluída',
-            description: 'A expedição foi removida com sucesso.'
-          })
-          navigate('/expedicoes')
-        } catch (err: any) {
-          notification.error({
-            message: 'Erro ao excluir expedição',
-            description: err?.response?.data?.message || err?.message || 'Falha na exclusão'
-          })
-        }
-      }
-    })
-  }
+    const id = paramId ? Number(paramId) : NaN
+    if (!Number.isInteger(id) || id <= 0) {
+      setLoading(false)
+      setExpedicaoAtual(null)
+      setErroApi(null)
+      return
+    }
+    void carregarDetalhes(id)
+  }, [paramId, carregarDetalhes])
 
   if (loading && !expedicaoAtual) {
     return (
@@ -329,7 +264,13 @@ export default function DetalhesExpedicaoScreen() {
           type={erroApi ? 'warning' : 'info'}
           showIcon
           action={
-            <Button size="small" icon={<ReloadOutlined />} onClick={carregarExpedicoes}>
+            <Button
+              size="small"
+              icon={<ReloadOutlined />}
+              onClick={() => {
+                if (paramId) void carregarDetalhes(Number(paramId))
+              }}
+            >
               Tentar novamente
             </Button>
           }
@@ -337,9 +278,6 @@ export default function DetalhesExpedicaoScreen() {
         <Row style={{ marginTop: 16 }}>
           <Space>
             <Button onClick={() => navigate('/expedicoes')}>Voltar à listagem</Button>
-            <Button type="primary" icon={<PlusOutlined />} onClick={() => navigate('/expedicoes/novo')}>
-              Nova Expedição
-            </Button>
           </Space>
         </Row>
       </Spin>
@@ -357,36 +295,19 @@ export default function DetalhesExpedicaoScreen() {
 
   return (
     <Spin spinning={loading} tip="Carregando...">
-      {/* Cabeçalho no padrão NovaExpedicaoPage: h2 com fontWeight: 200 e Divider dashed */}
-      <Row justify="space-between" align="middle">
-        <Col xs={24} md={14}>
-          <Title level={2} style={{ fontWeight: 200, margin: 0 }}>
-            {expedicaoAtual.descricao
-              ? `Expedição #${expedicaoAtual.id} — ${expedicaoAtual.descricao}`
-              : `Expedição #${expedicaoAtual.id}`}
-          </Title>
+      <Row gutter={24} style={{ marginBottom: 20 }} align="middle">
+        <Col xs={24} sm={16}>
+          <h2 style={{ fontWeight: 200, margin: 0 }}>
+            {`Expedição #${expedicaoAtual.id}`}
+          </h2>
         </Col>
-        <Col xs={24} md={10} style={{ textAlign: 'right' }}>
-          <Space>
-            {getStatusTag(expedicaoAtual.status)}
-            {expedicoesLista.length > 1 && (
-              <Select
-                value={expedicaoAtual.id}
-                onChange={handleSelecionarExpedicao}
-                style={{ minWidth: 220, textAlign: 'left' }}
-              >
-                {expedicoesLista.map(exp => (
-                  <Option key={exp.id} value={exp.id}>
-                    {exp.titulo}
-                  </Option>
-                ))}
-              </Select>
-            )}
-          </Space>
+        <Col xs={24} sm={8} style={{ textAlign: 'right' }}>
+          {getStatusTag(expedicaoAtual.status)}
         </Col>
       </Row>
       <Divider dashed />
 
+<<<<<<< HEAD
       {/* Barra de Ações Superior */}
       <Row justify="space-between" align="middle" gutter={8} style={{ marginBottom: 16 }}>
         <Col>
@@ -421,48 +342,49 @@ export default function DetalhesExpedicaoScreen() {
           </Row>
         </Col>
       </Row>
+=======
+      {podeEditar && (
+        <Link to={`/expedicoes/${expedicaoAtual.id}`}>
+          <Button type="primary">Editar</Button>
+        </Link>
+      )}
+>>>>>>> 64206256c543dc377fa01af78f974d54f781cf94
 
-      {/* Linha de Datas e Destino no padrão de campos de NovaExpedicaoPage */}
-      <Row gutter={8} style={{ marginBottom: 16 }}>
+      <Row gutter={8} style={{ margin: '20px 0' }}>
         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
           <Col span={24}>
-            <Text type="secondary">Data de Início</Text>
+            <h4>Data de Início</h4>
           </Col>
-          <Col span={24} style={{ marginTop: 4 }}>
-            <Text style={{ fontSize: 15, fontWeight: 500 }}>{dataInicioFormatada}</Text>
+          <Col span={24}>
+            <span>{dataInicioFormatada}</span>
           </Col>
         </Col>
 
         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
           <Col span={24}>
-            <Text type="secondary">Data de Fim</Text>
+            <h4>Data de Fim</h4>
           </Col>
-          <Col span={24} style={{ marginTop: 4 }}>
-            <Text style={{ fontSize: 15, fontWeight: 500 }}>{dataFimFormatada}</Text>
+          <Col span={24}>
+            <span>{dataFimFormatada}</span>
           </Col>
         </Col>
 
         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
           <Col span={24}>
-            <Text type="secondary">Destino</Text>
+            <h4>Destino</h4>
           </Col>
-          <Col span={24} style={{ marginTop: 4 }}>
-            <Text style={{ fontSize: 15, fontWeight: 500 }}>{expedicaoAtual.destino}</Text>
+          <Col span={24}>
+            <span>{expedicaoAtual.destino}</span>
           </Col>
         </Col>
       </Row>
 
-      {/* Descrição */}
-      <Row gutter={8} style={{ marginBottom: 16 }}>
-        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-          <Col span={24}>
-            <Text type="secondary">Descrição</Text>
-          </Col>
-          <Col span={24} style={{ marginTop: 4 }}>
-            <Paragraph style={{ whiteSpace: 'pre-wrap', margin: 0, fontSize: 14 }}>
-              {expedicaoAtual.descricao || 'Sem descrição cadastrada.'}
-            </Paragraph>
-          </Col>
+      <Row gutter={8} style={{ marginBottom: 20 }}>
+        <Col span={24}>
+          <h4>Descrição</h4>
+          <span style={{ whiteSpace: 'pre-wrap' }}>
+            {expedicaoAtual.descricao || 'Sem descrição cadastrada.'}
+          </span>
         </Col>
       </Row>
 
@@ -470,9 +392,9 @@ export default function DetalhesExpedicaoScreen() {
       <Row gutter={8} style={{ marginBottom: 16 }}>
         <Col xs={24} sm={24} md={24} lg={24} xl={24}>
           <Col span={24}>
-            <Text type="secondary">
-              Participantes ({expedicaoAtual.participantes.length})
-            </Text>
+            <h4>
+              {`Participantes (${expedicaoAtual.participantes.length})`}
+            </h4>
           </Col>
           <Col span={24} style={{ marginTop: 6 }}>
             {expedicaoAtual.participantes.length === 0 ? (
@@ -503,9 +425,9 @@ export default function DetalhesExpedicaoScreen() {
       <Row gutter={8} style={{ marginBottom: 16 }}>
         <Col xs={24} sm={24} md={24} lg={24} xl={24}>
           <Col span={24}>
-            <Text type="secondary">
-              Rota ({expedicaoAtual.rotas.length} {expedicaoAtual.rotas.length === 1 ? 'parada' : 'paradas'})
-            </Text>
+            <h4>
+              {`Rota (${expedicaoAtual.rotas.length} ${expedicaoAtual.rotas.length === 1 ? 'parada' : 'paradas'})`}
+            </h4>
           </Col>
           <Col span={24} style={{ marginTop: 6 }}>
             {expedicaoAtual.rotas.length === 0 ? (

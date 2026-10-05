@@ -102,7 +102,11 @@ export function AppRoutes() {
       <Route path="remessas" element={guard(isCuradorOuOperador(), ListaRemessasScreen)} />
 
       <Route path="expedicoes/novo" element={guard(auth.can('create', 'Expedicao'), NovaExpedicaoPage)} />
+<<<<<<< HEAD
       <Route path="expedicoes/editar/:expedicao_id" element={guard(auth.can('update', 'Expedicao'), EditarExpedicaoPage)} />
+=======
+      <Route path="expedicoes/:id" element={guard(auth.can('update', 'Expedicao'), NovaExpedicaoPage)} />
+>>>>>>> 64206256c543dc377fa01af78f974d54f781cf94
 
       <Route path="usuarios/novo" element={guard(auth.can('create', 'Usuario'), NovoUsuario)} />
       <Route path="usuarios/:usuario_id" element={guard(auth.can('update', 'Usuario'), NovoUsuario)} />
