@@ -14,12 +14,6 @@ import {
   Typography
 } from 'antd'
 import {
-<<<<<<< HEAD
-  DeleteOutlined,
-  EditOutlined,
-  PlusOutlined,
-=======
->>>>>>> 64206256c543dc377fa01af78f974d54f781cf94
   CheckCircleOutlined,
   ClockCircleOutlined,
   CompassOutlined,
@@ -307,48 +301,11 @@ export default function DetalhesExpedicaoScreen() {
       </Row>
       <Divider dashed />
 
-<<<<<<< HEAD
-      {/* Barra de Ações Superior */}
-      <Row justify="space-between" align="middle" gutter={8} style={{ marginBottom: 16 }}>
-        <Col>
-          <Button onClick={() => navigate('/expedicoes')}>
-            Voltar à listagem
-          </Button>
-        </Col>
-        <Col>
-          <Row gutter={8}>
-            <Col>
-              <Button
-                icon={<EditOutlined />}
-                onClick={() => navigate(`/expedicoes/editar/${expedicaoAtual.id}`)}
-              >
-                Editar
-              </Button>
-            </Col>
-            <Col>
-              <Button danger icon={<DeleteOutlined />} onClick={handleConfirmarExclusao}>
-                Excluir
-              </Button>
-            </Col>
-            <Col>
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={() => navigate('/expedicoes/novo')}
-              >
-                Nova Expedição
-              </Button>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
-=======
       {podeEditar && (
         <Link to={`/expedicoes/${expedicaoAtual.id}`}>
           <Button type="primary">Editar</Button>
         </Link>
       )}
->>>>>>> 64206256c543dc377fa01af78f974d54f781cf94
 
       <Row gutter={8} style={{ margin: '20px 0' }}>
         <Col xs={24} sm={12} md={8} lg={8} xl={8}>

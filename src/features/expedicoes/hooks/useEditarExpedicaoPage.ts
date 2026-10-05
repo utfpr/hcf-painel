@@ -7,7 +7,10 @@ import { useQuery } from '@/hooks/query/useQuery'
 import {
   diffParticipantes,
   EXPEDICOES_V2_ENDPOINT,
+  idFromField,
+  rotasIguais,
   toUpdateExpedicaoPayload,
+  toUpdateRotasPayload,
   type EditarExpedicaoFormValues,
   type ExpedicaoDetalhada,
   type UpdateExpedicaoPayload
@@ -66,14 +69,6 @@ export function useEditarExpedicaoPage(expedicaoId: number | undefined) {
     }]
   }, [expedicao, cidadeDestino])
 
-  const participantesIniciais = useMemo<SelectOption[]>(
-    () => (expedicao?.participantes ?? []).map(p => ({
-      value: p.id,
-      label: p.nome
-    })),
-    [expedicao]
-  )
-
   const { trigger: salvarMutation } = useMutation(
     async ({ original, values }: SalvarArgs) => {
       const base = `${EXPEDICOES_V2_ENDPOINT}/${original.id}`
@@ -84,10 +79,15 @@ export function useEditarExpedicaoPage(expedicaoId: number | undefined) {
         toUpdateExpedicaoPayload(values)
       )
 
-      // 2) participantes (a API só adiciona/remove um a um)
+      const rotasPayload = toUpdateRotasPayload(values)
+      if (!rotasIguais(original.rotas, rotasPayload.rotas)) {
+        await httpClient.put(`${base}/rotas`, rotasPayload)
+      }
+
+      // participantes (a API só adiciona/remove um a um)
       const { adicionar, remover } = diffParticipantes(
         original.participantes.map(p => Number(p.id)),
-        values.participantes.map(Number)
+        values.participantes.map(idFromField)
       )
       for (const usuarioId of adicionar) {
         await httpClient.post(`${base}/participantes`, { usuarioId: Number(usuarioId) })
@@ -139,7 +139,6 @@ export function useEditarExpedicaoPage(expedicaoId: number | undefined) {
     erroCarregamento,
     carregando,
     destinoInicial,
-    participantesIniciais,
     buscarCidades,
     buscarParticipantes,
     salvar
