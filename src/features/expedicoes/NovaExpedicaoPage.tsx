@@ -38,6 +38,7 @@ export default function NovaExpedicaoPage() {
 
   const {
     buscarCidades,
+    buscarLocaisColeta,
     buscarParticipantes,
     criarExpedicao
   } = useNovaExpedicaoPage()
@@ -189,7 +190,7 @@ export default function NovaExpedicaoPage() {
 
         <Row gutter={8}>
           <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-            <RotaFormField buscar={buscarCidades} />
+            <RotaFormField buscar={buscarCidades} buscarLocais={buscarLocaisColeta} />
           </Col>
         </Row>
 

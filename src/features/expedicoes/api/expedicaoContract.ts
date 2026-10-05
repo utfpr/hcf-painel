@@ -1,6 +1,10 @@
 import type { Moment } from 'moment'
 
-import type { OpcaoSelecionada } from '../types'
+import type {
+  OpcaoSelecionada,
+  ParadaRotaForm,
+  RotaExpedicaoPayload
+} from '../types'
 
 export const EXPEDICOES_ENDPOINT = '/v2/expedicoes'
 
@@ -11,7 +15,7 @@ export interface CreateExpedicaoPayload {
   data_fim: string
   cidade_id: number
   participantes: number[]
-  rotas: number[]
+  rotas: RotaExpedicaoPayload[]
 }
 
 export interface ExpedicaoCriada {
@@ -32,7 +36,7 @@ export interface NovaExpedicaoFormValues {
   destino: OpcaoSelecionada | number | string
   descricao: string
   participantes: Array<OpcaoSelecionada | number | string>
-  rotas?: Array<OpcaoSelecionada | number | string>
+  rotas?: Array<ParadaRotaForm | number | string>
 }
 
 function toId(value: unknown): number {
@@ -40,6 +44,17 @@ function toId(value: unknown): number {
     return Number((value as { value: unknown }).value)
   }
   return Number(value)
+}
+
+function toRota(value: ParadaRotaForm | number | string): RotaExpedicaoPayload {
+  const locais = typeof value === 'object' && value !== null
+    ? value.locaisColetaIds ?? []
+    : []
+
+  return {
+    cidade_id: toId(value),
+    locais_coleta_ids: locais.map(id => Number(id))
+  }
 }
 
 export function toCreateExpedicaoPayload(
@@ -53,7 +68,7 @@ export function toCreateExpedicaoPayload(
     data_fim: values.dataFim.format('YYYY-MM-DD'),
     cidade_id: toId(values.destino),
     participantes: values.participantes.map(toId),
-    rotas: (values.rotas ?? []).map(toId)
+    rotas: (values.rotas ?? []).map(toRota)
   }
 }
 

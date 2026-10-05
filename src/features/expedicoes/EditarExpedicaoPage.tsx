@@ -48,6 +48,7 @@ export default function EditarExpedicaoPage() {
     carregando,
     destinoInicial,
     buscarCidades,
+    buscarLocaisColeta,
     buscarParticipantes,
     salvar
   } = useEditarExpedicaoPage(
@@ -232,7 +233,7 @@ export default function EditarExpedicaoPage() {
 
           <Row gutter={8}>
             <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-              <RotaFormField buscar={buscarCidades} />
+              <RotaFormField buscar={buscarCidades} buscarLocais={buscarLocaisColeta} />
             </Col>
           </Row>
 

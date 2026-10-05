@@ -38,9 +38,9 @@ describe('expedicaoContract', () => {
       cidade_id: 10,
       participantes: [3, 7],
       rotas: [
-        10,
-        4,
-        10
+        { cidade_id: 10, locais_coleta_ids: [] },
+        { cidade_id: 4, locais_coleta_ids: [] },
+        { cidade_id: 10, locais_coleta_ids: [] }
       ]
     })
   })
@@ -71,7 +71,7 @@ describe('expedicaoContract', () => {
 
     expect(payload.cidade_id).toBe(4104808)
     expect(payload.participantes).toEqual([3])
-    expect(payload.rotas).toEqual([10])
+    expect(payload.rotas).toEqual([{ cidade_id: 10, locais_coleta_ids: [] }])
     expect(payload).not.toHaveProperty('label')
   })
 
@@ -88,7 +88,7 @@ describe('expedicaoContract', () => {
     expect(payload.cidade_id).toBe(4104808)
     expect(typeof payload.cidade_id).toBe('number')
     expect(payload.participantes).toEqual([3, 7])
-    expect(payload.rotas).toEqual([4104808])
+    expect(payload.rotas).toEqual([{ cidade_id: 4104808, locais_coleta_ids: [] }])
   })
 
   it('envia descricao null quando só há espaços', () => {
@@ -101,6 +101,23 @@ describe('expedicaoContract', () => {
     })
 
     expect(payload.descricao).toBeNull()
+  })
+
+  it('envia os locais marcados da cidade, sem ordem própria', () => {
+    const payload = toCreateExpedicaoPayload({
+      dataInicio,
+      dataFim,
+      destino: 11,
+      descricao: 'Coleta',
+      participantes: [1],
+      rotas: [
+        {
+          value: 11, label: 'Belém - PA', locaisColetaIds: [122, 10]
+        }
+      ]
+    })
+
+    expect(payload.rotas).toEqual([{ cidade_id: 11, locais_coleta_ids: [122, 10] }])
   })
 
   it('extrai a mensagem de erro devolvida pela API', () => {

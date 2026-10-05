@@ -17,6 +17,8 @@ import {
 } from '../api/expedicaoEdicaoContract'
 import type {
   CidadeListItem,
+  LocalColetaItem,
+  LocaisColetaResponse,
   SelectOption,
   UsuariosListResponse
 } from '../types'
@@ -121,6 +123,14 @@ export function useEditarExpedicaoPage(expedicaoId: number | undefined) {
 }))
   }, [httpClient])
 
+  const buscarLocaisColeta = useCallback(async (cidadeId: number): Promise<LocalColetaItem[]> => {
+    const response = await httpClient.get<LocaisColetaResponse>('/locais-coleta', {
+      cidade_id: cidadeId,
+      getAll: 'true'
+    })
+    return response.data.resultado ?? []
+  }, [httpClient])
+
   const buscarParticipantes = useCallback(async (nome: string): Promise<SelectOption[]> => {
     const params: Record<string, string | number> = {
       pagina: 1,
@@ -140,6 +150,7 @@ export function useEditarExpedicaoPage(expedicaoId: number | undefined) {
     carregando,
     destinoInicial,
     buscarCidades,
+    buscarLocaisColeta,
     buscarParticipantes,
     salvar
   }

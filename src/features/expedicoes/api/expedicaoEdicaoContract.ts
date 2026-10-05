@@ -5,7 +5,7 @@
  * Baseado no backend real da branch `532-cadastro-expedicoes` do hcf-api:
  *   GET    /v2/expedicoes/:id
  *   PUT    /v2/expedicoes/:id                       { descricao, data_inicio, data_fim, cidade_id }
- *   PUT    /v2/expedicoes/:id/rotas                 { rotas: number[] }  — só se a ordem mudar
+ *   PUT    /v2/expedicoes/:id/rotas                 { rotas: { cidade_id, locais_coleta_ids }[] }
  *   POST   /v2/expedicoes/:id/participantes         { usuarioId }
  *   DELETE /v2/expedicoes/:id/participantes/:usuarioId
  *
@@ -16,7 +16,11 @@
 import type { Moment } from 'moment'
 import moment from 'moment'
 
-import type { OpcaoSelecionada } from '../types'
+import type {
+  OpcaoSelecionada,
+  ParadaRotaForm,
+  RotaExpedicaoPayload
+} from '../types'
 
 export const EXPEDICOES_V2_ENDPOINT = '/v2/expedicoes'
 export const FORMATO_DATA_API = 'YYYY-MM-DD'
@@ -27,9 +31,16 @@ export interface ParticipanteDetalhado {
   email: string
 }
 
+export interface LocalColetaDetalhado {
+  id: number
+  descricao?: string
+}
+
 export interface ParadaDetalhada {
   cidade_id: number
   nome_cidade?: string
+  locais_coleta_ids?: number[]
+  locais_coleta?: Array<LocalColetaDetalhado | number>
 }
 
 export interface ExpedicaoDetalhada {
@@ -56,7 +67,7 @@ export interface EditarExpedicaoFormValues {
   destino: OpcaoSelecionada | number | string
   descricao: string
   participantes: Array<OpcaoSelecionada | number | string>
-  rotas?: Array<OpcaoSelecionada | number | string>
+  rotas?: Array<ParadaRotaForm | number | string>
 }
 
 export function idFromField(value: unknown): number {
@@ -78,23 +89,56 @@ export function toUpdateExpedicaoPayload(
 }
 
 export interface UpdateRotasPayload {
-  rotas: number[]
+  rotas: RotaExpedicaoPayload[]
 }
 
-/** A posição no array é a coluna `ordem`. */
-export function toUpdateRotasPayload(values: EditarExpedicaoFormValues): UpdateRotasPayload {
+function toRota(value: ParadaRotaForm | number | string): RotaExpedicaoPayload {
+  const locais = typeof value === 'object' && value !== null
+    ? value.locaisColetaIds ?? []
+    : []
+
   return {
-    rotas: (values.rotas ?? []).map(idFromField)
+    cidade_id: idFromField(value),
+    locais_coleta_ids: locais.map(id => Number(id))
   }
 }
 
-/** Mesma sequência de cidade_id: não há o que gravar. */
+/** A posição no array é a coluna `ordem`. Os locais são só presença. */
+export function toUpdateRotasPayload(values: EditarExpedicaoFormValues): UpdateRotasPayload {
+  return {
+    rotas: (values.rotas ?? []).map(toRota)
+  }
+}
+
+export function extrairLocaisColetaIds(parada: ParadaDetalhada): number[] {
+  if (Array.isArray(parada.locais_coleta_ids)) {
+    return parada.locais_coleta_ids.map(id => Number(id))
+  }
+  if (!Array.isArray(parada.locais_coleta)) return []
+
+  return parada.locais_coleta.map(item => (
+    typeof item === 'object' && item !== null ? Number(item.id) : Number(item)
+  ))
+}
+
+function mesmosLocais(originais: number[], finais: number[]): boolean {
+  if (originais.length !== finais.length) return false
+  const conjunto = new Set(originais)
+  return finais.every(id => conjunto.has(id))
+}
+
+/** Mesma ordem de cidade e o mesmo conjunto de locais: não há o que gravar. */
 export function rotasIguais(
   originais: ParadaDetalhada[] | undefined,
-  finais: number[]
+  finais: RotaExpedicaoPayload[]
 ): boolean {
-  const antes = (originais ?? []).map(parada => Number(parada.cidade_id))
-  return antes.length === finais.length && antes.every((id, index) => id === finais[index])
+  const antes = originais ?? []
+  if (antes.length !== finais.length) return false
+
+  return finais.every((rota, index) => (
+    Number(antes[index].cidade_id) === rota.cidade_id
+    && mesmosLocais(extrairLocaisColetaIds(antes[index]), rota.locais_coleta_ids)
+  ))
 }
 
 /** Converte a resposta da API nos valores iniciais do formulário. */
@@ -110,7 +154,8 @@ export function toFormValues(expedicao: ExpedicaoDetalhada): EditarExpedicaoForm
     })),
     rotas: (expedicao.rotas ?? []).map(parada => ({
       value: parada.cidade_id,
-      label: parada.nome_cidade ?? String(parada.cidade_id)
+      label: parada.nome_cidade ?? String(parada.cidade_id),
+      locaisColetaIds: extrairLocaisColetaIds(parada)
     }))
   }
 }

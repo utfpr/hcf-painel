@@ -113,11 +113,11 @@ function ExpeditionCard({ item }) {
     const detailsUrl = `/expedicoes/detalhes/${encodeURIComponent(item.id)}`
     const status = expeditionStatus(item.startDate, item.endDate)
     const menu = {
-    ...actionsMenu,
-    onClick: ({ key }) => {
-        if (key === 'edit') navigate(`/expedicoes/editar/${encodeURIComponent(item.id)}`)
+        ...actionsMenu,
+        onClick: ({ key }) => {
+            if (key === 'edit') navigate(`/expedicoes/${encodeURIComponent(item.id)}`)
+        }
     }
-}
 
     return (
         <Card
@@ -182,32 +182,32 @@ function ExpeditionSection({ title, data, onPageChange, onRetry, filtered }) {
             {data.error
                 ? <Alert type="error" showIcon message="Não foi possível carregar as expedições." action={<Button icon={<ReloadOutlined />} onClick={onRetry}>Tentar novamente</Button>} />
                 : (
-                        <Spin spinning={data.loading} tip="Carregando expedições">
-                            {!data.loading && (data.items.length === 0
-                                ? <Empty description={filtered ? 'Nenhuma expedição corresponde aos filtros.' : 'Nenhuma expedição nesta categoria.'} />
-                                : (
-                                        <>
-                                            <Row gutter={[16, 16]}>
-                                                {data.items.map(item => (
-                                                    <Col key={item.id} xs={24} md={12} xl={8}>
-                                                        <ExpeditionCard item={item} />
-                                                    </Col>
-                                                ))}
-                                            </Row>
-                                            <Pagination
-                                                style={{ marginTop: 20, textAlign: 'right' }}
-                                                current={data.page}
-                                                pageSize={data.pageSize}
-                                                total={data.total}
-                                                showSizeChanger
-                                                pageSizeOptions={['20', '50', '100']}
-                                                onChange={onPageChange}
-                                                showTotal={total => `${total} expedições`}
-                                            />
-                                        </>
-                                    ))}
-                        </Spin>
-                    )}
+                    <Spin spinning={data.loading} tip="Carregando expedições">
+                        {!data.loading && (data.items.length === 0
+                            ? <Empty description={filtered ? 'Nenhuma expedição corresponde aos filtros.' : 'Nenhuma expedição nesta categoria.'} />
+                            : (
+                                <>
+                                    <Row gutter={[16, 16]}>
+                                        {data.items.map(item => (
+                                            <Col key={item.id} xs={24} md={12} xl={8}>
+                                                <ExpeditionCard item={item} />
+                                            </Col>
+                                        ))}
+                                    </Row>
+                                    <Pagination
+                                        style={{ marginTop: 20, textAlign: 'right' }}
+                                        current={data.page}
+                                        pageSize={data.pageSize}
+                                        total={data.total}
+                                        showSizeChanger
+                                        pageSizeOptions={['20', '50', '100']}
+                                        onChange={onPageChange}
+                                        showTotal={total => `${total} expedições`}
+                                    />
+                                </>
+                            ))}
+                    </Spin>
+                )}
         </section>
     )
 }

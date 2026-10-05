@@ -1,4 +1,3 @@
-
 export interface CidadeListItem {
   id: number
   nome: string
@@ -31,4 +30,25 @@ export interface SelectOption {
 export interface OpcaoSelecionada {
   value: number | string
   label: string
+}
+
+export interface LocalColetaItem {
+  id: number | string
+  descricao: string
+}
+
+export interface LocaisColetaResponse {
+  resultado?: LocalColetaItem[]
+}
+
+/** Cidade na rota do formulário. A posição no array é a ordem. Os locais não têm ordem. */
+export interface ParadaRotaForm {
+  value: number | string
+  label: string
+  locaisColetaIds?: number[]
+}
+
+export interface RotaExpedicaoPayload {
+  cidade_id: number
+  locais_coleta_ids: number[]
 }

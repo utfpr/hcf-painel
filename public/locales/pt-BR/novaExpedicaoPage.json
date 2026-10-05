@@ -31,7 +31,8 @@
   "rota": {
     "subir": "Mover para cima",
     "descer": "Mover para baixo",
-    "remover": "Remover da rota"
+    "remover": "Remover da rota",
+    "erroLocais": "Não foi possível carregar os locais de coleta."
   },
 
   "acoes": {
