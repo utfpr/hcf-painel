@@ -93,7 +93,8 @@ void i18n
       'fichaTomboActions',
       'perfilScreen',
       'rfid',
-      'novaExpedicaoPage'
+      'novaExpedicaoPage',
+      'editarExpedicaoPage'
     ],
     defaultNS: 'common',
     interpolation: {
