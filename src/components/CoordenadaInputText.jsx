@@ -23,6 +23,54 @@ class CoordenadaInputText extends Component {
             erroMinutos: false,
             erroSegundos: false
         }
+
+        this.hasUserEdited = false
+    }
+
+    componentDidMount() {
+        this.syncFromPropsValue()
+    }
+
+    componentDidUpdate(prevProps) {
+        const prevValue = prevProps.value
+        const nextValue = this.props.value
+
+        if (
+            prevValue !== nextValue
+            && !this.hasUserEdited
+            && nextValue !== undefined
+            && nextValue !== null
+            && nextValue !== ''
+        ) {
+            this.syncFromPropsValue()
+        }
+    }
+
+    syncFromPropsValue = () => {
+        if (this.props.value === undefined || this.props.value === null || this.props.value === '') {
+            this.setState({
+                graus: '',
+                minutos: '',
+                segundos: '',
+                pontoCardeal: this.props.longitude ? 'W' : 'S',
+                erroGraus: false,
+                erroMinutos: false,
+                erroSegundos: false
+            })
+            return
+        }
+
+        const coordenadas = decimalParaGrausMinutosSegundos(Number(this.props.value), this.props.longitude)
+
+        this.setState({
+            graus: coordenadas.graus,
+            minutos: coordenadas.minutos,
+            segundos: coordenadas.segundos,
+            pontoCardeal: coordenadas.direcao,
+            erroGraus: false,
+            erroMinutos: false,
+            erroSegundos: false
+        })
     }
 
     getMaxGraus = () => {
@@ -49,6 +97,7 @@ class CoordenadaInputText extends Component {
 
     aplicaMascaraNoCampo = (campo, mascara, valor) => {
         const valorMascarado = masker.toPattern(valor, mascara)
+        this.hasUserEdited = true
 
         const erroState = {}
         if (campo === 'graus') {
@@ -59,14 +108,30 @@ class CoordenadaInputText extends Component {
             erroState.erroSegundos = !this.validaSegundos(valorMascarado)
         }
 
-        this.setState({ [campo]: valorMascarado, ...erroState }, this.onStateChanged)
-    }
+        this.setState({ [campo]: valorMascarado, ...erroState }, () => {
+            if (valorMascarado === '') {
+                this.props.onChange('')
+                return
+            }
 
-    onStateChanged = () => {
-        const {
-            graus, minutos, segundos, pontoCardeal
-        } = this.state
-        this.props.onChange(dmsToDecimal(Number(graus), Number(minutos), Number(segundos.replace(',', '.')), pontoCardeal))
+            const {
+                graus, minutos, segundos, pontoCardeal
+            } = this.state
+
+            if ([graus, minutos, segundos].some(v => v === '' || v === undefined || v === null)) {
+                this.props.onChange('')
+                return
+            }
+
+            this.props.onChange(
+                dmsToDecimal(
+                    Number(graus),
+                    Number(minutos),
+                    Number(segundos.replace(',', '.')),
+                    pontoCardeal
+                )
+            )
+        })
     }
 
     temValorValido = (valor1, valor2) => {
@@ -80,17 +145,6 @@ class CoordenadaInputText extends Component {
     })
 
     render() {
-        const semValoresEmPropriedades = !this.graus && !this.minutos && !this.segundos
-        const semValoresEmEstados = !this.state.graus && !this.state.minutos && !this.state.graus
-        if (this.props.value && semValoresEmPropriedades && semValoresEmEstados) {
-            const coordenadas = decimalParaGrausMinutosSegundos(this.props.value, this.props.longitude)
-
-            this.state.graus = coordenadas.graus
-            this.state.minutos = coordenadas.minutos
-            this.state.segundos = coordenadas.segundos
-            this.state.pontoCardeal = coordenadas.direcao
-        }
-
         const { erroGraus, erroMinutos, erroSegundos } = this.state
         const maxGraus = this.getMaxGraus()
 

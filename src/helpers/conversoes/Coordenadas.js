@@ -1,49 +1,43 @@
 export default function converteDecimalParaGrausMinutosSegundos(gDec, x, formatada) {
-    let graus
-    let minutos
-    let aux
-    let segundos
-    let milisegundos
-    let direcao
+    const sinal = gDec < 0 ? -1 : 1
+    const abs = Math.abs(gDec)
 
-    // Separa os graus
-    graus = parseInt(gDec)
+    let graus = Math.floor(abs)
+    const minutosDecimal = (abs - graus) * 60
+    let minutos = Math.floor(minutosDecimal)
+    const segundosRaw = (minutosDecimal - minutos) * 60
 
-    // Pega a fração dos graus e converte em minutos
-    aux = (graus - gDec) * 60
-    minutos = parseInt(aux)
-
-    // Pega a fração dos minutos e converte em segundos
-    aux = (aux - minutos) * 60
-    segundos = aux
-
-    // Pega a fração dos segundos e converte em milisegundos
-    milisegundos = parseInt((aux - segundos) * 60)
-
-    // Essa parte eu verifico se é o eixo X ou Y para substituir o simbolo de negativo  pelas iniciais de norte ou sul para o eixo Y, leste ou oeste para o eixo X
-    if (x) {
-        // Eixo X
-        if (graus < 0) direcao = 'W'
-        else direcao = 'E'
-    } else {
-        // Eixo Y
-
-        if (graus >= 0) direcao = 'N'
-        else direcao = 'S'
+    // Arredonda para 2 casas decimais e propaga carry se segundos >= 60
+    // (evita exibição de "60.00" causada por erro de ponto flutuante)
+    let segundos = Math.round(segundosRaw * 100) / 100
+    if (segundos >= 60) {
+        segundos = 0
+        minutos += 1
     }
+    if (minutos >= 60) {
+        minutos = 0
+        graus += 1
+    }
+
+    let direcao
+    if (x) {
+        // Eixo X (longitude)
+        direcao = sinal < 0 ? 'W' : 'E'
+    } else {
+        // Eixo Y (latitude)
+        direcao = sinal < 0 ? 'S' : 'N'
+    }
+
+    const segundosStr = segundos.toFixed(2).replace('.', ',')
 
     if (formatada) {
-        return `${Math.abs(graus)}°${Math.abs(minutos)}'${Math.abs(segundos).toFixed(2)
-            .replace('.', ',')}"${direcao}`
+        return `${graus}°${minutos}'${segundosStr}"${direcao}`
     }
-    // Devolvo a string formatada, a função Math.abs é para retornar o valor absoluto // (retirar o valor negativo) já que estou usando a notação norte, sul, leste ou oeste
-    // return Math.abs(graus) + "° " + minutos + "' " + segundos + "." + milisegundos + "'' " + direcao;
-    // return `${}°${minutos}'${segundos},${milisegundos}"${direcao}`;
+
     return {
-        graus: Math.abs(graus),
-        minutos: Math.abs(minutos),
-        segundos: Math.abs(segundos).toFixed(2)
-            .replace('.', ','),
+        graus,
+        minutos,
+        segundos: segundosStr,
         direcao
     }
 }
