@@ -9,13 +9,12 @@ import {
 } from 'antd'
 import ptbr from 'antd/es/date-picker/locale/pt_BR'
 import axios from 'axios'
-import moment from 'moment'
+import { withTranslation } from 'react-i18next'
 
 import TableColetaPorLocalData from '@/components/TableColetaPorLocalData'
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { Form } from '@ant-design/compatible'
 import { LoadingOutlined } from '@ant-design/icons'
-import { withTranslation } from 'react-i18next'
 
 const FormItem = Form.Item
 const { RangePicker } = DatePicker
@@ -38,17 +37,10 @@ class RelatorioInventarioEspeciesScreen extends Component {
             loading: false,
             loadingExport: false,
             loadingExport2: false,
-            dataInicio: moment().startOf('month')
-                .toISOString(),
-            dataFim: moment().endOf('day')
-                .toISOString(),
+            dataInicio: null,
+            dataFim: null,
             local: null
         }
-    }
-
-    componentDidMount() {
-        const { pagina } = this.state
-        this.requisitaDadosDoRelatorio({}, pagina, null, null, true)
     }
 
     notificacao = (type, titulo, descricao) => {
@@ -69,29 +61,33 @@ class RelatorioInventarioEspeciesScreen extends Component {
             paraTabela
         }
 
-        if (valores !== undefined) {
-            const { local, intervaloData } = valores
+        const { local, intervaloData } = valores || {}
+        const intervaloCompleto = intervaloData?.[0] && intervaloData?.[1]
 
-            if (local) {
-                params.local = local
-                this.setState({
-                    local
-                })
-            }
-            if (intervaloData && intervaloData.length > 0) {
-                params.dataInicio = intervaloData[0].toISOString()
-                params.dataFim = intervaloData[1].toISOString()
-                this.setState({
-                    dataInicio: intervaloData[0].toISOString(),
-                    dataFim: intervaloData[1].toISOString()
-                })
-            } else {
-                params.dataInicio = moment().startOf('month')
-                    .toISOString()
-                params.dataFim = moment().endOf('day')
-                    .toISOString()
-            }
+        if (!local && !intervaloCompleto) {
+            this.setState({
+                dados: [],
+                metadados: {},
+                loading: false,
+                local: null,
+                dataInicio: null,
+                dataFim: null
+            })
+            return
         }
+
+        if (local) params.local = local
+        if (intervaloCompleto) {
+            params.dataInicio = intervaloData[0].toISOString()
+            params.dataFim = intervaloData[1].toISOString()
+        }
+
+        this.setState({
+            local: local || null,
+            dataInicio: intervaloCompleto ? params.dataInicio : null,
+            dataFim: intervaloCompleto ? params.dataFim : null
+        })
+
         axios.get('/relatorio/coleta-por-local-intervalo-de-data', { params })
             .then(response => {
                 this.setState({
@@ -135,27 +131,10 @@ class RelatorioInventarioEspeciesScreen extends Component {
         }
         const params = {}
 
-        if (this.state.local !== undefined || this.state.local !== null) {
-            const { local } = this.state
-
-            if (local) {
-                params.local = local
-            }
-        }
-
-        if (this.state.dataInicio !== undefined || this.state.dataInicio !== null) {
-            const { dataInicio } = this.state
-            if (dataInicio) {
-                params.dataInicio = dataInicio
-            }
-        }
-
-        if (this.state.dataFim !== undefined || this.state.dataFim !== null) {
-            const { dataFim } = this.state
-            if (dataFim) {
-                params.dataFim = dataFim
-            }
-        }
+        const { local, dataInicio, dataFim } = this.state
+        if (local) params.local = local
+        if (dataInicio) params.dataInicio = dataInicio
+        if (dataFim) params.dataFim = dataFim
 
         if (sintetico) {
             params.variante = 'sintetico'
@@ -275,13 +254,12 @@ class RelatorioInventarioEspeciesScreen extends Component {
                             <FormItem>
                                 {getFieldDecorator('intervaloData')(
                                     <RangePicker
-                                        defaultValue={[moment().startOf('month'), moment().endOf('day')]}
                                         format={dateFormat}
                                         locale={dateLocale}
-                                        onChange={a => {
+                                        onChange={intervaloData => {
                                             this.setState({
-                                                dataInicio: a[0].toISOString(),
-                                                dataFim: a[1].toISOString()
+                                                dataInicio: intervaloData?.[0]?.toISOString() || null,
+                                                dataFim: intervaloData?.[1]?.toISOString() || null
                                             })
                                         }}
                                     />
@@ -307,14 +285,13 @@ class RelatorioInventarioEspeciesScreen extends Component {
                                                 this.setState({
                                                     pagina: 1,
                                                     valores: {},
+                                                    dados: [],
                                                     metadados: {},
                                                     local: null,
-                                                    dataInicio: moment().startOf('month')
-                                                        .toISOString(),
-                                                    dataFim: moment().endOf('day')
-                                                        .toISOString()
+                                                    dataInicio: null,
+                                                    dataFim: null,
+                                                    loading: false
                                                 })
-                                                this.requisitaDadosDoRelatorio({}, 1, null, null, true)
                                             }}
                                             className="login-form-button"
                                         >
