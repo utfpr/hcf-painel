@@ -13,8 +13,8 @@ describe('expedicaoContract', () => {
   const dataInicio = moment.parseZone('2026-09-28T23:30:00-03:00')
   const dataFim = moment.parseZone('2026-10-02T18:00:00-03:00')
 
-  it('aponta para o endpoint v2 da API', () => {
-    expect(EXPEDICOES_ENDPOINT).toBe('/v2/expedicoes')
+  it('aponta para o endpoint v1 da API', () => {
+    expect(EXPEDICOES_ENDPOINT).toBe('/v1/expedicoes')
   })
 
   it('monta o payload com a data local em YYYY-MM-DD (coluna date da API)', () => {

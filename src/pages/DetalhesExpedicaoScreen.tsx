@@ -252,13 +252,13 @@ export default function DetalhesExpedicaoScreen() {
 
   const carregarDetalhes = useCallback(async (id: number) => {
     const pedido = ++pedidoRef.current
-    setLoading(true)
     setCarregandoEventos(true)
     setEventos([])
     setTotalEventos(0)
     setErroEventos(null)
     try {
-      const res = await axios.get<ExpedicaoApi>(`/v2/expedicoes/${id}`)
+      setLoading(true)
+      const res = await axios.get(`/v1/expedicoes/${id}`)
       const raw = res.data
 
       const hoje = new Date()
@@ -273,19 +273,19 @@ export default function DetalhesExpedicaoScreen() {
       }
 
       const destino
-        = raw.rotas?.find(rota => rota.cidade_id === raw.cidade_id)?.nome_cidade
+        = raw.rotas?.find((rota: RotaApi) => rota.cidade_id === raw.cidade_id)?.nome_cidade
             || raw.rotas?.[0]?.nome_cidade
             || raw.cidade_nome
             || 'Destino não informado'
 
-      const participantes: ParticipanteExpedicao[] = (raw.participantes ?? []).map((participante, idx) => ({
+      const participantes: ParticipanteExpedicao[] = (raw.participantes ?? []).map((participante: ParticipanteApi, idx: number) => ({
         id: participante.id,
         nome: participante.nome,
         email: participante.email,
         funcao: idx === 0 ? 'Coordenador' : 'Pesquisador'
       }))
 
-      const rotas: ParadaRota[] = await Promise.all((raw.rotas ?? []).map(async (rota, idx) => {
+      const rotas: ParadaRota[] = await Promise.all((raw.rotas ?? []).map(async (rota: RotaApi, idx: number) => {
         const visitados = locaisVisitadosDaParada(rota)
         const locais = visitados.ids.length === 0 || !rota.cidade_id
           ? visitados.nomes

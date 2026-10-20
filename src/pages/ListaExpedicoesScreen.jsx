@@ -265,7 +265,7 @@ export default function ListaExpedicoesScreen() {
         setLists(previous => ({ ...previous, [category]: { ...previous[category], loading: true, error: false } }))
         try {
             const params = expeditionParams(category, currentFilters, page, pageSize)
-            const response = await axios.get('/v2/expedicoes', { params })
+            const response = await axios.get('/v1/expedicoes', { params })
             const { itens, total, pagina, limite } = response.data
             if (!Array.isArray(itens) || !Number.isFinite(total)) throw new Error('Resposta inválida da API de expedições')
             if (request !== requests.current[category]) return
