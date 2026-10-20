@@ -195,7 +195,7 @@ export default function DetalhesExpedicaoScreen() {
   const carregarDetalhes = useCallback(async (id: number) => {
     try {
       setLoading(true)
-      const res = await axios.get(`/v2/expedicoes/${id}`)
+      const res = await axios.get(`/v1/expedicoes/${id}`)
       const raw = res.data
 
       const hoje = new Date()
@@ -238,14 +238,14 @@ export default function DetalhesExpedicaoScreen() {
       // Busca eventos/evidências caso existam
       let evidencias: RegistroEventoExpedicao[] = []
       try {
-        const resEventos = await axios.get(`/v2/expedicoes/${id}/eventos`)
+        const resEventos = await axios.get(`/v1/expedicoes/${id}/eventos`)
         const itensEventos = resEventos.data?.itens || []
 
         evidencias = await Promise.all(
           itensEventos.map(async (ev: any) => {
             let arquivos: EvidenciaArquivo[] = []
             try {
-              const resEvidencias = await axios.get(`/v2/eventos/${ev.id}/evidencias`)
+              const resEvidencias = await axios.get(`/v1/eventos/${ev.id}/evidencias`)
               arquivos = resEvidencias.data || []
             } catch {
               arquivos = []

@@ -6,7 +6,7 @@ import type {
   RotaExpedicaoPayload
 } from '../types'
 
-export const EXPEDICOES_ENDPOINT = '/v2/expedicoes'
+export const EXPEDICOES_ENDPOINT = '/v1/expedicoes'
 
 
 export interface CreateExpedicaoPayload {

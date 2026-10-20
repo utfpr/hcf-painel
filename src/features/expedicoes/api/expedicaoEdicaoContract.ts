@@ -3,11 +3,11 @@
  *
  * Isolado do `expedicaoContract.ts` (criação) para não conflitar com o PR #404.
  * Baseado no backend real da branch `532-cadastro-expedicoes` do hcf-api:
- *   GET    /v2/expedicoes/:id
- *   PUT    /v2/expedicoes/:id                       { descricao, data_inicio, data_fim, cidade_id }
- *   PUT    /v2/expedicoes/:id/rotas                 { rotas: { cidade_id, locais_coleta_ids }[] }
- *   POST   /v2/expedicoes/:id/participantes         { usuarioId }
- *   DELETE /v2/expedicoes/:id/participantes/:usuarioId
+ *   GET    /v1/expedicoes/:id
+ *   PUT    /v1/expedicoes/:id                       { descricao, data_inicio, data_fim, cidade_id }
+ *   PUT    /v1/expedicoes/:id/rotas                 { rotas: { cidade_id, locais_coleta_ids }[] }
+ *   POST   /v1/expedicoes/:id/participantes         { usuarioId }
+ *   DELETE /v1/expedicoes/:id/participantes/:usuarioId
  *
  * Pendente de confirmação com o back: a API guarda apenas a
  * DATA (YYYY-MM-DD), sem horário, e exige `data_fim`.
@@ -22,7 +22,7 @@ import type {
   RotaExpedicaoPayload
 } from '../types'
 
-export const EXPEDICOES_V2_ENDPOINT = '/v2/expedicoes'
+export const EXPEDICOES_V2_ENDPOINT = '/v1/expedicoes'
 export const FORMATO_DATA_API = 'YYYY-MM-DD'
 
 export interface ParticipanteDetalhado {
