@@ -1,37 +1,44 @@
-import React, {
-  useEffect, useState, useCallback
+import {
+  useCallback, useEffect, useRef, useState
 } from 'react'
 
 import {
-  Row,
+  Alert,
+  Button,
   Col,
   Divider,
-  Tag,
-  Button,
-  Space,
-  Alert,
   List,
+  Row,
+  Space,
   Spin,
-  Empty,
+  Tag,
   Typography
 } from 'antd'
 import axios from 'axios'
 import moment from 'moment'
 import {
-  Link, useParams, useNavigate
+  Link, useNavigate, useParams
 } from 'react-router'
 
 import { useAuth } from '@/contexts/Auth/useAuth'
+import LinhaDoTempoExpedicao from '@/features/expedicoes/components/LinhaDoTempoExpedicao'
+import {
+  LIMITE_EVENTOS,
+  evidenciasDaResposta,
+  ordenarEventos,
+  paginaEventosDaResposta,
+  resolverUrlEvidencia,
+  type EventoLinha
+} from '@/features/expedicoes/linhaDoTempo'
 import {
   CheckCircleOutlined,
   ClockCircleOutlined,
   CompassOutlined,
-  ReloadOutlined,
-  PaperClipOutlined
+  ReloadOutlined
 } from '@ant-design/icons'
 
 const {
-  Title, Text, Paragraph
+  Title, Text
 } = Typography
 
 export type StatusExpedicao = 'realizada' | 'futura' | 'em_andamento'
@@ -122,28 +129,6 @@ async function nomesDosIds(cidadeId: number, ids: number[]): Promise<string[]> {
   }
 }
 
-export interface EvidenciaArquivo {
-  id: number
-  nome: string
-  url: string
-  mime_type?: string
-  tamanho?: number
-}
-
-export interface RegistroEventoExpedicao {
-  id: number
-  tipo: string
-  titulo: string
-  dataHora: string
-  conteudo?: string
-  coleta?: {
-    familia?: string | null
-    nome_popular?: string | null
-    nome_cientifico?: string | null
-  } | null
-  arquivos?: EvidenciaArquivo[]
-}
-
 export interface ExpedicaoDetalhesModel {
   id: number
   titulo: string
@@ -154,7 +139,36 @@ export interface ExpedicaoDetalhesModel {
   destino: string
   participantes: ParticipanteExpedicao[]
   rotas: ParadaRota[]
-  evidencias: RegistroEventoExpedicao[]
+}
+
+interface ParticipanteApi {
+  id: number | string
+  nome: string
+  email?: string
+}
+
+interface ExpedicaoApi {
+  id: number
+  descricao?: string | null
+  data_inicio?: string
+  data_fim?: string
+  cidade_id?: number
+  cidade_nome?: string
+  rotas?: RotaApi[]
+  participantes?: ParticipanteApi[]
+}
+
+function mensagemErro(err: unknown, fallback: string): string {
+  if (typeof err === 'object' && err !== null && 'response' in err) {
+    const data = (err as {
+      response?: { data?: { message?: unknown; error?: { message?: unknown } } }
+    }).response?.data
+    const aninhada = data?.error?.message
+    if (typeof aninhada === 'string' && aninhada.trim() !== '') return aninhada
+    if (typeof data?.message === 'string' && data.message.trim() !== '') return data.message
+  }
+  if (err instanceof Error && err.message.trim() !== '') return err.message
+  return fallback
 }
 
 const getStatusTag = (status: StatusExpedicao) => {
@@ -191,16 +205,65 @@ export default function DetalhesExpedicaoScreen() {
   const [expedicaoAtual, setExpedicaoAtual] = useState<ExpedicaoDetalhesModel | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [erroApi, setErroApi] = useState<string | null>(null)
+  const [eventos, setEventos] = useState<EventoLinha[]>([])
+  const [totalEventos, setTotalEventos] = useState(0)
+  const [carregandoEventos, setCarregandoEventos] = useState(false)
+  const [erroEventos, setErroEventos] = useState<string | null>(null)
+  const pedidoRef = useRef(0)
+
+  const carregarEventos = useCallback(async (id: number, pedido: number) => {
+    setCarregandoEventos(true)
+    setErroEventos(null)
+    try {
+      const resEventos = await axios.get<unknown>(`/v2/expedicoes/${id}/eventos`, {
+        params: {
+          limite: LIMITE_EVENTOS,
+          pagina: 1
+        }
+      })
+      const pagina = paginaEventosDaResposta(resEventos.data)
+      const baseUrl = axios.defaults.baseURL ?? ''
+      const completos = await Promise.all(pagina.itens.map(async evento => {
+        try {
+          const resEvidencias = await axios.get<unknown>(`/v2/eventos/${evento.id}/evidencias`)
+          return {
+            ...evento,
+            arquivos: evidenciasDaResposta(resEvidencias.data).map(arquivo => ({
+              ...arquivo,
+              url: resolverUrlEvidencia(arquivo.url, baseUrl)
+            }))
+          }
+        } catch {
+          return evento
+        }
+      }))
+      if (pedidoRef.current !== pedido) return
+      setTotalEventos(pagina.total)
+      setEventos(ordenarEventos(completos))
+    } catch (err: unknown) {
+      if (pedidoRef.current !== pedido) return
+      setEventos([])
+      setTotalEventos(0)
+      setErroEventos(mensagemErro(err, 'Falha ao carregar os eventos da expedição'))
+    } finally {
+      if (pedidoRef.current === pedido) setCarregandoEventos(false)
+    }
+  }, [])
 
   const carregarDetalhes = useCallback(async (id: number) => {
+    const pedido = ++pedidoRef.current
+    setLoading(true)
+    setCarregandoEventos(true)
+    setEventos([])
+    setTotalEventos(0)
+    setErroEventos(null)
     try {
-      setLoading(true)
-      const res = await axios.get(`/v2/expedicoes/${id}`)
+      const res = await axios.get<ExpedicaoApi>(`/v2/expedicoes/${id}`)
       const raw = res.data
 
       const hoje = new Date()
-      const dataInicio = new Date(raw.data_inicio)
-      const dataFim = new Date(raw.data_fim)
+      const dataInicio = new Date(raw.data_inicio ?? '')
+      const dataFim = new Date(raw.data_fim ?? '')
 
       let status: StatusExpedicao = 'realizada'
       if (hoje < dataInicio) {
@@ -210,103 +273,70 @@ export default function DetalhesExpedicaoScreen() {
       }
 
       const destino
-        = raw.rotas?.find((r: any) => r.cidade_id === raw.cidade_id)?.nome_cidade
+        = raw.rotas?.find(rota => rota.cidade_id === raw.cidade_id)?.nome_cidade
             || raw.rotas?.[0]?.nome_cidade
             || raw.cidade_nome
             || 'Destino não informado'
 
-      const participantes: ParticipanteExpedicao[] = (raw.participantes || []).map((p: any, idx: number) => ({
-        id: p.id,
-        nome: p.nome,
-        email: p.email,
+      const participantes: ParticipanteExpedicao[] = (raw.participantes ?? []).map((participante, idx) => ({
+        id: participante.id,
+        nome: participante.nome,
+        email: participante.email,
         funcao: idx === 0 ? 'Coordenador' : 'Pesquisador'
       }))
 
-      const rotas: ParadaRota[] = await Promise.all((raw.rotas || []).map(async (r: RotaApi, idx: number) => {
-        const visitados = locaisVisitadosDaParada(r)
-        const locais = visitados.ids.length === 0 || !r.cidade_id
+      const rotas: ParadaRota[] = await Promise.all((raw.rotas ?? []).map(async (rota, idx) => {
+        const visitados = locaisVisitadosDaParada(rota)
+        const locais = visitados.ids.length === 0 || !rota.cidade_id
           ? visitados.nomes
-          : await nomesDosIds(r.cidade_id, visitados.ids)
+          : await nomesDosIds(rota.cidade_id, visitados.ids)
         return {
-          id: r.cidade_id || idx + 1,
+          id: rota.cidade_id || idx + 1,
           ordem: idx + 1,
-          nome: r.nome_cidade || `Cidade #${r.cidade_id}`,
+          nome: rota.nome_cidade || `Cidade #${rota.cidade_id}`,
           locais
         }
       }))
 
-      // Busca eventos/evidências caso existam
-      let evidencias: RegistroEventoExpedicao[] = []
-      try {
-        const resEventos = await axios.get(`/v2/expedicoes/${id}/eventos`)
-        const itensEventos = resEventos.data?.itens || []
-
-        evidencias = await Promise.all(
-          itensEventos.map(async (ev: any) => {
-            let arquivos: EvidenciaArquivo[] = []
-            try {
-              const resEvidencias = await axios.get(`/v2/eventos/${ev.id}/evidencias`)
-              arquivos = resEvidencias.data || []
-            } catch {
-              arquivos = []
-            }
-
-            let titulo = ev.observacoes || `Evento #${ev.id}`
-            if (ev.tipo === 'COLETA') {
-              const partes = []
-              if (ev.coleta?.nome_cientifico) partes.push(ev.coleta.nome_cientifico)
-              if (ev.coleta?.nome_popular) partes.push(`(${ev.coleta.nome_popular})`)
-              if (partes.length > 0) {
-                titulo = partes.join(' ')
-              } else {
-                titulo = 'Coleta Botânica'
-              }
-            } else if (ev.tipo === 'DIARIO') {
-              titulo = 'Diário de Campo'
-            }
-
-            return {
-              id: ev.id,
-              tipo: ev.tipo || 'EVENTO',
-              titulo,
-              dataHora: ev.capturado_em || new Date().toISOString(),
-              conteudo: ev.observacoes,
-              coleta: ev.coleta,
-              arquivos
-            }
-          })
-        )
-      } catch {
-        evidencias = []
-      }
+      if (pedidoRef.current !== pedido) return
 
       setExpedicaoAtual({
         id: raw.id,
         titulo: raw.descricao || `Expedição #${raw.id}`,
         descricao: raw.descricao || 'Sem descrição cadastrada.',
         status,
-        dataInicio: raw.data_inicio,
-        dataFim: raw.data_fim,
+        dataInicio: raw.data_inicio ?? '',
+        dataFim: raw.data_fim ?? '',
         destino,
         participantes,
-        rotas,
-        evidencias
+        rotas
       })
       setErroApi(null)
-    } catch (err: any) {
-      console.warn('Falha ao carregar detalhes da expedição:', err)
-      const msg = err?.response?.data?.message || err?.message || 'Falha ao carregar detalhes da expedição'
-      setErroApi(msg)
-      setExpedicaoAtual(null)
-    } finally {
       setLoading(false)
+
+      if (status === 'futura') {
+        setCarregandoEventos(false)
+        return
+      }
+
+      await carregarEventos(id, pedido)
+    } catch (err: unknown) {
+      if (pedidoRef.current !== pedido) return
+      setErroApi(mensagemErro(err, 'Falha ao carregar detalhes da expedição'))
+      setExpedicaoAtual(null)
+      setCarregandoEventos(false)
+    } finally {
+      if (pedidoRef.current === pedido) setLoading(false)
     }
-  }, [])
+  }, [carregarEventos])
 
   useEffect(() => {
     const id = paramId ? Number(paramId) : NaN
     if (!Number.isInteger(id) || id <= 0) {
       setLoading(false)
+      setCarregandoEventos(false)
+      setEventos([])
+      setTotalEventos(0)
       setExpedicaoAtual(null)
       setErroApi(null)
       return
@@ -532,73 +562,19 @@ export default function DetalhesExpedicaoScreen() {
                   description="Esta expedição ainda não foi realizada. Os registros de campo (anotações, fotos e áudios) serão integrados pelos pesquisadores durante a execução dos trabalhos."
                 />
               )
-              : expedicaoAtual.evidencias.length === 0
-                ? (
-                  <Empty description="Nenhuma evidência registrada para esta expedição." />
-                )
-                : (
-                  <List
-                    size="small"
-                    bordered
-                    dataSource={expedicaoAtual.evidencias}
-                    renderItem={item => {
-                      const apiBase = (axios.defaults.baseURL || '').replace(/\/api\/?$/, '')
-                      return (
-                        <List.Item key={item.id}>
-                          <Space direction="vertical" style={{ width: '100%' }}>
-                            <Space wrap>
-                              <Tag color={item.tipo === 'COLETA' ? 'blue' : item.tipo === 'DIARIO' ? 'purple' : 'default'}>
-                                {item.tipo === 'COLETA' ? 'Coleta' : item.tipo === 'DIARIO' ? 'Diário' : item.tipo}
-                              </Tag>
-                              <Tag color="green">{moment(item.dataHora).format('DD/MM/YYYY HH:mm')}</Tag>
-                              <Text strong>{item.titulo}</Text>
-                            </Space>
-
-                            {item.coleta?.familia && (
-                              <Text type="secondary" style={{ fontSize: 13 }}>
-                                Família botânica:
-                                {' '}
-                                {item.coleta.familia}
-                              </Text>
-                            )}
-
-                            {item.conteudo && item.conteudo !== item.titulo && (
-                              <Paragraph style={{ margin: 0 }}>{item.conteudo}</Paragraph>
-                            )}
-
-                            {item.arquivos && item.arquivos.length > 0 && (
-                              <Space direction="vertical" size={4} style={{ marginTop: 4 }}>
-                                <Text type="secondary" style={{ fontSize: 12 }}>
-                                  Anexos (
-                                  {item.arquivos.length}
-                                  ):
-                                </Text>
-                                <Space wrap>
-                                  {item.arquivos.map(arq => {
-                                    const fileHref = arq.url.startsWith('http') ? arq.url : `${apiBase}${arq.url}`
-                                    return (
-                                      <Button
-                                        key={arq.id}
-                                        size="small"
-                                        type="dashed"
-                                        icon={<PaperClipOutlined />}
-                                        href={fileHref}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                      >
-                                        {arq.nome || 'Arquivo de evidência'}
-                                      </Button>
-                                    )
-                                  })}
-                                </Space>
-                              </Space>
-                            )}
-                          </Space>
-                        </List.Item>
-                      )
-                    }}
-                  />
-                )}
+              : (
+                <LinhaDoTempoExpedicao
+                  eventos={eventos}
+                  total={totalEventos}
+                  carregando={carregandoEventos}
+                  erro={erroEventos}
+                  participantes={expedicaoAtual.participantes}
+                  onRecarregar={() => {
+                    const pedido = ++pedidoRef.current
+                    void carregarEventos(expedicaoAtual.id, pedido)
+                  }}
+                />
+              )}
           </Col>
         </Col>
       </Row>
