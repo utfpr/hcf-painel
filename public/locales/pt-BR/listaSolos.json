@@ -1,0 +1,18 @@
+{
+  "titulo": "Solos",
+  "adicionar": "Adicionar",
+  "buscarTitulo": "Buscar Solo",
+  "campoId": "ID",
+  "campoNome": "Nome do solo",
+  "placeholderNome": "Digite o nome do solo",
+  "colunaId": "ID",
+  "colunaNome": "Solo",
+  "colunaAcao": "Ação",
+  "detalhesTitulo": "Detalhes do solo",
+  "abrirDetalhes": "Abrir detalhes de {{nome}}",
+  "limpar": "Limpar",
+  "pesquisar": "Pesquisar",
+  "fechar": "Fechar",
+  "erro": "Erro",
+  "erroBuscar": "Não foi possível carregar os solos. Tente novamente."
+}

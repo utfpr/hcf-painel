@@ -1,0 +1,18 @@
+{
+  "titulo": "Suelos",
+  "adicionar": "Agregar",
+  "buscarTitulo": "Buscar suelos",
+  "campoId": "ID",
+  "campoNome": "Nombre del suelo",
+  "placeholderNome": "Escriba el nombre del suelo",
+  "colunaId": "ID",
+  "colunaNome": "Suelo",
+  "colunaAcao": "Acción",
+  "detalhesTitulo": "Detalles del suelo",
+  "abrirDetalhes": "Abrir detalles de {{nome}}",
+  "limpar": "Limpiar",
+  "pesquisar": "Buscar",
+  "fechar": "Cerrar",
+  "erro": "Error",
+  "erroBuscar": "No se pudieron cargar los suelos. Inténtelo de nuevo."
+}
