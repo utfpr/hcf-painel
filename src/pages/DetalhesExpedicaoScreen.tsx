@@ -215,7 +215,7 @@ export default function DetalhesExpedicaoScreen() {
     setCarregandoEventos(true)
     setErroEventos(null)
     try {
-      const resEventos = await axios.get<unknown>(`/v2/expedicoes/${id}/eventos`, {
+      const resEventos = await axios.get<unknown>(`/v1/expedicoes/${id}/eventos`, {
         params: {
           limite: LIMITE_EVENTOS,
           pagina: 1
@@ -225,7 +225,7 @@ export default function DetalhesExpedicaoScreen() {
       const baseUrl = axios.defaults.baseURL ?? ''
       const completos = await Promise.all(pagina.itens.map(async evento => {
         try {
-          const resEvidencias = await axios.get<unknown>(`/v2/eventos/${evento.id}/evidencias`)
+          const resEvidencias = await axios.get<unknown>(`/v1/eventos/${evento.id}/evidencias`)
           return {
             ...evento,
             arquivos: evidenciasDaResposta(resEvidencias.data).map(arquivo => ({
