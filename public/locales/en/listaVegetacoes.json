@@ -1,0 +1,18 @@
+{
+  "titulo": "Vegetation",
+  "adicionar": "Add",
+  "buscarTitulo": "Search vegetation",
+  "campoId": "ID",
+  "campoNome": "Vegetation name",
+  "placeholderNome": "Enter the vegetation name",
+  "colunaId": "ID",
+  "colunaNome": "Vegetation",
+  "colunaAcao": "Action",
+  "detalhesTitulo": "Vegetation details",
+  "abrirDetalhes": "Open details for {{nome}}",
+  "limpar": "Clear",
+  "pesquisar": "Search",
+  "fechar": "Close",
+  "erro": "Error",
+  "erroBuscar": "Could not load vegetation. Please try again."
+}

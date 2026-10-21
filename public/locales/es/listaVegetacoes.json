@@ -1,0 +1,18 @@
+{
+  "titulo": "Vegetación",
+  "adicionar": "Agregar",
+  "buscarTitulo": "Buscar vegetación",
+  "campoId": "ID",
+  "campoNome": "Nombre de la vegetación",
+  "placeholderNome": "Escriba el nombre de la vegetación",
+  "colunaId": "ID",
+  "colunaNome": "Vegetación",
+  "colunaAcao": "Acción",
+  "detalhesTitulo": "Detalles de la vegetación",
+  "abrirDetalhes": "Abrir detalles de {{nome}}",
+  "limpar": "Limpiar",
+  "pesquisar": "Buscar",
+  "fechar": "Cerrar",
+  "erro": "Error",
+  "erroBuscar": "No se pudo cargar la vegetación. Inténtelo de nuevo."
+}
