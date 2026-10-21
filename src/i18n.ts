@@ -36,6 +36,7 @@ void i18n
       'recuperacaoSenha',
       'listaTaxonomiaReino',
       'listaTaxonomiaFamilia',
+      'listaSolos',
       'totalRecordsFound',
       'listaTaxonomiaSubfamilia',
       'listaTaxonomiaGenero',
