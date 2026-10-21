@@ -3,6 +3,7 @@ import { useState } from 'react'
 import useSWR from 'swr'
 
 import { useContainer } from '@/contexts/Container/useContainer'
+import { useMutation } from '@/hooks/query/useMutation'
 import type { HttpClient } from '@/libraries/http/HttpClient'
 
 import { solosListParams, type SolosSorter } from './search'
@@ -10,6 +11,9 @@ import type {
   SolosApiResponse,
   SolosListResponse
 } from './types'
+
+const LIST_KEY = '/v2/solos'
+const REVALIDATE_LIST = [[LIST_KEY]] as const
 
 export async function fetchSolos(
   httpClient: Pick<HttpClient, 'get'>,
@@ -41,6 +45,21 @@ export async function fetchSolos(
 
 export function useListaSolosPage() {
   const { httpClient } = useContainer()
+  const { trigger: create, loading: creating } = useMutation(
+    (nome: string) => httpClient.post<unknown>(LIST_KEY, { nome }),
+    [LIST_KEY, 'create'],
+    { revalidate: REVALIDATE_LIST }
+  )
+  const { trigger: update, loading: updating } = useMutation(
+    (id: number | string, nome: string) => httpClient.put<unknown>(`${LIST_KEY}/${id}`, { nome }),
+    [LIST_KEY, 'update'],
+    { revalidate: REVALIDATE_LIST }
+  )
+  const { trigger: remove, loading: removing } = useMutation(
+    (id: number | string) => httpClient.delete<unknown>(`${LIST_KEY}/${id}`),
+    [LIST_KEY, 'delete'],
+    { revalidate: REVALIDATE_LIST }
+  )
   const [nome, setNome] = useState('')
   const [pagina, setPagina] = useState(1)
   const [limite, setLimite] = useState(20)
@@ -51,7 +70,7 @@ export function useListaSolosPage() {
     data, isLoading: loading, error
   } = useSWR<SolosListResponse, Error>(
     [
-      '/v2/solos',
+      LIST_KEY,
       nome,
       pagina,
       limite,
@@ -87,6 +106,12 @@ export function useListaSolosPage() {
     loading,
     error,
     search,
-    changePage
+    changePage,
+    create,
+    creating,
+    update,
+    updating,
+    remove,
+    removing
   }
 }
