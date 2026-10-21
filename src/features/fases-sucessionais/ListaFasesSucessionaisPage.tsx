@@ -10,13 +10,18 @@ import {
   notification,
   Row
 } from 'antd'
+import axios from 'axios'
 import { useTranslation } from 'react-i18next'
 
-import { TipoUsuario } from '@/@types/components'
+import ModalCadastroComponent from '@/components/ModalCadastroComponent'
 import SimpleTableComponent from '@/components/SimpleTableComponent'
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { useAuth } from '@/contexts/Auth/useAuth'
-import { EditOutlined, PlusOutlined } from '@ant-design/icons'
+import {
+  DeleteOutlined,
+  EditOutlined,
+  PlusOutlined
+} from '@ant-design/icons'
 
 import type { FaseSucessionalListItem } from './types'
 import { useListaFasesSucessionaisPage } from './useListaFasesSucessionaisPage'
@@ -24,11 +29,18 @@ import { useListaFasesSucessionaisPage } from './useListaFasesSucessionaisPage'
 export default function ListaFasesSucessionaisPage() {
   const { t } = useTranslation('listaFasesSucessionais')
   const list = useListaFasesSucessionaisPage()
-  const { user, can } = useAuth()
+  const { can } = useAuth()
   const [searchName, setSearchName] = useState('')
-  const [selectedFase, setSelectedFase] = useState<FaseSucessionalListItem>()
-  const canViewActions = user?.tipo_usuario_id === TipoUsuario.Curador
-      && can('read', 'FaseSucessional')
+  const [modalVisible, setModalVisible] = useState(false)
+  const [editingFaseId, setEditingFaseId] = useState<number | string>()
+  const [faseName, setFaseName] = useState('')
+  const canCreate = can('create', 'FaseSucessional')
+  const canUpdate = can('update', 'FaseSucessional')
+  const canDelete = can('delete', 'FaseSucessional')
+  const canViewActions = canUpdate || canDelete
+  const modalTitle = editingFaseId === undefined
+    ? t('common:cadastrar')
+    : t('common:atualizar')
 
   useEffect(() => {
     if (list.error) {
@@ -43,6 +55,86 @@ export default function ListaFasesSucessionaisPage() {
   const clear = () => {
     setSearchName('')
     list.search('')
+  }
+
+  const closeModal = () => setModalVisible(false)
+
+  const showMutationError = (error: unknown) => {
+    const status = axios.isAxiosError(error) ? error.response?.status : undefined
+    const description = status === 400
+      ? t('erroRequisicao')
+      : status === 404
+        ? t('erroNaoEncontrado')
+        : status === 409
+          ? t('erroConflito')
+          : t('erroOperacao')
+
+    notification.error({
+      message: t('erro'),
+      description
+    })
+  }
+
+  const openCreateModal = () => {
+    setEditingFaseId(undefined)
+    setFaseName('')
+    setModalVisible(true)
+  }
+
+  const openUpdateModal = (fase: FaseSucessionalListItem) => {
+    setEditingFaseId(fase.id)
+    setFaseName(fase.nome)
+    setModalVisible(true)
+  }
+
+  const save = async () => {
+    const nome = faseName.trim()
+    if (!nome) {
+      notification.warning({
+        message: t('aviso'),
+        description: t('nomeObrigatorio')
+      })
+      return
+    }
+
+    try {
+      if (editingFaseId === undefined) {
+        const response = await list.create(nome)
+        if (response?.status === 201) {
+          notification.success({ message: t('cadastroSucesso') })
+          closeModal()
+        }
+        return
+      }
+
+      const response = await list.update(editingFaseId, nome)
+      if (response?.status === 200) {
+        notification.success({ message: t('atualizacaoSucesso') })
+        closeModal()
+      }
+    } catch (error) {
+      showMutationError(error)
+    }
+  }
+
+  const confirmDelete = (fase: FaseSucessionalListItem) => {
+    Modal.confirm({
+      title: t('confirmacaoExcluir'),
+      content: t('descricaoExcluir', { nome: fase.nome }),
+      okText: t('common:sim'),
+      okType: 'danger',
+      cancelText: t('common:nao'),
+      onOk: async () => {
+        try {
+          const response = await list.remove(fase.id)
+          if (response?.status === 204) {
+            notification.success({ message: t('exclusaoSucesso') })
+          }
+        } catch (error) {
+          showMutationError(error)
+        }
+      }
+    })
   }
 
   const columns = [
@@ -74,12 +166,27 @@ export default function ListaFasesSucessionaisPage() {
     nome: fase.nome,
     acao: canViewActions
       ? (
-        <a
-          aria-label={t('abrirDetalhes', { nome: fase.nome })}
-          onClick={() => setSelectedFase(fase)}
-        >
-          <EditOutlined style={{ color: '#FFCC00' }} />
-        </a>
+        <span>
+          {canUpdate && (
+            <>
+              <a
+                aria-label={t('renomear', { nome: fase.nome })}
+                onClick={() => openUpdateModal(fase)}
+              >
+                <EditOutlined style={{ color: '#FFCC00' }} />
+              </a>
+              {canDelete && <Divider type="vertical" />}
+            </>
+          )}
+          {canDelete && (
+            <a
+              aria-label={t('excluir', { nome: fase.nome })}
+              onClick={() => confirmDelete(fase)}
+            >
+              <DeleteOutlined style={{ color: '#e30613' }} />
+            </a>
+          )}
+        </span>
       )
       : undefined
   }))
@@ -90,12 +197,12 @@ export default function ListaFasesSucessionaisPage() {
         <Col xs={24} sm={14} md={18} lg={20} xl={20}>
           <h2 style={{ fontWeight: 200 }}>{t('titulo')}</h2>
         </Col>
-        {canViewActions && (
+        {canCreate && (
           <Col xs={24} sm={10} md={6} lg={4} xl={4}>
             <Button
               type="primary"
               icon={<PlusOutlined />}
-              disabled
+              onClick={openCreateModal}
               style={{
                 backgroundColor: '#5CB85C', borderColor: '#5CB85C', width: '100%'
               }}
@@ -151,33 +258,29 @@ export default function ListaFasesSucessionaisPage() {
       />
       <Divider dashed />
 
-      <Modal
-        title={t('detalhesTitulo')}
-        visible={Boolean(selectedFase)}
-        onCancel={() => setSelectedFase(undefined)}
-        footer={[
-          <Button key="close" onClick={() => setSelectedFase(undefined)}>
-            {t('fechar')}
-          </Button>
-        ]}
+      <ModalCadastroComponent
+        title={modalTitle}
+        visibleModal={modalVisible}
+        loadingModal={list.creating || list.updating}
+        onCancel={closeModal}
+        onOk={save}
       >
-        <p>
-          <strong>
-            {t('campoId')}
-            :
-          </strong>
-          {' '}
-          {selectedFase?.id}
-        </p>
-        <p>
-          <strong>
-            {t('campoNome')}
-            :
-          </strong>
-          {' '}
-          {selectedFase?.nome}
-        </p>
-      </Modal>
+        <Row gutter={8}>
+          <Col span={24}>
+            <label htmlFor="fase-sucessional-name">{t('campoNome')}</label>
+          </Col>
+        </Row>
+        <Row gutter={8}>
+          <Col span={24}>
+            <Input
+              id="fase-sucessional-name"
+              value={faseName}
+              onChange={event => setFaseName(event.target.value)}
+              onPressEnter={save}
+            />
+          </Col>
+        </Row>
+      </ModalCadastroComponent>
     </div>
   )
 }

@@ -14,5 +14,18 @@
   "pesquisar": "Search",
   "fechar": "Close",
   "erro": "Error",
-  "erroBuscar": "Could not load successional stages. Please try again."
+  "erroBuscar": "Could not load successional stages. Please try again.",
+  "renomear": "Rename {{nome}}",
+  "excluir": "Delete {{nome}}",
+  "confirmacaoExcluir": "Delete successional stage?",
+  "descricaoExcluir": "Do you want to delete the successional stage {{nome}}?",
+  "nomeObrigatorio": "Enter the successional stage name.",
+  "aviso": "Warning",
+  "cadastroSucesso": "Successional stage created successfully.",
+  "atualizacaoSucesso": "Successional stage renamed successfully.",
+  "exclusaoSucesso": "Successional stage deleted successfully.",
+  "erroRequisicao": "Check the information and try again.",
+  "erroNaoEncontrado": "The successional stage was not found.",
+  "erroConflito": "The operation could not be completed. The successional stage may be linked to other records.",
+  "erroOperacao": "The operation could not be completed. Please try again."
 }
