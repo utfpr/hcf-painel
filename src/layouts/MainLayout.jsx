@@ -460,6 +460,9 @@ class MainLayout extends Component {
                                         <Menu.Item key="rfidInventario">
                                             <Link to="/rfid-inventario">{this.props.t('rfid:menu.inventory')}</Link>
                                         </Menu.Item>
+                                        <Menu.Item key="rfidListasConferencia">
+                                            <Link to="/rfid-listas-conferencia">{this.props.t('rfid:menu.conferenceLists')}</Link>
+                                        </Menu.Item>
                                     </SubMenu>
                                 )
                             : null}
