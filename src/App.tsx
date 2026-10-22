@@ -55,6 +55,9 @@ import RelatorioTombosPorCidadeScreen from './pages/RelatorioTombosPorCidadeScre
 import RfidConferencia from './pages/RfidConferencia'
 import RfidConfiguracao from './pages/RfidConfiguracao'
 import RfidInventario from './pages/RfidInventario'
+import RfidListaConferenciaForm from './pages/RfidListaConferenciaForm'
+import RfidListaConferenciaInventarios from './pages/RfidListaConferenciaInventarios'
+import RfidListasConferencia from './pages/RfidListasConferencia'
 import RfidVinculacao from './pages/RfidVinculacao'
 import ServicosRefloraScreen from './pages/ServicosRefloraScreen'
 import ServicosSpeciesLinkScreen from './pages/ServicosSpeciesLinkScreen'
@@ -161,6 +164,13 @@ export function AppRoutes() {
       <Route path="rfid-conferencia" element={guard(auth.can('read', 'Rfid'), RfidConferencia)} />
       <Route path="rfid-vinculacao" element={guard(auth.can('read', 'Rfid'), RfidVinculacao)} />
       <Route path="rfid-inventario" element={guard(auth.can('read', 'Rfid'), RfidInventario)} />
+      <Route path="rfid-listas-conferencia" element={guard(auth.can('read', 'Rfid'), RfidListasConferencia)} />
+      <Route path="rfid-listas-conferencia/novo" element={guard(auth.can('read', 'Rfid'), RfidListaConferenciaForm)} />
+      <Route path="rfid-listas-conferencia/:id" element={guard(auth.can('read', 'Rfid'), RfidListaConferenciaForm)} />
+      <Route
+        path="rfid-listas-conferencia/:id/inventarios"
+        element={guard(auth.can('read', 'Rfid'), RfidListaConferenciaInventarios)}
+      />
       <Route path="dashboard" element={<DashboardScreen />} />
       <Route
         path="relatorio-coordenadas-fora-poligono"
