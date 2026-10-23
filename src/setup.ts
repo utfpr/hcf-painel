@@ -18,9 +18,9 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   response => response,
   (error: AxiosError) => {
-    const err: { error: { code: number } } = error.response?.data as { error: { code: number } }
+    const err = error.response?.data as { error?: { code?: number } } | undefined
 
-    if (err.error.code === 401) {
+    if (error.response?.status === 401 || err?.error?.code === 401) {
       removeCookie('Access_Token')
       window.localStorage.removeItem('Logged_User')
       window.location.href = '/inicio'

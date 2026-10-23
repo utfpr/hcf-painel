@@ -48,6 +48,7 @@ function filterItems(items: Array<MenuItem | null>): MenuItem[] {
 export function getSelectedMenuKey(pathname: string): string {
   const routes: Array<[string, string]> = [
     ['/tombos', 'tombos'],
+    ['/expedicoes', 'expedicoes'],
     ['/reinos', 'reinos'],
     ['/familias', 'familias'],
     ['/subfamilias', 'subfamilias'],
@@ -206,6 +207,14 @@ export function buildNavItems({
   ])
 
   const collectionItems = filterItems([
+    auth.loggedIn
+      ? {
+          key: 'expedicoes',
+          icon: <EnvironmentOutlined />,
+          label: navLink('/expedicoes', 'Expedições'),
+          title: 'Expedições'
+        }
+      : null,
     auth.can('read', 'Tombo')
       ? {
           key: 'tombos',
