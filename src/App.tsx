@@ -5,6 +5,7 @@ import {
 } from 'react-router'
 
 import { useAuth } from './contexts/Auth/useAuth'
+import ListaSolosPage from './features/solos/ListaSolosPage'
 import ListaUsuariosPage from './features/usuarios/UsuariosListPage'
 import {
   isCuradorOuOperador,
@@ -129,6 +130,7 @@ export function AppRoutes() {
       <Route path="livro-tombo" element={<LivroTomboScreen />} />
       <Route path="especies" element={<ListaTaxonomiaEspecie />} />
       <Route path="familias" element={<ListaTaxonomiaFamilia />} />
+      <Route path="solos" element={guard(auth.can('read', 'Solo'), ListaSolosPage)} />
       <Route path="reinos" element={<ListaTaxonomiaReino />} />
       <Route path="generos" element={<ListaTaxonomiaGenero />} />
       <Route path="subespecies" element={<ListaTaxonomiaSubespecie />} />

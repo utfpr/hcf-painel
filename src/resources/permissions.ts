@@ -6,6 +6,7 @@ const RESOURCES = [
   'Tombo',
   'Reino',
   'Familia',
+  'Solo',
   'Subfamilia',
   'Genero',
   'Especie',
@@ -78,6 +79,14 @@ const ruleSpecificMapping: Record<TipoUsuario, (user: Usuario) => Rule<Resource,
       ]
     },
     {
+      resource: 'Solo',
+      action: [
+        'create',
+        'update',
+        'delete'
+      ]
+    },
+    {
       resource: 'Reflora',
       action: ['read', 'update']
     },
@@ -90,7 +99,16 @@ const ruleSpecificMapping: Record<TipoUsuario, (user: Usuario) => Rule<Resource,
       action: ['read']
     }
   ],
-  [TipoUsuario.Operador]: () => [],
+  [TipoUsuario.Operador]: () => [
+    {
+      resource: 'Solo',
+      action: [
+        'create',
+        'update',
+        'delete'
+      ]
+    }
+  ],
   [TipoUsuario.Identificador]: () => []
 } as const
 
@@ -105,6 +123,10 @@ const defaultRules: Rule<Resource, Action>[] = [
   },
   {
     resource: 'Familia',
+    action: ['read']
+  },
+  {
+    resource: 'Solo',
     action: ['read']
   },
   {
