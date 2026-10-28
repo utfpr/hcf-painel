@@ -164,7 +164,7 @@
     "clearLinksQuestion": "Limpar todos os vínculos?",
     "clearLinksDescription": "Todos os RFIDs serão removidos desta lista de conferência.",
     "bulkActionTitle": "Vínculos atualizados",
-    "addedFiltered": "{{adicionados}} de {{encontrados}} resultado(s) foram adicionados.",
+    "addedFiltered": "{{adicionados}} vínculo(s) foram adicionados.",
     "removedFiltered": "{{removidos}} vínculo(s) foram removidos pelo filtro.",
     "removedAll": "{{removidos}} vínculo(s) foram removidos.",
     "linksFetchFailure": "Falha ao buscar os vínculos da lista.",

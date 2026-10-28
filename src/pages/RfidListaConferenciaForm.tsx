@@ -94,7 +94,8 @@ const RfidListaConferenciaForm: React.FC<RouterProps> = ({ history, match }) => 
           pagina,
           limite,
           ...filtros,
-          status: 'CONCLUIDO'
+          status: 'CONCLUIDO',
+          excluir_lista_conferencia_id: id
         },
         paramsSerializer: {
           indexes: null
@@ -116,7 +117,7 @@ const RfidListaConferenciaForm: React.FC<RouterProps> = ({ history, match }) => 
     } finally {
       setLoading(false)
     }
-  }, [t])
+  }, [id, t])
 
   const carregarLista = useCallback(async () => {
     if (isNovo || !id) return
@@ -209,6 +210,11 @@ const RfidListaConferenciaForm: React.FC<RouterProps> = ({ history, match }) => 
     await requisitaRfidsVinculados(paginacaoVinculados.current, paginacaoVinculados.pageSize)
   }
 
+  const recarregarResultados = async () => {
+    setRfidsSelecionadosPagina([])
+    await requisitaRfids(1, paginacao.pageSize, filtrosAplicados)
+  }
+
   const adicionarTodosDoFiltro = async () => {
     if (isNovo || !id || filtrosPendentes || !pesquisaCarregada) return
 
@@ -216,9 +222,9 @@ const RfidListaConferenciaForm: React.FC<RouterProps> = ({ history, match }) => 
     try {
       const response = await axios.post<BulkLinksResponse>(`/rfids/listas_conferencias/${id}/rfids`, filtrosAplicados)
       await recarregarVinculos()
+      await recarregarResultados()
       notificacao('success', t('conferenceLists.bulkActionTitle'), t('conferenceLists.addedFiltered', {
-        adicionados: response.data.adicionados || 0,
-        encontrados: response.data.encontrados || 0
+        adicionados: response.data.adicionados || 0
       }))
     } catch (error) {
       notificacao('error', t('common.error'), t('conferenceLists.linksUpdateFailure'))
@@ -235,8 +241,8 @@ const RfidListaConferenciaForm: React.FC<RouterProps> = ({ history, match }) => 
       const response = await axios.post<BulkLinksResponse>(`/rfids/listas_conferencias/${id}/rfids`, {
         rfid_ids: rfidsSelecionadosPagina.map(Number)
       })
-      setRfidsSelecionadosPagina([])
       await recarregarVinculos()
+      await recarregarResultados()
       notificacao('success', t('conferenceLists.bulkActionTitle'), t('conferenceLists.addedSelected', {
         adicionados: response.data.adicionados || 0
       }))
@@ -256,6 +262,7 @@ const RfidListaConferenciaForm: React.FC<RouterProps> = ({ history, match }) => 
         data: filtrosAplicados
       })
       await recarregarVinculos()
+      await recarregarResultados()
       notificacao('success', t('conferenceLists.bulkActionTitle'), t('conferenceLists.removedFiltered', {
         removidos: response.data.removidos || 0
       }))
@@ -273,6 +280,7 @@ const RfidListaConferenciaForm: React.FC<RouterProps> = ({ history, match }) => 
     try {
       const response = await axios.delete<BulkLinksResponse>(`/rfids/listas_conferencias/${id}/rfids/todos`)
       await requisitaRfidsVinculados(1, paginacaoVinculados.pageSize)
+      await recarregarResultados()
       notificacao('success', t('conferenceLists.bulkActionTitle'), t('conferenceLists.removedAll', {
         removidos: response.data.removidos || 0
       }))
@@ -376,7 +384,7 @@ const RfidListaConferenciaForm: React.FC<RouterProps> = ({ history, match }) => 
                     </Button>
                   </Col>
                   <Col>
-                    <Button danger onClick={() => void removerTodosDoFiltro()} disabled={filtrosPendentes || !pesquisaCarregada || paginacao.total === 0 || Object.keys(filtrosAplicados).length === 0} loading={loading}>
+                    <Button danger onClick={() => void removerTodosDoFiltro()} disabled={filtrosPendentes || !pesquisaCarregada || Object.keys(filtrosAplicados).length === 0} loading={loading}>
                       {t('conferenceLists.removeAllFiltered')}
                     </Button>
                   </Col>
