@@ -65,6 +65,10 @@ export function getSelectedMenuKey(pathname: string): string {
     ['/estados', 'estados'],
     ['/cidades', 'cidades'],
     ['/locais-coleta', 'localColeta'],
+    ['/solos', 'solos'],
+    ['/relevos', 'relevos'],
+    ['/fases-sucessionais', 'fasesSucessionais'],
+    ['/vegetacoes', 'vegetacoes'],
     ['/mapa', 'mapa'],
     ['/filtros', 'filtrosAvancados'],
     ['/relatorio-por-periodo', 'relatorioPorPeriodo'],
@@ -114,6 +118,12 @@ export function getOpenMenuKeys(pathname: string): string[] {
       'estados',
       'cidades',
       'localColeta'
+    ],
+    ecologia: [
+      'solos',
+      'relevos',
+      'fasesSucessionais',
+      'vegetacoes'
     ],
     geolocalizacao: ['mapa', 'filtrosAvancados'],
     relatorios: [
@@ -302,6 +312,34 @@ export function buildNavItems({
             }
           : null
       ])
+    },
+    {
+      key: 'ecologia',
+      icon: <EnvironmentOutlined />,
+      label: t('mainLayout:ecologia'),
+      title: t('mainLayout:ecologia'),
+      children: [
+        {
+          key: 'solos',
+          label: navLink('/solos', t('mainLayout:solos')),
+          title: t('mainLayout:solos')
+        },
+        {
+          key: 'relevos',
+          label: navLink('/relevos', t('mainLayout:relevos')),
+          title: t('mainLayout:relevos')
+        },
+        {
+          key: 'fasesSucessionais',
+          label: navLink('/fases-sucessionais', t('mainLayout:fasesSucessionais')),
+          title: t('mainLayout:fasesSucessionais')
+        },
+        {
+          key: 'vegetacoes',
+          label: navLink('/vegetacoes', t('mainLayout:vegetacoes')),
+          title: t('mainLayout:vegetacoes')
+        }
+      ]
     },
     {
       key: 'geolocalizacao',
