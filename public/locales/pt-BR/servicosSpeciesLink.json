@@ -21,6 +21,11 @@
 
   "placeholderSelecionarLog": "Selecione o LOG desejado",
   "verificarLogSaida": "Verificar LOG de saída",
+  "tituloLogExecucao": "Log da última execução do container",
+  "carregandoLogExecucao": "Carregando log da última execução...",
+  "semExecucao": "Nenhuma execução da sincronização foi encontrada.",
+  "erroBuscarLogExecucao": "Não foi possível carregar o log da última execução.",
+  "logExecucaoSemConteudo": "A última execução não registrou conteúdo no log.",
 
   "erroAgendarAtualizacao": "Não foi possível agendar o novo horário de atualização.",
   "erroProcessoEmExecucao": "O processo de atualização está sendo executado no momento.",
