@@ -21,6 +21,11 @@
 
   "placeholderSelecionarLog": "Select the desired LOG",
   "verificarLogSaida": "View Output Log",
+  "tituloLogExecucao": "Latest container execution log",
+  "carregandoLogExecucao": "Loading the latest execution log...",
+  "semExecucao": "No synchronization execution was found.",
+  "erroBuscarLogExecucao": "Unable to load the latest execution log.",
+  "logExecucaoSemConteudo": "The latest execution did not record any log content.",
 
   "erroAgendarAtualizacao": "Unable to schedule the new update time.",
   "erroProcessoEmExecucao": "The update process is currently running.",

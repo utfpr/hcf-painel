@@ -1,1 +1,2 @@
+exec < /dev/null
 npm run test --silent

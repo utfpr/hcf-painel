@@ -32,7 +32,9 @@ class ServicosSpeciesLinkScreen extends Component {
             periodicidadeAtualizacao: '',
             escondeResultadoLog: '2',
             nomeLog: [],
-            saidaLOG: []
+            saidaLOG: [],
+            statusLogExecucao: 'loading',
+            logExecucao: ''
         }
     }
 
@@ -53,6 +55,7 @@ class ServicosSpeciesLinkScreen extends Component {
     */
     componentDidMount() {
         this.informacoesSpeciesLink()
+        this.buscarLogExecucao()
         this.statusExecucao()
     }
 
@@ -85,8 +88,12 @@ class ServicosSpeciesLinkScreen extends Component {
                 if (response.status === 200) {
                     if (!response.data.executando) {
                         if (this.state.estaMontado) {
+                            const execucaoConcluida = this.state.executando
                             this.setState({ executando: false })
                             this.informacoesSpeciesLink()
+                            if (execucaoConcluida) {
+                                this.buscarLogExecucao()
+                            }
                         }
                     } else if (response.data.executando) {
                         if (this.state.estaMontado) {
@@ -183,6 +190,35 @@ class ServicosSpeciesLinkScreen extends Component {
             if (this.state.estaMontado) {
                 const saidaLogSplit = response.data.split('\n')
                 this.setState({ saidaLOG: saidaLogSplit })
+            }
+        })
+    }
+
+    buscarLogExecucao = () => {
+        if (this.state.estaMontado) {
+            this.setState({ statusLogExecucao: 'loading' })
+        }
+
+        axios.get('/splinker/ultima-execucao').then(response => {
+            if (!this.state.estaMontado) {
+                return
+            }
+
+            const logSaida = response.data?.log_saida
+            if (response.data === null || response.data === undefined) {
+                this.setState({ statusLogExecucao: 'empty', logExecucao: '' })
+                return
+            }
+
+            if (typeof logSaida !== 'string') {
+                this.setState({ statusLogExecucao: 'error', logExecucao: '' })
+                return
+            }
+
+            this.setState({ statusLogExecucao: 'available', logExecucao: logSaida })
+        }).catch(() => {
+            if (this.state.estaMontado) {
+                this.setState({ statusLogExecucao: 'error', logExecucao: '' })
             }
         })
     }
@@ -440,6 +476,20 @@ class ServicosSpeciesLinkScreen extends Component {
                                     }
                                     return <p key={chave} style={{ fontFamily: 'Courier New', color: 'green' }}>{saida}</p>
                                 })}
+                            </Panel>
+                        </Collapse>
+                    </Col>
+                </Row>
+                <Row gutter={6} style={{ marginTop: 16 }}>
+                    <Col span={24}>
+                        <Collapse defaultActiveKey="logExecucao">
+                            <Panel header={this.props.t('servicosSpeciesLink:tituloLogExecucao')} key="logExecucao">
+                                {this.state.statusLogExecucao === 'loading' && <p>{this.props.t('servicosSpeciesLink:carregandoLogExecucao')}</p>}
+                                {this.state.statusLogExecucao === 'empty' && <p>{this.props.t('servicosSpeciesLink:semExecucao')}</p>}
+                                {this.state.statusLogExecucao === 'error' && <p role="alert">{this.props.t('servicosSpeciesLink:erroBuscarLogExecucao')}</p>}
+                                {this.state.statusLogExecucao === 'available' && (this.state.logExecucao
+                                    ? <pre style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{this.state.logExecucao}</pre>
+                                    : <p>{this.props.t('servicosSpeciesLink:logExecucaoSemConteudo')}</p>)}
                             </Panel>
                         </Collapse>
                     </Col>
