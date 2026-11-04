@@ -1,8 +1,7 @@
 import { useState } from 'react'
 
-import useSWR from 'swr'
-
 import { useContainer } from '@/contexts/Container/useContainer'
+import { useQuery } from '@/hooks/query/useQuery'
 import type { HttpClient } from '@/libraries/http/HttpClient'
 
 import { solosListParams, type SolosSorter } from './search'
@@ -48,21 +47,18 @@ export function useListaSolosPage() {
   const params = solosListParams(nome, pagina, limite, sorter)
 
   const {
-    data, isLoading: loading, error
-  } = useSWR<SolosListResponse, Error>(
+    data, loading, error
+  } = useQuery(
+    () => fetchSolos(httpClient, params),
     [
-      '/v2/solos',
+      '/v1/solos',
       nome,
       pagina,
       limite,
       sorter?.field,
       sorter?.order
     ],
-    () => fetchSolos(httpClient, params),
-    {
-      keepPreviousData: true,
-      shouldRetryOnError: false
-    }
+    { keepPreviousData: true }
   )
 
   const search = (value: string) => {

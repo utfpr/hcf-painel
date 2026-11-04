@@ -35,10 +35,11 @@ describe('sidebar route matching', () => {
     expect(getOpenMenuKeys('/relevos')).toEqual(['ecologia'])
   })
 
-  test('only shows relief in ecology for users with permission', () => {
+  test('shows only permitted ecology items', () => {
     const t = ((key: string) => key) as never
     const auth = {
-      can: (_action: string, resource: string) => resource === 'Relevo'
+      can: (_action: string, resource: string) => resource === 'Relevo',
+      canAny: (_actions: string[], resource: string) => resource === 'Relevo'
     } as never
 
     const items = buildNavItems({ t, auth, isCuradorOuOperador: false })
@@ -47,10 +48,12 @@ describe('sidebar route matching', () => {
       ? geography.children?.find(item => item && 'key' in item && item.key === 'ecologia')
       : undefined
 
-    expect(ecology && 'children' in ecology ? ecology.children : []).toHaveLength(4)
+    expect(ecology && 'children' in ecology ? ecology.children : []).toHaveLength(2)
+    expect(ecology && 'children' in ecology ? ecology.children?.[0] : undefined).toMatchObject({ key: 'relevos' })
 
     const deniedAuth = {
-      can: () => false
+      can: () => false,
+      canAny: () => false
     } as never
     const deniedItems = buildNavItems({ t, auth: deniedAuth, isCuradorOuOperador: false })
     const deniedGeography = deniedItems?.find(item => item && 'key' in item && item.key === 'geography')
@@ -58,7 +61,7 @@ describe('sidebar route matching', () => {
       ? deniedGeography.children?.find(item => item && 'key' in item && item.key === 'ecologia')
       : undefined
 
-    expect(deniedEcology && 'children' in deniedEcology ? deniedEcology.children : []).toHaveLength(3)
+    expect(deniedEcology && 'children' in deniedEcology ? deniedEcology.children : []).toHaveLength(0)
   })
 
   test('opens ecology when viewing vegetation', () => {

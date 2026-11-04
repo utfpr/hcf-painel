@@ -39,6 +39,12 @@ const SERVICOS_RESOURCES = [
     'SpeciesLink'
 ]
 
+const ECOLOGIA_RESOURCES = [
+    'Solo',
+    'Relevo',
+    'Vegetacao'
+]
+
 class MainLayout extends Component {
     constructor(props) {
         super(props)
@@ -262,29 +268,7 @@ class MainLayout extends Component {
                                     )
                                 : null}
                         </SubMenu>
-                        <SubMenu
-                            key="ecologiaSubmenu"
-                            title={(
-                                <span>
-                                    <EnvironmentOutlined />
-                                    <span>{this.props.t('mainLayout:ecologia')}</span>
-                                </span>
-                            )}
-                        >
-                            <Menu.Item key="soloMenuItem">
-                                <Link to="/solos">{this.props.t('mainLayout:solos')}</Link>
-                            </Menu.Item>
-                            <Menu.Item key="relevoMenuItem">
-                                <Link to="/relevos">{this.props.t('mainLayout:relevos')}</Link>
-                            </Menu.Item>
-                            <Menu.Item key="faseSucessionalMenuItem">
-                                <Link to="/fases-sucessionais">{this.props.t('mainLayout:fasesSucessionais')}</Link>
-                            </Menu.Item>
-                            <Menu.Item key="vegetacaoMenuItem">
-                                <Link to="/vegetacoes">{this.props.t('mainLayout:vegetacoes')}</Link>
-                            </Menu.Item>
-                        </SubMenu>
-                        {this.props.auth.can('read', 'Relevo')
+                        {ECOLOGIA_RESOURCES.some(resource => this.props.auth.canAny(['read'], resource))
                             ? (
                                     <SubMenu
                                         key="ecologiaSubmenu"
@@ -295,18 +279,30 @@ class MainLayout extends Component {
                                             </span>
                                         )}
                                     >
-                                        <Menu.Item key="soloMenuItem">
-                                            <Link to="/solos">{this.props.t('mainLayout:solos')}</Link>
-                                        </Menu.Item>
-                                        <Menu.Item key="relevoMenuItem">
-                                            <Link to="/relevos">{this.props.t('mainLayout:relevos')}</Link>
-                                        </Menu.Item>
+                                        {this.props.auth.can('read', 'Solo')
+                                            ? (
+                                                    <Menu.Item key="soloMenuItem">
+                                                        <Link to="/solos">{this.props.t('mainLayout:solos')}</Link>
+                                                    </Menu.Item>
+                                                )
+                                            : null}
+                                        {this.props.auth.can('read', 'Relevo')
+                                            ? (
+                                                    <Menu.Item key="relevoMenuItem">
+                                                        <Link to="/relevos">{this.props.t('mainLayout:relevos')}</Link>
+                                                    </Menu.Item>
+                                                )
+                                            : null}
                                         <Menu.Item key="faseSucessionalMenuItem">
                                             <Link to="/fases-sucessionais">{this.props.t('mainLayout:fasesSucessionais')}</Link>
                                         </Menu.Item>
-                                        <Menu.Item key="vegetacaoMenuItem">
-                                            <Link to="/vegetacoes">{this.props.t('mainLayout:vegetacoes')}</Link>
-                                        </Menu.Item>
+                                        {this.props.auth.can('read', 'Vegetacao')
+                                            ? (
+                                                    <Menu.Item key="vegetacaoMenuItem">
+                                                        <Link to="/vegetacoes">{this.props.t('mainLayout:vegetacoes')}</Link>
+                                                    </Menu.Item>
+                                                )
+                                            : null}
                                     </SubMenu>
                                 )
                             : null}
