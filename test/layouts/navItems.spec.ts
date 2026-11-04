@@ -23,4 +23,9 @@ describe('sidebar route matching', () => {
   test('opens reports when viewing a report route', () => {
     expect(getOpenMenuKeys('/relatorio-codigo-barras')).toEqual(['relatorios'])
   })
+
+  test('opens ecology when viewing vegetation', () => {
+    expect(getSelectedMenuKey('/vegetacoes')).toBe('vegetacoes')
+    expect(getOpenMenuKeys('/vegetacoes')).toEqual(['ecologia'])
+  })
 })
