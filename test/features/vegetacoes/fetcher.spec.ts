@@ -9,7 +9,7 @@ import { fetchVegetacoes } from '@/features/vegetacoes/useListaVegetacoesPage'
 import type { HttpClient } from '@/libraries/http/HttpClient'
 
 describe('fetchVegetacoes', () => {
-  test('requests v2 and normalizes its array response', async () => {
+  test('requests v1 and normalizes its array response', async () => {
     const vegetacoes = [{ id: 7, nome: 'Floresta Ombrófila' }]
     const get = vi.fn().mockResolvedValue({ data: vegetacoes })
     const httpClient = { get } as unknown as Pick<HttpClient, 'get'>
@@ -27,7 +27,7 @@ describe('fetchVegetacoes', () => {
       }
     })
 
-    expect(get).toHaveBeenCalledWith('/v2/vegetacoes', {
+    expect(get).toHaveBeenCalledWith('/v1/vegetacoes', {
       pagina: 1,
       limite: 20,
       nome: 'Floresta'

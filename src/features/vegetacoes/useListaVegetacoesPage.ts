@@ -1,21 +1,16 @@
 import { useState } from 'react'
 
-import useSWR from 'swr'
-
 import { useContainer } from '@/contexts/Container/useContainer'
+import { useQuery } from '@/hooks/query/useQuery'
 import type { HttpClient } from '@/libraries/http/HttpClient'
-
 import { vegetacoesListParams, type VegetacoesSorter } from './search'
-import type {
-  VegetacoesApiResponse,
-  VegetacoesListResponse
-} from './types'
+import type { VegetacoesApiResponse, VegetacoesListResponse } from './types'
 
 export async function fetchVegetacoes(
   httpClient: Pick<HttpClient, 'get'>,
   params: Record<string, string | number>
 ): Promise<VegetacoesListResponse> {
-  const response = await httpClient.get<VegetacoesApiResponse>('/v2/vegetacoes', params)
+  const response = await httpClient.get<VegetacoesApiResponse>('/v1/vegetacoes', params)
   const data = response.data
   const vegetacoes = Array.isArray(data)
     ? data
@@ -48,21 +43,18 @@ export function useListaVegetacoesPage() {
   const params = vegetacoesListParams(nome, pagina, limite, sorter)
 
   const {
-    data, isLoading: loading, error
-  } = useSWR<VegetacoesListResponse, Error>(
+    data, loading, error
+  } = useQuery(
+    () => fetchVegetacoes(httpClient, params),
     [
-      '/v2/vegetacoes',
+      '/v1/vegetacoes',
       nome,
       pagina,
       limite,
       sorter?.field,
       sorter?.order
     ],
-    () => fetchVegetacoes(httpClient, params),
-    {
-      keepPreviousData: true,
-      shouldRetryOnError: false
-    }
+    { keepPreviousData: true }
   )
 
   const search = (value: string) => {

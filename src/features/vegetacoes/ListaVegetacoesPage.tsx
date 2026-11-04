@@ -12,7 +12,6 @@ import {
 } from 'antd'
 import { useTranslation } from 'react-i18next'
 
-import { TipoUsuario } from '@/@types/components'
 import SimpleTableComponent from '@/components/SimpleTableComponent'
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { useAuth } from '@/contexts/Auth/useAuth'
@@ -24,11 +23,10 @@ import { useListaVegetacoesPage } from './useListaVegetacoesPage'
 export default function ListaVegetacoesPage() {
   const { t } = useTranslation('listaVegetacoes')
   const list = useListaVegetacoesPage()
-  const { user, can } = useAuth()
+  const { can } = useAuth()
   const [searchName, setSearchName] = useState('')
   const [selectedVegetacao, setSelectedVegetacao] = useState<VegetacaoListItem>()
-  const canViewActions = user?.tipo_usuario_id === TipoUsuario.Curador
-      && can('read', 'Vegetacao')
+  const canViewActions = can('update', 'Vegetacao')
 
   useEffect(() => {
     if (list.error) {
