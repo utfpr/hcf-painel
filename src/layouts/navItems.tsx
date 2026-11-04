@@ -48,6 +48,7 @@ function filterItems(items: Array<MenuItem | null>): MenuItem[] {
 export function getSelectedMenuKey(pathname: string): string {
   const routes: Array<[string, string]> = [
     ['/tombos', 'tombos'],
+    ['/expedicoes', 'expedicoes'],
     ['/reinos', 'reinos'],
     ['/familias', 'familias'],
     ['/subfamilias', 'subfamilias'],
@@ -216,6 +217,14 @@ export function buildNavItems({
   ])
 
   const collectionItems = filterItems([
+    auth.loggedIn
+      ? {
+          key: 'expedicoes',
+          icon: <EnvironmentOutlined />,
+          label: navLink('/expedicoes', 'Expedições'),
+          title: 'Expedições'
+        }
+      : null,
     auth.can('read', 'Tombo')
       ? {
           key: 'tombos',
@@ -309,17 +318,19 @@ export function buildNavItems({
       icon: <EnvironmentOutlined />,
       label: t('mainLayout:ecologia'),
       title: t('mainLayout:ecologia'),
-      children: [
+      children: filterItems([
         {
           key: 'solos',
           label: navLink('/solos', t('mainLayout:solos')),
           title: t('mainLayout:solos')
         },
-        {
-          key: 'relevos',
-          label: navLink('/relevos', t('mainLayout:relevos')),
-          title: t('mainLayout:relevos')
-        },
+        auth.can('read', 'Relevo')
+          ? {
+              key: 'relevos',
+              label: navLink('/relevos', t('mainLayout:relevos')),
+              title: t('mainLayout:relevos')
+            }
+          : null,
         {
           key: 'fasesSucessionais',
           label: navLink('/fases-sucessionais', t('mainLayout:fasesSucessionais')),
@@ -330,7 +341,7 @@ export function buildNavItems({
           label: navLink('/vegetacoes', t('mainLayout:vegetacoes')),
           title: t('mainLayout:vegetacoes')
         }
-      ]
+      ])
     },
     {
       key: 'geolocalizacao',

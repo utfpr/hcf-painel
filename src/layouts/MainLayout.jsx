@@ -147,6 +147,16 @@ class MainLayout extends Component {
                         openKeys={this.state.openKeys}
                         onOpenChange={this.onOpenChange}
                     >
+                        {this.props.auth.loggedIn
+                            ? (
+                                    <Menu.Item key="expedicoesMenuItem">
+                                        <Link to="/expedicoes">
+                                            <EnvironmentOutlined />
+                                            <span>Expedições</span>
+                                        </Link>
+                                    </Menu.Item>
+                                )
+                            : null}
                         {this.props.auth.can('read', 'Tombo')
                             ? (
                                     <Menu.Item key="tomboMenuItem">
@@ -274,6 +284,32 @@ class MainLayout extends Component {
                                 <Link to="/vegetacoes">{this.props.t('mainLayout:vegetacoes')}</Link>
                             </Menu.Item>
                         </SubMenu>
+                        {this.props.auth.can('read', 'Relevo')
+                            ? (
+                                    <SubMenu
+                                        key="ecologiaSubmenu"
+                                        title={(
+                                            <span>
+                                                <EnvironmentOutlined />
+                                                <span>{this.props.t('mainLayout:ecologia')}</span>
+                                            </span>
+                                        )}
+                                    >
+                                        <Menu.Item key="soloMenuItem">
+                                            <Link to="/solos">{this.props.t('mainLayout:solos')}</Link>
+                                        </Menu.Item>
+                                        <Menu.Item key="relevoMenuItem">
+                                            <Link to="/relevos">{this.props.t('mainLayout:relevos')}</Link>
+                                        </Menu.Item>
+                                        <Menu.Item key="faseSucessionalMenuItem">
+                                            <Link to="/fases-sucessionais">{this.props.t('mainLayout:fasesSucessionais')}</Link>
+                                        </Menu.Item>
+                                        <Menu.Item key="vegetacaoMenuItem">
+                                            <Link to="/vegetacoes">{this.props.t('mainLayout:vegetacoes')}</Link>
+                                        </Menu.Item>
+                                    </SubMenu>
+                                )
+                            : null}
                         {this.props.auth.can(['read'], 'Remessa')
                             ? (
                                     <Menu.Item key="remessaMenuItem">
@@ -481,6 +517,9 @@ class MainLayout extends Component {
                                         </Menu.Item>
                                         <Menu.Item key="rfidInventario">
                                             <Link to="/rfid-inventario">{this.props.t('rfid:menu.inventory')}</Link>
+                                        </Menu.Item>
+                                        <Menu.Item key="rfidListasConferencia">
+                                            <Link to="/rfid-listas-conferencia">{this.props.t('rfid:menu.conferenceLists')}</Link>
                                         </Menu.Item>
                                     </SubMenu>
                                 )

@@ -1,0 +1,18 @@
+{
+  "titulo": "Relevos",
+  "adicionar": "Adicionar",
+  "buscarTitulo": "Buscar Relevo",
+  "campoId": "ID",
+  "campoNome": "Nome do relevo",
+  "placeholderNome": "Digite o nome do relevo",
+  "colunaId": "ID",
+  "colunaNome": "Relevo",
+  "colunaAcao": "Ação",
+  "detalhesTitulo": "Detalhes do relevo",
+  "abrirDetalhes": "Abrir detalhes de {{nome}}",
+  "limpar": "Limpar",
+  "pesquisar": "Pesquisar",
+  "fechar": "Fechar",
+  "erro": "Erro",
+  "erroBuscar": "Não foi possível carregar os relevos. Tente novamente."
+}

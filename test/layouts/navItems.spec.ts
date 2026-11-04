@@ -5,6 +5,7 @@ import {
 } from 'vitest'
 
 import {
+  buildNavItems,
   getOpenMenuKeys,
   getSelectedMenuKey
 } from '@/layouts/navItems'
@@ -27,5 +28,41 @@ describe('sidebar route matching', () => {
   test('opens ecology when viewing soil', () => {
     expect(getSelectedMenuKey('/solos')).toBe('solos')
     expect(getOpenMenuKeys('/solos')).toEqual(['ecologia'])
+  })
+
+  test('opens ecology when viewing relief', () => {
+    expect(getSelectedMenuKey('/relevos')).toBe('relevos')
+    expect(getOpenMenuKeys('/relevos')).toEqual(['ecologia'])
+  })
+
+  test('only shows relief in ecology for users with permission', () => {
+    const t = ((key: string) => key) as never
+    const auth = {
+      can: (_action: string, resource: string) => resource === 'Relevo'
+    } as never
+
+    const items = buildNavItems({ t, auth, isCuradorOuOperador: false })
+    const geography = items?.find(item => item && 'key' in item && item.key === 'geography')
+    const ecology = geography && 'children' in geography
+      ? geography.children?.find(item => item && 'key' in item && item.key === 'ecologia')
+      : undefined
+
+    expect(ecology && 'children' in ecology ? ecology.children : []).toHaveLength(4)
+
+    const deniedAuth = {
+      can: () => false
+    } as never
+    const deniedItems = buildNavItems({ t, auth: deniedAuth, isCuradorOuOperador: false })
+    const deniedGeography = deniedItems?.find(item => item && 'key' in item && item.key === 'geography')
+    const deniedEcology = deniedGeography && 'children' in deniedGeography
+      ? deniedGeography.children?.find(item => item && 'key' in item && item.key === 'ecologia')
+      : undefined
+
+    expect(deniedEcology && 'children' in deniedEcology ? deniedEcology.children : []).toHaveLength(3)
+  })
+
+  test('opens ecology when viewing vegetation', () => {
+    expect(getSelectedMenuKey('/vegetacoes')).toBe('vegetacoes')
+    expect(getOpenMenuKeys('/vegetacoes')).toEqual(['ecologia'])
   })
 })
