@@ -5,6 +5,7 @@ import {
 } from 'react-router'
 
 import { useAuth } from './contexts/Auth/useAuth'
+import ListaRelevosPage from './features/relevos/ListaRelevosPage'
 import ListaUsuariosPage from './features/usuarios/UsuariosListPage'
 import ListaVegetacoesPage from './features/vegetacoes/ListaVegetacoesPage'
 import {
@@ -139,6 +140,7 @@ export function AppRoutes() {
       <Route path="livro-tombo" element={<LivroTomboScreen />} />
       <Route path="especies" element={<ListaTaxonomiaEspecie />} />
       <Route path="familias" element={<ListaTaxonomiaFamilia />} />
+      <Route path="relevos" element={guard(auth.can('read', 'Relevo'), ListaRelevosPage)} />
       <Route path="vegetacoes" element={guard(auth.can('read', 'Vegetacao'), ListaVegetacoesPage)} />
       <Route path="reinos" element={<ListaTaxonomiaReino />} />
       <Route path="generos" element={<ListaTaxonomiaGenero />} />

@@ -318,17 +318,19 @@ export function buildNavItems({
       icon: <EnvironmentOutlined />,
       label: t('mainLayout:ecologia'),
       title: t('mainLayout:ecologia'),
-      children: [
+      children: filterItems([
         {
           key: 'solos',
           label: navLink('/solos', t('mainLayout:solos')),
           title: t('mainLayout:solos')
         },
-        {
-          key: 'relevos',
-          label: navLink('/relevos', t('mainLayout:relevos')),
-          title: t('mainLayout:relevos')
-        },
+        auth.can('read', 'Relevo')
+          ? {
+              key: 'relevos',
+              label: navLink('/relevos', t('mainLayout:relevos')),
+              title: t('mainLayout:relevos')
+            }
+          : null,
         {
           key: 'fasesSucessionais',
           label: navLink('/fases-sucessionais', t('mainLayout:fasesSucessionais')),
@@ -339,7 +341,7 @@ export function buildNavItems({
           label: navLink('/vegetacoes', t('mainLayout:vegetacoes')),
           title: t('mainLayout:vegetacoes')
         }
-      ]
+      ])
     },
     {
       key: 'geolocalizacao',

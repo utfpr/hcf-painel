@@ -1,0 +1,18 @@
+{
+  "titulo": "Relief types",
+  "adicionar": "Add",
+  "buscarTitulo": "Search relief types",
+  "campoId": "ID",
+  "campoNome": "Relief name",
+  "placeholderNome": "Enter the relief name",
+  "colunaId": "ID",
+  "colunaNome": "Relief",
+  "colunaAcao": "Action",
+  "detalhesTitulo": "Relief details",
+  "abrirDetalhes": "Open details for {{nome}}",
+  "limpar": "Clear",
+  "pesquisar": "Search",
+  "fechar": "Close",
+  "erro": "Error",
+  "erroBuscar": "Could not load relief types. Please try again."
+}
