@@ -147,6 +147,16 @@ class MainLayout extends Component {
                         openKeys={this.state.openKeys}
                         onOpenChange={this.onOpenChange}
                     >
+                        {this.props.auth.loggedIn
+                            ? (
+                                    <Menu.Item key="expedicoesMenuItem">
+                                        <Link to="/expedicoes">
+                                            <EnvironmentOutlined />
+                                            <span>Expedições</span>
+                                        </Link>
+                                    </Menu.Item>
+                                )
+                            : null}
                         {this.props.auth.can('read', 'Tombo')
                             ? (
                                     <Menu.Item key="tomboMenuItem">
@@ -481,6 +491,9 @@ class MainLayout extends Component {
                                         </Menu.Item>
                                         <Menu.Item key="rfidInventario">
                                             <Link to="/rfid-inventario">{this.props.t('rfid:menu.inventory')}</Link>
+                                        </Menu.Item>
+                                        <Menu.Item key="rfidListasConferencia">
+                                            <Link to="/rfid-listas-conferencia">{this.props.t('rfid:menu.conferenceLists')}</Link>
                                         </Menu.Item>
                                     </SubMenu>
                                 )

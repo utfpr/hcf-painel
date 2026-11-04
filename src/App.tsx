@@ -13,6 +13,7 @@ import {
 } from './helpers/usuarios'
 import { withRouter } from './libraries/router/withRouter'
 import DashboardScreen from './pages/DashboardScreen'
+import DetalhesExpedicaoScreen from './pages/DetalhesExpedicaoScreen'
 import DetalhesTomboScreen from './pages/DetalhesTomboScreen'
 import ExportaçãoScreen from './pages/ExportaçãoScreen'
 import FichaTomboScreen from './pages/FichaTomboScreen'
@@ -20,6 +21,7 @@ import FiltrosMapaScreen from './pages/FiltrosMapa'
 import ListaCidadesScreen from './pages/ListaCidadesScreen'
 import ListaColetoresScreen from './pages/ListaColetoresScreen'
 import ListaEstadosScreen from './pages/ListaEstadosScreen'
+import ListaExpedicoesScreen from './pages/ListaExpedicoesScreen'
 import ListaHerbariosScreen from './pages/ListaHerbariosScreen'
 import ListaIdentificadoresScreen from './pages/ListaIdentificadoresScreen'
 import ListaLocalColetaScreen from './pages/ListaLocalColetaScreen'
@@ -56,12 +58,17 @@ import RelatorioTombosPorCidadeScreen from './pages/RelatorioTombosPorCidadeScre
 import RfidConferencia from './pages/RfidConferencia'
 import RfidConfiguracao from './pages/RfidConfiguracao'
 import RfidInventario from './pages/RfidInventario'
+import RfidListaConferenciaForm from './pages/RfidListaConferenciaForm'
+import RfidListaConferenciaInventarios from './pages/RfidListaConferenciaInventarios'
+import RfidListasConferencia from './pages/RfidListasConferencia'
 import RfidVinculacao from './pages/RfidVinculacao'
 import ServicosRefloraScreen from './pages/ServicosRefloraScreen'
 import ServicosSpeciesLinkScreen from './pages/ServicosSpeciesLinkScreen'
 import NovoTomboScreen from './pages/tombos/NovoTomboScreen'
 import UnauthorizedScreen from './pages/UnauthorizedScreen'
 import PendenciaPagina from './pages/VerPendenciaScreen'
+import NovaExpedicaoPage from './features/expedicoes/NovaExpedicaoPage'
+import EditarExpedicaoPage from './features/expedicoes/EditarExpedicaoPage'
 
 const DetalhesTombo = withRouter(DetalhesTomboScreen)
 const NovoTombo = withRouter(NovoTomboScreen)
@@ -86,6 +93,8 @@ export function AppRoutes() {
       <Route path="tombos/novo" element={guard(isCuradorOuOperador(), NovoTombo)} />
       <Route path="tombos/:tombo_id" element={guard(isCuradorOuOperadorOuIdentificador(), NovoTombo)} />
       <Route path="tombos" element={<ListaTombosScreen />} />
+      <Route path="expedicoes" element={guard(Boolean(auth.user?.id), ListaExpedicoesScreen)} />
+      <Route path="expedicoes/detalhes/:id" element={guard(Boolean(auth.user?.id), DetalhesExpedicaoScreen)} />
 
       <Route path="taxonomias" element={<ListaTaxonomiaScreen />} />
 
@@ -95,6 +104,9 @@ export function AppRoutes() {
       <Route path="remessas/novo" element={guard(isCuradorOuOperador(), NovaRemessa)} />
       <Route path="remessas/:remessa_id" element={guard(isCuradorOuOperador(), NovaRemessa)} />
       <Route path="remessas" element={guard(isCuradorOuOperador(), ListaRemessasScreen)} />
+
+      <Route path="expedicoes/novo" element={guard(auth.can('create', 'Expedicao'), NovaExpedicaoPage)} />
+      <Route path="expedicoes/:expedicao_id" element={guard(auth.can('update', 'Expedicao'), EditarExpedicaoPage)} />
 
       <Route path="usuarios/novo" element={guard(auth.can('create', 'Usuario'), NovoUsuario)} />
       <Route path="usuarios/:usuario_id" element={guard(auth.can('update', 'Usuario'), NovoUsuario)} />
@@ -163,6 +175,13 @@ export function AppRoutes() {
       <Route path="rfid-conferencia" element={guard(auth.can('read', 'Rfid'), RfidConferencia)} />
       <Route path="rfid-vinculacao" element={guard(auth.can('read', 'Rfid'), RfidVinculacao)} />
       <Route path="rfid-inventario" element={guard(auth.can('read', 'Rfid'), RfidInventario)} />
+      <Route path="rfid-listas-conferencia" element={guard(auth.can('read', 'Rfid'), RfidListasConferencia)} />
+      <Route path="rfid-listas-conferencia/novo" element={guard(auth.can('read', 'Rfid'), RfidListaConferenciaForm)} />
+      <Route path="rfid-listas-conferencia/:id" element={guard(auth.can('read', 'Rfid'), RfidListaConferenciaForm)} />
+      <Route
+        path="rfid-listas-conferencia/:id/inventarios"
+        element={guard(auth.can('read', 'Rfid'), RfidListaConferenciaInventarios)}
+      />
       <Route path="dashboard" element={<DashboardScreen />} />
       <Route
         path="relatorio-coordenadas-fora-poligono"
