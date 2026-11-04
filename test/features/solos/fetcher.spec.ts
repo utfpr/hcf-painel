@@ -27,7 +27,7 @@ describe('fetchSolos', () => {
       }
     })
 
-    expect(get).toHaveBeenCalledWith('/v2/solos', {
+    expect(get).toHaveBeenCalledWith('/v1/solos', {
       pagina: 1,
       limite: 20,
       nome: 'argiloso'

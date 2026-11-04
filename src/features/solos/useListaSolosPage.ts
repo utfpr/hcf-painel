@@ -14,7 +14,7 @@ export async function fetchSolos(
   httpClient: Pick<HttpClient, 'get'>,
   params: Record<string, string | number>
 ): Promise<SolosListResponse> {
-  const response = await httpClient.get<SolosApiResponse>('/v2/solos', params)
+  const response = await httpClient.get<SolosApiResponse>('/v1/solos', params)
   const data = response.data
   const solos = Array.isArray(data)
     ? data
