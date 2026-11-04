@@ -92,12 +92,6 @@ const RfidConferencia: React.FC = () => {
 
     const columns = [
         {
-            title: t('conference.id'),
-            dataIndex: 'id',
-            key: 'id',
-            width: 60,
-        },
-        {
             title: t('conference.tombo'),
             key: 'tombo_hcf',
             render: (text: any, record: any) => record.tombos_foto?.tombo_hcf || '-'

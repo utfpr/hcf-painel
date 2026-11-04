@@ -10,3 +10,6 @@ reports/
 # tools
 .eslintcache
 *.log
+
+# test tools
+.playwright-mcp/

@@ -55,4 +55,9 @@ describe('sidebar route matching', () => {
 
     expect(deniedEcology && 'children' in deniedEcology ? deniedEcology.children : []).toHaveLength(3)
   })
+
+  test('opens ecology when viewing vegetation', () => {
+    expect(getSelectedMenuKey('/vegetacoes')).toBe('vegetacoes')
+    expect(getOpenMenuKeys('/vegetacoes')).toEqual(['ecologia'])
+  })
 })

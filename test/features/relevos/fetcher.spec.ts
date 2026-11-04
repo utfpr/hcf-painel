@@ -27,7 +27,7 @@ describe('fetchRelevos', () => {
       }
     })
 
-    expect(get).toHaveBeenCalledWith('/v2/relevos', {
+    expect(get).toHaveBeenCalledWith('/v1/relevos', {
       pagina: 1,
       limite: 20,
       nome: 'montanhoso'

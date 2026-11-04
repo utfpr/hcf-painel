@@ -25,7 +25,7 @@ describe('useListaRelevosPage', () => {
     act(() => result.current.changePage(2, 50, { field: 'nome', order: 'descend' }))
 
     await waitFor(() => {
-      expect(get).toHaveBeenLastCalledWith('/v2/relevos', {
+      expect(get).toHaveBeenLastCalledWith('/v1/relevos', {
         pagina: 2,
         limite: 50,
         order: 'nome:desc'
