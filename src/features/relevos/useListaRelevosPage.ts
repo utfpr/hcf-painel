@@ -1,8 +1,7 @@
 import { useState } from 'react'
 
-import useSWR from 'swr'
-
 import { useContainer } from '@/contexts/Container/useContainer'
+import { useQuery } from '@/hooks/query/useQuery'
 import type { HttpClient } from '@/libraries/http/HttpClient'
 
 import { relevosListParams, type RelevosSorter } from './search'
@@ -15,7 +14,7 @@ export async function fetchRelevos(
   httpClient: Pick<HttpClient, 'get'>,
   params: Record<string, string | number>
 ): Promise<RelevosListResponse> {
-  const response = await httpClient.get<RelevosApiResponse>('/v2/relevos', params)
+  const response = await httpClient.get<RelevosApiResponse>('/v1/relevos', params)
   const data = response.data
   const relevos = Array.isArray(data)
     ? data
@@ -48,8 +47,9 @@ export function useListaRelevosPage() {
   const params = relevosListParams(nome, pagina, limite, sorter)
 
   const {
-    data, isLoading: loading, error
-  } = useSWR<RelevosListResponse, Error>(
+    data, loading, error
+  } = useQuery(
+    () => fetchRelevos(httpClient, params),
     [
       '/v2/relevos',
       nome,
@@ -58,11 +58,7 @@ export function useListaRelevosPage() {
       sorter?.field,
       sorter?.order
     ],
-    () => fetchRelevos(httpClient, params),
-    {
-      keepPreviousData: true,
-      shouldRetryOnError: false
-    }
+    { keepPreviousData: true }
   )
 
   const search = (value: string) => {

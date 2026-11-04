@@ -1,0 +1,18 @@
+---
+description: Use the repository's shared query abstraction for React data fetching.
+globs:
+  - "src/features/**/*.ts"
+  - "src/features/**/*.tsx"
+  - "src/hooks/**/*.ts"
+  - "src/hooks/**/*.tsx"
+alwaysApply: false
+---
+
+# Data fetching
+
+- Use `useQuery` from `@/hooks/query/useQuery` for feature queries.
+- Do not use `useSWR` directly in feature hooks or pages.
+- Keep HTTP access in the fetcher passed to `useQuery`; do not make ad hoc requests from presentational components.
+- Keep fetchers close to the feature hook when that is the existing feature convention. Do not introduce a separate repository or abstraction solely to move a small fetcher without a clear reuse requirement.
+- Preserve the existing `useQuery` options and return shape conventions: `data`, `loading`, `error`, and `refresh` where applicable.
+- Add or update fetcher tests when changing an endpoint, request parameters, or response normalization.
