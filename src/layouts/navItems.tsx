@@ -31,6 +31,8 @@ const TAXONOMIA_RESOURCES = [
   'Autor'
 ] as const
 
+const ECOLOGIA_RESOURCES = ['Solo', 'Relevo', 'Vegetacao'] as const
+
 interface BuildNavItemsParams {
   t: TFunction
   auth: AuthContextValue
@@ -287,6 +289,7 @@ export function buildNavItems({
       : null
   ])
 
+  const canReadEcologia = ECOLOGIA_RESOURCES.some(resource => auth.canAny(['read'], resource))
   const geographyItems = filterItems([
     {
       key: 'locais',
@@ -313,17 +316,20 @@ export function buildNavItems({
           : null
       ])
     },
-    {
-      key: 'ecologia',
-      icon: <EnvironmentOutlined />,
-      label: t('mainLayout:ecologia'),
-      title: t('mainLayout:ecologia'),
-      children: filterItems([
-        {
-          key: 'solos',
-          label: navLink('/solos', t('mainLayout:solos')),
-          title: t('mainLayout:solos')
-        },
+    canReadEcologia
+      ? {
+          key: 'ecologia',
+          icon: <EnvironmentOutlined />,
+          label: t('mainLayout:ecologia'),
+          title: t('mainLayout:ecologia'),
+          children: filterItems([
+        auth.can('read', 'Solo')
+          ? {
+              key: 'solos',
+              label: navLink('/solos', t('mainLayout:solos')),
+              title: t('mainLayout:solos')
+            }
+          : null,
         auth.can('read', 'Relevo')
           ? {
               key: 'relevos',
@@ -336,13 +342,16 @@ export function buildNavItems({
           label: navLink('/fases-sucessionais', t('mainLayout:fasesSucessionais')),
           title: t('mainLayout:fasesSucessionais')
         },
-        {
-          key: 'vegetacoes',
-          label: navLink('/vegetacoes', t('mainLayout:vegetacoes')),
-          title: t('mainLayout:vegetacoes')
+        auth.can('read', 'Vegetacao')
+          ? {
+              key: 'vegetacoes',
+              label: navLink('/vegetacoes', t('mainLayout:vegetacoes')),
+              title: t('mainLayout:vegetacoes')
+            }
+          : null
+          ])
         }
-      ])
-    },
+      : null,
     {
       key: 'geolocalizacao',
       icon: <EnvironmentOutlined />,

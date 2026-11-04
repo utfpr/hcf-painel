@@ -6,6 +6,7 @@ const RESOURCES = [
   'Tombo',
   'Reino',
   'Familia',
+  'Solo',
   'Relevo',
   'Vegetacao',
   'Subfamilia',
@@ -101,7 +102,7 @@ const ruleSpecificMapping: Record<TipoUsuario, (user: Usuario) => Rule<Resource,
       resource: 'Rfid',
       action: ['read']
     }
-    
+
   ],
   [TipoUsuario.Operador]: () => [],
   [TipoUsuario.Identificador]: () => []
@@ -118,6 +119,10 @@ const defaultRules: Rule<Resource, Action>[] = [
   },
   {
     resource: 'Familia',
+    action: ['read']
+  },
+  {
+    resource: 'Solo',
     action: ['read']
   },
   {

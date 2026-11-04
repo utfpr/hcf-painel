@@ -51,7 +51,7 @@ export function useListaRelevosPage() {
   } = useQuery(
     () => fetchRelevos(httpClient, params),
     [
-      '/v2/relevos',
+      '/v1/relevos',
       nome,
       pagina,
       limite,
