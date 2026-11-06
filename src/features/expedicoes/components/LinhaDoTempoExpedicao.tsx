@@ -38,6 +38,7 @@ import {
   filtrarEventos,
   resumoDoEvento
 } from '../linhaDoTempo'
+import { TranscricaoAudio } from './TranscricaoAudio'
 
 const { Panel } = Collapse
 const { RangePicker } = DatePicker
@@ -89,6 +90,7 @@ interface LinhaDoTempoExpedicaoProps {
   erro: string | null
   participantes: ParticipanteNome[]
   onRecarregar: () => void
+  podeTranscrever?: boolean
 }
 
 function corDoTipo(tipo: string): { fundo: string; borda: string } {
@@ -376,7 +378,7 @@ function ehAudio(mimeType: string | null): boolean {
   return mimeType?.startsWith('audio/') === true
 }
 
-function AnexosEvento({ arquivos }: { arquivos: EventoLinha['arquivos'] }) {
+function AnexosEvento({ arquivos, podeTranscrever }: { arquivos: EventoLinha['arquivos']; podeTranscrever: boolean }) {
   const imagens = arquivos.filter(arquivo => ehImagem(arquivo.mimeType))
   const audios = arquivos.filter(arquivo => ehAudio(arquivo.mimeType))
   const outros = arquivos.filter(arquivo => !ehImagem(arquivo.mimeType) && !ehAudio(arquivo.mimeType))
@@ -414,6 +416,7 @@ function AnexosEvento({ arquivos }: { arquivos: EventoLinha['arquivos'] }) {
                 >
                   {arquivo.nome}
                 </Button>
+                <TranscricaoAudio arquivo={arquivo} podeEditar={podeTranscrever} />
               </div>
             ))}
             {outros.length > 0 && (
@@ -440,7 +443,9 @@ function AnexosEvento({ arquivos }: { arquivos: EventoLinha['arquivos'] }) {
   )
 }
 
-function CorpoEvento({ evento, participantes }: { evento: EventoLinha; participantes: ParticipanteNome[] }) {
+function CorpoEvento({
+  evento, participantes, podeTranscrever
+}: { evento: EventoLinha; participantes: ParticipanteNome[]; podeTranscrever: boolean }) {
   const campos = camposDoCorpo(evento, participantes)
   return (
     <>
@@ -452,7 +457,7 @@ function CorpoEvento({ evento, participantes }: { evento: EventoLinha; participa
           </Col>
         ))}
       </Row>
-      <AnexosEvento arquivos={evento.arquivos} />
+      <AnexosEvento arquivos={evento.arquivos} podeTranscrever={podeTranscrever} />
     </>
   )
 }
@@ -517,7 +522,8 @@ export default function LinhaDoTempoExpedicao({
   carregando,
   erro,
   participantes,
-  onRecarregar
+  onRecarregar,
+  podeTranscrever = false
 }: LinhaDoTempoExpedicaoProps) {
   const [chaves, setChaves] = useState<ChaveFiltro[]>([])
   const [valores, setValores] = useState<ValoresFiltro>(VALORES_VAZIOS)
@@ -622,7 +628,7 @@ export default function LinhaDoTempoExpedicao({
                     </div>
                   )}
                 >
-                  <CorpoEvento evento={evento} participantes={participantes} />
+                  <CorpoEvento evento={evento} participantes={participantes} podeTranscrever={podeTranscrever} />
                 </Panel>
               </Collapse>
             </div>
