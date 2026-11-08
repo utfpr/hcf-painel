@@ -6,6 +6,7 @@ const RESOURCES = [
   'Tombo',
   'Reino',
   'Familia',
+  'FaseSucessional',
   'Solo',
   'Relevo',
   'Vegetacao',
@@ -119,6 +120,10 @@ const defaultRules: Rule<Resource, Action>[] = [
   },
   {
     resource: 'Familia',
+    action: ['read']
+  },
+  {
+    resource: 'FaseSucessional',
     action: ['read']
   },
   {

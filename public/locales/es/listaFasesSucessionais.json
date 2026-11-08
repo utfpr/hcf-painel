@@ -1,0 +1,18 @@
+{
+  "titulo": "Fases sucesionales",
+  "adicionar": "Agregar",
+  "buscarTitulo": "Buscar fase sucesional",
+  "campoId": "ID",
+  "campoNome": "Nombre de la fase sucesional",
+  "placeholderNome": "Escriba el nombre de la fase sucesional",
+  "colunaId": "ID",
+  "colunaNome": "Fase sucesional",
+  "colunaAcao": "Acción",
+  "detalhesTitulo": "Detalles de la fase sucesional",
+  "abrirDetalhes": "Abrir detalles de {{nome}}",
+  "limpar": "Limpiar",
+  "pesquisar": "Buscar",
+  "fechar": "Cerrar",
+  "erro": "Error",
+  "erroBuscar": "No se pudieron cargar las fases sucesionales. Inténtelo de nuevo."
+}

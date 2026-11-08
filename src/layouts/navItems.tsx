@@ -31,7 +31,7 @@ const TAXONOMIA_RESOURCES = [
   'Autor'
 ] as const
 
-const ECOLOGIA_RESOURCES = ['Solo', 'Relevo', 'Vegetacao'] as const
+const ECOLOGIA_RESOURCES = ['Solo', 'Relevo', 'FaseSucessional', 'Vegetacao'] as const
 
 interface BuildNavItemsParams {
   t: TFunction

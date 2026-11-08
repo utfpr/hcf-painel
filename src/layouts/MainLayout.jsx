@@ -42,7 +42,8 @@ const SERVICOS_RESOURCES = [
 const ECOLOGIA_RESOURCES = [
     'Solo',
     'Relevo',
-    'Vegetacao'
+    'Vegetacao',
+    'FaseSucessional'
 ]
 
 class MainLayout extends Component {
@@ -293,9 +294,13 @@ class MainLayout extends Component {
                                                     </Menu.Item>
                                                 )
                                             : null}
-                                        <Menu.Item key="faseSucessionalMenuItem">
-                                            <Link to="/fases-sucessionais">{this.props.t('mainLayout:fasesSucessionais')}</Link>
-                                        </Menu.Item>
+                                        {this.props.auth.can('read', 'FaseSucessional')
+                                            ? (
+                                                    <Menu.Item key="faseSucessionalMenuItem">
+                                                        <Link to="/fases-sucessionais">{this.props.t('mainLayout:fasesSucessionais')}</Link>
+                                                    </Menu.Item>
+                                                )
+                                            : null}
                                         {this.props.auth.can('read', 'Vegetacao')
                                             ? (
                                                     <Menu.Item key="vegetacaoMenuItem">

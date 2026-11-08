@@ -25,6 +25,11 @@ describe('sidebar route matching', () => {
     expect(getOpenMenuKeys('/relatorio-codigo-barras')).toEqual(['relatorios'])
   })
 
+  test('opens ecology when viewing a successional phase', () => {
+    expect(getSelectedMenuKey('/fases-sucessionais')).toBe('fasesSucessionais')
+    expect(getOpenMenuKeys('/fases-sucessionais')).toEqual(['ecologia'])
+  })
+
   test('opens ecology when viewing soil', () => {
     expect(getSelectedMenuKey('/solos')).toBe('solos')
     expect(getOpenMenuKeys('/solos')).toEqual(['ecologia'])

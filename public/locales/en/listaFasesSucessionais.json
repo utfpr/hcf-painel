@@ -1,0 +1,18 @@
+{
+  "titulo": "Successional stages",
+  "adicionar": "Add",
+  "buscarTitulo": "Search successional stages",
+  "campoId": "ID",
+  "campoNome": "Successional stage name",
+  "placeholderNome": "Enter the successional stage name",
+  "colunaId": "ID",
+  "colunaNome": "Successional stage",
+  "colunaAcao": "Action",
+  "detalhesTitulo": "Successional stage details",
+  "abrirDetalhes": "Open details for {{nome}}",
+  "limpar": "Clear",
+  "pesquisar": "Search",
+  "fechar": "Close",
+  "erro": "Error",
+  "erroBuscar": "Could not load successional stages. Please try again."
+}

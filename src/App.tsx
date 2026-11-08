@@ -7,6 +7,7 @@ import {
 import { useAuth } from './contexts/Auth/useAuth'
 import ListaSolosPage from './features/solos/ListaSolosPage'
 import ListaRelevosPage from './features/relevos/ListaRelevosPage'
+import ListaFasesSucessionaisPage from './features/fases-sucessionais/ListaFasesSucessionaisPage'
 import ListaUsuariosPage from './features/usuarios/UsuariosListPage'
 import ListaVegetacoesPage from './features/vegetacoes/ListaVegetacoesPage'
 import {
@@ -141,6 +142,10 @@ export function AppRoutes() {
       <Route path="livro-tombo" element={<LivroTomboScreen />} />
       <Route path="especies" element={<ListaTaxonomiaEspecie />} />
       <Route path="familias" element={<ListaTaxonomiaFamilia />} />
+      <Route
+        path="fases-sucessionais"
+        element={guard(auth.can('read', 'FaseSucessional'), ListaFasesSucessionaisPage)}
+      />
       <Route path="solos" element={guard(auth.can('read', 'Solo'), ListaSolosPage)} />
       <Route path="relevos" element={guard(auth.can('read', 'Relevo'), ListaRelevosPage)} />
       <Route path="vegetacoes" element={guard(auth.can('read', 'Vegetacao'), ListaVegetacoesPage)} />
