@@ -31,6 +31,8 @@ const TAXONOMIA_RESOURCES = [
   'Autor'
 ] as const
 
+const ECOLOGIA_RESOURCES = ['Solo', 'Relevo', 'Vegetacao'] as const
+
 interface BuildNavItemsParams {
   t: TFunction
   auth: AuthContextValue
@@ -48,6 +50,7 @@ function filterItems(items: Array<MenuItem | null>): MenuItem[] {
 export function getSelectedMenuKey(pathname: string): string {
   const routes: Array<[string, string]> = [
     ['/tombos', 'tombos'],
+    ['/expedicoes', 'expedicoes'],
     ['/reinos', 'reinos'],
     ['/familias', 'familias'],
     ['/subfamilias', 'subfamilias'],
@@ -216,6 +219,14 @@ export function buildNavItems({
   ])
 
   const collectionItems = filterItems([
+    auth.loggedIn
+      ? {
+          key: 'expedicoes',
+          icon: <EnvironmentOutlined />,
+          label: navLink('/expedicoes', 'Expedições'),
+          title: 'Expedições'
+        }
+      : null,
     auth.can('read', 'Tombo')
       ? {
           key: 'tombos',
@@ -278,6 +289,7 @@ export function buildNavItems({
       : null
   ])
 
+  const canReadEcologia = ECOLOGIA_RESOURCES.some(resource => auth.canAny(['read'], resource))
   const geographyItems = filterItems([
     {
       key: 'locais',
@@ -304,6 +316,42 @@ export function buildNavItems({
           : null
       ])
     },
+    canReadEcologia
+      ? {
+          key: 'ecologia',
+          icon: <EnvironmentOutlined />,
+          label: t('mainLayout:ecologia'),
+          title: t('mainLayout:ecologia'),
+          children: filterItems([
+        auth.can('read', 'Solo')
+          ? {
+              key: 'solos',
+              label: navLink('/solos', t('mainLayout:solos')),
+              title: t('mainLayout:solos')
+            }
+          : null,
+        auth.can('read', 'Relevo')
+          ? {
+              key: 'relevos',
+              label: navLink('/relevos', t('mainLayout:relevos')),
+              title: t('mainLayout:relevos')
+            }
+          : null,
+        {
+          key: 'fasesSucessionais',
+          label: navLink('/fases-sucessionais', t('mainLayout:fasesSucessionais')),
+          title: t('mainLayout:fasesSucessionais')
+        },
+        auth.can('read', 'Vegetacao')
+          ? {
+              key: 'vegetacoes',
+              label: navLink('/vegetacoes', t('mainLayout:vegetacoes')),
+              title: t('mainLayout:vegetacoes')
+            }
+          : null
+          ])
+        }
+      : null,
     {
       key: 'ecologia',
       icon: <EnvironmentOutlined />,

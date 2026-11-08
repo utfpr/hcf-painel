@@ -7,6 +7,9 @@ const RESOURCES = [
   'Reino',
   'Familia',
   'FaseSucessional',
+  'Solo',
+  'Relevo',
+  'Vegetacao',
   'Subfamilia',
   'Genero',
   'Especie',
@@ -22,6 +25,7 @@ const RESOURCES = [
   'Coletor',
   'Reflora',
   'SpeciesLink',
+  'Expedicao',
   'Rfid'
 ] as const
 
@@ -87,9 +91,19 @@ const ruleSpecificMapping: Record<TipoUsuario, (user: Usuario) => Rule<Resource,
       action: ['read', 'update']
     },
     {
+      resource: 'Expedicao',
+      action: [
+        'read',
+        'create',
+        'update',
+        'delete'
+      ]
+    },
+    {
       resource: 'Rfid',
       action: ['read']
     }
+
   ],
   [TipoUsuario.Operador]: () => [],
   [TipoUsuario.Identificador]: () => []
@@ -110,6 +124,18 @@ const defaultRules: Rule<Resource, Action>[] = [
   },
   {
     resource: 'FaseSucessional',
+    action: ['read']
+  },
+  {
+    resource: 'Solo',
+    action: ['read']
+  },
+  {
+    resource: 'Relevo',
+    action: ['read']
+  },
+  {
+    resource: 'Vegetacao',
     action: ['read']
   },
   {
