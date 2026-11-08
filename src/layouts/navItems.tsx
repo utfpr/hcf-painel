@@ -31,7 +31,7 @@ const TAXONOMIA_RESOURCES = [
   'Autor'
 ] as const
 
-const ECOLOGIA_RESOURCES = ['Solo', 'Relevo', 'Vegetacao'] as const
+const ECOLOGIA_RESOURCES = ['Solo', 'Relevo', 'FaseSucessional', 'Vegetacao'] as const
 
 interface BuildNavItemsParams {
   t: TFunction
@@ -352,34 +352,6 @@ export function buildNavItems({
           ])
         }
       : null,
-    {
-      key: 'ecologia',
-      icon: <EnvironmentOutlined />,
-      label: t('mainLayout:ecologia'),
-      title: t('mainLayout:ecologia'),
-      children: [
-        {
-          key: 'solos',
-          label: navLink('/solos', t('mainLayout:solos')),
-          title: t('mainLayout:solos')
-        },
-        {
-          key: 'relevos',
-          label: navLink('/relevos', t('mainLayout:relevos')),
-          title: t('mainLayout:relevos')
-        },
-        {
-          key: 'fasesSucessionais',
-          label: navLink('/fases-sucessionais', t('mainLayout:fasesSucessionais')),
-          title: t('mainLayout:fasesSucessionais')
-        },
-        {
-          key: 'vegetacoes',
-          label: navLink('/vegetacoes', t('mainLayout:vegetacoes')),
-          title: t('mainLayout:vegetacoes')
-        }
-      ]
-    },
     {
       key: 'geolocalizacao',
       icon: <EnvironmentOutlined />,

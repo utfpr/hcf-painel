@@ -74,12 +74,13 @@ export default function ListaFasesSucessionaisPage() {
     nome: fase.nome,
     acao: canViewActions
       ? (
-        <a
+        <Button
+          type="link"
           aria-label={t('abrirDetalhes', { nome: fase.nome })}
           onClick={() => setSelectedFase(fase)}
         >
           <EditOutlined style={{ color: '#FFCC00' }} />
-        </a>
+        </Button>
       )
       : undefined
   }))

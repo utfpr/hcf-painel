@@ -1,8 +1,7 @@
 import { useState } from 'react'
 
-import useSWR from 'swr'
-
 import { useContainer } from '@/contexts/Container/useContainer'
+import { useQuery } from '@/hooks/query/useQuery'
 import type { HttpClient } from '@/libraries/http/HttpClient'
 
 import {
@@ -54,8 +53,9 @@ export function useListaFasesSucessionaisPage() {
   const params = fasesSucessionaisListParams(nome, pagina, limite, sorter)
 
   const {
-    data, isLoading: loading, error
-  } = useSWR<FasesSucessionaisListResponse, Error>(
+    data, loading, error
+  } = useQuery(
+    () => fetchFasesSucessionais(httpClient, params),
     [
       '/v2/fases-sucessionais',
       nome,
@@ -64,11 +64,7 @@ export function useListaFasesSucessionaisPage() {
       sorter?.field,
       sorter?.order
     ],
-    () => fetchFasesSucessionais(httpClient, params),
-    {
-      keepPreviousData: true,
-      shouldRetryOnError: false
-    }
+    { keepPreviousData: true }
   )
 
   const search = (value: string) => {
