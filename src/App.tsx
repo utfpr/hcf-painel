@@ -12,7 +12,8 @@ import ListaUsuariosPage from './features/usuarios/UsuariosListPage'
 import ListaVegetacoesPage from './features/vegetacoes/ListaVegetacoesPage'
 import {
   isCuradorOuOperador,
-  isCuradorOuOperadorOuIdentificador
+  isCuradorOuOperadorOuIdentificador,
+  isExpedicionario
 } from './helpers/usuarios'
 import { withRouter } from './libraries/router/withRouter'
 import DashboardScreen from './pages/DashboardScreen'
@@ -72,6 +73,7 @@ import UnauthorizedScreen from './pages/UnauthorizedScreen'
 import PendenciaPagina from './pages/VerPendenciaScreen'
 import NovaExpedicaoPage from './features/expedicoes/NovaExpedicaoPage'
 import EditarExpedicaoPage from './features/expedicoes/EditarExpedicaoPage'
+import ExpedicoesAppPage from './features/expedicoes/ExpedicoesAppPage'
 
 const DetalhesTombo = withRouter(DetalhesTomboScreen)
 const NovoTombo = withRouter(NovoTomboScreen)
@@ -88,6 +90,7 @@ function guard(authed: boolean, Component: React.ComponentType) {
 
 export function AppRoutes() {
   const auth = useAuth()
+  const logadoNaoExpedicionario = Boolean(auth.user?.id) && !isExpedicionario()
 
   return (
     <Routes>
@@ -98,6 +101,7 @@ export function AppRoutes() {
       <Route path="tombos" element={<ListaTombosScreen />} />
       <Route path="expedicoes" element={guard(Boolean(auth.user?.id), ListaExpedicoesScreen)} />
       <Route path="expedicoes/detalhes/:id" element={guard(Boolean(auth.user?.id), DetalhesExpedicaoScreen)} />
+      <Route path="expedicoes-app" element={guard(Boolean(auth.user?.id), ExpedicoesAppPage)} />
 
       <Route path="taxonomias" element={<ListaTaxonomiaScreen />} />
 
@@ -129,9 +133,9 @@ export function AppRoutes() {
       <Route path="coletores/:coletor_id" element={guard(auth.can('update', 'Coletor'), NovoColetor)} />
       <Route path="coletores" element={guard(auth.can('read', 'Coletor'), ListaColetoresScreen)} />
 
-      <Route path="herbarios" element={guard(Boolean(auth.user?.id), ListaHerbariosScreen)} />
-      <Route path="fichas/tombos" element={guard(Boolean(auth.user?.id), FichaTomboScreen)} />
-      <Route path="locais-coleta" element={guard(Boolean(auth.user?.id), ListaLocalColetaScreen)} />
+      <Route path="herbarios" element={guard(logadoNaoExpedicionario, ListaHerbariosScreen)} />
+      <Route path="fichas/tombos" element={guard(logadoNaoExpedicionario, FichaTomboScreen)} />
+      <Route path="locais-coleta" element={guard(logadoNaoExpedicionario, ListaLocalColetaScreen)} />
       <Route path="estados" element={guard(Boolean(auth.user?.id), ListaEstadosScreen)} />
       <Route path="cidades" element={guard(Boolean(auth.user?.id), ListaCidadesScreen)} />
 
@@ -159,26 +163,26 @@ export function AppRoutes() {
       <Route path="filtros" element={<FiltrosMapaScreen />} />
       <Route path="perfil" element={<PerfilScreen />} />
 
-      <Route path="relatorio-coleta-data" element={guard(Boolean(auth.user?.id), RelatorioColetaPeriodoScreen)} />
-      <Route path="relatorio-por-periodo" element={guard(Boolean(auth.user?.id), RelatorioPorPeriodo)} />
+      <Route path="relatorio-coleta-data" element={guard(logadoNaoExpedicionario, RelatorioColetaPeriodoScreen)} />
+      <Route path="relatorio-por-periodo" element={guard(logadoNaoExpedicionario, RelatorioPorPeriodo)} />
       <Route
         path="relatorio-inventario-especies"
-        element={guard(Boolean(auth.user?.id), RelatorioInventarioEspeciesScreen)}
+        element={guard(logadoNaoExpedicionario, RelatorioInventarioEspeciesScreen)}
       />
-      <Route path="relatorio-coletor-data" element={guard(Boolean(auth.user?.id), RelatorioColetorPeriodoScreen)} />
-      <Route path="relatorio-codigo-barras" element={guard(Boolean(auth.user?.id), RelatorioCodigoBarrasScreen)} />
+      <Route path="relatorio-coletor-data" element={guard(logadoNaoExpedicionario, RelatorioColetorPeriodoScreen)} />
+      <Route path="relatorio-codigo-barras" element={guard(logadoNaoExpedicionario, RelatorioCodigoBarrasScreen)} />
       <Route
         path="relatorio-familias-genero"
-        element={guard(Boolean(auth.user?.id), RelatorioFamiliasGeneroScreen)}
+        element={guard(logadoNaoExpedicionario, RelatorioFamiliasGeneroScreen)}
       />
-      <Route path="relatorio-locais-coleta" element={guard(Boolean(auth.user?.id), RelatorioLocalColetaScreen)} />
+      <Route path="relatorio-locais-coleta" element={guard(logadoNaoExpedicionario, RelatorioLocalColetaScreen)} />
       <Route
         path="relatorio-tombos-por-cidade"
-        element={guard(Boolean(auth.user?.id), RelatorioTombosPorCidadeScreen)}
+        element={guard(logadoNaoExpedicionario, RelatorioTombosPorCidadeScreen)}
       />
       <Route
         path="relatorio-quantidade-familia-generos"
-        element={guard(Boolean(auth.user?.id), RelatorioQuantidadeScreen)}
+        element={guard(logadoNaoExpedicionario, RelatorioQuantidadeScreen)}
       />
       <Route path="rfid-configuracao" element={guard(auth.can('read', 'Rfid'), RfidConfiguracao)} />
       <Route path="rfid-conferencia" element={guard(auth.can('read', 'Rfid'), RfidConferencia)} />
@@ -194,7 +198,7 @@ export function AppRoutes() {
       <Route path="dashboard" element={<DashboardScreen />} />
       <Route
         path="relatorio-coordenadas-fora-poligono"
-        element={guard(Boolean(auth.user?.id), RelatorioCoordenadaForaPoligonoScreen)}
+        element={guard(logadoNaoExpedicionario, RelatorioCoordenadaForaPoligonoScreen)}
       />
     </Routes>
   )
