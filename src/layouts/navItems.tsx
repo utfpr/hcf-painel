@@ -229,18 +229,20 @@ export function buildNavItems({
           icon: <EnvironmentOutlined />,
           label: t('mainLayout:expedicoes'),
           title: t('mainLayout:expedicoes'),
-          children: [
-            {
-              key: 'expedicoesGerenciamento',
-              label: navLink('/expedicoes', t('mainLayout:expedicoesGerenciamento')),
-              title: t('mainLayout:expedicoesGerenciamento')
-            },
+          children: filterItems([
+            !isExpedicionario
+              ? {
+                  key: 'expedicoesGerenciamento',
+                  label: navLink('/expedicoes', t('mainLayout:expedicoesGerenciamento')),
+                  title: t('mainLayout:expedicoesGerenciamento')
+                }
+              : null,
             {
               key: 'expedicoesApp',
               label: navLink('/expedicoes-app', t('mainLayout:expedicoesApp')),
               title: t('mainLayout:expedicoesApp')
             }
-          ]
+          ])
         }
       : null,
     auth.can('read', 'Tombo')

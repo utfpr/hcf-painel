@@ -99,8 +99,8 @@ export function AppRoutes() {
       <Route path="tombos/novo" element={guard(isCuradorOuOperador(), NovoTombo)} />
       <Route path="tombos/:tombo_id" element={guard(isCuradorOuOperadorOuIdentificador(), NovoTombo)} />
       <Route path="tombos" element={<ListaTombosScreen />} />
-      <Route path="expedicoes" element={guard(Boolean(auth.user?.id), ListaExpedicoesScreen)} />
-      <Route path="expedicoes/detalhes/:id" element={guard(Boolean(auth.user?.id), DetalhesExpedicaoScreen)} />
+      <Route path="expedicoes" element={guard(logadoNaoExpedicionario, ListaExpedicoesScreen)} />
+      <Route path="expedicoes/detalhes/:id" element={guard(logadoNaoExpedicionario, DetalhesExpedicaoScreen)} />
       <Route path="expedicoes-app" element={guard(Boolean(auth.user?.id), ExpedicoesAppPage)} />
 
       <Route path="taxonomias" element={<ListaTaxonomiaScreen />} />

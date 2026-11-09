@@ -166,9 +166,13 @@ class MainLayout extends Component {
                                             </span>
                                         )}
                                     >
-                                        <Menu.Item key="expedicoesGerenciamentoMenuItem">
-                                            <Link to="/expedicoes">{this.props.t('mainLayout:expedicoesGerenciamento')}</Link>
-                                        </Menu.Item>
+                                        {!isExpedicionario()
+                                            ? (
+                                                    <Menu.Item key="expedicoesGerenciamentoMenuItem">
+                                                        <Link to="/expedicoes">{this.props.t('mainLayout:expedicoesGerenciamento')}</Link>
+                                                    </Menu.Item>
+                                                )
+                                            : null}
                                         <Menu.Item key="expedicoesAppMenuItem">
                                             <Link to="/expedicoes-app">{this.props.t('mainLayout:expedicoesApp')}</Link>
                                         </Menu.Item>

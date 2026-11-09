@@ -117,11 +117,7 @@ describe('sidebar route matching', () => {
     const expedicionarioKeys = collectKeys(buildNavItems({
       t, auth, isCuradorOuOperador: false, isExpedicionario: true
     }))
-    expect(expedicionarioKeys).toEqual(expect.arrayContaining([
-      'expedicoes',
-      'expedicoesGerenciamento',
-      'expedicoesApp'
-    ]))
-    hiddenKeys.forEach(key => expect(expedicionarioKeys).not.toContain(key))
+    expect(expedicionarioKeys).toEqual(expect.arrayContaining(['expedicoes', 'expedicoesApp']))
+    ;[...hiddenKeys, 'expedicoesGerenciamento'].forEach(key => expect(expedicionarioKeys).not.toContain(key))
   })
 })
