@@ -106,7 +106,13 @@ const ruleSpecificMapping: Record<TipoUsuario, (user: Usuario) => Rule<Resource,
 
   ],
   [TipoUsuario.Operador]: () => [],
-  [TipoUsuario.Identificador]: () => []
+  [TipoUsuario.Identificador]: () => [],
+  [TipoUsuario.Expedicionario]: () => [
+    {
+      resource: 'Expedicao',
+      action: ['read']
+    }
+  ]
 } as const
 
 const defaultRules: Rule<Resource, Action>[] = [
