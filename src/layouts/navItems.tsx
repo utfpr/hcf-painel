@@ -219,14 +219,6 @@ export function buildNavItems({
   ])
 
   const collectionItems = filterItems([
-    auth.loggedIn
-      ? {
-          key: 'expedicoes',
-          icon: <EnvironmentOutlined />,
-          label: navLink('/expedicoes', 'Expedições'),
-          title: 'Expedições'
-        }
-      : null,
     auth.can('read', 'Tombo')
       ? {
           key: 'tombos',
@@ -491,6 +483,14 @@ export function buildNavItems({
           label: t('mainLayout:servicos'),
           title: t('mainLayout:servicos'),
           children: serviceChildren
+        }
+      : null,
+    auth.loggedIn
+      ? {
+          key: 'expedicoes',
+          icon: <EnvironmentOutlined />,
+          label: navLink('/expedicoes', 'Expedições'),
+          title: 'Expedições'
         }
       : null,
     auth.loggedIn

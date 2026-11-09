@@ -73,4 +73,23 @@ describe('sidebar route matching', () => {
     expect(getSelectedMenuKey('/vegetacoes')).toBe('vegetacoes')
     expect(getOpenMenuKeys('/vegetacoes')).toEqual(['ecologia'])
   })
+
+  test('places Expedições between Serviços and RFID', () => {
+    const t = ((key: string) => key) as never
+    const auth = {
+      loggedIn: true,
+      can: (_action: string, resource: string) => resource === 'Reflora' || resource === 'SpeciesLink',
+      canAny: () => false
+    } as never
+
+    const items = buildNavItems({ t, auth, isCuradorOuOperador: false })
+    const operations = items?.find(item => item && 'key' in item && item.key === 'operations')
+    const keys = operations && 'children' in operations
+      ? (operations.children ?? []).map(item => item && 'key' in item ? item.key : undefined)
+      : []
+
+    expect(keys.indexOf('servicos')).toBeGreaterThanOrEqual(0)
+    expect(keys.indexOf('expedicoes')).toBe(keys.indexOf('servicos') + 1)
+    expect(keys.indexOf('rfid')).toBe(keys.indexOf('expedicoes') + 1)
+  })
 })

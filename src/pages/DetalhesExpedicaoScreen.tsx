@@ -20,6 +20,7 @@ import {
   Link, useNavigate, useParams
 } from 'react-router'
 
+import { fotosBaseUrl } from '@/config/api'
 import { useAuth } from '@/contexts/Auth/useAuth'
 import LinhaDoTempoExpedicao from '@/features/expedicoes/components/LinhaDoTempoExpedicao'
 import {
@@ -222,7 +223,6 @@ export default function DetalhesExpedicaoScreen() {
         }
       })
       const pagina = paginaEventosDaResposta(resEventos.data)
-      const baseUrl = axios.defaults.baseURL ?? ''
       const completos = await Promise.all(pagina.itens.map(async evento => {
         try {
           const resEvidencias = await axios.get<unknown>(`/v1/eventos/${evento.id}/evidencias`)
@@ -230,7 +230,7 @@ export default function DetalhesExpedicaoScreen() {
             ...evento,
             arquivos: evidenciasDaResposta(resEvidencias.data).map(arquivo => ({
               ...arquivo,
-              url: resolverUrlEvidencia(arquivo.url, baseUrl)
+              url: resolverUrlEvidencia(arquivo.url, fotosBaseUrl)
             }))
           }
         } catch {
