@@ -23,7 +23,7 @@ export const useRfidStore = create<RfidState>()(
   persist(
     (set, get) => ({
       apiUrl: 'http://localhost:43785',
-      identificador: 'chainway_native',
+      identificador: 'chainway',
       tipoDispositivo: 'CHAINWAY_NATIVE',
       portaSerial: '',
       hardwareOnline: false,
@@ -68,11 +68,14 @@ export const useRfidStore = create<RfidState>()(
         try {
           const payload: Record<string, string> = {
             type: tipoDispositivo,
-            id: identificador
+            id: identificador,
+            connection: ''
           }
 
           if (tipoDispositivo === 'HEXAPAD') {
             payload.connection = portaSerial
+          } else if (tipoDispositivo === 'CHAINWAY_NATIVE') {
+            payload.connection = 'USB'
           }
 
           const response = await axios.put(`${apiUrl}/configuracao`, payload)
