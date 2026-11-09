@@ -1,0 +1,12 @@
+{
+  "titulo": "App de Expedições",
+  "descricao": "Use o app no celular para registrar coletas, diários, lembretes e evidências durante as expedições, inclusive sem conexão.",
+  "instrucoesTitulo": "Como instalar",
+  "instrucoes": {
+    "passo1": "Toque em \"Baixar app\" pelo celular Android para baixar o instalador.",
+    "passo2": "Ao abrir o arquivo, permita a instalação de apps de fontes desconhecidas quando o Android solicitar.",
+    "passo3": "Abra o app e entre com o mesmo e-mail e senha que você usa no painel."
+  },
+  "baixar": "Baixar app",
+  "emBreve": "Em breve"
+}

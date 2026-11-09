@@ -1,0 +1,12 @@
+{
+  "titulo": "Expeditions App",
+  "descricao": "Use the mobile app to record collections, diaries, reminders and evidence during expeditions, even offline.",
+  "instrucoesTitulo": "How to install",
+  "instrucoes": {
+    "passo1": "Tap \"Download app\" on your Android phone to download the installer.",
+    "passo2": "When opening the file, allow installing apps from unknown sources if Android asks.",
+    "passo3": "Open the app and sign in with the same email and password you use on the panel."
+  },
+  "baixar": "Download app",
+  "emBreve": "Coming soon"
+}
