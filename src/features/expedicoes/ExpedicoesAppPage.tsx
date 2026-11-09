@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Card,
   Col,
@@ -21,6 +22,22 @@ export default function ExpedicoesAppPage() {
   const { t } = useTranslation('expedicoesAppPage')
   const disponivel = appDownloadUrl !== ''
 
+  // Sem link ainda: um aviso legível no lugar de um botão desabilitado, que fica sem contraste.
+  const acaoDownload = disponivel
+    ? (
+      <Button
+        type="primary"
+        size="large"
+        icon={<DownloadOutlined />}
+        href={appDownloadUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {t('baixar')}
+      </Button>
+    )
+    : <Alert type="info" showIcon message={t('emBreve')} description={t('indisponivel')} />
+
   return (
     <div>
       <Row>
@@ -42,17 +59,7 @@ export default function ExpedicoesAppPage() {
           ))}
         </ol>
 
-        <Button
-          type="primary"
-          size="large"
-          icon={<DownloadOutlined />}
-          href={disponivel ? appDownloadUrl : undefined}
-          target={disponivel ? '_blank' : undefined}
-          rel={disponivel ? 'noopener noreferrer' : undefined}
-          disabled={!disponivel}
-        >
-          {disponivel ? t('baixar') : t('emBreve')}
-        </Button>
+        {acaoDownload}
       </Card>
     </div>
   )

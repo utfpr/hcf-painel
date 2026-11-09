@@ -29,11 +29,11 @@ describe('ExpedicoesAppPage', () => {
     expect(link.getAttribute('href')).toBe('https://exemplo.com/app.apk')
   })
 
-  it('desabilita o botão com "em breve" quando não há URL configurada', async () => {
+  it('mostra o aviso "em breve" no lugar do botão quando não há URL configurada', async () => {
     await renderPage('')
 
-    const botao = screen.getByRole('button', { name: /emBreve/ })
-    expect((botao as HTMLButtonElement).disabled).toBe(true)
+    expect(screen.getByRole('alert').textContent).toContain('emBreve')
+    expect(screen.queryByRole('button')).toBeNull()
     expect(screen.queryByRole('link')).toBeNull()
   })
 })
