@@ -16,6 +16,7 @@ import {
 
 import logoImage from '../assets/img/logo_branca.png'
 import { EnvBadge } from '../components/EnvBadge'
+import { isExpedicionario } from '../helpers/usuarios'
 
 const { Header, Content, Sider } = Layout
 const { SubMenu } = Menu
@@ -156,12 +157,22 @@ class MainLayout extends Component {
                     >
                         {this.props.auth.loggedIn
                             ? (
-                                    <Menu.Item key="expedicoesMenuItem">
-                                        <Link to="/expedicoes">
-                                            <EnvironmentOutlined />
-                                            <span>Expedições</span>
-                                        </Link>
-                                    </Menu.Item>
+                                    <SubMenu
+                                        key="expedicoesSubmenu"
+                                        title={(
+                                            <span>
+                                                <EnvironmentOutlined />
+                                                <span>{this.props.t('mainLayout:expedicoes')}</span>
+                                            </span>
+                                        )}
+                                    >
+                                        <Menu.Item key="expedicoesGerenciamentoMenuItem">
+                                            <Link to="/expedicoes">{this.props.t('mainLayout:expedicoesGerenciamento')}</Link>
+                                        </Menu.Item>
+                                        <Menu.Item key="expedicoesAppMenuItem">
+                                            <Link to="/expedicoes-app">{this.props.t('mainLayout:expedicoesApp')}</Link>
+                                        </Menu.Item>
+                                    </SubMenu>
                                 )
                             : null}
                         {this.props.auth.can('read', 'Tombo')
@@ -259,7 +270,7 @@ class MainLayout extends Component {
                             <Menu.Item key="cidadeMenuItem">
                                 <Link to="/cidades">{this.props.t('mainLayout:cidades')}</Link>
                             </Menu.Item>
-                            {this.props.auth.loggedIn
+                            {this.props.auth.loggedIn && !isExpedicionario()
                                 ? (
                                         <Menu.Item key="localColetaMenuItem">
                                             <Link to="/locais-coleta">
@@ -361,7 +372,7 @@ class MainLayout extends Component {
                                     </Menu.Item>
                                 )
                             : null}
-                        {this.props.auth.loggedIn
+                        {this.props.auth.loggedIn && !isExpedicionario()
                             ? (
                                     <Menu.Item key="herbarioMenuItem">
                                         <Link to="/herbarios">
@@ -371,7 +382,7 @@ class MainLayout extends Component {
                                     </Menu.Item>
                                 )
                             : null}
-                        {this.props.auth.loggedIn
+                        {this.props.auth.loggedIn && !isExpedicionario()
                             ? (
                                     <SubMenu
                                         key="fichasSubmenu"
@@ -407,7 +418,7 @@ class MainLayout extends Component {
                                 <Link to="/filtros">{this.props.t('mainLayout:filtrosAvancados')}</Link>
                             </Menu.Item>
                         </SubMenu>
-                        {this.props.auth.loggedIn
+                        {this.props.auth.loggedIn && !isExpedicionario()
                             ? (
                                     <SubMenu
                                         key="relatorios"
@@ -496,7 +507,7 @@ class MainLayout extends Component {
                                     </SubMenu>
                                 )
                             : null}
-                        {this.props.auth.can('read', 'Rfid')
+                        {this.props.auth.can('read', 'Rfid') && !isExpedicionario()
                             ? (
                                     <SubMenu
                                         key="rfid"
