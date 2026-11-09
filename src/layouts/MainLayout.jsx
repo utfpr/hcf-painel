@@ -155,30 +155,6 @@ class MainLayout extends Component {
                         openKeys={this.state.openKeys}
                         onOpenChange={this.onOpenChange}
                     >
-                        {this.props.auth.loggedIn
-                            ? (
-                                    <SubMenu
-                                        key="expedicoesSubmenu"
-                                        title={(
-                                            <span>
-                                                <EnvironmentOutlined />
-                                                <span>{this.props.t('mainLayout:expedicoes')}</span>
-                                            </span>
-                                        )}
-                                    >
-                                        {!isExpedicionario()
-                                            ? (
-                                                    <Menu.Item key="expedicoesGerenciamentoMenuItem">
-                                                        <Link to="/expedicoes">{this.props.t('mainLayout:expedicoesGerenciamento')}</Link>
-                                                    </Menu.Item>
-                                                )
-                                            : null}
-                                        <Menu.Item key="expedicoesAppMenuItem">
-                                            <Link to="/expedicoes-app">{this.props.t('mainLayout:expedicoesApp')}</Link>
-                                        </Menu.Item>
-                                    </SubMenu>
-                                )
-                            : null}
                         {this.props.auth.can('read', 'Tombo')
                             ? (
                                     <Menu.Item key="tomboMenuItem">
@@ -536,6 +512,30 @@ class MainLayout extends Component {
                                         </Menu.Item>
                                         <Menu.Item key="rfidListasConferencia">
                                             <Link to="/rfid-listas-conferencia">{this.props.t('rfid:menu.conferenceLists')}</Link>
+                                        </Menu.Item>
+                                    </SubMenu>
+                                )
+                            : null}
+                        {this.props.auth.loggedIn
+                            ? (
+                                    <SubMenu
+                                        key="expedicoesSubmenu"
+                                        title={(
+                                            <span>
+                                                <EnvironmentOutlined />
+                                                <span>{this.props.t('mainLayout:expedicoes')}</span>
+                                            </span>
+                                        )}
+                                    >
+                                        {!isExpedicionario()
+                                            ? (
+                                                    <Menu.Item key="expedicoesGerenciamentoMenuItem">
+                                                        <Link to="/expedicoes">{this.props.t('mainLayout:expedicoesGerenciamento')}</Link>
+                                                    </Menu.Item>
+                                                )
+                                            : null}
+                                        <Menu.Item key="expedicoesAppMenuItem">
+                                            <Link to="/expedicoes-app">{this.props.t('mainLayout:expedicoesApp')}</Link>
                                         </Menu.Item>
                                     </SubMenu>
                                 )

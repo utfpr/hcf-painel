@@ -120,4 +120,21 @@ describe('sidebar route matching', () => {
     expect(expedicionarioKeys).toEqual(expect.arrayContaining(['expedicoes', 'expedicoesApp']))
     ;[...hiddenKeys, 'expedicoesGerenciamento'].forEach(key => expect(expedicionarioKeys).not.toContain(key))
   })
+  test('keeps Expedições as the last sidebar item', () => {
+    const t = ((key: string) => key) as never
+    const auth = {
+      loggedIn: true,
+      can: () => false,
+      canAny: () => false
+    } as never
+    const lastKey = (isExpedicionario: boolean) => {
+      const groups = buildNavItems({
+        t, auth, isCuradorOuOperador: false, isExpedicionario
+      }) as Array<{ children?: Array<{ key?: string }> }>
+      return groups[groups.length - 1].children?.at(-1)?.key
+    }
+
+    expect(lastKey(false)).toBe('expedicoes')
+    expect(lastKey(true)).toBe('expedicoes')
+  })
 })

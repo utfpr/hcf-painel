@@ -222,7 +222,7 @@ export function buildNavItems({
       : null
   ])
 
-  const collectionItems = filterItems([
+  const expedicoesItem = filterItems([
     auth.loggedIn
       ? {
           key: 'expedicoes',
@@ -244,7 +244,10 @@ export function buildNavItems({
             }
           ])
         }
-      : null,
+      : null
+  ])
+
+  const collectionItems = filterItems([
     auth.can('read', 'Tombo')
       ? {
           key: 'tombos',
@@ -540,7 +543,9 @@ export function buildNavItems({
             }
           ]
         }
-      : null
+      : null,
+    // Expedições fica por último no menu lateral, logo antes do Sair.
+    ...expedicoesItem
   ])
 
   return filterItems([
