@@ -9,7 +9,7 @@ import { fetchFasesSucessionais } from '@/features/fases-sucessionais/useListaFa
 import type { HttpClient } from '@/libraries/http/HttpClient'
 
 describe('fetchFasesSucessionais', () => {
-  test('requests v2 with name and pagination params', async () => {
+  test('requests v1 with name and pagination params', async () => {
     const fasesSucessionais = [{ id: 7, nome: 'Fase inicial' }]
     const get = vi.fn().mockResolvedValue({ data: fasesSucessionais })
     const httpClient = { get } as unknown as Pick<HttpClient, 'get'>
@@ -27,7 +27,7 @@ describe('fetchFasesSucessionais', () => {
       }
     })
 
-    expect(get).toHaveBeenCalledWith('/v2/fases-sucessionais', {
+    expect(get).toHaveBeenCalledWith('/v1/fases-sucessionais', {
       pagina: 1,
       limite: 20,
       nome: 'inicial'

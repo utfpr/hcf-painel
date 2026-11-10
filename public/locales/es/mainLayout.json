@@ -56,5 +56,8 @@
   "aparenciaClara": "Clara",
   "aparenciaEscura": "Oscura",
   "alternarMenu": "Abrir o cerrar la navegación",
-  "menuConta": "Menú de la cuenta"
+  "menuConta": "Menú de la cuenta",
+  "expedicoes": "Expediciones",
+  "expedicoesGerenciamento": "Gestión",
+  "expedicoesApp": "App"
 }

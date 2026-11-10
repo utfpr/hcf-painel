@@ -23,7 +23,8 @@ export function UsuarioSearchForm({
   const tipoOptions = [
     { value: '1', label: t('tipoCurador') },
     { value: '2', label: t('tipoOperador') },
-    { value: '3', label: t('tipoIdentificador') }
+    { value: '3', label: t('tipoIdentificador') },
+    { value: '4', label: t('tipoExpedicionario') }
   ]
 
   const handleClear = () => {

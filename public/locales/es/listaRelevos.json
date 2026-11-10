@@ -1,0 +1,18 @@
+{
+  "titulo": "Relieves",
+  "adicionar": "Agregar",
+  "buscarTitulo": "Buscar relieve",
+  "campoId": "ID",
+  "campoNome": "Nombre del relieve",
+  "placeholderNome": "Escriba el nombre del relieve",
+  "colunaId": "ID",
+  "colunaNome": "Relieve",
+  "colunaAcao": "Acción",
+  "detalhesTitulo": "Detalles del relieve",
+  "abrirDetalhes": "Abrir detalles de {{nome}}",
+  "limpar": "Limpiar",
+  "pesquisar": "Buscar",
+  "fechar": "Cerrar",
+  "erro": "Error",
+  "erroBuscar": "No se pudieron cargar los relieves. Inténtelo de nuevo."
+}

@@ -18,6 +18,7 @@
   "tipoCurador": "Curador",
   "tipoOperador": "Operador",
   "tipoIdentificador": "Identificador",
+  "tipoExpedicionario": "Expedicionário",
 
   "confirmarExcluirUsuario": "Você tem certeza que deseja excluir este usuário?",
   "descricaoExcluirUsuario": "Ao clicar em SIM, o usuário será excluído.",
