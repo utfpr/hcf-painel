@@ -26,6 +26,7 @@ const RESOURCES = [
   'Reflora',
   'SpeciesLink',
   'Expedicao',
+  'Evidencia',
   'Rfid'
 ] as const
 
@@ -175,6 +176,10 @@ export function createRules(user?: Usuario): Rule<Resource, Action>[] {
 
   return [
     ...defaultRules,
+    { resource: 'Evidencia', action: ['read'] },
+    ...([TipoUsuario.Curador, TipoUsuario.Operador].includes(Number(user.tipo_usuario_id))
+      ? [{ resource: 'Evidencia' as const, action: ['update' as const] }]
+      : []),
     ...ruleSpecificMapping[user.tipo_usuario_id](user)
   ]
 }
