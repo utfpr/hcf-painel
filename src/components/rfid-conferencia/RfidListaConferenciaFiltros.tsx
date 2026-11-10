@@ -52,7 +52,9 @@ const familiaDaEspecie = (especie: TaxonomiaOption) => (
   || especie.familias?.id
   || especie.Familia?.id
   || (especie.genero || especie.generos || especie.Genero)?.familia_id
+  || (especie.genero || especie.generos || especie.Genero)?.familia?.id
   || (especie.genero || especie.generos || especie.Genero)?.familias?.id
+  || (especie.genero || especie.generos || especie.Genero)?.Familia?.id
 )
 
 const RfidListaConferenciaFiltros: React.FC<Props> = ({

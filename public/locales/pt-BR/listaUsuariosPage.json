@@ -27,7 +27,8 @@
   "roles": {
     "curator": "Curador",
     "operator": "Operador",
-    "identifier": "Identificador"
+    "identifier": "Identificador",
+    "expeditioner": "Expedicionário"
   },
 
   "actions": {

@@ -53,6 +53,7 @@ export interface ArquivoEvento {
   url: string
   mimeType: string | null
   tamanho: number | null
+  transcricao?: { status: 'processando' | 'concluida' | 'erro'; versao: number } | null
 }
 
 export interface EventoLinha {
@@ -282,6 +283,14 @@ export function paginaEventosDaResposta(body: unknown): PaginaEventos {
   }
 }
 
+function resumoTranscricao(value: unknown): ArquivoEvento['transcricao'] {
+  const registro = comoRegistro(value)
+  const status = registro?.status
+  const versao = registro ? inteiroOpcional(registro.versao) : null
+  if ((status !== 'processando' && status !== 'concluida' && status !== 'erro') || versao === null) return null
+  return { status, versao }
+}
+
 export function evidenciasDaResposta(body: unknown): ArquivoEvento[] {
   if (!Array.isArray(body)) return []
   return body.flatMap(item => {
@@ -295,7 +304,8 @@ export function evidenciasDaResposta(body: unknown): ArquivoEvento[] {
         nome: textoOpcional(registro.nome) ?? 'Arquivo',
         url: textoOpcional(registro.url) ?? '',
         mimeType: textoOpcional(registro.mime_type),
-        tamanho: numeroOpcional(registro.tamanho)
+        tamanho: numeroOpcional(registro.tamanho),
+        transcricao: resumoTranscricao(registro.transcricao)
       }
     ]
   })

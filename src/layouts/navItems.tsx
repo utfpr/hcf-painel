@@ -37,6 +37,7 @@ interface BuildNavItemsParams {
   t: TFunction
   auth: AuthContextValue
   isCuradorOuOperador: boolean
+  isExpedicionario: boolean
 }
 
 function navLink(to: string, label: string) {
@@ -50,7 +51,8 @@ function filterItems(items: Array<MenuItem | null>): MenuItem[] {
 export function getSelectedMenuKey(pathname: string): string {
   const routes: Array<[string, string]> = [
     ['/tombos', 'tombos'],
-    ['/expedicoes', 'expedicoes'],
+    ['/expedicoes-app', 'expedicoesApp'],
+    ['/expedicoes', 'expedicoesGerenciamento'],
     ['/reinos', 'reinos'],
     ['/familias', 'familias'],
     ['/subfamilias', 'subfamilias'],
@@ -106,6 +108,7 @@ export function getSelectedMenuKey(pathname: string): string {
 export function getOpenMenuKeys(pathname: string): string[] {
   const selected = getSelectedMenuKey(pathname)
   const groups: Record<string, string[]> = {
+    expedicoes: ['expedicoesGerenciamento', 'expedicoesApp'],
     taxonomia: [
       'reinos',
       'familias',
@@ -157,7 +160,8 @@ export function getOpenMenuKeys(pathname: string): string[] {
 export function buildNavItems({
   t,
   auth,
-  isCuradorOuOperador
+  isCuradorOuOperador,
+  isExpedicionario
 }: BuildNavItemsParams): MenuProps['items'] {
   const taxonomiaChildren = filterItems([
     auth.can('read', 'Reino')
@@ -218,6 +222,32 @@ export function buildNavItems({
       : null
   ])
 
+  const expedicoesItem = filterItems([
+    auth.loggedIn
+      ? {
+          key: 'expedicoes',
+          icon: <EnvironmentOutlined />,
+          label: t('mainLayout:expedicoes'),
+          title: t('mainLayout:expedicoes'),
+          children: filterItems([
+            !isExpedicionario
+              ? {
+                  key: 'expedicoesGerenciamento',
+                  label: navLink('/expedicoes', t('mainLayout:expedicoesGerenciamento')),
+                  title: t('mainLayout:expedicoesGerenciamento')
+                }
+              : null,
+            {
+              key: 'expedicoesApp',
+              label: navLink('/expedicoes-app', t('mainLayout:expedicoesApp')),
+              title: t('mainLayout:expedicoesApp')
+            }
+          ])
+        }
+      : null
+  ])
+
+
   const collectionItems = filterItems([
     auth.can('read', 'Tombo')
       ? {
@@ -252,7 +282,7 @@ export function buildNavItems({
           title: t('mainLayout:coletores')
         }
       : null,
-    auth.loggedIn
+    auth.loggedIn && !isExpedicionario
       ? {
           key: 'herbarios',
           icon: <FlagOutlined />,
@@ -260,7 +290,7 @@ export function buildNavItems({
           title: t('mainLayout:herbarios')
         }
       : null,
-    auth.loggedIn
+    auth.loggedIn && !isExpedicionario
       ? {
           key: 'fichaTombo',
           icon: <FileTextOutlined />,
@@ -299,7 +329,7 @@ export function buildNavItems({
           label: navLink('/cidades', t('mainLayout:cidades')),
           title: t('mainLayout:cidades')
         },
-        auth.loggedIn
+        auth.loggedIn && !isExpedicionario
           ? {
               key: 'localColeta',
               label: navLink('/locais-coleta', t('mainLayout:localColeta')),
@@ -364,7 +394,7 @@ export function buildNavItems({
     }
   ])
 
-  const reportChildren = auth.loggedIn
+  const reportChildren = auth.loggedIn && !isExpedicionario
     ? [
         {
           key: 'relatorioPorPeriodo',
@@ -459,7 +489,7 @@ export function buildNavItems({
           title: t('mainLayout:remessas')
         }
       : null,
-    auth.loggedIn
+    auth.loggedIn && !isExpedicionario
       ? {
           key: 'relatorios',
           icon: <SnippetsOutlined />,
@@ -485,15 +515,8 @@ export function buildNavItems({
           children: serviceChildren
         }
       : null,
-    auth.loggedIn
-      ? {
-          key: 'expedicoes',
-          icon: <EnvironmentOutlined />,
-          label: navLink('/expedicoes', 'Expedições'),
-          title: 'Expedições'
-        }
-      : null,
-    auth.loggedIn
+    ...expedicoesItem,
+    auth.loggedIn && !isExpedicionario
       ? {
           key: 'rfid',
           icon: <ScanOutlined />,

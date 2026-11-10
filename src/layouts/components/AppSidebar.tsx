@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router'
 
 import { useAuth } from '@/contexts/Auth/useAuth'
-import { isCuradorOuOperador } from '@/helpers/usuarios'
+import { isCuradorOuOperador, isExpedicionario } from '@/helpers/usuarios'
 
 import {
   buildNavItems,
@@ -35,7 +35,8 @@ export function AppSidebar({ collapsed, onNavigate }: AppSidebarProps) {
     () => buildNavItems({
       t,
       auth,
-      isCuradorOuOperador: isCuradorOuOperador()
+      isCuradorOuOperador: isCuradorOuOperador(),
+      isExpedicionario: isExpedicionario()
     }),
     [t, auth]
   )

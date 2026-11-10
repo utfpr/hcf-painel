@@ -38,6 +38,7 @@ import {
   filtrarEventos,
   resumoDoEvento
 } from '../linhaDoTempo'
+import { TranscricaoAudio } from './TranscricaoAudio'
 
 const { Panel } = Collapse
 const { RangePicker } = DatePicker
@@ -89,6 +90,7 @@ interface LinhaDoTempoExpedicaoProps {
   erro: string | null
   participantes: ParticipanteNome[]
   onRecarregar: () => void
+  podeTranscrever?: boolean
 }
 
 function corDoTipo(tipo: string): { fundo: string; borda: string } {
@@ -413,7 +415,7 @@ function SecaoMidia({ titulo, children }: { titulo: string; children: ReactNode 
   )
 }
 
-function AnexosEvento({ arquivos }: { arquivos: EventoLinha['arquivos'] }) {
+function AnexosEvento({ arquivos, podeTranscrever }: { arquivos: EventoLinha['arquivos']; podeTranscrever: boolean }) {
   const imagens = arquivos.filter(arquivo => ehImagem(arquivo.mimeType))
   const videos = arquivos.filter(arquivo => ehVideo(arquivo.mimeType))
   const audios = arquivos.filter(arquivo => ehAudio(arquivo.mimeType))
@@ -468,24 +470,30 @@ function AnexosEvento({ arquivos }: { arquivos: EventoLinha['arquivos'] }) {
             {audios.length > 0 && (
               <SecaoMidia titulo="Áudio">
                 {audios.map(arquivo => (
-                  <div key={arquivo.id} style={estiloAudio}>
-                    <audio
-                      controls
-                      preload="none"
-                      src={arquivo.url}
-                      style={estiloPlayer}
-                    >
-                      {arquivo.nome}
-                    </audio>
-                    <Button
-                      size="small"
-                      icon={<DownloadOutlined />}
-                      href={arquivo.url}
-                      download={arquivo.nome}
-                      aria-label={`Baixar ${arquivo.nome}`}
-                    >
-                      {arquivo.nome}
-                    </Button>
+                  <div
+                    key={arquivo.id}
+                    style={{ ...estiloAudio, flexDirection: 'column', alignItems: 'stretch' }}
+                  >
+                    <div style={estiloAudio}>
+                      <audio
+                        controls
+                        preload="none"
+                        src={arquivo.url}
+                        style={estiloPlayer}
+                      >
+                        {arquivo.nome}
+                      </audio>
+                      <Button
+                        size="small"
+                        icon={<DownloadOutlined />}
+                        href={arquivo.url}
+                        download={arquivo.nome}
+                        aria-label={`Baixar ${arquivo.nome}`}
+                      >
+                        {arquivo.nome}
+                      </Button>
+                    </div>
+                    <TranscricaoAudio arquivo={arquivo} podeEditar={podeTranscrever} />
                   </div>
                 ))}
               </SecaoMidia>
@@ -516,7 +524,9 @@ function AnexosEvento({ arquivos }: { arquivos: EventoLinha['arquivos'] }) {
   )
 }
 
-function CorpoEvento({ evento, participantes }: { evento: EventoLinha; participantes: ParticipanteNome[] }) {
+function CorpoEvento({
+  evento, participantes, podeTranscrever
+}: { evento: EventoLinha; participantes: ParticipanteNome[]; podeTranscrever: boolean }) {
   const campos = camposDoCorpo(evento, participantes)
   return (
     <>
@@ -528,7 +538,7 @@ function CorpoEvento({ evento, participantes }: { evento: EventoLinha; participa
           </Col>
         ))}
       </Row>
-      <AnexosEvento arquivos={evento.arquivos} />
+      <AnexosEvento arquivos={evento.arquivos} podeTranscrever={podeTranscrever} />
     </>
   )
 }
@@ -593,7 +603,8 @@ export default function LinhaDoTempoExpedicao({
   carregando,
   erro,
   participantes,
-  onRecarregar
+  onRecarregar,
+  podeTranscrever = false
 }: LinhaDoTempoExpedicaoProps) {
   const [chaves, setChaves] = useState<ChaveFiltro[]>([])
   const [valores, setValores] = useState<ValoresFiltro>(VALORES_VAZIOS)
@@ -698,7 +709,7 @@ export default function LinhaDoTempoExpedicao({
                     </div>
                   )}
                 >
-                  <CorpoEvento evento={evento} participantes={participantes} />
+                  <CorpoEvento evento={evento} participantes={participantes} podeTranscrever={podeTranscrever} />
                 </Panel>
               </Collapse>
             </div>

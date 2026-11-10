@@ -564,6 +564,7 @@ export default function DetalhesExpedicaoScreen() {
               )
               : (
                 <LinhaDoTempoExpedicao
+                  podeTranscrever={can('update', 'Evidencia')}
                   eventos={eventos}
                   total={totalEventos}
                   carregando={carregandoEventos}

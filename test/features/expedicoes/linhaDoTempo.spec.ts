@@ -264,6 +264,16 @@ describe('linha do tempo da expedição', () => {
     expect(pagina.itens[1]?.coleta).toBeNull()
   })
 
+  it('preserva o status de transcrição vindo da API', () => {
+    expect(evidenciasDaResposta([
+      {
+        id: 1, mime_type: 'audio/mp4', transcricao: { status: 'concluida', versao: 2 }
+      }
+    ])[0].transcricao)
+      .toEqual({ status: 'concluida', versao: 2 })
+    expect(evidenciasDaResposta([{ id: 1, transcricao: { status: 'invalido', versao: 1 } }])[0].transcricao).toBeNull()
+  })
+
   it('lê evidências e resolve a url contra IMAGE_BASE', () => {
     expect(evidenciasDaResposta([
       {
@@ -280,7 +290,8 @@ describe('linha do tempo da expedição', () => {
         nome: 'Áudio do diário',
         url: '/images/evidencias/diario.wav',
         mimeType: 'audio/wav',
-        tamanho: 1200
+        tamanho: 1200,
+        transcricao: null
       }
     ])
     expect(resolverUrlEvidencia('/uploads/evidencias/diario.wav', 'http://localhost:8080/images'))
