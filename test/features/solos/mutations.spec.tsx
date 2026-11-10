@@ -40,7 +40,7 @@ describe('Solo mutations', () => {
     })
 
     expect(httpClient.post).toHaveBeenCalledWith(
-      '/v2/solos',
+      '/v1/solos',
       { nome: 'Argiloso' }
     )
   })
@@ -64,7 +64,7 @@ describe('Solo mutations', () => {
     })
 
     expect(httpClient.put).toHaveBeenCalledWith(
-      '/v2/solos/17',
+      '/v1/solos/17',
       { nome: 'Arenoso' }
     )
   })
@@ -77,7 +77,7 @@ describe('Solo mutations', () => {
       await result.current.remove(17)
     })
 
-    expect(httpClient.delete).toHaveBeenCalledWith('/v2/solos/17')
+    expect(httpClient.delete).toHaveBeenCalledWith('/v1/solos/17')
   })
 
   test('propagates delete conflicts', async () => {

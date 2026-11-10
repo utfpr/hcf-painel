@@ -95,7 +95,7 @@ const RfidConferencia: React.FC = () => {
             title: t('conference.id'),
             dataIndex: 'id',
             key: 'id',
-            width: 60,
+            width: 80
         },
         {
             title: t('conference.tombo'),

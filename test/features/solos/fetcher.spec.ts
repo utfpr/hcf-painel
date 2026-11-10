@@ -9,7 +9,7 @@ import { fetchSolos } from '@/features/solos/useListaSolosPage'
 import type { HttpClient } from '@/libraries/http/HttpClient'
 
 describe('fetchSolos', () => {
-  test('requests v2 with name and pagination params', async () => {
+  test('requests v1 with name and pagination params', async () => {
     const solos = [{ id: 7, nome: 'Solo argiloso' }]
     const get = vi.fn().mockResolvedValue({ data: solos })
     const httpClient = { get } as unknown as Pick<HttpClient, 'get'>
@@ -27,7 +27,7 @@ describe('fetchSolos', () => {
       }
     })
 
-    expect(get).toHaveBeenCalledWith('/v2/solos', {
+    expect(get).toHaveBeenCalledWith('/v1/solos', {
       pagina: 1,
       limite: 20,
       nome: 'argiloso'

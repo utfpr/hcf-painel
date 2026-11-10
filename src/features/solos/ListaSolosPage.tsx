@@ -13,6 +13,7 @@ import {
 import axios from 'axios'
 import { useTranslation } from 'react-i18next'
 
+import { TipoUsuario } from '@/@types/components'
 import ModalCadastroComponent from '@/components/ModalCadastroComponent'
 import SimpleTableComponent from '@/components/SimpleTableComponent'
 import TotalRecordFound from '@/components/TotalRecordsFound'
@@ -20,6 +21,7 @@ import { useAuth } from '@/contexts/Auth/useAuth'
 import {
   DeleteOutlined,
   EditOutlined,
+  EyeOutlined,
   PlusOutlined
 } from '@ant-design/icons'
 
@@ -29,15 +31,18 @@ import { useListaSolosPage } from './useListaSolosPage'
 export default function ListaSolosPage() {
   const { t } = useTranslation('listaSolos')
   const list = useListaSolosPage()
-  const { can } = useAuth()
+  const { user, can } = useAuth()
   const [searchName, setSearchName] = useState('')
+  const [selectedSolo, setSelectedSolo] = useState<SoloListItem>()
   const [modalVisible, setModalVisible] = useState(false)
   const [editingSoloId, setEditingSoloId] = useState<number | string>()
   const [soloName, setSoloName] = useState('')
   const canCreate = can('create', 'Solo')
   const canUpdate = can('update', 'Solo')
   const canDelete = can('delete', 'Solo')
-  const canViewActions = canUpdate || canDelete
+  const canViewDetails = user?.tipo_usuario_id === TipoUsuario.Curador
+      && can('read', 'Solo')
+  const canViewActions = canViewDetails || canUpdate || canDelete
   const modalTitle = editingSoloId === undefined
     ? t('common:cadastrar')
     : t('common:atualizar')
@@ -167,24 +172,32 @@ export default function ListaSolosPage() {
     acao: canViewActions
       ? (
         <span>
+          {canViewDetails && (
+            <Button
+              type="link"
+              aria-label={t('abrirDetalhes', { nome: solo.nome })}
+              onClick={() => setSelectedSolo(solo)}
+            >
+              <EyeOutlined />
+            </Button>
+          )}
           {canUpdate && (
-            <>
-              <a
-                aria-label={t('renomear', { nome: solo.nome })}
-                onClick={() => openUpdateModal(solo)}
-              >
-                <EditOutlined style={{ color: '#FFCC00' }} />
-              </a>
-              {canDelete && <Divider type="vertical" />}
-            </>
+            <Button
+              type="link"
+              aria-label={t('renomear', { nome: solo.nome })}
+              onClick={() => openUpdateModal(solo)}
+            >
+              <EditOutlined style={{ color: '#FFCC00' }} />
+            </Button>
           )}
           {canDelete && (
-            <a
+            <Button
+              type="link"
               aria-label={t('excluir', { nome: solo.nome })}
               onClick={() => confirmDelete(solo)}
             >
               <DeleteOutlined style={{ color: '#e30613' }} />
-            </a>
+            </Button>
           )}
         </span>
       )
@@ -281,6 +294,33 @@ export default function ListaSolosPage() {
           </Col>
         </Row>
       </ModalCadastroComponent>
+      <Modal
+        title={t('detalhesTitulo')}
+        visible={Boolean(selectedSolo)}
+        onCancel={() => setSelectedSolo(undefined)}
+        footer={[
+          <Button key="close" onClick={() => setSelectedSolo(undefined)}>
+            {t('fechar')}
+          </Button>
+        ]}
+      >
+        <p>
+          <strong>
+            {t('campoId')}
+            :
+          </strong>
+          {' '}
+          {selectedSolo?.id}
+        </p>
+        <p>
+          <strong>
+            {t('campoNome')}
+            :
+          </strong>
+          {' '}
+          {selectedSolo?.nome}
+        </p>
+      </Modal>
     </div>
   )
 }

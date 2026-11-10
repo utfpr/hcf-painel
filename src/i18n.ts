@@ -37,6 +37,9 @@ void i18n
       'listaTaxonomiaReino',
       'listaTaxonomiaFamilia',
       'listaSolos',
+      'listaFasesSucessionais',
+      'listaRelevos',
+      'listaVegetacoes',
       'totalRecordsFound',
       'listaTaxonomiaSubfamilia',
       'listaTaxonomiaGenero',
@@ -93,7 +96,10 @@ void i18n
       'fichaTomboScreen',
       'fichaTomboActions',
       'perfilScreen',
-      'rfid'
+      'rfid',
+      'novaExpedicaoPage',
+      'editarExpedicaoPage',
+      'expedicoesAppPage'
     ],
     defaultNS: 'common',
     interpolation: {
