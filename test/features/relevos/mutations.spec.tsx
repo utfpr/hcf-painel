@@ -40,7 +40,7 @@ describe('Relevo mutations', () => {
     })
 
     expect(httpClient.post).toHaveBeenCalledWith(
-      '/v2/relevos',
+      '/v1/relevos',
       { nome: 'Encosta' }
     )
   })
@@ -64,7 +64,7 @@ describe('Relevo mutations', () => {
     })
 
     expect(httpClient.put).toHaveBeenCalledWith(
-      '/v2/relevos/17',
+      '/v1/relevos/17',
       { nome: 'Planicie' }
     )
   })
@@ -77,7 +77,7 @@ describe('Relevo mutations', () => {
       await result.current.remove(17)
     })
 
-    expect(httpClient.delete).toHaveBeenCalledWith('/v2/relevos/17')
+    expect(httpClient.delete).toHaveBeenCalledWith('/v1/relevos/17')
   })
 
   test('propagates delete conflicts', async () => {

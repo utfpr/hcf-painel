@@ -13,6 +13,7 @@ import {
 import axios from 'axios'
 import { useTranslation } from 'react-i18next'
 
+import { TipoUsuario } from '@/@types/components'
 import ModalCadastroComponent from '@/components/ModalCadastroComponent'
 import SimpleTableComponent from '@/components/SimpleTableComponent'
 import TotalRecordFound from '@/components/TotalRecordsFound'
@@ -20,6 +21,7 @@ import { useAuth } from '@/contexts/Auth/useAuth'
 import {
   DeleteOutlined,
   EditOutlined,
+  EyeOutlined,
   PlusOutlined
 } from '@ant-design/icons'
 
@@ -29,15 +31,18 @@ import { useListaRelevosPage } from './useListaRelevosPage'
 export default function ListaRelevosPage() {
   const { t } = useTranslation('listaRelevos')
   const list = useListaRelevosPage()
-  const { can } = useAuth()
+  const { user, can } = useAuth()
   const [searchName, setSearchName] = useState('')
+  const [selectedRelevo, setSelectedRelevo] = useState<RelevoListItem>()
   const [modalVisible, setModalVisible] = useState(false)
   const [editingRelevoId, setEditingRelevoId] = useState<number | string>()
   const [relevoName, setRelevoName] = useState('')
   const canCreate = can('create', 'Relevo')
   const canUpdate = can('update', 'Relevo')
   const canDelete = can('delete', 'Relevo')
-  const canViewActions = canUpdate || canDelete
+  const canViewDetails = user?.tipo_usuario_id === TipoUsuario.Curador
+      && can('read', 'Relevo')
+  const canViewActions = canViewDetails || canUpdate || canDelete
   const modalTitle = editingRelevoId === undefined
     ? t('common:cadastrar')
     : t('common:atualizar')
@@ -167,24 +172,32 @@ export default function ListaRelevosPage() {
     acao: canViewActions
       ? (
         <span>
+          {canViewDetails && (
+            <Button
+              type="link"
+              aria-label={t('abrirDetalhes', { nome: relevo.nome })}
+              onClick={() => setSelectedRelevo(relevo)}
+            >
+              <EyeOutlined />
+            </Button>
+          )}
           {canUpdate && (
-            <>
-              <a
-                aria-label={t('renomear', { nome: relevo.nome })}
-                onClick={() => openUpdateModal(relevo)}
-              >
-                <EditOutlined style={{ color: '#FFCC00' }} />
-              </a>
-              {canDelete && <Divider type="vertical" />}
-            </>
+            <Button
+              type="link"
+              aria-label={t('renomear', { nome: relevo.nome })}
+              onClick={() => openUpdateModal(relevo)}
+            >
+              <EditOutlined style={{ color: '#FFCC00' }} />
+            </Button>
           )}
           {canDelete && (
-            <a
+            <Button
+              type="link"
               aria-label={t('excluir', { nome: relevo.nome })}
               onClick={() => confirmDelete(relevo)}
             >
               <DeleteOutlined style={{ color: '#e30613' }} />
-            </a>
+            </Button>
           )}
         </span>
       )
@@ -281,6 +294,33 @@ export default function ListaRelevosPage() {
           </Col>
         </Row>
       </ModalCadastroComponent>
+      <Modal
+        title={t('detalhesTitulo')}
+        visible={Boolean(selectedRelevo)}
+        onCancel={() => setSelectedRelevo(undefined)}
+        footer={[
+          <Button key="close" onClick={() => setSelectedRelevo(undefined)}>
+            {t('fechar')}
+          </Button>
+        ]}
+      >
+        <p>
+          <strong>
+            {t('campoId')}
+            :
+          </strong>
+          {' '}
+          {selectedRelevo?.id}
+        </p>
+        <p>
+          <strong>
+            {t('campoNome')}
+            :
+          </strong>
+          {' '}
+          {selectedRelevo?.nome}
+        </p>
+      </Modal>
     </div>
   )
 }

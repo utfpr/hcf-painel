@@ -5,14 +5,22 @@ import {
 } from 'react-router'
 
 import { useAuth } from './contexts/Auth/useAuth'
+import EditarExpedicaoPage from './features/expedicoes/EditarExpedicaoPage'
+import ExpedicoesAppPage from './features/expedicoes/ExpedicoesAppPage'
+import NovaExpedicaoPage from './features/expedicoes/NovaExpedicaoPage'
+import ListaFasesSucessionaisPage from './features/fases-sucessionais/ListaFasesSucessionaisPage'
 import ListaRelevosPage from './features/relevos/ListaRelevosPage'
+import ListaSolosPage from './features/solos/ListaSolosPage'
 import ListaUsuariosPage from './features/usuarios/UsuariosListPage'
+import ListaVegetacoesPage from './features/vegetacoes/ListaVegetacoesPage'
 import {
   isCuradorOuOperador,
-  isCuradorOuOperadorOuIdentificador
+  isCuradorOuOperadorOuIdentificador,
+  isExpedicionario
 } from './helpers/usuarios'
 import { withRouter } from './libraries/router/withRouter'
 import DashboardScreen from './pages/DashboardScreen'
+import DetalhesExpedicaoScreen from './pages/DetalhesExpedicaoScreen'
 import DetalhesTomboScreen from './pages/DetalhesTomboScreen'
 import ExportaçãoScreen from './pages/ExportaçãoScreen'
 import FichaTomboScreen from './pages/FichaTomboScreen'
@@ -20,6 +28,7 @@ import FiltrosMapaScreen from './pages/FiltrosMapa'
 import ListaCidadesScreen from './pages/ListaCidadesScreen'
 import ListaColetoresScreen from './pages/ListaColetoresScreen'
 import ListaEstadosScreen from './pages/ListaEstadosScreen'
+import ListaExpedicoesScreen from './pages/ListaExpedicoesScreen'
 import ListaHerbariosScreen from './pages/ListaHerbariosScreen'
 import ListaIdentificadoresScreen from './pages/ListaIdentificadoresScreen'
 import ListaLocalColetaScreen from './pages/ListaLocalColetaScreen'
@@ -55,7 +64,11 @@ import RelatorioQuantidadeScreen from './pages/RelatorioQtdPeriodoScreen'
 import RelatorioTombosPorCidadeScreen from './pages/RelatorioTombosPorCidadeScreen'
 import RfidConferencia from './pages/RfidConferencia'
 import RfidConfiguracao from './pages/RfidConfiguracao'
+import RfidImpressao from './pages/RfidImpressao'
 import RfidInventario from './pages/RfidInventario'
+import RfidListaConferenciaForm from './pages/RfidListaConferenciaForm'
+import RfidListaConferenciaInventarios from './pages/RfidListaConferenciaInventarios'
+import RfidListasConferencia from './pages/RfidListasConferencia'
 import RfidVinculacao from './pages/RfidVinculacao'
 import ServicosRefloraScreen from './pages/ServicosRefloraScreen'
 import ServicosSpeciesLinkScreen from './pages/ServicosSpeciesLinkScreen'
@@ -78,6 +91,7 @@ function guard(authed: boolean, Component: React.ComponentType) {
 
 export function AppRoutes() {
   const auth = useAuth()
+  const logadoNaoExpedicionario = Boolean(auth.user?.id) && !isExpedicionario()
 
   return (
     <Routes>
@@ -86,6 +100,9 @@ export function AppRoutes() {
       <Route path="tombos/novo" element={guard(isCuradorOuOperador(), NovoTombo)} />
       <Route path="tombos/:tombo_id" element={guard(isCuradorOuOperadorOuIdentificador(), NovoTombo)} />
       <Route path="tombos" element={<ListaTombosScreen />} />
+      <Route path="expedicoes" element={guard(logadoNaoExpedicionario, ListaExpedicoesScreen)} />
+      <Route path="expedicoes/detalhes/:id" element={guard(logadoNaoExpedicionario, DetalhesExpedicaoScreen)} />
+      <Route path="expedicoes-app" element={guard(Boolean(auth.user?.id), ExpedicoesAppPage)} />
 
       <Route path="taxonomias" element={<ListaTaxonomiaScreen />} />
 
@@ -95,6 +112,9 @@ export function AppRoutes() {
       <Route path="remessas/novo" element={guard(isCuradorOuOperador(), NovaRemessa)} />
       <Route path="remessas/:remessa_id" element={guard(isCuradorOuOperador(), NovaRemessa)} />
       <Route path="remessas" element={guard(isCuradorOuOperador(), ListaRemessasScreen)} />
+
+      <Route path="expedicoes/novo" element={guard(auth.can('create', 'Expedicao'), NovaExpedicaoPage)} />
+      <Route path="expedicoes/:expedicao_id" element={guard(auth.can('update', 'Expedicao'), EditarExpedicaoPage)} />
 
       <Route path="usuarios/novo" element={guard(auth.can('create', 'Usuario'), NovoUsuario)} />
       <Route path="usuarios/:usuario_id" element={guard(auth.can('update', 'Usuario'), NovoUsuario)} />
@@ -114,9 +134,9 @@ export function AppRoutes() {
       <Route path="coletores/:coletor_id" element={guard(auth.can('update', 'Coletor'), NovoColetor)} />
       <Route path="coletores" element={guard(auth.can('read', 'Coletor'), ListaColetoresScreen)} />
 
-      <Route path="herbarios" element={guard(Boolean(auth.user?.id), ListaHerbariosScreen)} />
-      <Route path="fichas/tombos" element={guard(Boolean(auth.user?.id), FichaTomboScreen)} />
-      <Route path="locais-coleta" element={guard(Boolean(auth.user?.id), ListaLocalColetaScreen)} />
+      <Route path="herbarios" element={guard(logadoNaoExpedicionario, ListaHerbariosScreen)} />
+      <Route path="fichas/tombos" element={guard(logadoNaoExpedicionario, FichaTomboScreen)} />
+      <Route path="locais-coleta" element={guard(logadoNaoExpedicionario, ListaLocalColetaScreen)} />
       <Route path="estados" element={guard(Boolean(auth.user?.id), ListaEstadosScreen)} />
       <Route path="cidades" element={guard(Boolean(auth.user?.id), ListaCidadesScreen)} />
 
@@ -127,7 +147,13 @@ export function AppRoutes() {
       <Route path="livro-tombo" element={<LivroTomboScreen />} />
       <Route path="especies" element={<ListaTaxonomiaEspecie />} />
       <Route path="familias" element={<ListaTaxonomiaFamilia />} />
+      <Route
+        path="fases-sucessionais"
+        element={guard(auth.can('read', 'FaseSucessional'), ListaFasesSucessionaisPage)}
+      />
+      <Route path="solos" element={guard(auth.can('read', 'Solo'), ListaSolosPage)} />
       <Route path="relevos" element={guard(auth.can('read', 'Relevo'), ListaRelevosPage)} />
+      <Route path="vegetacoes" element={guard(auth.can('read', 'Vegetacao'), ListaVegetacoesPage)} />
       <Route path="reinos" element={<ListaTaxonomiaReino />} />
       <Route path="generos" element={<ListaTaxonomiaGenero />} />
       <Route path="subespecies" element={<ListaTaxonomiaSubespecie />} />
@@ -138,35 +164,43 @@ export function AppRoutes() {
       <Route path="filtros" element={<FiltrosMapaScreen />} />
       <Route path="perfil" element={<PerfilScreen />} />
 
-      <Route path="relatorio-coleta-data" element={guard(Boolean(auth.user?.id), RelatorioColetaPeriodoScreen)} />
-      <Route path="relatorio-por-periodo" element={guard(Boolean(auth.user?.id), RelatorioPorPeriodo)} />
+      <Route path="relatorio-coleta-data" element={guard(logadoNaoExpedicionario, RelatorioColetaPeriodoScreen)} />
+      <Route path="relatorio-por-periodo" element={guard(logadoNaoExpedicionario, RelatorioPorPeriodo)} />
       <Route
         path="relatorio-inventario-especies"
-        element={guard(Boolean(auth.user?.id), RelatorioInventarioEspeciesScreen)}
+        element={guard(logadoNaoExpedicionario, RelatorioInventarioEspeciesScreen)}
       />
-      <Route path="relatorio-coletor-data" element={guard(Boolean(auth.user?.id), RelatorioColetorPeriodoScreen)} />
-      <Route path="relatorio-codigo-barras" element={guard(Boolean(auth.user?.id), RelatorioCodigoBarrasScreen)} />
+      <Route path="relatorio-coletor-data" element={guard(logadoNaoExpedicionario, RelatorioColetorPeriodoScreen)} />
+      <Route path="relatorio-codigo-barras" element={guard(logadoNaoExpedicionario, RelatorioCodigoBarrasScreen)} />
       <Route
         path="relatorio-familias-genero"
-        element={guard(Boolean(auth.user?.id), RelatorioFamiliasGeneroScreen)}
+        element={guard(logadoNaoExpedicionario, RelatorioFamiliasGeneroScreen)}
       />
-      <Route path="relatorio-locais-coleta" element={guard(Boolean(auth.user?.id), RelatorioLocalColetaScreen)} />
+      <Route path="relatorio-locais-coleta" element={guard(logadoNaoExpedicionario, RelatorioLocalColetaScreen)} />
       <Route
         path="relatorio-tombos-por-cidade"
-        element={guard(Boolean(auth.user?.id), RelatorioTombosPorCidadeScreen)}
+        element={guard(logadoNaoExpedicionario, RelatorioTombosPorCidadeScreen)}
       />
       <Route
         path="relatorio-quantidade-familia-generos"
-        element={guard(Boolean(auth.user?.id), RelatorioQuantidadeScreen)}
+        element={guard(logadoNaoExpedicionario, RelatorioQuantidadeScreen)}
       />
       <Route path="rfid-configuracao" element={guard(auth.can('read', 'Rfid'), RfidConfiguracao)} />
       <Route path="rfid-conferencia" element={guard(auth.can('read', 'Rfid'), RfidConferencia)} />
       <Route path="rfid-vinculacao" element={guard(auth.can('read', 'Rfid'), RfidVinculacao)} />
       <Route path="rfid-inventario" element={guard(auth.can('read', 'Rfid'), RfidInventario)} />
+      <Route path="rfid-impressao" element={guard(auth.can('read', 'Rfid'), RfidImpressao)} />
+      <Route path="rfid-listas-conferencia" element={guard(auth.can('read', 'Rfid'), RfidListasConferencia)} />
+      <Route path="rfid-listas-conferencia/novo" element={guard(auth.can('read', 'Rfid'), RfidListaConferenciaForm)} />
+      <Route path="rfid-listas-conferencia/:id" element={guard(auth.can('read', 'Rfid'), RfidListaConferenciaForm)} />
+      <Route
+        path="rfid-listas-conferencia/:id/inventarios"
+        element={guard(auth.can('read', 'Rfid'), RfidListaConferenciaInventarios)}
+      />
       <Route path="dashboard" element={<DashboardScreen />} />
       <Route
         path="relatorio-coordenadas-fora-poligono"
-        element={guard(Boolean(auth.user?.id), RelatorioCoordenadaForaPoligonoScreen)}
+        element={guard(logadoNaoExpedicionario, RelatorioCoordenadaForaPoligonoScreen)}
       />
     </Routes>
   )

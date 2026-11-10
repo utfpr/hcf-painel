@@ -9,7 +9,7 @@ import { fetchRelevos } from '@/features/relevos/useListaRelevosPage'
 import type { HttpClient } from '@/libraries/http/HttpClient'
 
 describe('fetchRelevos', () => {
-  test('requests v2 with name and pagination params', async () => {
+  test('requests v1 with name and pagination params', async () => {
     const relevos = [{ id: 7, nome: 'Relevo montanhoso' }]
     const get = vi.fn().mockResolvedValue({ data: relevos })
     const httpClient = { get } as unknown as Pick<HttpClient, 'get'>
@@ -27,7 +27,7 @@ describe('fetchRelevos', () => {
       }
     })
 
-    expect(get).toHaveBeenCalledWith('/v2/relevos', {
+    expect(get).toHaveBeenCalledWith('/v1/relevos', {
       pagina: 1,
       limite: 20,
       nome: 'montanhoso'
