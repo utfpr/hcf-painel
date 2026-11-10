@@ -10,13 +10,20 @@ import {
   notification,
   Row
 } from 'antd'
+import axios from 'axios'
 import { useTranslation } from 'react-i18next'
 
 import { TipoUsuario } from '@/@types/components'
+import ModalCadastroComponent from '@/components/ModalCadastroComponent'
 import SimpleTableComponent from '@/components/SimpleTableComponent'
 import TotalRecordFound from '@/components/TotalRecordsFound'
 import { useAuth } from '@/contexts/Auth/useAuth'
-import { EditOutlined, PlusOutlined } from '@ant-design/icons'
+import {
+  DeleteOutlined,
+  EditOutlined,
+  EyeOutlined,
+  PlusOutlined
+} from '@ant-design/icons'
 
 import type { SoloListItem } from './types'
 import { useListaSolosPage } from './useListaSolosPage'
@@ -27,8 +34,18 @@ export default function ListaSolosPage() {
   const { user, can } = useAuth()
   const [searchName, setSearchName] = useState('')
   const [selectedSolo, setSelectedSolo] = useState<SoloListItem>()
-  const canViewActions = user?.tipo_usuario_id === TipoUsuario.Curador
+  const [modalVisible, setModalVisible] = useState(false)
+  const [editingSoloId, setEditingSoloId] = useState<number | string>()
+  const [soloName, setSoloName] = useState('')
+  const canCreate = can('create', 'Solo')
+  const canUpdate = can('update', 'Solo')
+  const canDelete = can('delete', 'Solo')
+  const canViewDetails = user?.tipo_usuario_id === TipoUsuario.Curador
       && can('read', 'Solo')
+  const canViewActions = canViewDetails || canUpdate || canDelete
+  const modalTitle = editingSoloId === undefined
+    ? t('common:cadastrar')
+    : t('common:atualizar')
 
   useEffect(() => {
     if (list.error) {
@@ -43,6 +60,86 @@ export default function ListaSolosPage() {
   const clear = () => {
     setSearchName('')
     list.search('')
+  }
+
+  const closeModal = () => setModalVisible(false)
+
+  const showMutationError = (error: unknown) => {
+    const status = axios.isAxiosError(error) ? error.response?.status : undefined
+    const description = status === 400
+      ? t('erroRequisicao')
+      : status === 404
+        ? t('erroNaoEncontrado')
+        : status === 409
+          ? t('erroConflito')
+          : t('erroOperacao')
+
+    notification.error({
+      message: t('erro'),
+      description
+    })
+  }
+
+  const openCreateModal = () => {
+    setEditingSoloId(undefined)
+    setSoloName('')
+    setModalVisible(true)
+  }
+
+  const openUpdateModal = (solo: SoloListItem) => {
+    setEditingSoloId(solo.id)
+    setSoloName(solo.nome)
+    setModalVisible(true)
+  }
+
+  const save = async () => {
+    const nome = soloName.trim()
+    if (!nome) {
+      notification.warning({
+        message: t('aviso'),
+        description: t('nomeObrigatorio')
+      })
+      return
+    }
+
+    try {
+      if (editingSoloId === undefined) {
+        const response = await list.create(nome)
+        if (response?.status === 201) {
+          notification.success({ message: t('cadastroSucesso') })
+          closeModal()
+        }
+        return
+      }
+
+      const response = await list.update(editingSoloId, nome)
+      if (response?.status === 200) {
+        notification.success({ message: t('atualizacaoSucesso') })
+        closeModal()
+      }
+    } catch (error) {
+      showMutationError(error)
+    }
+  }
+
+  const confirmDelete = (solo: SoloListItem) => {
+    Modal.confirm({
+      title: t('confirmacaoExcluir'),
+      content: t('descricaoExcluir', { nome: solo.nome }),
+      okText: t('common:sim'),
+      okType: 'danger',
+      cancelText: t('common:nao'),
+      onOk: async () => {
+        try {
+          const response = await list.remove(solo.id)
+          if (response?.status === 204) {
+            notification.success({ message: t('exclusaoSucesso') })
+          }
+        } catch (error) {
+          showMutationError(error)
+        }
+      }
+    })
   }
 
   const columns = [
@@ -74,12 +171,35 @@ export default function ListaSolosPage() {
     nome: solo.nome,
     acao: canViewActions
       ? (
-        <a
-          aria-label={t('abrirDetalhes', { nome: solo.nome })}
-          onClick={() => setSelectedSolo(solo)}
-        >
-          <EditOutlined style={{ color: '#FFCC00' }} />
-        </a>
+        <span>
+          {canViewDetails && (
+            <Button
+              type="link"
+              aria-label={t('abrirDetalhes', { nome: solo.nome })}
+              onClick={() => setSelectedSolo(solo)}
+            >
+              <EyeOutlined />
+            </Button>
+          )}
+          {canUpdate && (
+            <Button
+              type="link"
+              aria-label={t('renomear', { nome: solo.nome })}
+              onClick={() => openUpdateModal(solo)}
+            >
+              <EditOutlined style={{ color: '#FFCC00' }} />
+            </Button>
+          )}
+          {canDelete && (
+            <Button
+              type="link"
+              aria-label={t('excluir', { nome: solo.nome })}
+              onClick={() => confirmDelete(solo)}
+            >
+              <DeleteOutlined style={{ color: '#e30613' }} />
+            </Button>
+          )}
+        </span>
       )
       : undefined
   }))
@@ -90,12 +210,12 @@ export default function ListaSolosPage() {
         <Col xs={24} sm={14} md={18} lg={20} xl={20}>
           <h2 style={{ fontWeight: 200 }}>{t('titulo')}</h2>
         </Col>
-        {canViewActions && (
+        {canCreate && (
           <Col xs={24} sm={10} md={6} lg={4} xl={4}>
             <Button
               type="primary"
               icon={<PlusOutlined />}
-              disabled
+              onClick={openCreateModal}
               style={{
                 backgroundColor: '#5CB85C', borderColor: '#5CB85C', width: '100%'
               }}
@@ -151,6 +271,29 @@ export default function ListaSolosPage() {
       />
       <Divider dashed />
 
+      <ModalCadastroComponent
+        title={modalTitle}
+        visibleModal={modalVisible}
+        loadingModal={list.creating || list.updating}
+        onCancel={closeModal}
+        onOk={save}
+      >
+        <Row gutter={8}>
+          <Col span={24}>
+            <label htmlFor="solo-name">{t('campoNome')}</label>
+          </Col>
+        </Row>
+        <Row gutter={8}>
+          <Col span={24}>
+            <Input
+              id="solo-name"
+              value={soloName}
+              onChange={event => setSoloName(event.target.value)}
+              onPressEnter={save}
+            />
+          </Col>
+        </Row>
+      </ModalCadastroComponent>
       <Modal
         title={t('detalhesTitulo')}
         visible={Boolean(selectedSolo)}

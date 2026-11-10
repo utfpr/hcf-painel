@@ -84,6 +84,14 @@ const ruleSpecificMapping: Record<TipoUsuario, (user: Usuario) => Rule<Resource,
       ]
     },
     {
+      resource: 'Solo',
+      action: [
+        'create',
+        'update',
+        'delete'
+      ]
+    },
+    {
       resource: 'Reflora',
       action: ['read', 'update']
     },
@@ -104,9 +112,17 @@ const ruleSpecificMapping: Record<TipoUsuario, (user: Usuario) => Rule<Resource,
       resource: 'Rfid',
       action: ['read']
     }
-
   ],
-  [TipoUsuario.Operador]: () => [],
+  [TipoUsuario.Operador]: () => [
+    {
+      resource: 'Solo',
+      action: [
+        'create',
+        'update',
+        'delete'
+      ]
+    }
+  ],
   [TipoUsuario.Identificador]: () => [],
   [TipoUsuario.Expedicionario]: () => [
     {
@@ -117,58 +133,19 @@ const ruleSpecificMapping: Record<TipoUsuario, (user: Usuario) => Rule<Resource,
 } as const
 
 const defaultRules: Rule<Resource, Action>[] = [
-  {
-    resource: 'Tombo',
-    action: ['read']
-  },
-  {
-    resource: 'Reino',
-    action: ['read']
-  },
-  {
-    resource: 'Familia',
-    action: ['read']
-  },
-  {
-    resource: 'FaseSucessional',
-    action: ['read']
-  },
-  {
-    resource: 'Solo',
-    action: ['read']
-  },
-  {
-    resource: 'Relevo',
-    action: ['read']
-  },
-  {
-    resource: 'Vegetacao',
-    action: ['read']
-  },
-  {
-    resource: 'Subfamilia',
-    action: ['read']
-  },
-  {
-    resource: 'Genero',
-    action: ['read']
-  },
-  {
-    resource: 'Especie',
-    action: ['read']
-  },
-  {
-    resource: 'Subespecie',
-    action: ['read']
-  },
-  {
-    resource: 'Variedade',
-    action: ['read']
-  },
-  {
-    resource: 'Autor',
-    action: ['read']
-  }
+  { resource: 'Tombo', action: ['read'] },
+  { resource: 'Reino', action: ['read'] },
+  { resource: 'Familia', action: ['read'] },
+  { resource: 'FaseSucessional', action: ['read'] },
+  { resource: 'Solo', action: ['read'] },
+  { resource: 'Relevo', action: ['read'] },
+  { resource: 'Vegetacao', action: ['read'] },
+  { resource: 'Subfamilia', action: ['read'] },
+  { resource: 'Genero', action: ['read'] },
+  { resource: 'Especie', action: ['read'] },
+  { resource: 'Subespecie', action: ['read'] },
+  { resource: 'Variedade', action: ['read'] },
+  { resource: 'Autor', action: ['read'] }
 ]
 
 export function createRules(user?: Usuario): Rule<Resource, Action>[] {
