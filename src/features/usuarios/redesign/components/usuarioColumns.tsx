@@ -19,6 +19,9 @@ function roleLabel(t: TFunction<'listaUsuariosPage'>, tipo: string): string {
   if (normalized.includes('identificador') || normalized.includes('identifier')) {
     return t('roles.identifier')
   }
+  if (normalized.includes('expedicion') || normalized.includes('expedition')) {
+    return t('roles.expeditioner')
+  }
   return tipo
 }
 

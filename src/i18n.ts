@@ -98,7 +98,8 @@ void i18n
       'perfilScreen',
       'rfid',
       'novaExpedicaoPage',
-      'editarExpedicaoPage'
+      'editarExpedicaoPage',
+      'expedicoesAppPage'
     ],
     defaultNS: 'common',
     interpolation: {
