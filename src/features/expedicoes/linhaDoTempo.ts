@@ -311,8 +311,9 @@ export function evidenciasDaResposta(body: unknown): ArquivoEvento[] {
   })
 }
 
-export function resolverUrlEvidencia(url: string, baseUrl: string): string {
+export function resolverUrlEvidencia(url: string, imageBase: string): string {
   if (url.startsWith('http://') || url.startsWith('https://')) return url
-  const base = baseUrl.replace(/\/api\/?$/, '')
-  return `${base}${url}`
+  const base = imageBase.replace(/\/$/, '')
+  const path = url.replace(/^\/(?:uploads|images)/, '')
+  return `${base}${path}`
 }

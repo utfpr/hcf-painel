@@ -120,21 +120,25 @@ describe('sidebar route matching', () => {
     expect(expedicionarioKeys).toEqual(expect.arrayContaining(['expedicoes', 'expedicoesApp']))
     ;[...hiddenKeys, 'expedicoesGerenciamento'].forEach(key => expect(expedicionarioKeys).not.toContain(key))
   })
-  test('keeps Expedições as the last sidebar item', () => {
+
+  test('places Expedições between Serviços and RFID', () => {
     const t = ((key: string) => key) as never
     const auth = {
       loggedIn: true,
-      can: () => false,
+      can: (_action: string, resource: string) => resource === 'Reflora' || resource === 'SpeciesLink',
       canAny: () => false
     } as never
-    const lastKey = (isExpedicionario: boolean) => {
-      const groups = buildNavItems({
-        t, auth, isCuradorOuOperador: false, isExpedicionario
-      }) as Array<{ children?: Array<{ key?: string }> }>
-      return groups[groups.length - 1].children?.at(-1)?.key
-    }
 
-    expect(lastKey(false)).toBe('expedicoes')
-    expect(lastKey(true)).toBe('expedicoes')
+    const items = buildNavItems({
+      t, auth, isCuradorOuOperador: false, isExpedicionario: false
+    })
+    const operations = items?.find(item => item && 'key' in item && item.key === 'operations')
+    const keys = operations && 'children' in operations
+      ? (operations.children ?? []).map(item => (item && 'key' in item ? item.key : undefined))
+      : []
+
+    expect(keys.indexOf('servicos')).toBeGreaterThanOrEqual(0)
+    expect(keys.indexOf('expedicoes')).toBe(keys.indexOf('servicos') + 1)
+    expect(keys.indexOf('rfid')).toBe(keys.indexOf('expedicoes') + 1)
   })
 })

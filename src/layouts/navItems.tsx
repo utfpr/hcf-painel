@@ -247,6 +247,7 @@ export function buildNavItems({
       : null
   ])
 
+
   const collectionItems = filterItems([
     auth.can('read', 'Tombo')
       ? {
@@ -514,6 +515,7 @@ export function buildNavItems({
           children: serviceChildren
         }
       : null,
+    ...expedicoesItem,
     auth.loggedIn && !isExpedicionario
       ? {
           key: 'rfid',
@@ -543,9 +545,7 @@ export function buildNavItems({
             }
           ]
         }
-      : null,
-    // Expedições fica por último no menu lateral, logo antes do Sair.
-    ...expedicoesItem
+      : null
   ])
 
   return filterItems([

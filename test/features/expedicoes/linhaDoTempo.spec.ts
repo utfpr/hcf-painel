@@ -199,7 +199,7 @@ describe('linha do tempo da expedição', () => {
         {
           id: 9,
           nome: 'Folha',
-          url: '/uploads/evidencias/folha.png',
+          url: '/images/evidencias/folha.png',
           mimeType: 'image/png',
           tamanho: 10
         }
@@ -274,12 +274,12 @@ describe('linha do tempo da expedição', () => {
     expect(evidenciasDaResposta([{ id: 1, transcricao: { status: 'invalido', versao: 1 } }])[0].transcricao).toBeNull()
   })
 
-  it('lê evidências e resolve a url contra a base da API', () => {
+  it('lê evidências e resolve a url contra IMAGE_BASE', () => {
     expect(evidenciasDaResposta([
       {
         id: 3,
         nome: 'Áudio do diário',
-        url: '/uploads/evidencias/diario.wav',
+        url: '/images/evidencias/diario.wav',
         mime_type: 'audio/wav',
         tamanho: 1200
       },
@@ -288,15 +288,17 @@ describe('linha do tempo da expedição', () => {
       {
         id: 3,
         nome: 'Áudio do diário',
-        url: '/uploads/evidencias/diario.wav',
+        url: '/images/evidencias/diario.wav',
         mimeType: 'audio/wav',
         tamanho: 1200,
         transcricao: null
       }
     ])
-    expect(resolverUrlEvidencia('/uploads/evidencias/diario.wav', 'http://localhost:3000/api'))
-      .toBe('http://localhost:3000/uploads/evidencias/diario.wav')
-    expect(resolverUrlEvidencia('https://cdn.exemplo/foto.png', 'http://localhost:3000/api'))
+    expect(resolverUrlEvidencia('/uploads/evidencias/diario.wav', 'http://localhost:8080/images'))
+      .toBe('http://localhost:8080/images/evidencias/diario.wav')
+    expect(resolverUrlEvidencia('/images/evidencias/diario.wav', 'http://localhost:8080/images'))
+      .toBe('http://localhost:8080/images/evidencias/diario.wav')
+    expect(resolverUrlEvidencia('https://cdn.exemplo/foto.png', 'http://localhost:8080/images'))
       .toBe('https://cdn.exemplo/foto.png')
   })
 })
