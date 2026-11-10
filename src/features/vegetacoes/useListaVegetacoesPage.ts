@@ -1,9 +1,8 @@
 import { useState } from 'react'
 
-import useSWR from 'swr'
-
 import { useContainer } from '@/contexts/Container/useContainer'
 import { useMutation } from '@/hooks/query/useMutation'
+import { useQuery } from '@/hooks/query/useQuery'
 import type { HttpClient } from '@/libraries/http/HttpClient'
 
 import { vegetacoesListParams, type VegetacoesSorter } from './search'
@@ -12,14 +11,14 @@ import type {
   VegetacoesListResponse
 } from './types'
 
-const LIST_KEY = '/v2/vegetacoes'
+const LIST_KEY = '/v1/vegetacoes'
 const REVALIDATE_LIST = [[LIST_KEY]] as const
 
 export async function fetchVegetacoes(
   httpClient: Pick<HttpClient, 'get'>,
   params: Record<string, string | number>
 ): Promise<VegetacoesListResponse> {
-  const response = await httpClient.get<VegetacoesApiResponse>('/v2/vegetacoes', params)
+  const response = await httpClient.get<VegetacoesApiResponse>('/v1/vegetacoes', params)
   const data = response.data
   const vegetacoes = Array.isArray(data)
     ? data
@@ -67,8 +66,9 @@ export function useListaVegetacoesPage() {
   const params = vegetacoesListParams(nome, pagina, limite, sorter)
 
   const {
-    data, isLoading: loading, error
-  } = useSWR<VegetacoesListResponse, Error>(
+    data, loading, error
+  } = useQuery(
+    () => fetchVegetacoes(httpClient, params),
     [
       LIST_KEY,
       nome,
@@ -77,11 +77,7 @@ export function useListaVegetacoesPage() {
       sorter?.field,
       sorter?.order
     ],
-    () => fetchVegetacoes(httpClient, params),
-    {
-      keepPreviousData: true,
-      shouldRetryOnError: false
-    }
+    { keepPreviousData: true }
   )
 
   const search = (value: string) => {

@@ -40,7 +40,7 @@ describe('Vegetacao mutations', () => {
     })
 
     expect(httpClient.post).toHaveBeenCalledWith(
-      '/v2/vegetacoes',
+      '/v1/vegetacoes',
       { nome: 'Floresta ombrófila' }
     )
   })
@@ -64,7 +64,7 @@ describe('Vegetacao mutations', () => {
     })
 
     expect(httpClient.put).toHaveBeenCalledWith(
-      '/v2/vegetacoes/17',
+      '/v1/vegetacoes/17',
       { nome: 'Floresta estacional' }
     )
   })
@@ -77,7 +77,7 @@ describe('Vegetacao mutations', () => {
       await result.current.remove(17)
     })
 
-    expect(httpClient.delete).toHaveBeenCalledWith('/v2/vegetacoes/17')
+    expect(httpClient.delete).toHaveBeenCalledWith('/v1/vegetacoes/17')
   })
 
   test('propagates delete conflicts', async () => {

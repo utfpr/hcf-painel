@@ -43,6 +43,13 @@ export const isIdentificador = () => {
   return Number(storage.usuario?.tipo_usuario_id) as TipoUsuario === TipoUsuario.Identificador
 }
 
+export const isExpedicionario = () => {
+  if (!storage.usuario?.tipo_usuario_id) {
+    return false
+  }
+  return Number(storage.usuario?.tipo_usuario_id) as TipoUsuario === TipoUsuario.Expedicionario
+}
+
 /** @deprecated Use `useAuth` hook with `logIn` method instead */
 export const setUsuario = (usuario: Usuario) => {
   storage.usuario = usuario

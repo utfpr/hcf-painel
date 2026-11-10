@@ -20,6 +20,7 @@ import { useAuth } from '@/contexts/Auth/useAuth'
 import {
   DeleteOutlined,
   EditOutlined,
+  EyeOutlined,
   PlusOutlined
 } from '@ant-design/icons'
 
@@ -34,10 +35,11 @@ export default function ListaVegetacoesPage() {
   const [modalVisible, setModalVisible] = useState(false)
   const [editingVegetacaoId, setEditingVegetacaoId] = useState<number>()
   const [vegetacaoName, setVegetacaoName] = useState('')
+  const [selectedVegetacao, setSelectedVegetacao] = useState<VegetacaoListItem>()
   const canCreate = can('create', 'Vegetacao')
   const canUpdate = can('update', 'Vegetacao')
   const canDelete = can('delete', 'Vegetacao')
-  const canViewActions = canUpdate || canDelete
+  const canViewActions = can('read', 'Vegetacao') || canUpdate || canDelete
   const modalTitle = editingVegetacaoId === undefined
     ? t('common:cadastrar')
     : t('common:atualizar')
@@ -167,24 +169,30 @@ export default function ListaVegetacoesPage() {
     acao: canViewActions
       ? (
         <span>
+          <Button
+            type="link"
+            aria-label={t('abrirDetalhes', { nome: vegetacao.nome })}
+            onClick={() => setSelectedVegetacao(vegetacao)}
+          >
+            <EyeOutlined />
+          </Button>
           {canUpdate && (
-            <>
-              <a
-                aria-label={t('renomear', { nome: vegetacao.nome })}
-                onClick={() => openUpdateModal(vegetacao)}
-              >
-                <EditOutlined style={{ color: '#FFCC00' }} />
-              </a>
-              {canDelete && <Divider type="vertical" />}
-            </>
+            <Button
+              type="link"
+              aria-label={t('renomear', { nome: vegetacao.nome })}
+              onClick={() => openUpdateModal(vegetacao)}
+            >
+              <EditOutlined style={{ color: '#FFCC00' }} />
+            </Button>
           )}
           {canDelete && (
-            <a
+            <Button
+              type="link"
               aria-label={t('excluir', { nome: vegetacao.nome })}
               onClick={() => confirmDelete(vegetacao)}
             >
               <DeleteOutlined style={{ color: '#e30613' }} />
-            </a>
+            </Button>
           )}
         </span>
       )
@@ -281,6 +289,33 @@ export default function ListaVegetacoesPage() {
           </Col>
         </Row>
       </ModalCadastroComponent>
+      <Modal
+        title={t('detalhesTitulo')}
+        visible={Boolean(selectedVegetacao)}
+        onCancel={() => setSelectedVegetacao(undefined)}
+        footer={[
+          <Button key="close" onClick={() => setSelectedVegetacao(undefined)}>
+            {t('fechar')}
+          </Button>
+        ]}
+      >
+        <p>
+          <strong>
+            {t('campoId')}
+            :
+          </strong>
+          {' '}
+          {selectedVegetacao?.id}
+        </p>
+        <p>
+          <strong>
+            {t('campoNome')}
+            :
+          </strong>
+          {' '}
+          {selectedVegetacao?.nome}
+        </p>
+      </Modal>
     </div>
   )
 }

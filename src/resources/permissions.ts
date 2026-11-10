@@ -6,6 +6,9 @@ const RESOURCES = [
   'Tombo',
   'Reino',
   'Familia',
+  'FaseSucessional',
+  'Solo',
+  'Relevo',
   'Vegetacao',
   'Subfamilia',
   'Genero',
@@ -22,6 +25,8 @@ const RESOURCES = [
   'Coletor',
   'Reflora',
   'SpeciesLink',
+  'Expedicao',
+  'Evidencia',
   'Rfid'
 ] as const
 
@@ -79,6 +84,14 @@ const ruleSpecificMapping: Record<TipoUsuario, (user: Usuario) => Rule<Resource,
       ]
     },
     {
+      resource: 'FaseSucessional',
+      action: [
+        'create',
+        'update',
+        'delete'
+      ]
+    },
+    {
       resource: 'Vegetacao',
       action: [
         'create',
@@ -95,11 +108,28 @@ const ruleSpecificMapping: Record<TipoUsuario, (user: Usuario) => Rule<Resource,
       action: ['read', 'update']
     },
     {
+      resource: 'Expedicao',
+      action: [
+        'read',
+        'create',
+        'update',
+        'delete'
+      ]
+    },
+    {
       resource: 'Rfid',
       action: ['read']
     }
   ],
   [TipoUsuario.Operador]: () => [
+    {
+      resource: 'FaseSucessional',
+      action: [
+        'create',
+        'update',
+        'delete'
+      ]
+    },
     {
       resource: 'Vegetacao',
       action: [
@@ -109,50 +139,29 @@ const ruleSpecificMapping: Record<TipoUsuario, (user: Usuario) => Rule<Resource,
       ]
     }
   ],
-  [TipoUsuario.Identificador]: () => []
+  [TipoUsuario.Identificador]: () => [],
+  [TipoUsuario.Expedicionario]: () => [
+    {
+      resource: 'Expedicao',
+      action: ['read']
+    }
+  ]
 } as const
 
 const defaultRules: Rule<Resource, Action>[] = [
-  {
-    resource: 'Tombo',
-    action: ['read']
-  },
-  {
-    resource: 'Reino',
-    action: ['read']
-  },
-  {
-    resource: 'Familia',
-    action: ['read']
-  },
-  {
-    resource: 'Vegetacao',
-    action: ['read']
-  },
-  {
-    resource: 'Subfamilia',
-    action: ['read']
-  },
-  {
-    resource: 'Genero',
-    action: ['read']
-  },
-  {
-    resource: 'Especie',
-    action: ['read']
-  },
-  {
-    resource: 'Subespecie',
-    action: ['read']
-  },
-  {
-    resource: 'Variedade',
-    action: ['read']
-  },
-  {
-    resource: 'Autor',
-    action: ['read']
-  }
+  { resource: 'Tombo', action: ['read'] },
+  { resource: 'Reino', action: ['read'] },
+  { resource: 'Familia', action: ['read'] },
+  { resource: 'FaseSucessional', action: ['read'] },
+  { resource: 'Solo', action: ['read'] },
+  { resource: 'Relevo', action: ['read'] },
+  { resource: 'Vegetacao', action: ['read'] },
+  { resource: 'Subfamilia', action: ['read'] },
+  { resource: 'Genero', action: ['read'] },
+  { resource: 'Especie', action: ['read'] },
+  { resource: 'Subespecie', action: ['read'] },
+  { resource: 'Variedade', action: ['read'] },
+  { resource: 'Autor', action: ['read'] }
 ]
 
 export function createRules(user?: Usuario): Rule<Resource, Action>[] {
@@ -160,6 +169,10 @@ export function createRules(user?: Usuario): Rule<Resource, Action>[] {
 
   return [
     ...defaultRules,
+    { resource: 'Evidencia', action: ['read'] },
+    ...([TipoUsuario.Curador, TipoUsuario.Operador].includes(Number(user.tipo_usuario_id))
+      ? [{ resource: 'Evidencia' as const, action: ['update' as const] }]
+      : []),
     ...ruleSpecificMapping[user.tipo_usuario_id](user)
   ]
 }
