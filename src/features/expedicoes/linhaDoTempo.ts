@@ -53,6 +53,7 @@ export interface ArquivoEvento {
   url: string
   mimeType: string | null
   tamanho: number | null
+  transcricao?: { status: 'processando' | 'concluida' | 'erro'; versao: number } | null
 }
 
 export interface EventoLinha {
@@ -282,6 +283,14 @@ export function paginaEventosDaResposta(body: unknown): PaginaEventos {
   }
 }
 
+function resumoTranscricao(value: unknown): ArquivoEvento['transcricao'] {
+  const registro = comoRegistro(value)
+  const status = registro?.status
+  const versao = registro ? inteiroOpcional(registro.versao) : null
+  if ((status !== 'processando' && status !== 'concluida' && status !== 'erro') || versao === null) return null
+  return { status, versao }
+}
+
 export function evidenciasDaResposta(body: unknown): ArquivoEvento[] {
   if (!Array.isArray(body)) return []
   return body.flatMap(item => {
@@ -295,14 +304,16 @@ export function evidenciasDaResposta(body: unknown): ArquivoEvento[] {
         nome: textoOpcional(registro.nome) ?? 'Arquivo',
         url: textoOpcional(registro.url) ?? '',
         mimeType: textoOpcional(registro.mime_type),
-        tamanho: numeroOpcional(registro.tamanho)
+        tamanho: numeroOpcional(registro.tamanho),
+        transcricao: resumoTranscricao(registro.transcricao)
       }
     ]
   })
 }
 
-export function resolverUrlEvidencia(url: string, baseUrl: string): string {
+export function resolverUrlEvidencia(url: string, imageBase: string): string {
   if (url.startsWith('http://') || url.startsWith('https://')) return url
-  const base = baseUrl.replace(/\/api\/?$/, '')
-  return `${base}${url}`
+  const base = imageBase.replace(/\/$/, '')
+  const path = url.replace(/^\/(?:uploads|images)/, '')
+  return `${base}${path}`
 }

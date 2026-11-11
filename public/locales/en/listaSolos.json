@@ -1,0 +1,18 @@
+{
+  "titulo": "Soils",
+  "adicionar": "Add",
+  "buscarTitulo": "Search soils",
+  "campoId": "ID",
+  "campoNome": "Soil name",
+  "placeholderNome": "Enter the soil name",
+  "colunaId": "ID",
+  "colunaNome": "Soil",
+  "colunaAcao": "Action",
+  "detalhesTitulo": "Soil details",
+  "abrirDetalhes": "Open details for {{nome}}",
+  "limpar": "Clear",
+  "pesquisar": "Search",
+  "fechar": "Close",
+  "erro": "Error",
+  "erroBuscar": "Could not load soils. Please try again."
+}

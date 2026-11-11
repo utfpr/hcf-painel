@@ -1,5 +1,5 @@
 import {
-  useMemo, useState, type CSSProperties
+  useMemo, useState, type CSSProperties, type ReactNode
 } from 'react'
 
 import {
@@ -38,6 +38,7 @@ import {
   filtrarEventos,
   resumoDoEvento
 } from '../linhaDoTempo'
+import { TranscricaoAudio } from './TranscricaoAudio'
 
 const { Panel } = Collapse
 const { RangePicker } = DatePicker
@@ -89,6 +90,7 @@ interface LinhaDoTempoExpedicaoProps {
   erro: string | null
   participantes: ParticipanteNome[]
   onRecarregar: () => void
+  podeTranscrever?: boolean
 }
 
 function corDoTipo(tipo: string): { fundo: string; borda: string } {
@@ -174,12 +176,28 @@ const estiloValorCorpo: CSSProperties = {
 
 const estiloAnexos: CSSProperties = { marginTop: 16 }
 
+const estiloSecaoMidia: CSSProperties = {
+  marginTop: 10,
+  padding: 12,
+  background: 'rgba(255, 255, 255, 0.65)',
+  border: '1px solid rgba(0, 0, 0, 0.08)',
+  borderRadius: 8
+}
+
+const estiloSecaoTitulo: CSSProperties = {
+  display: 'block',
+  marginBottom: 8,
+  fontSize: 13,
+  fontWeight: 600,
+  lineHeight: '18px',
+  color: 'rgba(0, 0, 0, 0.75)'
+}
+
 const estiloAudio: CSSProperties = {
   display: 'flex',
   alignItems: 'center',
   flexWrap: 'wrap',
   gap: 8,
-  marginTop: 8,
   minHeight: 40
 }
 
@@ -189,11 +207,19 @@ const estiloPlayer: CSSProperties = {
   height: 40
 }
 
+const estiloVideo: CSSProperties = {
+  display: 'block',
+  width: '100%',
+  maxWidth: 480,
+  maxHeight: 270,
+  background: '#111',
+  borderRadius: 6
+}
+
 const estiloMiniaturas: CSSProperties = {
   display: 'flex',
   flexWrap: 'wrap',
-  gap: 12,
-  marginTop: 8
+  gap: 12
 }
 
 const estiloMiniatura: CSSProperties = {
@@ -372,14 +398,30 @@ function ehImagem(mimeType: string | null): boolean {
   return mimeType?.startsWith('image/') === true
 }
 
+function ehVideo(mimeType: string | null): boolean {
+  return mimeType?.startsWith('video/') === true
+}
+
 function ehAudio(mimeType: string | null): boolean {
   return mimeType?.startsWith('audio/') === true
 }
 
-function AnexosEvento({ arquivos }: { arquivos: EventoLinha['arquivos'] }) {
+function SecaoMidia({ titulo, children }: { titulo: string; children: ReactNode }) {
+  return (
+    <div style={estiloSecaoMidia}>
+      <span style={estiloSecaoTitulo}>{titulo}</span>
+      {children}
+    </div>
+  )
+}
+
+function AnexosEvento({ arquivos, podeTranscrever }: { arquivos: EventoLinha['arquivos']; podeTranscrever: boolean }) {
   const imagens = arquivos.filter(arquivo => ehImagem(arquivo.mimeType))
+  const videos = arquivos.filter(arquivo => ehVideo(arquivo.mimeType))
   const audios = arquivos.filter(arquivo => ehAudio(arquivo.mimeType))
-  const outros = arquivos.filter(arquivo => !ehImagem(arquivo.mimeType) && !ehAudio(arquivo.mimeType))
+  const outros = arquivos.filter(arquivo => (
+    !ehImagem(arquivo.mimeType) && !ehVideo(arquivo.mimeType) && !ehAudio(arquivo.mimeType)
+  ))
 
   return (
     <div style={estiloAnexos}>
@@ -389,50 +431,92 @@ function AnexosEvento({ arquivos }: { arquivos: EventoLinha['arquivos'] }) {
         : (
           <>
             {imagens.length > 0 && (
-              <div style={estiloMiniaturas}>
-                {imagens.map(arquivo => (
-                  <MiniaturaImagem key={arquivo.id} src={arquivo.url} nome={arquivo.nome} />
-                ))}
-              </div>
+              <SecaoMidia titulo="Imagem">
+                <div style={estiloMiniaturas}>
+                  {imagens.map(arquivo => (
+                    <MiniaturaImagem key={arquivo.id} src={arquivo.url} nome={arquivo.nome} />
+                  ))}
+                </div>
+              </SecaoMidia>
             )}
-            {audios.map(arquivo => (
-              <div key={arquivo.id} style={estiloAudio}>
-                <audio
-                  controls
-                  preload="none"
-                  src={arquivo.url}
-                  style={estiloPlayer}
-                >
-                  {arquivo.nome}
-                </audio>
-                <Button
-                  size="small"
-                  icon={<DownloadOutlined />}
-                  href={arquivo.url}
-                  download={arquivo.nome}
-                  aria-label={`Baixar ${arquivo.nome}`}
-                >
-                  {arquivo.nome}
-                </Button>
-              </div>
-            ))}
-            {outros.length > 0 && (
-              <Space wrap size={8}>
-                {outros.map(arquivo => (
-                  <Button
+            {videos.length > 0 && (
+              <SecaoMidia titulo="Vídeo">
+                <Space direction="vertical" size={12} style={{ width: '100%' }}>
+                  {videos.map(arquivo => (
+                    <div key={arquivo.id}>
+                      <video
+                        controls
+                        preload="metadata"
+                        src={arquivo.url}
+                        style={estiloVideo}
+                      >
+                        {arquivo.nome}
+                      </video>
+                      <Button
+                        size="small"
+                        icon={<DownloadOutlined />}
+                        href={arquivo.url}
+                        download={arquivo.nome}
+                        aria-label={`Baixar ${arquivo.nome}`}
+                        style={{ marginTop: 8 }}
+                      >
+                        {arquivo.nome}
+                      </Button>
+                    </div>
+                  ))}
+                </Space>
+              </SecaoMidia>
+            )}
+            {audios.length > 0 && (
+              <SecaoMidia titulo="Áudio">
+                {audios.map(arquivo => (
+                  <div
                     key={arquivo.id}
-                    size="small"
-                    type="link"
-                    aria-label={arquivo.nome}
-                    icon={<PaperClipOutlined />}
-                    href={arquivo.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    style={{ ...estiloAudio, flexDirection: 'column', alignItems: 'stretch' }}
                   >
-                    {arquivo.nome}
-                  </Button>
+                    <div style={estiloAudio}>
+                      <audio
+                        controls
+                        preload="none"
+                        src={arquivo.url}
+                        style={estiloPlayer}
+                      >
+                        {arquivo.nome}
+                      </audio>
+                      <Button
+                        size="small"
+                        icon={<DownloadOutlined />}
+                        href={arquivo.url}
+                        download={arquivo.nome}
+                        aria-label={`Baixar ${arquivo.nome}`}
+                      >
+                        {arquivo.nome}
+                      </Button>
+                    </div>
+                    <TranscricaoAudio arquivo={arquivo} podeEditar={podeTranscrever} />
+                  </div>
                 ))}
-              </Space>
+              </SecaoMidia>
+            )}
+            {outros.length > 0 && (
+              <SecaoMidia titulo="Outro">
+                <Space wrap size={8}>
+                  {outros.map(arquivo => (
+                    <Button
+                      key={arquivo.id}
+                      size="small"
+                      type="link"
+                      aria-label={arquivo.nome}
+                      icon={<PaperClipOutlined />}
+                      href={arquivo.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {arquivo.nome}
+                    </Button>
+                  ))}
+                </Space>
+              </SecaoMidia>
             )}
           </>
         )}
@@ -440,7 +524,9 @@ function AnexosEvento({ arquivos }: { arquivos: EventoLinha['arquivos'] }) {
   )
 }
 
-function CorpoEvento({ evento, participantes }: { evento: EventoLinha; participantes: ParticipanteNome[] }) {
+function CorpoEvento({
+  evento, participantes, podeTranscrever
+}: { evento: EventoLinha; participantes: ParticipanteNome[]; podeTranscrever: boolean }) {
   const campos = camposDoCorpo(evento, participantes)
   return (
     <>
@@ -452,7 +538,7 @@ function CorpoEvento({ evento, participantes }: { evento: EventoLinha; participa
           </Col>
         ))}
       </Row>
-      <AnexosEvento arquivos={evento.arquivos} />
+      <AnexosEvento arquivos={evento.arquivos} podeTranscrever={podeTranscrever} />
     </>
   )
 }
@@ -517,7 +603,8 @@ export default function LinhaDoTempoExpedicao({
   carregando,
   erro,
   participantes,
-  onRecarregar
+  onRecarregar,
+  podeTranscrever = false
 }: LinhaDoTempoExpedicaoProps) {
   const [chaves, setChaves] = useState<ChaveFiltro[]>([])
   const [valores, setValores] = useState<ValoresFiltro>(VALORES_VAZIOS)
@@ -622,7 +709,7 @@ export default function LinhaDoTempoExpedicao({
                     </div>
                   )}
                 >
-                  <CorpoEvento evento={evento} participantes={participantes} />
+                  <CorpoEvento evento={evento} participantes={participantes} podeTranscrever={podeTranscrever} />
                 </Panel>
               </Collapse>
             </div>

@@ -13,6 +13,11 @@
   "estados": "States",
   "cidades": "Cities",
   "localColeta": "Collection Sites",
+  "ecologia": "Ecology",
+  "solos": "Soil",
+  "relevos": "Relief",
+  "fasesSucessionais": "Successional Stage",
+  "vegetacoes": "Vegetation",
   "remessas": "Shipments",
   "pendencias": "Pending Issues",
   "usuarios": "Users",
@@ -49,5 +54,8 @@
   "aparenciaClara": "Light",
   "aparenciaEscura": "Dark",
   "alternarMenu": "Toggle navigation",
-  "menuConta": "Account menu"
+  "menuConta": "Account menu",
+  "expedicoes": "Expeditions",
+  "expedicoesGerenciamento": "Management",
+  "expedicoesApp": "App"
 }

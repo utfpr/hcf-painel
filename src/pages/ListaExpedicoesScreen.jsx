@@ -5,7 +5,7 @@ import axios from 'axios'
 import moment from 'moment'
 import { Link, useNavigate } from 'react-router'
 
-import { EditOutlined, EllipsisOutlined, InboxOutlined, ReloadOutlined } from '@ant-design/icons'
+import { DownloadOutlined, EditOutlined, EllipsisOutlined, InboxOutlined, ReloadOutlined } from '@ant-design/icons'
 
 import HeaderListComponent from '../components/HeaderListComponent'
 
@@ -329,6 +329,27 @@ export default function ListaExpedicoesScreen() {
     return (
         <div>
             <HeaderListComponent title="Expedições" link="/expedicoes/novo" />
+            <Alert
+                type="info"
+                showIcon
+                style={{ marginBottom: 24 }}
+                message="HCF App"
+                description={(
+                    <div>
+                        <p style={{ marginBottom: 8 }}>
+                            Aplicativo para registro em campo das expedições. Está em fase de teste.
+                        </p>
+                        <Button
+                            type="primary"
+                            icon={<DownloadOutlined />}
+                            href={`${import.meta.env.BASE_URL}hcp-app.apk`}
+                            download="hcf-app.apk"
+                        >
+                            Baixar o HCF App (Android)
+                        </Button>
+                    </div>
+                )}
+            />
             <Divider dashed />
             <Card title="Buscar expedições" style={{ marginBottom: 24 }}>
                 <Form form={form} layout="vertical" onFinish={search}>

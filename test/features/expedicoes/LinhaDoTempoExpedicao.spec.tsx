@@ -85,7 +85,7 @@ describe('linha do tempo na tela', () => {
               {
                 id: 7,
                 nome: 'Detalhe da folha',
-                url: '/uploads/evidencias/folha.png',
+                url: '/images/evidencias/folha.png',
                 mimeType: 'image/png',
                 tamanho: 30
               }
@@ -101,9 +101,23 @@ describe('linha do tempo na tela', () => {
               {
                 id: 8,
                 nome: 'Áudio do diário',
-                url: '/uploads/evidencias/diario.wav',
+                url: '/images/evidencias/diario.wav',
                 mimeType: 'audio/wav',
                 tamanho: 20
+              },
+              {
+                id: 9,
+                nome: 'Vídeo do campo',
+                url: '/images/evidencias/campo.mp4',
+                mimeType: 'video/mp4',
+                tamanho: 40
+              },
+              {
+                id: 10,
+                nome: 'planilha.csv',
+                url: '/images/evidencias/planilha.csv',
+                mimeType: 'text/csv',
+                tamanho: 5
               }
             ]
           })
@@ -126,11 +140,17 @@ describe('linha do tempo na tela', () => {
 
     await usuario.click(screen.getByText('Euterpe edulis'))
     expect(document.querySelector('[data-tipo="COLETA"]')?.textContent).toContain('Família')
+    expect(screen.getByText('Imagem')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Ver imagem em tamanho real' })).toBeInTheDocument()
     await usuario.click(screen.getByText('Solo úmido'))
-    expect(await screen.findByRole('link', { name: 'Baixar Áudio do diário' })).toHaveAttribute('href', '/uploads/evidencias/diario.wav')
-    expect(document.querySelector('audio')).toHaveAttribute('src', '/uploads/evidencias/diario.wav')
+    expect(screen.getByText('Áudio')).toBeInTheDocument()
+    expect(screen.getByText('Vídeo')).toBeInTheDocument()
+    expect(screen.getByText('Outro')).toBeInTheDocument()
+    expect(await screen.findByRole('link', { name: 'Baixar Áudio do diário' })).toHaveAttribute('href', '/images/evidencias/diario.wav')
+    expect(document.querySelector('audio')).toHaveAttribute('src', '/images/evidencias/diario.wav')
     expect(document.querySelector('audio')).toHaveAttribute('controls')
+    expect(document.querySelector('video')).toHaveAttribute('src', '/images/evidencias/campo.mp4')
+    expect(screen.getByRole('link', { name: 'planilha.csv' })).toHaveAttribute('href', '/images/evidencias/planilha.csv')
 
     expect(screen.queryByPlaceholderText('Família')).toBeNull()
     await usuario.click(screen.getByRole('button', { name: /Adicionar filtro/ }))

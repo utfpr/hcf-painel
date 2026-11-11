@@ -31,10 +31,13 @@ const TAXONOMIA_RESOURCES = [
   'Autor'
 ] as const
 
+const ECOLOGIA_RESOURCES = ['Solo', 'Relevo', 'FaseSucessional', 'Vegetacao'] as const
+
 interface BuildNavItemsParams {
   t: TFunction
   auth: AuthContextValue
   isCuradorOuOperador: boolean
+  isExpedicionario: boolean
 }
 
 function navLink(to: string, label: string) {
@@ -48,7 +51,8 @@ function filterItems(items: Array<MenuItem | null>): MenuItem[] {
 export function getSelectedMenuKey(pathname: string): string {
   const routes: Array<[string, string]> = [
     ['/tombos', 'tombos'],
-    ['/expedicoes', 'expedicoes'],
+    ['/expedicoes-app', 'expedicoesApp'],
+    ['/expedicoes', 'expedicoesGerenciamento'],
     ['/reinos', 'reinos'],
     ['/familias', 'familias'],
     ['/subfamilias', 'subfamilias'],
@@ -65,6 +69,10 @@ export function getSelectedMenuKey(pathname: string): string {
     ['/estados', 'estados'],
     ['/cidades', 'cidades'],
     ['/locais-coleta', 'localColeta'],
+    ['/solos', 'solos'],
+    ['/relevos', 'relevos'],
+    ['/fases-sucessionais', 'fasesSucessionais'],
+    ['/vegetacoes', 'vegetacoes'],
     ['/mapa', 'mapa'],
     ['/filtros', 'filtrosAvancados'],
     ['/relatorio-por-periodo', 'relatorioPorPeriodo'],
@@ -100,6 +108,7 @@ export function getSelectedMenuKey(pathname: string): string {
 export function getOpenMenuKeys(pathname: string): string[] {
   const selected = getSelectedMenuKey(pathname)
   const groups: Record<string, string[]> = {
+    expedicoes: ['expedicoesGerenciamento', 'expedicoesApp'],
     taxonomia: [
       'reinos',
       'familias',
@@ -114,6 +123,12 @@ export function getOpenMenuKeys(pathname: string): string[] {
       'estados',
       'cidades',
       'localColeta'
+    ],
+    ecologia: [
+      'solos',
+      'relevos',
+      'fasesSucessionais',
+      'vegetacoes'
     ],
     geolocalizacao: ['mapa', 'filtrosAvancados'],
     relatorios: [
@@ -145,7 +160,8 @@ export function getOpenMenuKeys(pathname: string): string[] {
 export function buildNavItems({
   t,
   auth,
-  isCuradorOuOperador
+  isCuradorOuOperador,
+  isExpedicionario
 }: BuildNavItemsParams): MenuProps['items'] {
   const taxonomiaChildren = filterItems([
     auth.can('read', 'Reino')
@@ -206,15 +222,33 @@ export function buildNavItems({
       : null
   ])
 
-  const collectionItems = filterItems([
+  const expedicoesItem = filterItems([
     auth.loggedIn
       ? {
           key: 'expedicoes',
           icon: <EnvironmentOutlined />,
-          label: navLink('/expedicoes', 'Expedições'),
-          title: 'Expedições'
+          label: t('mainLayout:expedicoes'),
+          title: t('mainLayout:expedicoes'),
+          children: filterItems([
+            !isExpedicionario
+              ? {
+                  key: 'expedicoesGerenciamento',
+                  label: navLink('/expedicoes', t('mainLayout:expedicoesGerenciamento')),
+                  title: t('mainLayout:expedicoesGerenciamento')
+                }
+              : null,
+            {
+              key: 'expedicoesApp',
+              label: navLink('/expedicoes-app', t('mainLayout:expedicoesApp')),
+              title: t('mainLayout:expedicoesApp')
+            }
+          ])
         }
-      : null,
+      : null
+  ])
+
+
+  const collectionItems = filterItems([
     auth.can('read', 'Tombo')
       ? {
           key: 'tombos',
@@ -248,7 +282,7 @@ export function buildNavItems({
           title: t('mainLayout:coletores')
         }
       : null,
-    auth.loggedIn
+    auth.loggedIn && !isExpedicionario
       ? {
           key: 'herbarios',
           icon: <FlagOutlined />,
@@ -256,7 +290,7 @@ export function buildNavItems({
           title: t('mainLayout:herbarios')
         }
       : null,
-    auth.loggedIn
+    auth.loggedIn && !isExpedicionario
       ? {
           key: 'fichaTombo',
           icon: <FileTextOutlined />,
@@ -277,6 +311,7 @@ export function buildNavItems({
       : null
   ])
 
+  const canReadEcologia = ECOLOGIA_RESOURCES.some(resource => auth.canAny(['read'], resource))
   const geographyItems = filterItems([
     {
       key: 'locais',
@@ -294,7 +329,7 @@ export function buildNavItems({
           label: navLink('/cidades', t('mainLayout:cidades')),
           title: t('mainLayout:cidades')
         },
-        auth.loggedIn
+        auth.loggedIn && !isExpedicionario
           ? {
               key: 'localColeta',
               label: navLink('/locais-coleta', t('mainLayout:localColeta')),
@@ -303,6 +338,42 @@ export function buildNavItems({
           : null
       ])
     },
+    canReadEcologia
+      ? {
+          key: 'ecologia',
+          icon: <EnvironmentOutlined />,
+          label: t('mainLayout:ecologia'),
+          title: t('mainLayout:ecologia'),
+          children: filterItems([
+        auth.can('read', 'Solo')
+          ? {
+              key: 'solos',
+              label: navLink('/solos', t('mainLayout:solos')),
+              title: t('mainLayout:solos')
+            }
+          : null,
+        auth.can('read', 'Relevo')
+          ? {
+              key: 'relevos',
+              label: navLink('/relevos', t('mainLayout:relevos')),
+              title: t('mainLayout:relevos')
+            }
+          : null,
+        {
+          key: 'fasesSucessionais',
+          label: navLink('/fases-sucessionais', t('mainLayout:fasesSucessionais')),
+          title: t('mainLayout:fasesSucessionais')
+        },
+        auth.can('read', 'Vegetacao')
+          ? {
+              key: 'vegetacoes',
+              label: navLink('/vegetacoes', t('mainLayout:vegetacoes')),
+              title: t('mainLayout:vegetacoes')
+            }
+          : null
+          ])
+        }
+      : null,
     {
       key: 'geolocalizacao',
       icon: <EnvironmentOutlined />,
@@ -323,7 +394,7 @@ export function buildNavItems({
     }
   ])
 
-  const reportChildren = auth.loggedIn
+  const reportChildren = auth.loggedIn && !isExpedicionario
     ? [
         {
           key: 'relatorioPorPeriodo',
@@ -418,7 +489,7 @@ export function buildNavItems({
           title: t('mainLayout:remessas')
         }
       : null,
-    auth.loggedIn
+    auth.loggedIn && !isExpedicionario
       ? {
           key: 'relatorios',
           icon: <SnippetsOutlined />,
@@ -444,7 +515,8 @@ export function buildNavItems({
           children: serviceChildren
         }
       : null,
-    auth.loggedIn
+    ...expedicoesItem,
+    auth.loggedIn && !isExpedicionario
       ? {
           key: 'rfid',
           icon: <ScanOutlined />,

@@ -36,6 +36,10 @@ void i18n
       'recuperacaoSenha',
       'listaTaxonomiaReino',
       'listaTaxonomiaFamilia',
+      'listaRelevos',
+      'listaFasesSucessionais',
+      'listaSolos',
+      'listaVegetacoes',
       'totalRecordsFound',
       'listaTaxonomiaSubfamilia',
       'listaTaxonomiaGenero',
@@ -94,7 +98,8 @@ void i18n
       'perfilScreen',
       'rfid',
       'novaExpedicaoPage',
-      'editarExpedicaoPage'
+      'editarExpedicaoPage',
+      'expedicoesAppPage'
     ],
     defaultNS: 'common',
     interpolation: {

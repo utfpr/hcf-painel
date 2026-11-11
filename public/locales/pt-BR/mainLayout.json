@@ -13,6 +13,11 @@
   "estados": "Estados",
   "cidades": "Cidades",
   "localColeta": "Local de Coleta",
+  "ecologia": "Ecologia",
+  "solos": "Solo",
+  "relevos": "Relevo",
+  "fasesSucessionais": "Fase Sucessional",
+  "vegetacoes": "Vegetação",
   "remessas": "Remessas",
   "pendencias": "Pendências",
   "usuarios": "Usuários",
@@ -51,5 +56,8 @@
   "aparenciaClara": "Clara",
   "aparenciaEscura": "Escura",
   "alternarMenu": "Abrir ou fechar a navegação",
-  "menuConta": "Menu da conta"
+  "menuConta": "Menu da conta",
+  "expedicoes": "Expedições",
+  "expedicoesGerenciamento": "Gerenciamento",
+  "expedicoesApp": "App"
 }

@@ -33,7 +33,8 @@ export function UsersToolbar({
   const roleOptions = [
     { value: '1', label: t('roles.curator') },
     { value: '2', label: t('roles.operator') },
-    { value: '3', label: t('roles.identifier') }
+    { value: '3', label: t('roles.identifier') },
+    { value: '4', label: t('roles.expeditioner') }
   ]
 
   const roleSelect = (
