@@ -127,6 +127,8 @@
     "sendError": "No se pudo confirmar el envío del lote. Verifique la impresora antes de reintentar.",
     "noPending": "No hay fotos pendientes con estos filtros.",
     "validationError": "No se pudo confirmar el vínculo.",
+    "epithet": "Epíteto",
+    "searchEpithet": "Seleccionar epíteto...",
     "scientificName": "Nombre científico",
     "collector": "Colector",
     "detail": "Detalles",

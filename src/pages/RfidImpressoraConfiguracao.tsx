@@ -134,7 +134,7 @@ const RfidImpressoraConfiguracao: React.FC = () => {
       setConfigured(true)
 
       try {
-        const statusResponse = await axios.get<PrinterStatus>(`${baseUrl}/printers/${encodeURIComponent(printerId)}/status`, { timeout: 10000 })
+        const statusResponse = await axios.get<PrinterStatus>(`${baseUrl}/printers/${encodeURIComponent(printerId)}/status`, { timeout: 60000 })
         if (currentRequest !== requestId.current) {
           return
         }
@@ -203,7 +203,6 @@ const RfidImpressoraConfiguracao: React.FC = () => {
       if (response.data.printers.length === 0) {
         notification.info({ message: t('printer.noPrintersFound') })
       }
-
     } catch (discoveryError) {
       if (currentDiscovery !== discoveryId.current) {
         return
@@ -288,7 +287,6 @@ const RfidImpressoraConfiguracao: React.FC = () => {
 
       notification.success({ message: t('printer.configuredSuccess') })
       await refresh()
-
     } catch (configureError) {
       notification.error({ message: t('printer.configurationFailed'), description: errorText(configureError) })
     } finally {
@@ -300,14 +298,13 @@ const RfidImpressoraConfiguracao: React.FC = () => {
     setPrinting(true)
 
     try {
-      const response = await axios.post<{ success: boolean }>(`${baseUrl}/printers/${encodeURIComponent(printerId)}/test-print`, {}, { timeout: 20000 })
+      const response = await axios.post<{ success: boolean }>(`${baseUrl}/printers/${encodeURIComponent(printerId)}/test-print`, {}, { timeout: 60000 })
       if (!response.data.success) {
         throw new Error(t('printer.testFailed'))
       }
 
       notification.success({ message: t('printer.testSent') })
       await refresh()
-
     } catch (printError) {
       notification.error({ message: t('printer.testFailed'), description: errorText(printError) })
     } finally {
