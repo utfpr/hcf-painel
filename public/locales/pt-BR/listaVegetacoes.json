@@ -14,5 +14,18 @@
   "pesquisar": "Pesquisar",
   "fechar": "Fechar",
   "erro": "Erro",
-  "erroBuscar": "Não foi possível carregar as vegetações. Tente novamente."
+  "erroBuscar": "Não foi possível carregar as vegetações. Tente novamente.",
+  "renomear": "Renomear {{nome}}",
+  "excluir": "Excluir {{nome}}",
+  "confirmacaoExcluir": "Excluir vegetação?",
+  "descricaoExcluir": "Deseja excluir a vegetação {{nome}}?",
+  "nomeObrigatorio": "Informe o nome da vegetação.",
+  "aviso": "Atenção",
+  "cadastroSucesso": "Vegetação cadastrada com sucesso.",
+  "atualizacaoSucesso": "Vegetação renomeada com sucesso.",
+  "exclusaoSucesso": "Vegetação excluída com sucesso.",
+  "erroRequisicao": "Verifique os dados informados e tente novamente.",
+  "erroNaoEncontrado": "A vegetação não foi encontrada.",
+  "erroConflito": "Não foi possível concluir. A vegetação pode estar vinculada a tombos.",
+  "erroOperacao": "Não foi possível concluir a operação. Tente novamente."
 }

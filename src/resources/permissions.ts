@@ -92,6 +92,22 @@ const ruleSpecificMapping: Record<TipoUsuario, (user: Usuario) => Rule<Resource,
       ]
     },
     {
+      resource: 'FaseSucessional',
+      action: [
+        'create',
+        'update',
+        'delete'
+      ]
+    },
+    {
+      resource: 'Vegetacao',
+      action: [
+        'create',
+        'update',
+        'delete'
+      ]
+    },
+    {
       resource: 'Reflora',
       action: ['read', 'update']
     },
@@ -116,6 +132,22 @@ const ruleSpecificMapping: Record<TipoUsuario, (user: Usuario) => Rule<Resource,
   [TipoUsuario.Operador]: () => [
     {
       resource: 'Relevo',
+      action: [
+        'create',
+        'update',
+        'delete'
+      ]
+    },
+    {
+      resource: 'FaseSucessional',
+      action: [
+        'create',
+        'update',
+        'delete'
+      ]
+    },
+    {
+      resource: 'Vegetacao',
       action: [
         'create',
         'update',
