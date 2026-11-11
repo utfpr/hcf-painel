@@ -18,6 +18,7 @@
   "tipoCurador": "Curador",
   "tipoOperador": "Operador",
   "tipoIdentificador": "Identificador",
+  "tipoExpedicionario": "Expedicionario",
 
   "confirmarExcluirUsuario": "¿Está seguro de que desea eliminar este usuario?",
   "descricaoExcluirUsuario": "Al hacer clic en SÍ, el usuario será eliminado.",

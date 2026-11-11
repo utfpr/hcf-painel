@@ -16,6 +16,7 @@ import {
 
 import logoImage from '../assets/img/logo_branca.png'
 import { EnvBadge } from '../components/EnvBadge'
+import { isExpedicionario } from '../helpers/usuarios'
 
 const { Header, Content, Sider } = Layout
 const { SubMenu } = Menu
@@ -37,6 +38,13 @@ const TAXONOMIA_RESOURCES = [
 const SERVICOS_RESOURCES = [
     'Reflora',
     'SpeciesLink'
+]
+
+const ECOLOGIA_RESOURCES = [
+    'Solo',
+    'Relevo',
+    'Vegetacao',
+    'FaseSucessional'
 ]
 
 class MainLayout extends Component {
@@ -242,7 +250,7 @@ class MainLayout extends Component {
                             <Menu.Item key="cidadeMenuItem">
                                 <Link to="/cidades">{this.props.t('mainLayout:cidades')}</Link>
                             </Menu.Item>
-                            {this.props.auth.loggedIn
+                            {this.props.auth.loggedIn && !isExpedicionario()
                                 ? (
                                         <Menu.Item key="localColetaMenuItem">
                                             <Link to="/locais-coleta">
@@ -252,6 +260,48 @@ class MainLayout extends Component {
                                     )
                                 : null}
                         </SubMenu>
+                        {ECOLOGIA_RESOURCES.some(resource => this.props.auth.canAny(['read'], resource))
+                            ? (
+                                    <SubMenu
+                                        key="ecologiaSubmenu"
+                                        title={(
+                                            <span>
+                                                <EnvironmentOutlined />
+                                                <span>{this.props.t('mainLayout:ecologia')}</span>
+                                            </span>
+                                        )}
+                                    >
+                                        {this.props.auth.can('read', 'Solo')
+                                            ? (
+                                                    <Menu.Item key="soloMenuItem">
+                                                        <Link to="/solos">{this.props.t('mainLayout:solos')}</Link>
+                                                    </Menu.Item>
+                                                )
+                                            : null}
+                                        {this.props.auth.can('read', 'Relevo')
+                                            ? (
+                                                    <Menu.Item key="relevoMenuItem">
+                                                        <Link to="/relevos">{this.props.t('mainLayout:relevos')}</Link>
+                                                    </Menu.Item>
+                                                )
+                                            : null}
+                                        {this.props.auth.can('read', 'FaseSucessional')
+                                            ? (
+                                                    <Menu.Item key="faseSucessionalMenuItem">
+                                                        <Link to="/fases-sucessionais">{this.props.t('mainLayout:fasesSucessionais')}</Link>
+                                                    </Menu.Item>
+                                                )
+                                            : null}
+                                        {this.props.auth.can('read', 'Vegetacao')
+                                            ? (
+                                                    <Menu.Item key="vegetacaoMenuItem">
+                                                        <Link to="/vegetacoes">{this.props.t('mainLayout:vegetacoes')}</Link>
+                                                    </Menu.Item>
+                                                )
+                                            : null}
+                                    </SubMenu>
+                                )
+                            : null}
                         {this.props.auth.can(['read'], 'Remessa')
                             ? (
                                     <Menu.Item key="remessaMenuItem">
@@ -302,7 +352,7 @@ class MainLayout extends Component {
                                     </Menu.Item>
                                 )
                             : null}
-                        {this.props.auth.loggedIn
+                        {this.props.auth.loggedIn && !isExpedicionario()
                             ? (
                                     <Menu.Item key="herbarioMenuItem">
                                         <Link to="/herbarios">
@@ -312,7 +362,7 @@ class MainLayout extends Component {
                                     </Menu.Item>
                                 )
                             : null}
-                        {this.props.auth.loggedIn
+                        {this.props.auth.loggedIn && !isExpedicionario()
                             ? (
                                     <SubMenu
                                         key="fichasSubmenu"
@@ -348,7 +398,7 @@ class MainLayout extends Component {
                                 <Link to="/filtros">{this.props.t('mainLayout:filtrosAvancados')}</Link>
                             </Menu.Item>
                         </SubMenu>
-                        {this.props.auth.loggedIn
+                        {this.props.auth.loggedIn && !isExpedicionario()
                             ? (
                                     <SubMenu
                                         key="relatorios"
@@ -437,7 +487,31 @@ class MainLayout extends Component {
                                     </SubMenu>
                                 )
                             : null}
-                        {this.props.auth.can('read', 'Rfid')
+                        {this.props.auth.loggedIn
+                            ? (
+                                    <SubMenu
+                                        key="expedicoesSubmenu"
+                                        title={(
+                                            <span>
+                                                <EnvironmentOutlined />
+                                                <span>{this.props.t('mainLayout:expedicoes')}</span>
+                                            </span>
+                                        )}
+                                    >
+                                        {!isExpedicionario()
+                                            ? (
+                                                    <Menu.Item key="expedicoesGerenciamentoMenuItem">
+                                                        <Link to="/expedicoes">{this.props.t('mainLayout:expedicoesGerenciamento')}</Link>
+                                                    </Menu.Item>
+                                                )
+                                            : null}
+                                        <Menu.Item key="expedicoesAppMenuItem">
+                                            <Link to="/expedicoes-app">{this.props.t('mainLayout:expedicoesApp')}</Link>
+                                        </Menu.Item>
+                                    </SubMenu>
+                                )
+                            : null}
+                        {this.props.auth.can('read', 'Rfid') && !isExpedicionario()
                             ? (
                                     <SubMenu
                                         key="rfid"
@@ -456,6 +530,9 @@ class MainLayout extends Component {
                                         </Menu.Item>
                                         <Menu.Item key="rfidVinculacao">
                                             <Link to="/rfid-vinculacao">{this.props.t('rfid:menu.link')}</Link>
+                                        </Menu.Item>
+                                        <Menu.Item key="rfidImpressao">
+                                            <Link to="/rfid-impressao">{this.props.t('rfid:menu.print')}</Link>
                                         </Menu.Item>
                                         <Menu.Item key="rfidInventario">
                                             <Link to="/rfid-inventario">{this.props.t('rfid:menu.inventory')}</Link>

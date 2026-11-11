@@ -265,6 +265,7 @@ class NovoUsuarioScreen extends Component {
                                         <Option value="1">{this.props.t('novoUsuarioScreen:tipoCurador')}</Option>
                                         <Option value="2">{this.props.t('novoUsuarioScreen:tipoOperador')}</Option>
                                         <Option value="3">{this.props.t('novoUsuarioScreen:tipoIdentificador')}</Option>
+                                        <Option value="4">{this.props.t('novoUsuarioScreen:tipoExpedicionario')}</Option>
                                     </Select>
                                 )}
                             </FormItem>
