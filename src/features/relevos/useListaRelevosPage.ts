@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { useContainer } from '@/contexts/Container/useContainer'
+import { useMutation } from '@/hooks/query/useMutation'
 import { useQuery } from '@/hooks/query/useQuery'
 import type { HttpClient } from '@/libraries/http/HttpClient'
 
@@ -9,6 +10,9 @@ import type {
   RelevosApiResponse,
   RelevosListResponse
 } from './types'
+
+const LIST_KEY = '/v1/relevos'
+const REVALIDATE_LIST = [[LIST_KEY]] as const
 
 export async function fetchRelevos(
   httpClient: Pick<HttpClient, 'get'>,
@@ -40,6 +44,21 @@ export async function fetchRelevos(
 
 export function useListaRelevosPage() {
   const { httpClient } = useContainer()
+  const { trigger: create, loading: creating } = useMutation(
+    (nome: string) => httpClient.post<unknown>(LIST_KEY, { nome }),
+    [LIST_KEY, 'create'],
+    { revalidate: REVALIDATE_LIST }
+  )
+  const { trigger: update, loading: updating } = useMutation(
+    (id: number | string, nome: string) => httpClient.put<unknown>(`${LIST_KEY}/${id}`, { nome }),
+    [LIST_KEY, 'update'],
+    { revalidate: REVALIDATE_LIST }
+  )
+  const { trigger: remove, loading: removing } = useMutation(
+    (id: number | string) => httpClient.delete<unknown>(`${LIST_KEY}/${id}`),
+    [LIST_KEY, 'delete'],
+    { revalidate: REVALIDATE_LIST }
+  )
   const [nome, setNome] = useState('')
   const [pagina, setPagina] = useState(1)
   const [limite, setLimite] = useState(20)
@@ -51,7 +70,7 @@ export function useListaRelevosPage() {
   } = useQuery(
     () => fetchRelevos(httpClient, params),
     [
-      '/v1/relevos',
+      LIST_KEY,
       nome,
       pagina,
       limite,
@@ -83,6 +102,12 @@ export function useListaRelevosPage() {
     loading,
     error,
     search,
-    changePage
+    changePage,
+    create,
+    creating,
+    update,
+    updating,
+    remove,
+    removing
   }
 }
