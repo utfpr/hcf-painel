@@ -3,6 +3,7 @@
   "internos": "Internal",
   "externos": "External",
   "fotos": "Photos",
+  "fotosComRfid": "Photos with RFID",
   "ano": "Year {{ano}}",
   "topFamilias": "Top Families",
   "topGeneros": "Top Genera",
