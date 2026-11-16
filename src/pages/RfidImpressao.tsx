@@ -24,6 +24,7 @@ interface FotoPendente {
   tombo_hcf: string
   codigo_barra: string
   caminho_foto: string | null
+  genero: string
   nome_cientifico: string
   coletor_principal: string
   nome_popular: string
@@ -116,11 +117,6 @@ const RfidImpressao: React.FC = () => {
       const lista = await axios.get<{ printers: Array<{ id: string }> }>(`${baseUrl}/printers`, { timeout: 5000 })
 
       if (!lista.data.printers.some(item => item.id === id)) {
-        throw new Error(t('print.printerRequired'))
-      }
-
-      const status = await axios.get<{ connected: boolean; ready: boolean }>(`${baseUrl}/printers/${id}/status`, { timeout: 10000 })
-      if (!status.data.connected || !status.data.ready) {
         throw new Error(t('print.printerRequired'))
       }
 
@@ -253,6 +249,8 @@ const RfidImpressao: React.FC = () => {
           <Card>
             <RfidListaConferenciaFiltros
               loading={carregando}
+              rotuloEspecie={t('print.epithet')}
+              placeholderEspecie={t('print.searchEpithet')}
               onDraftChange={() => setFiltroPendente(true)}
               onSearch={values => {
                 setFiltros(values)
@@ -276,6 +274,7 @@ const RfidImpressao: React.FC = () => {
                 },
                 { title: t('conference.tombo'), dataIndex: 'tombo_hcf' },
                 { title: t('conference.barcode'), dataIndex: 'codigo_barra' },
+                { title: t('conference.genus'), dataIndex: 'genero' },
                 { title: t('print.scientificName'), dataIndex: 'nome_cientifico' },
                 { title: t('print.collector'), dataIndex: 'coletor_principal' }
               ]}
