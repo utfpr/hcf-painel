@@ -159,6 +159,16 @@
     "failed": "Failed",
     "totalRecords": "{{start}}-{{end}} of {{total}} records"
   },
+  "unlink": {
+    "title": "Edit RFID link",
+    "save": "Save",
+    "action": "Unlink label",
+    "description": "Unlink the label to make the specimen available for a new link.",
+    "pending": "Unlink pending. Click Save to confirm.",
+    "effects": "The specimen and photo will be kept. The link will be removed from conference lists. The data written to the physical label will not be erased.",
+    "success": "Label unlinked successfully.",
+    "failure": "Unable to unlink the label. Please try again."
+  },
   "inventory": {
     "title": "Continuous RFID Reading",
     "validationApi": "API validation",

@@ -159,6 +159,16 @@
     "failed": "Fallo",
     "totalRecords": "{{start}}-{{end}} de {{total}} registros"
   },
+  "unlink": {
+    "title": "Editar vínculo RFID",
+    "save": "Guardar",
+    "action": "Desvincular etiqueta",
+    "description": "Desvincule la etiqueta para liberar el ejemplar para un nuevo vínculo.",
+    "pending": "Desvinculación pendiente. Haga clic en Guardar para confirmar.",
+    "effects": "Se conservarán el ejemplar y la foto. El vínculo se eliminará de las listas de verificación. No se borrará la grabación de la etiqueta física.",
+    "success": "Etiqueta desvinculada correctamente.",
+    "failure": "No se pudo desvincular la etiqueta. Inténtelo de nuevo."
+  },
   "inventory": {
     "title": "Lectura continua RFID",
     "validationApi": "Validación API",
