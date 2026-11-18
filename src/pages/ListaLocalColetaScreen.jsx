@@ -130,7 +130,7 @@ class ListaLocaisColeta extends Component {
     formataDadosLocais = locais => locais.map(item => ({
         key: item.id,
         nome: item.descricao,
-        pais: item.cidade?.estado?.paise?.nome || '',
+        pais: item.cidade?.estado?.pais?.nome || '',
         estado: item.cidade?.estado?.nome || '',
         cidade: item.cidade?.nome || '',
         acao: this.gerarAcao(item.id)
@@ -155,11 +155,11 @@ class ListaLocaisColeta extends Component {
 
     editarLocal = async id => {
         try {
-            const response = await axios.get(`/locais-coleta/${id}`)
+            const response = await axios.get(`/v1/locais-coleta/${id}`)
 
             if (response.status === 200) {
                 const local = response.data
-                const paisId = local.cidade.estado.paise.id
+                const paisId = local.cidade.estado.pais.id
                 const estadoId = local.cidade.estado.id
 
                 await this.requisitaEstados('', paisId)
@@ -215,7 +215,7 @@ class ListaLocaisColeta extends Component {
         params.order = `${campo}:${ordem}`
 
         try {
-            const response = await axios.get('/locais-coleta', { params })
+            const response = await axios.get('/v1/locais-coleta', { params })
 
             if (response.status === 200) {
                 this.setState({
@@ -257,12 +257,12 @@ class ListaLocaisColeta extends Component {
         const { nomeLocal, cidadeSelecionada } = this.state
 
         try {
-            const response = await axios.post('/locais-coleta', {
+            const response = await axios.post('/v1/locais-coleta', {
                 descricao: nomeLocal,
                 cidade_id: cidadeSelecionada
             })
 
-            if (response.status === 204) {
+            if (response.status === 201) {
                 this.requisitaListaLocais(this.state.valores, this.state.pagina)
                 this.notificacao('success', this.props.t('common:tituloSucesso'), this.props.t('listaLocalColetaScreen:localCadastrado'))
             }
@@ -280,7 +280,7 @@ class ListaLocaisColeta extends Component {
         const { id, nomeLocal, cidadeSelecionada } = this.state
 
         try {
-            const response = await axios.put(`/locais-coleta/${id}`, {
+            const response = await axios.put(`/v1/locais-coleta/${id}`, {
                 descricao: nomeLocal,
                 cidade_id: cidadeSelecionada
             })
@@ -299,7 +299,7 @@ class ListaLocaisColeta extends Component {
 
     requisitaExclusao = async id => {
         try {
-            const response = await axios.delete(`/locais-coleta/${id}`)
+            const response = await axios.delete(`/v1/locais-coleta/${id}`)
 
             if (response.status === 204) {
                 this.requisitaListaLocais(this.state.valores, this.state.pagina)
