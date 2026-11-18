@@ -13,7 +13,7 @@ const FaseFormField = ({
 }) => {
     const { t } = useTranslation('tombo')
     const optionFases = () => fases.map(item => (
-        <Option key={item.numero} value={`${item.numero}`}>{item.nome}</Option>
+        <Option key={item.id} value={`${item.id}`}>{item.nome}</Option>
     ))
 
     return (
