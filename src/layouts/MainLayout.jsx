@@ -40,7 +40,7 @@ const SERVICOS_RESOURCES = [
     'SpeciesLink'
 ]
 
-const ECOLOGIA_RESOURCES = [
+const AMBIENTE_RESOURCES = [
     'Solo',
     'Relevo',
     'Vegetacao',
@@ -260,14 +260,14 @@ class MainLayout extends Component {
                                     )
                                 : null}
                         </SubMenu>
-                        {ECOLOGIA_RESOURCES.some(resource => this.props.auth.canAny(['read'], resource))
+                        {AMBIENTE_RESOURCES.some(resource => this.props.auth.canAny(['read'], resource))
                             ? (
                                     <SubMenu
-                                        key="ecologiaSubmenu"
+                                        key="ambienteSubmenu"
                                         title={(
                                             <span>
                                                 <EnvironmentOutlined />
-                                                <span>{this.props.t('mainLayout:ecologia')}</span>
+                                                <span>{this.props.t('mainLayout:ambiente')}</span>
                                             </span>
                                         )}
                                     >

@@ -25,22 +25,22 @@ describe('sidebar route matching', () => {
     expect(getOpenMenuKeys('/relatorio-codigo-barras')).toEqual(['relatorios'])
   })
 
-  test('opens ecology when viewing a successional phase', () => {
+  test('opens environment when viewing a successional phase', () => {
     expect(getSelectedMenuKey('/fases-sucessionais')).toBe('fasesSucessionais')
-    expect(getOpenMenuKeys('/fases-sucessionais')).toEqual(['ecologia'])
+    expect(getOpenMenuKeys('/fases-sucessionais')).toEqual(['ambiente'])
   })
 
-  test('opens ecology when viewing soil', () => {
+  test('opens environment when viewing soil', () => {
     expect(getSelectedMenuKey('/solos')).toBe('solos')
-    expect(getOpenMenuKeys('/solos')).toEqual(['ecologia'])
+    expect(getOpenMenuKeys('/solos')).toEqual(['ambiente'])
   })
 
-  test('opens ecology when viewing relief', () => {
+  test('opens environment when viewing relief', () => {
     expect(getSelectedMenuKey('/relevos')).toBe('relevos')
-    expect(getOpenMenuKeys('/relevos')).toEqual(['ecologia'])
+    expect(getOpenMenuKeys('/relevos')).toEqual(['ambiente'])
   })
 
-  test('shows only permitted ecology items', () => {
+  test('shows only permitted environment items', () => {
     const t = ((key: string) => key) as never
     const auth = {
       can: (_action: string, resource: string) => resource === 'Relevo',
@@ -51,12 +51,12 @@ describe('sidebar route matching', () => {
       t, auth, isCuradorOuOperador: false, isExpedicionario: false
     })
     const geography = items?.find(item => item && 'key' in item && item.key === 'geography')
-    const ecology = geography && 'children' in geography
-      ? geography.children?.find(item => item && 'key' in item && item.key === 'ecologia')
+    const ambiente = geography && 'children' in geography
+      ? geography.children?.find(item => item && 'key' in item && item.key === 'ambiente')
       : undefined
 
-    expect(ecology && 'children' in ecology ? ecology.children : []).toHaveLength(2)
-    expect(ecology && 'children' in ecology ? ecology.children?.[0] : undefined).toMatchObject({ key: 'relevos' })
+    expect(ambiente && 'children' in ambiente ? ambiente.children : []).toHaveLength(2)
+    expect(ambiente && 'children' in ambiente ? ambiente.children?.[0] : undefined).toMatchObject({ key: 'relevos' })
 
     const deniedAuth = {
       can: () => false,
@@ -66,16 +66,16 @@ describe('sidebar route matching', () => {
       t, auth: deniedAuth, isCuradorOuOperador: false, isExpedicionario: false
     })
     const deniedGeography = deniedItems?.find(item => item && 'key' in item && item.key === 'geography')
-    const deniedEcology = deniedGeography && 'children' in deniedGeography
-      ? deniedGeography.children?.find(item => item && 'key' in item && item.key === 'ecologia')
+    const deniedAmbiente = deniedGeography && 'children' in deniedGeography
+      ? deniedGeography.children?.find(item => item && 'key' in item && item.key === 'ambiente')
       : undefined
 
-    expect(deniedEcology && 'children' in deniedEcology ? deniedEcology.children : []).toHaveLength(0)
+    expect(deniedAmbiente && 'children' in deniedAmbiente ? deniedAmbiente.children : []).toHaveLength(0)
   })
 
-  test('opens ecology when viewing vegetation', () => {
+  test('opens environment when viewing vegetation', () => {
     expect(getSelectedMenuKey('/vegetacoes')).toBe('vegetacoes')
-    expect(getOpenMenuKeys('/vegetacoes')).toEqual(['ecologia'])
+    expect(getOpenMenuKeys('/vegetacoes')).toEqual(['ambiente'])
   })
   test('opens the expeditions submenu on expedition routes', () => {
     expect(getSelectedMenuKey('/expedicoes')).toBe('expedicoesGerenciamento')

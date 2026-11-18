@@ -35,6 +35,12 @@ import ButtonComponent from '../../components/ButtonComponent'
 import ModalCadastroComponent from '../../components/ModalCadastroComponent'
 import { fotosBaseUrl } from '../../config/api'
 import { isIdentificador } from '../../helpers/usuarios'
+import {
+    CATALOGOS_V1,
+    catalogoV1Params,
+    extraiIdCatalogoV1,
+    normalizaCatalogoV1
+} from './catalogosV1'
 import CidadeFormField from './components/CidadeFormField'
 import ColecoesAnexasFormField from './components/ColecoesAnexasFormField'
 import ColetorFormField from './components/ColetorFormField'
@@ -1122,7 +1128,7 @@ class NovoTomboScreen extends Component {
                             this.props.match.params.tombo_id
                         )
                     } else {
-                        this.setState({ numeroHcf: response.data.hcf})
+                        this.setState({ numeroHcf: response.data.hcf })
                         this.props.form.setFields({
                             numeroTombo: {
                                 value: Number(response.data.hcf)
@@ -2758,19 +2764,6 @@ class NovoTomboScreen extends Component {
 
         const json = {}
 
-        const extrairId = valor => {
-            if (typeof valor === 'object' && valor.key) {
-                return parseInt(valor.key)
-            }
-            if (typeof valor === 'string' && valor.trim() !== '') {
-                return parseInt(valor)
-            }
-            if (typeof valor === 'number') {
-                return valor
-            }
-            return null
-        }
-
         const normalizarIdentificadores = identificadores => {
             if (!identificadores || !Array.isArray(identificadores)) {
                 return null
@@ -2798,11 +2791,11 @@ class NovoTomboScreen extends Component {
             return json
         }
 
-        const soloId = extrairId(solo)
-        const relevoId = extrairId(relevo)
-        const vegetacaoId = extrairId(vegetacao)
-        const fasesId = extrairId(fases)
-        const localColetaId = extrairId(complemento)
+        const soloId = extraiIdCatalogoV1(solo)
+        const relevoId = extraiIdCatalogoV1(relevo)
+        const vegetacaoId = extraiIdCatalogoV1(vegetacao)
+        const fasesId = extraiIdCatalogoV1(fases)
+        const localColetaId = extraiIdCatalogoV1(complemento)
 
         json.principal = {
             entidade_id: parseInt(entidade),
@@ -2930,19 +2923,6 @@ class NovoTomboScreen extends Component {
         } = values
         const json = {}
 
-        const extrairId = valor => {
-            if (typeof valor === 'object' && valor.key) {
-                return parseInt(valor.key)
-            }
-            if (typeof valor === 'string' && valor.trim() !== '') {
-                return parseInt(valor)
-            }
-            if (typeof valor === 'number') {
-                return valor
-            }
-            return null
-        }
-
         const normalizarIdentificadores = identificadores => {
             if (!identificadores || !Array.isArray(identificadores)) {
                 return identificadores
@@ -2956,11 +2936,11 @@ class NovoTomboScreen extends Component {
             })
         }
 
-        const soloId = extrairId(solo)
-        const relevoId = extrairId(relevo)
-        const vegetacaoId = extrairId(vegetacao)
-        const fasesId = extrairId(fases)
-        const localColetaId = extrairId(complemento)
+        const soloId = extraiIdCatalogoV1(solo)
+        const relevoId = extraiIdCatalogoV1(relevo)
+        const vegetacaoId = extraiIdCatalogoV1(vegetacao)
+        const fasesId = extraiIdCatalogoV1(fases)
+        const localColetaId = extraiIdCatalogoV1(complemento)
 
         if (nomePopular) json.principal = { nome_popular: nomePopular }
         json.principal = { ...json.principal, data_tombo: this.normalizaDataTombo(dataTombo) }
@@ -3266,15 +3246,13 @@ class NovoTomboScreen extends Component {
         this.setState({ fetchingSolos: true })
 
         try {
-            const params = {
-                ...(searchText ? { nome: searchText } : {})
-            }
-
-            const response = await axios.get('/solos', { params })
+            const response = await axios.get(CATALOGOS_V1.solos, {
+                params: catalogoV1Params(searchText)
+            })
 
             if (response.status === 200) {
                 this.setState({
-                    solos: response.data,
+                    solos: normalizaCatalogoV1(response.data, 'solos'),
                     fetchingSolos: false
                 })
             }
@@ -3288,15 +3266,13 @@ class NovoTomboScreen extends Component {
         this.setState({ fetchingRelevos: true })
 
         try {
-            const params = {
-                ...(searchText ? { nome: searchText } : {})
-            }
-
-            const response = await axios.get('/relevos', { params })
+            const response = await axios.get(CATALOGOS_V1.relevos, {
+                params: catalogoV1Params(searchText)
+            })
 
             if (response.status === 200) {
                 this.setState({
-                    relevos: response.data,
+                    relevos: normalizaCatalogoV1(response.data, 'relevos'),
                     fetchingRelevos: false
                 })
             }
@@ -3310,15 +3286,13 @@ class NovoTomboScreen extends Component {
         this.setState({ fetchingVegetacoes: true })
 
         try {
-            const params = {
-                ...(searchText ? { nome: searchText } : {})
-            }
-
-            const response = await axios.get('/vegetacoes', { params })
+            const response = await axios.get(CATALOGOS_V1.vegetacoes, {
+                params: catalogoV1Params(searchText)
+            })
 
             if (response.status === 200) {
                 this.setState({
-                    vegetacoes: response.data,
+                    vegetacoes: normalizaCatalogoV1(response.data, 'vegetacoes'),
                     fetchingVegetacoes: false
                 })
             }
@@ -3332,15 +3306,13 @@ class NovoTomboScreen extends Component {
         this.setState({ fetchingFases: true })
 
         try {
-            const params = {
-                ...(searchText ? { nome: searchText } : {})
-            }
-
-            const response = await axios.get('/fases-sucessionais', { params })
+            const response = await axios.get(CATALOGOS_V1.fasesSucessionais, {
+                params: catalogoV1Params(searchText)
+            })
 
             if (response.status === 200) {
                 this.setState({
-                    fases: response.data,
+                    fases: normalizaCatalogoV1(response.data, 'fasesSucessionais'),
                     fetchingFases: false
                 })
             }

@@ -31,7 +31,7 @@ const TAXONOMIA_RESOURCES = [
   'Autor'
 ] as const
 
-const ECOLOGIA_RESOURCES = ['Solo', 'Relevo', 'FaseSucessional', 'Vegetacao'] as const
+const AMBIENTE_RESOURCES = ['Solo', 'Relevo', 'FaseSucessional', 'Vegetacao'] as const
 
 interface BuildNavItemsParams {
   t: TFunction
@@ -124,7 +124,7 @@ export function getOpenMenuKeys(pathname: string): string[] {
       'cidades',
       'localColeta'
     ],
-    ecologia: [
+    ambiente: [
       'solos',
       'relevos',
       'fasesSucessionais',
@@ -311,7 +311,7 @@ export function buildNavItems({
       : null
   ])
 
-  const canReadEcologia = ECOLOGIA_RESOURCES.some(resource => auth.canAny(['read'], resource))
+  const canReadAmbiente = AMBIENTE_RESOURCES.some(resource => auth.canAny(['read'], resource))
   const geographyItems = filterItems([
     {
       key: 'locais',
@@ -338,12 +338,12 @@ export function buildNavItems({
           : null
       ])
     },
-    canReadEcologia
+    canReadAmbiente
       ? {
-          key: 'ecologia',
+          key: 'ambiente',
           icon: <EnvironmentOutlined />,
-          label: t('mainLayout:ecologia'),
-          title: t('mainLayout:ecologia'),
+          label: t('mainLayout:ambiente'),
+          title: t('mainLayout:ambiente'),
           children: filterItems([
         auth.can('read', 'Solo')
           ? {
