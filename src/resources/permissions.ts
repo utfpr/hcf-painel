@@ -84,6 +84,14 @@ const ruleSpecificMapping: Record<TipoUsuario, (user: Usuario) => Rule<Resource,
       ]
     },
     {
+      resource: 'Solo',
+      action: [
+        'create',
+        'update',
+        'delete'
+      ]
+    },
+    {
       resource: 'Relevo',
       action: [
         'create',
@@ -130,6 +138,14 @@ const ruleSpecificMapping: Record<TipoUsuario, (user: Usuario) => Rule<Resource,
     }
   ],
   [TipoUsuario.Operador]: () => [
+    {
+      resource: 'Solo',
+      action: [
+        'create',
+        'update',
+        'delete'
+      ]
+    },
     {
       resource: 'Relevo',
       action: [
