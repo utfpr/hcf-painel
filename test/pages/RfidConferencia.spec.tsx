@@ -2,6 +2,7 @@ import { notification } from 'antd'
 import axios from 'axios'
 import { createInstance } from 'i18next'
 import { I18nextProvider } from 'react-i18next'
+import { SWRConfig } from 'swr'
 import {
   beforeEach, describe, expect, it, vi
 } from 'vitest'
@@ -30,7 +31,14 @@ const vinculo = {
 async function abrirEdicao() {
   const i18n = createInstance()
   await i18n.init({ lng: 'pt-BR', resources: { 'pt-BR': { rfid: ptBR } } })
-  render(<I18nextProvider i18n={i18n}><RfidConferencia /></I18nextProvider>)
+  render(
+    <SWRConfig value={{
+      provider: () => new Map(), dedupingInterval: 0, shouldRetryOnError: false
+    }}
+    >
+      <I18nextProvider i18n={i18n}><RfidConferencia /></I18nextProvider>
+    </SWRConfig>
+  )
   const user = userEvent.setup()
   await user.click(await screen.findByRole('button', { name: 'Editar' }))
   return { user, modal: within(screen.getByRole('dialog')) }

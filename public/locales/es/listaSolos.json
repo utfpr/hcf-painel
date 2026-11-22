@@ -14,5 +14,18 @@
   "pesquisar": "Buscar",
   "fechar": "Cerrar",
   "erro": "Error",
-  "erroBuscar": "No se pudieron cargar los suelos. Inténtelo de nuevo."
+  "erroBuscar": "No se pudieron cargar los suelos. Inténtelo de nuevo.",
+  "renomear": "Renombrar {{nome}}",
+  "excluir": "Eliminar {{nome}}",
+  "confirmacaoExcluir": "¿Eliminar suelo?",
+  "descricaoExcluir": "¿Desea eliminar el suelo {{nome}}?",
+  "nomeObrigatorio": "Ingrese el nombre del suelo.",
+  "aviso": "Atención",
+  "cadastroSucesso": "Suelo creado correctamente.",
+  "atualizacaoSucesso": "Suelo renombrado correctamente.",
+  "exclusaoSucesso": "Suelo eliminado correctamente.",
+  "erroRequisicao": "Revise los datos e inténtelo de nuevo.",
+  "erroNaoEncontrado": "No se encontró el suelo.",
+  "erroConflito": "No se pudo completar la operación. El suelo puede estar vinculado a registros.",
+  "erroOperacao": "No se pudo completar la operación. Inténtelo de nuevo."
 }

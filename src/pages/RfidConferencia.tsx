@@ -1,5 +1,5 @@
 import React, {
-  useState, useEffect, useCallback
+  useState, useEffect
 } from 'react'
 
 import {
@@ -16,10 +16,10 @@ import {
   Form
 } from 'antd'
 import { TablePaginationConfig } from 'antd/es/table'
-import axios from 'axios'
 import moment from 'moment'
 import { useTranslation } from 'react-i18next'
 
+import { FiltrosVinculos, useRfidVinculos } from '@/features/rfid/useRfidVinculos'
 import {
   SearchOutlined, ClearOutlined, ReloadOutlined, EditOutlined
 } from '@ant-design/icons'
@@ -29,77 +29,48 @@ import { RfidVinculo } from '../components/rfid-conferencia/types'
 
 const { Option } = Select
 
-interface FiltrosVinculos {
-  tombo_hcf?: string
-  codigo_barra?: string
-  epc?: string
-  status?: string
-}
-
-interface VinculosResponse {
-  dados: RfidVinculo[]
-  meta: { pagina: number; limite: number; total: number }
-}
-
 const formatarDataHora = (data?: string) => (data ? moment(data).format('DD/MM/YYYY HH:mm:ss') : '-')
 
 const RfidConferencia: React.FC = () => {
   const [form] = Form.useForm<FiltrosVinculos>()
   const { t } = useTranslation('rfid')
 
-  const [dados, setDados] = useState<RfidVinculo[]>([])
-  const [loading, setLoading] = useState<boolean>(false)
   const [vinculoEdicao, setVinculoEdicao] = useState<RfidVinculo | null>(null)
-  const [paginacao, setPaginacao] = useState({
-    current: 1,
-    pageSize: 20,
-    total: 0
+  const [consulta, setConsulta] = useState({
+    pagina: 1, limite: 20, filtros: {} as FiltrosVinculos
   })
-
-  const notificacao = (type: 'success' | 'warning' | 'error' | 'info', titulo: string, descricao: string) => {
-    notification[type]({
-      message: titulo,
-      description: descricao,
-      placement: 'topRight'
-    })
+  const {
+    data, loading, validating, error, refresh
+  } = useRfidVinculos(consulta.pagina, consulta.limite, consulta.filtros)
+  const dados = data?.dados ?? []
+  const paginacao = {
+    current: consulta.pagina,
+    pageSize: consulta.limite,
+    total: data?.meta.total ?? 0
   }
 
-  const requisitaDados = useCallback(async (pagina = 1, limite = 20, filtros: FiltrosVinculos = {}) => {
-    setLoading(true)
-
-    try {
-      const response = await axios.get<VinculosResponse>('/rfids', {
-        params: {
-          pagina,
-          limite,
-          ...filtros
-        }
-      })
-
-      if (response.status === 200) {
-        const { dados, meta } = response.data
-
-        setDados(dados)
-        setPaginacao({
-          current: meta.pagina,
-          pageSize: meta.limite,
-          total: meta.total
-        })
-      }
-    } catch (error) {
-      notificacao('error', t('common.error'), t('notifications.conferenceFetchFailure'))
-      console.error(error)
-    } finally {
-      setLoading(false)
-    }
-  }, [t])
-
   useEffect(() => {
-    void requisitaDados(1, 20)
-  }, [requisitaDados])
+    if (error) {
+      notification.error({
+        message: t('common.error'),
+        description: t('notifications.conferenceFetchFailure'),
+        placement: 'topRight'
+      })
+    }
+  }, [error, t])
+
+  const requisitaDados = (pagina = 1, limite = 20, filtros: FiltrosVinculos = {}) => {
+    if (pagina === consulta.pagina && limite === consulta.limite && JSON.stringify(filtros) === JSON.stringify(consulta.filtros)) {
+      void refresh().catch(() => undefined)
+    } else {
+      setConsulta({
+        pagina, limite, filtros
+      })
+    }
+  }
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
-    const filtrosAtuais = form.getFieldsValue()
+    const filtrosAtuais = consulta.filtros
     void requisitaDados(pagination.current, pagination.pageSize, filtrosAtuais)
   }
 
@@ -184,8 +155,8 @@ const RfidConferencia: React.FC = () => {
         <Col xs={24} sm={6} style={{ textAlign: 'right' }}>
           <Button
             icon={<ReloadOutlined />}
-            onClick={() => requisitaDados(paginacao.current, paginacao.pageSize, form.getFieldsValue())}
-            loading={loading}
+            onClick={() => requisitaDados(paginacao.current, paginacao.pageSize, consulta.filtros)}
+            loading={loading || validating}
           >
             {t('common.update')}
           </Button>
@@ -233,7 +204,7 @@ const RfidConferencia: React.FC = () => {
               </Button>
             </Col>
             <Col>
-              <Button type="primary" htmlType="submit" icon={<SearchOutlined />} loading={loading}>
+              <Button type="primary" htmlType="submit" icon={<SearchOutlined />} loading={loading || validating}>
                 {t('common.search')}
               </Button>
             </Col>
@@ -253,7 +224,7 @@ const RfidConferencia: React.FC = () => {
               start: range[0], end: range[1], total
             })
           }}
-          loading={loading}
+          loading={loading || validating}
           onChange={handleTableChange}
           bordered
           size="middle"
@@ -267,7 +238,7 @@ const RfidConferencia: React.FC = () => {
           onSaved={() => {
             setVinculoEdicao(null)
             const pagina = Math.min(paginacao.current, Math.max(1, Math.ceil((paginacao.total - 1) / paginacao.pageSize)))
-            void requisitaDados(pagina, paginacao.pageSize, form.getFieldsValue())
+            void requisitaDados(pagina, paginacao.pageSize, consulta.filtros)
           }}
         />
       )}

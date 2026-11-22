@@ -3,9 +3,9 @@ import { useState } from 'react'
 import {
   Alert, Button, Descriptions, Modal, notification
 } from 'antd'
-import axios from 'axios'
 import { useTranslation } from 'react-i18next'
 
+import { useDesvincularEtiqueta } from '@/features/rfid/useRfidVinculos'
 import { DisconnectOutlined } from '@ant-design/icons'
 
 import { RfidVinculo } from './types'
@@ -21,23 +21,20 @@ export default function RfidVinculoEdicao({
 }: Props) {
   const { t } = useTranslation('rfid')
   const [desvincular, setDesvincular] = useState(false)
-  const [salvando, setSalvando] = useState(false)
+  const { trigger: desvincularEtiqueta, loading: salvando } = useDesvincularEtiqueta(vinculo.id)
   const foto = vinculo.tombos_foto || vinculo.TomboFoto
 
   const salvar = async () => {
     if (!desvincular || salvando) return
 
-    setSalvando(true)
     try {
-      await axios.delete(`/rfids/${vinculo.id}`)
+      await desvincularEtiqueta()
       notification.success({ message: t('unlink.success'), placement: 'topRight' })
       onSaved()
     } catch {
       notification.error({
         message: t('common.error'), description: t('unlink.failure'), placement: 'topRight'
       })
-    } finally {
-      setSalvando(false)
     }
   }
 
