@@ -14,5 +14,18 @@
   "pesquisar": "Pesquisar",
   "fechar": "Fechar",
   "erro": "Erro",
-  "erroBuscar": "Não foi possível carregar as fases sucessionais. Tente novamente."
+  "erroBuscar": "Não foi possível carregar as fases sucessionais. Tente novamente.",
+  "renomear": "Renomear {{nome}}",
+  "excluir": "Excluir {{nome}}",
+  "confirmacaoExcluir": "Excluir fase sucessional?",
+  "descricaoExcluir": "Deseja excluir a fase sucessional {{nome}}?",
+  "nomeObrigatorio": "Informe o nome da fase sucessional.",
+  "aviso": "Atenção",
+  "cadastroSucesso": "Fase sucessional cadastrada com sucesso.",
+  "atualizacaoSucesso": "Fase sucessional renomeada com sucesso.",
+  "exclusaoSucesso": "Fase sucessional excluída com sucesso.",
+  "erroRequisicao": "Verifique os dados informados e tente novamente.",
+  "erroNaoEncontrado": "A fase sucessional não foi encontrada.",
+  "erroConflito": "Não foi possível concluir. A fase sucessional pode estar vinculada a outros registros.",
+  "erroOperacao": "Não foi possível concluir a operação. Tente novamente."
 }

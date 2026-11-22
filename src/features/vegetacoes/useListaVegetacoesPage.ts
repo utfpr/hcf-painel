@@ -1,10 +1,18 @@
 import { useState } from 'react'
 
 import { useContainer } from '@/contexts/Container/useContainer'
+import { useMutation } from '@/hooks/query/useMutation'
 import { useQuery } from '@/hooks/query/useQuery'
 import type { HttpClient } from '@/libraries/http/HttpClient'
+
 import { vegetacoesListParams, type VegetacoesSorter } from './search'
-import type { VegetacoesApiResponse, VegetacoesListResponse } from './types'
+import type {
+  VegetacoesApiResponse,
+  VegetacoesListResponse
+} from './types'
+
+const LIST_KEY = '/v1/vegetacoes'
+const REVALIDATE_LIST = [[LIST_KEY]] as const
 
 export async function fetchVegetacoes(
   httpClient: Pick<HttpClient, 'get'>,
@@ -36,6 +44,21 @@ export async function fetchVegetacoes(
 
 export function useListaVegetacoesPage() {
   const { httpClient } = useContainer()
+  const { trigger: create, loading: creating } = useMutation(
+    (nome: string) => httpClient.post<unknown>(LIST_KEY, { nome }),
+    [LIST_KEY, 'create'],
+    { revalidate: REVALIDATE_LIST }
+  )
+  const { trigger: update, loading: updating } = useMutation(
+    (id: number, nome: string) => httpClient.put<unknown>(`${LIST_KEY}/${id}`, { nome }),
+    [LIST_KEY, 'update'],
+    { revalidate: REVALIDATE_LIST }
+  )
+  const { trigger: remove, loading: removing } = useMutation(
+    (id: number) => httpClient.delete<unknown>(`${LIST_KEY}/${id}`),
+    [LIST_KEY, 'delete'],
+    { revalidate: REVALIDATE_LIST }
+  )
   const [nome, setNome] = useState('')
   const [pagina, setPagina] = useState(1)
   const [limite, setLimite] = useState(20)
@@ -47,7 +70,7 @@ export function useListaVegetacoesPage() {
   } = useQuery(
     () => fetchVegetacoes(httpClient, params),
     [
-      '/v1/vegetacoes',
+      LIST_KEY,
       nome,
       pagina,
       limite,
@@ -79,6 +102,12 @@ export function useListaVegetacoesPage() {
     loading,
     error,
     search,
-    changePage
+    changePage,
+    create,
+    creating,
+    update,
+    updating,
+    remove,
+    removing
   }
 }

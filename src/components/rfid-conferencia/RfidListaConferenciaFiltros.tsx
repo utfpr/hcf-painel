@@ -36,6 +36,8 @@ interface Props {
   onSearch: (filtros: FiltrosRfids) => void
   onDraftChange: () => void
   acoes?: React.ReactNode
+  rotuloEspecie?: string
+  placeholderEspecie?: string
 }
 
 const familiaDoGenero = (genero: TaxonomiaOption) => (
@@ -57,8 +59,15 @@ const familiaDaEspecie = (especie: TaxonomiaOption) => (
   || (especie.genero || especie.generos || especie.Genero)?.Familia?.id
 )
 
+const nomeExibicaoEspecie = (especie: TaxonomiaOption, nomesGeneros: Map<number, string>) => {
+  const generoId = generoDaEspecie(especie)
+  const nomeGenero = especie.genero?.nome || especie.generos?.nome || especie.Genero?.nome
+      || (generoId !== undefined ? nomesGeneros.get(generoId) : undefined)
+  return nomeGenero ? `${nomeGenero} - ${especie.nome}` : especie.nome
+}
+
 const RfidListaConferenciaFiltros: React.FC<Props> = ({
-  loading, onSearch, onDraftChange, acoes
+  loading, onSearch, onDraftChange, acoes, rotuloEspecie, placeholderEspecie
 }) => {
   const [form] = Form.useForm<FiltrosRfids>()
   const { t } = useTranslation('rfid')
@@ -68,6 +77,7 @@ const RfidListaConferenciaFiltros: React.FC<Props> = ({
   const familiasSelecionadas = Form.useWatch<number[]>('familia_id', form) || []
   const generosSelecionados = Form.useWatch<number[]>('genero_id', form) || []
   const especiesSelecionadas = Form.useWatch<number[]>('especie_id', form) || []
+  const nomesGeneros = useMemo(() => new Map(generos.map(genero => [genero.id, genero.nome])), [generos])
 
   const carregarOpcoesTaxonomia = useCallback(async () => {
     try {
@@ -178,10 +188,10 @@ const RfidListaConferenciaFiltros: React.FC<Props> = ({
           </Form.Item>
         </Col>
         <Col xs={24} md={8}>
-          <Form.Item name="especie_id" label={t('conference.species')}>
-            <Select mode="multiple" maxTagCount="responsive" placeholder={t('conference.searchSpecies')} allowClear showSearch optionFilterProp="children">
+          <Form.Item name="especie_id" label={rotuloEspecie || t('conference.species')}>
+            <Select mode="multiple" maxTagCount="responsive" placeholder={placeholderEspecie || t('conference.searchSpecies')} allowClear showSearch optionFilterProp="children">
               {especiesFiltradas.map(especie => (
-                <Option key={especie.id} value={especie.id}>{especie.nome}</Option>
+                <Option key={especie.id} value={especie.id}>{nomeExibicaoEspecie(especie, nomesGeneros)}</Option>
               ))}
             </Select>
           </Form.Item>

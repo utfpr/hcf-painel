@@ -73,7 +73,6 @@ const DashboardScreen = ({ t }) => {
         }))
     }, [temporalData])
 
-
     if (loadingTombo || !tomboData) {
         return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
@@ -116,6 +115,14 @@ const DashboardScreen = ({ t }) => {
                         value={tombos.fotos}
                         prefix={<CameraOutlined />}
                         valueColor="#722ed1"
+                    />
+                </Col>
+                <Col xs={24} sm={12} md={8} style={{ flex: 1 }}>
+                    <MetricCard
+                        title={t('dashboardScreen:fotosComRfid')}
+                        value={tombos.fotos_com_rfid}
+                        prefix={<TagOutlined />}
+                        valueColor="#13c2c2"
                     />
                 </Col>
             </Row>

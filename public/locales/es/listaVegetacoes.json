@@ -14,5 +14,18 @@
   "pesquisar": "Buscar",
   "fechar": "Cerrar",
   "erro": "Error",
-  "erroBuscar": "No se pudo cargar la vegetación. Inténtelo de nuevo."
+  "erroBuscar": "No se pudo cargar la vegetación. Inténtelo de nuevo.",
+  "renomear": "Renombrar {{nome}}",
+  "excluir": "Eliminar {{nome}}",
+  "confirmacaoExcluir": "¿Eliminar vegetación?",
+  "descricaoExcluir": "¿Desea eliminar la vegetación {{nome}}?",
+  "nomeObrigatorio": "Ingrese el nombre de la vegetación.",
+  "aviso": "Atención",
+  "cadastroSucesso": "Vegetación creada correctamente.",
+  "atualizacaoSucesso": "Vegetación renombrada correctamente.",
+  "exclusaoSucesso": "Vegetación eliminada correctamente.",
+  "erroRequisicao": "Revise los datos e inténtelo de nuevo.",
+  "erroNaoEncontrado": "No se encontró la vegetación.",
+  "erroConflito": "No se pudo completar la operación. La vegetación puede estar vinculada a registros.",
+  "erroOperacao": "No se pudo completar la operación. Inténtelo de nuevo."
 }

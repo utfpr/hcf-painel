@@ -127,6 +127,8 @@
     "sendError": "Batch delivery could not be confirmed. Check the printer before retrying.",
     "noPending": "No pending photos match these filters.",
     "validationError": "Could not confirm the link.",
+    "epithet": "Epithet",
+    "searchEpithet": "Select epithet...",
     "scientificName": "Scientific name",
     "collector": "Collector",
     "detail": "Details",
